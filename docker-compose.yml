@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  web:
+    depends_on:
+      - api
+    build: ./web
+    image: web
+    container_name: web
+    networks:
+      - transcendence-network
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+
+  api:
+    build: ./api
+    image: api
+    container_name: api
+    networks:
+      - transcendence-network
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+
+networks:
+  transcendence-network:
+    driver: bridge
