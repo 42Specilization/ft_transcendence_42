@@ -1,0 +1,33 @@
+@import '../../styles/variables.scss';
+
+.signin {
+  max-width: 1344px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.signin__img {
+  margin-bottom: 7rem/* 112px */;
+}
+
+.signin__button {
+  font-size: 3rem/* 48px */;
+  line-height: 1;
+  color: white;
+  background-color: $primaryColor;
+  padding: 0.75rem 1rem 0.75rem 1rem;
+  height: 8rem/* 128px */;
+  width: 600px;
+  border-radius: 100px;
+  font-weight: 700;
+  border-width: 2px;
+  border-color: white;
+
+  &:hover {
+    background-color: $primaryColorHover;
+  }
+}
+
