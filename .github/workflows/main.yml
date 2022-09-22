@@ -11,10 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: install modules
-        working-directory: ./web
-        run: npm install
-      - name: Run ESlint
-        working-directory: ./web
-        run: npx eslint src/
+      - uses: actions/checkout@v3        
+        
+      - uses: stefanoeb/eslint-action@1.0.2
+        with:
+          working-directory: ./web
+          files: ./src/
