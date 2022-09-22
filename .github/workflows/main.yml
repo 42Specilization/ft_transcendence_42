@@ -15,6 +15,9 @@ jobs:
       - name: install modules
         working-directory: ./web
         run: npm install
-      - name: Run ESlint
+      - name: Run ESlint web
         working-directory: ./web
+        run: npx eslint src/
+      - name: Run ESlint api
+        working-directory: ./api
         run: npx eslint src/
