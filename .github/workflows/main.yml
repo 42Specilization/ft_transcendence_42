@@ -13,6 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: install modules
+        working-directory: ./web
         run: npm install
       - name: Run ESlint
+        working-directory: ./web
         run: npx eslint src/
