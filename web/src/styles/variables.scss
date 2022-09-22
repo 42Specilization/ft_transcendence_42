@@ -1,4 +1,11 @@
 $primaryColor: #8B5CF6;
-$secondaryColor: #4F456A;
+$secondaryColor: #2A2634;
 
 $primaryColorHover: #7C1CED;
+
+@mixin flexCenter($justify_content, $flex_direction: row) {
+  display: flex;
+  align-items: center;
+  justify-content: $justify_content;
+  flex-direction: $flex_direction;
+}

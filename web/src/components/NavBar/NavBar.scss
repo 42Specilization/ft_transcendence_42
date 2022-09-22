@@ -1,0 +1,59 @@
+@import '../../styles/variables.scss';
+
+.navBar {
+  font-family: 'Oxanium', cursive;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100px;
+  border-bottom: 3px solid;
+  border-color: $primaryColor;
+  background-color: $secondaryColor;
+}
+
+.navBar__list {
+  height: 100%;
+  width: 100%;
+  color: white;
+  list-style-type: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 18px;
+}
+
+.navBar__divider {
+  border-right: 1px solid #4F456A;
+  height: 100%;
+}
+
+.navBar__logo {
+  @include flexCenter(center);
+}
+
+.navBar__chats {
+  @include flexCenter(center, column);
+}
+
+.navBar__user {
+  @include flexCenter(center);
+  font-size: 25px;
+  border-radius: 70px;
+  background-color: $primaryColor;
+}
+
+.navBar__user__icon {
+  @include flexCenter(center);
+  border: 2px solid white;
+  border-radius: 100%;
+}
+
+.navBar__user__name {
+  padding: 10px 15px 10px 15px;
+}
+
+
+.navBar__logout {
+  @include flexCenter(center, column);
+  color: $primaryColor;
+}

@@ -1,9 +1,10 @@
-
+import './Home.scss';
+import { NavBar } from '../../components/NavBar/NavBar';
 
 export default function Home() {
   return (
-    <div>
-      <h1>Hello i am not home!</h1>
-    </div>
+    <div className="home">
+      <NavBar />
+    </div >
   );
 }
