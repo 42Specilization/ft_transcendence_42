@@ -1,8 +1,21 @@
 import logoSmall from '../../assets/logo-small.png';
 import { Chats, SignOut, User } from 'phosphor-react';
 import './NavBar.scss';
+import useAuth from '../../auth/auth';
 
-export function NavBar() {
+interface NavBarProps {
+  name: string,
+  imgUrl: string,
+}
+
+export function NavBar({ name, imgUrl }: NavBarProps) {
+
+  const { logout } = useAuth();
+
+  async function handleLogOut() {
+    logout();
+  }
+
   return (
     <div className='navBar'>
       <ul className='navBar__list '>
@@ -38,13 +51,13 @@ export function NavBar() {
               <User size={46} />
             </div>
             <div className='navBar__user__name'>
-              Profile
+              {name}
             </div>
           </div>
         </li>
 
-        <li className='navBar__logout'>
-          <SignOut size={32} />
+        <li className='navBar__logout' onClick={handleLogOut}>
+          <SignOut size={32} values={imgUrl} />
           Log-out
         </li>
 

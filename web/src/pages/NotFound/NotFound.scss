@@ -1,0 +1,12 @@
+@import '../../styles/variables.scss';
+
+.notfound {
+  @include flexCenter(center);
+  width: 100%;
+  height: 100%;
+}
+
+.notfound__img {
+  height: 75vh;
+  width: 75vh;
+}

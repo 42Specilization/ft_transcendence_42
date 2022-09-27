@@ -12,12 +12,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: install modules
+      - name: install modules web
         working-directory: ./web
         run: npm install
       - name: Run ESlint web
         working-directory: ./web
         run: npx eslint src/
+      - name: install modules api
+        working-directory: ./api
+        run: npm install
       - name: Run ESlint api
         working-directory: ./api
         run: npx eslint src/
