@@ -34,8 +34,14 @@ function useAuth() {
         response => {
           return (response.data as AccessTokenResponse);
         }
-      );
+      ).catch(err => {
+        console.log(err.data);
+      });
 
+      if (!token)
+        return (navigate('/signin'));
+      // return;
+      // change after
       window.localStorage.setItem('token', token.access_token);
       navigate('/');
 

@@ -2,6 +2,7 @@ import './Home.scss';
 import { NavBar } from '../../components/NavBar/NavBar';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 interface IntraData {
   first_name: string;
@@ -11,26 +12,43 @@ interface IntraData {
   login: string;
 }
 
+interface ErrResponse {
+  statusCode: number;
+  message: string;
+  error: string;
+}
+
 export default function Home() {
 
   const [name, setName] = useState<string>('Profile');
   const [imgUrl, setimgUrl] = useState<string>('Profile');
+  const navigate = useNavigate();
 
-
-  useEffect(() => {
+  async function getInfos() {
     const token = window.localStorage.getItem('token');
     // const config = {
     //   headers: {
     //     Authorization: `Bearer ${token}`
     //   }
     // };
-
-    const data = axios(`http://localhost:3000/auth/me/${token}`).then(response => {
+    console.log('opa');
+    await axios(`http://localhost:3000/auth/me/${token}`).then(response => {
       const data = response.data as IntraData;
       setName(data.login);
       setimgUrl(data.image_url);
-    });
-    console.log(data);
+      return (data);
+    }).catch(err => {
+      const data = err.response.data as ErrResponse;
+      console.log('aqui ', data);
+      if (data.statusCode == 401)
+        navigate('/signin');
+    }
+
+    );
+  }
+
+  useEffect(() => {
+    getInfos();
   }, []);
 
   return (

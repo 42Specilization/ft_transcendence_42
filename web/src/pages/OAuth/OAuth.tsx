@@ -8,8 +8,12 @@ export default function OAuth() {
 
   const { login } = useAuth();
 
+  async function handleLogin() {
+    await login();
+  }
+
   useEffect(() => {
-    login();
+    handleLogin();
   }, []);
 
   return (

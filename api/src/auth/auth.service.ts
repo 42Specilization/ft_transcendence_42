@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import axios from 'axios';
 import { AccessTokenResponse } from './dto/AccessTokenResponse.dto';
 import { IntraData } from './dto/IntraData.dto';
@@ -19,7 +19,6 @@ export class AuthService {
   }
 
   async getData(token: string): Promise<IntraData> {
-    console.log('token is ', token);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`
@@ -35,6 +34,11 @@ export class AuthService {
           image_url: response.data.image_url,
           login: response.data.login
         });
+      }).catch(err => {
+        if (err.code == 'ERR_BAD_REQUEST')
+          throw new UnauthorizedException('get_data: Token invalid!');
+        else
+          throw new InternalServerErrorException('get_data: Something is wrong!');
       })
     );
   }
