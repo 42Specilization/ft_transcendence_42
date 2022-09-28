@@ -10,10 +10,10 @@ export class UserController {
   constructor(private readonly userService: UserService) { }
 
   @Get()
-  getUsers(): Map<string, User> {
+  getUsers(): { [k: string]: User; } {
     const users = this.userService.getUsers();
     console.log('OPA GET USERS AQ', users);
-    return (users);
+    return (Object.fromEntries(users));
   }
 
 }
