@@ -39,8 +39,8 @@ function useAuth() {
       });
 
       if (!token)
-        return (navigate('/signin'));
-      // return;
+        return;
+      // return (navigate('/signin'));
       // change after
       window.localStorage.setItem('token', token.access_token);
       navigate('/');

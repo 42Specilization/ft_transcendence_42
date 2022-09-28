@@ -1,6 +1,6 @@
 import './Home.scss';
 import { NavBar } from '../../components/NavBar/NavBar';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -39,9 +39,8 @@ export default function Home() {
       return (data);
     }).catch(err => {
       const data = err.response.data as ErrResponse;
-      console.log('aqui ', data);
-      if (data.statusCode == 401)
-        navigate('/signin');
+      // if (data.statusCode == 401)
+      //   navigate('/signin');
     }
 
     );
