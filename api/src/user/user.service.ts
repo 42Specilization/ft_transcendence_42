@@ -10,7 +10,7 @@ export class UserService {
   private users = new Map<string, User>();
 
   createUser(data: IntraData, token: AccessTokenResponse) {
-
+    console.log(IntraData, token);
     const user: User = {
       name: data.first_name,
       email: data.email,
