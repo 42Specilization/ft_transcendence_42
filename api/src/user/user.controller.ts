@@ -12,7 +12,6 @@ export class UserController {
   @Get()
   getUsers(): { [k: string]: User; } {
     const users = this.userService.getUsers();
-    console.log('OPA GET USERS AQ', users);
     return (Object.fromEntries(users));
   }
 

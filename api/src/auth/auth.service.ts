@@ -1,28 +1,59 @@
 import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
+import { User } from 'src/user/dto/user.dto';
 import { UserService } from 'src/user/user.service';
 import { AccessTokenResponse } from './dto/AccessTokenResponse.dto';
+import { JwtTokenAccess } from './dto/JwtTokenAccess.dto';
 import { IntraData } from './dto/IntraData.dto';
+import { UserFromJwt } from './dto/UserFromJwt.dto';
+import { UserPayload } from './dto/UserPayload.dto';
 
 @Injectable()
 export class AuthService {
 
-  constructor(private readonly userService: UserService) { }
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService
+  ) { }
 
+  /**
+   * With the code received, make a request to intra service to get the access token.
+   * Async function.
+   * 
+   * @param code Code received from login with intra.
+   * @returns Access token to get infos from intra.
+   */
   async getToken(code: string): Promise<AccessTokenResponse> {
     const url = `${process.env['ACCESS_TOKEN_URI']}?grant_type=authorization_code&client_id=${process.env['CLIENT_ID']}&client_secret=${process.env['CLIENT_SECRET']}&redirect_uri=${process.env['REDIRECT_URI']}&code=${code}`;
 
     return (
       await axios.post(url).then((response) => {
-        // console.log(response.data);
         return response.data as AccessTokenResponse;
       }).catch(() => {
-        // console.log('erro aqui hehe \n', err);
         throw new InternalServerErrorException('getToken: Fail to request access token to intra!');
       })
     );
   }
 
+  /**
+   * With the data from jwt received, get the user from userService.
+   * 
+   * @param data Data get from jwt extract.
+   * @returns User data.
+   */
+  getUserInfos(data: UserFromJwt): User {
+    const user: User = this.userService.getUser(data.email) as User;
+    return (user);
+  }
+
+  /**
+   * With the Access token received, make a request to intra to get the user data.
+   * Async function
+   * 
+   * @param token Access token received from intra.
+   * @returns The data about the user received from intra.
+   */
   async getData(token: string): Promise<IntraData> {
     const config = {
       headers: {
@@ -48,12 +79,19 @@ export class AuthService {
     );
   }
 
-  async signUp(code: string): Promise<AccessTokenResponse> {
-
-    const token = await this.getToken(code);
-    const data = await this.getData(token.access_token);
-    const user = this.userService.getUser(data.email);
-    // console.log(user);
+  /**
+   * Get the Access token from intra and get the infos about the user.
+   * If the user exist in db the token saved will be updated,
+   * otherwise a new user will be created on db.
+   * Async function.
+   * 
+   * @param code Code received from login with intra.
+   * @returns Data received from intra.
+   */
+  async checkIfIsSignInOrSignUp(code: string): Promise<IntraData> {
+    const token: AccessTokenResponse = await this.getToken(code);
+    const data: IntraData = await this.getData(token.access_token);
+    const user: User | undefined = this.userService.getUser(data.email);
     if (!user) {
       this.userService.createUser(data, token);
       console.log('user Criado!');
@@ -62,8 +100,31 @@ export class AuthService {
       console.log('token atualizado!');
     }
 
+    return (data);
+  }
 
-    return (token);
+  /**
+   * Create a user if doesn't exist. Other just login.
+   * Create a jwt token and return to user.
+   * Async function
+   * 
+   * @param code Code received from login with intra.
+   * @returns Jwt token access.
+   */
+  async signUpOrSignIn(code: string): Promise<JwtTokenAccess> {
+
+    const data: IntraData = await this.checkIfIsSignInOrSignUp(code);
+
+    const finalUser: User = this.userService.getUser(data.email) as User;
+
+    const payload: UserPayload = {
+      email: finalUser.email,
+      token: finalUser.token
+    };
+
+    return ({
+      access_token: this.jwtService.sign(payload)
+    });
   }
 
 }

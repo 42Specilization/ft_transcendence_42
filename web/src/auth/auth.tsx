@@ -14,11 +14,6 @@ const DEFAULT_VALUE = {
 
 interface AccessTokenResponse {
   access_token: string;
-  token_type: string;
-  expires_in: number;
-  refresh_token: string;
-  scope: string;
-  created_at: number;
 }
 
 const AuthContext = createContext<UserType>(DEFAULT_VALUE);
@@ -49,6 +44,7 @@ function useAuth() {
     logout() {
 
       window.localStorage.removeItem('token');
+      window.localStorage.removeItem('userData');
       navigate('/signin');
     }
   };

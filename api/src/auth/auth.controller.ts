@@ -1,8 +1,11 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Request, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { User } from 'src/user/dto/user.dto';
 import { AuthService } from './auth.service';
-import { AccessTokenResponse } from './dto/AccessTokenResponse.dto';
-import { IntraData } from './dto/IntraData.dto';
+import { IsPublic } from './decorators/is-public.decorator';
+import { JwtTokenAccess } from './dto/JwtTokenAccess.dto';
+import { UserFromJwt } from './dto/UserFromJwt.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -10,14 +13,18 @@ export class AuthController {
 
   constructor(private authService: AuthService) { }
 
+  @IsPublic()
   @Get('code/:code')
-  async signUp(@Param('code') code: string): Promise<AccessTokenResponse> {
-    return (await this.authService.signUp(code));
+  @HttpCode(HttpStatus.OK)
+  async signUpOrSignIn(@Param('code') code: string): Promise<JwtTokenAccess> {
+    return (await this.authService.signUpOrSignIn(code));
   }
 
-  @Get('me/:token')
-  async getMe(@Param('token') token: string): Promise<IntraData> {
-    return (await this.authService.getData(token));
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  getMe(@Request() req: { user: UserFromJwt }): User {
+    return (this.authService.getUserInfos(req.user));
   }
 
 }

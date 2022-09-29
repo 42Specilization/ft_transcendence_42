@@ -1,10 +1,11 @@
 import './Home.scss';
 import { NavBar } from '../../components/NavBar/NavBar';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getInfos } from '../OAuth/OAuth';
 
-interface IntraData {
+export interface IntraData {
   first_name: string;
   email: string;
   usual_full_name: string;
@@ -12,47 +13,43 @@ interface IntraData {
   login: string;
 }
 
-interface ErrResponse {
+export interface ErrResponse {
   statusCode: number;
   message: string;
   error: string;
 }
 
 export default function Home() {
+  const defaultIntra: IntraData = {
+    email: 'ft_transcendence@gmail.com',
+    first_name: 'ft',
+    image_url: 'nop',
+    login: 'PingPong',
+    usual_full_name: 'ft_transcendence'
+  };
 
-  const [name, setName] = useState<string>('Profile');
-  const [imgUrl, setimgUrl] = useState<string>('Profile');
+  const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
   const navigate = useNavigate();
 
-  async function getInfos() {
-    const token = window.localStorage.getItem('token');
-    // const config = {
-    //   headers: {
-    //     Authorization: `Bearer ${token}`
-    //   }
-    // };
-    console.log('opa');
-    await axios(`http://localhost:3000/auth/me/${token}`).then(response => {
-      const data = response.data as IntraData;
-      setName(data.login);
-      setimgUrl(data.image_url);
-      return (data);
-    }).catch(err => {
-      const data = err.response.data as ErrResponse;
-      // if (data.statusCode == 401)
-      //   navigate('/signin');
+  async function getStoredData() {
+    let localStore = window.localStorage.getItem('userData');
+    if (!localStore) {
+      await getInfos();
+      localStore = window.localStorage.getItem('userData');
+      if (!localStore)
+        return;
     }
-
-    );
+    const data: IntraData = JSON.parse(localStore);
+    setIntraData(data);
   }
 
   useEffect(() => {
-    getInfos();
+    getStoredData();
   }, []);
 
   return (
     <div className="home">
-      <NavBar name={name} imgUrl={imgUrl} />
+      <NavBar name={intraData.login} imgUrl={intraData.image_url} />
     </div >
   );
 }

@@ -19,7 +19,6 @@ export class UserService {
       token: token.access_token
     };
     this.users.set(user.email, user);
-    console.log('(CREATE USER)users aqui ', this.users);
   }
 
   getUser(email: string): User | undefined {
