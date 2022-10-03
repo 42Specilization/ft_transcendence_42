@@ -12,7 +12,7 @@ export class UserController {
 
   @Post()
   @ApiBody({ type: CreateUserDto })
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
   createUser(@Body() createUserDto: CreateUserDto): any {
     this.userService.createUser(createUserDto.user, createUserDto.token);
     return ({
@@ -21,6 +21,7 @@ export class UserController {
   }
 
   @Get()
+  @HttpCode(HttpStatus.OK)
   getUsers(): { [k: string]: User; } {
     const users = this.userService.getUsers();
     return (Object.fromEntries(users));

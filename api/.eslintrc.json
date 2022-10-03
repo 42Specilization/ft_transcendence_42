@@ -23,6 +23,7 @@
   "plugins": [
     "@typescript-eslint"
   ],
+  "ignorePatterns":["./src/**/dto/*.ts"],
   "rules": {
     "indent": [
       "error",

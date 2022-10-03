@@ -93,7 +93,7 @@ export class AuthService {
     const data: IntraData = await this.getData(token.access_token);
     const user: User | undefined = this.userService.getUser(data.email);
     if (!user) {
-      this.userService.createUser(data, token);
+      await this.userService.createUser(data, token);
       console.log('user Criado!');
     } else {
       this.userService.updateToken(data.email, token);

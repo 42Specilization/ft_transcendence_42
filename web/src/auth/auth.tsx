@@ -33,10 +33,11 @@ function useAuth() {
         console.log(err.data);
       });
 
-      if (!token)
+      if (!token) {
+        if (process.env.NODE_ENV == 'production')
+          return (navigate('/signin'));
         return;
-      // return (navigate('/signin'));
-      // change after
+      }
       window.localStorage.setItem('token', token.access_token);
       navigate('/');
 
