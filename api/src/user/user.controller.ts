@@ -13,10 +13,10 @@ export class UserController {
   @Post()
   @ApiBody({ type: CreateUserDto })
   @HttpCode(HttpStatus.CREATED)
-  createUser(@Body() createUserDto: CreateUserDto): any {
+  createUser(@Body() createUserDto: CreateUserDto): { msg: string } {
     this.userService.createUser(createUserDto.user, createUserDto.token);
     return ({
-      message: 'success'
+      msg: 'success'
     });
   }
 
