@@ -8,12 +8,13 @@ import { CredentialsDto } from 'src/auth/dto/credentials.dto';
 @Injectable()
 export class UserRepository {
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const { email, imgUrl, name, nick, token } = createUserDto;
+    const { email, imgUrl, first_name, usual_full_name, nick, token } = createUserDto;
 
     const user = new User();
     user.email = email;
     user.imgUrl = imgUrl;
-    user.name = name;
+    user.first_name = first_name;
+    user.usual_full_name = usual_full_name;
     user.nick = nick;
     user.token = await bcrypt.hash(token, 10);
 
@@ -42,6 +43,7 @@ export class UserRepository {
     } else {
       return (null);
     }
-
   }
+
+
 }

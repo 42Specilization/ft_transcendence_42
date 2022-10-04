@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './dto/user.dto';
+import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -22,9 +22,8 @@ export class UserController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  getUsers(): { [k: string]: User; } {
-    const users = this.userService.getUsers();
-    return (Object.fromEntries(users));
+  async getUsers(): Promise<User[]> {
+    return (await this.userService.getUsers());
   }
 
 }

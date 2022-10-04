@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
-import { User } from 'src/user/dto/user.dto';
+import { User } from '../user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { AccessTokenResponse } from './dto/AccessTokenResponse.dto';
 import { JwtTokenAccess } from './dto/JwtTokenAccess.dto';
@@ -42,9 +42,9 @@ export class AuthService {
    * @param data Data get from jwt extract.
    * @returns User data.
    */
-  getUserInfos(data: UserFromJwt): User {
-    const user: User = this.userService.getUser(data.email) as User;
-    return (user);
+  async getUserInfos(data: UserFromJwt): Promise<IntraData> {
+    const user = await this.userService.findUserByEmail(data.email) as User;
+    return ({ ...user, image_url: user.imgUrl, login: user.nick });
   }
 
   /**
@@ -91,12 +91,16 @@ export class AuthService {
   async checkIfIsSignInOrSignUp(code: string): Promise<IntraData> {
     const token: AccessTokenResponse = await this.getToken(code);
     const data: IntraData = await this.getData(token.access_token);
-    const user: User | undefined = this.userService.getUser(data.email);
+    const user: User | null = await this.userService.findUserByEmail(data.email);
     if (!user) {
-      await this.userService.createUser(data, token);
+      await this.userService.createUser({
+        email: data.email, imgUrl: data.image_url,
+        first_name: data.first_name, usual_full_name: data.usual_full_name,
+        nick: data.login, token: token.access_token
+      });
       console.log('user Criado!');
     } else {
-      this.userService.updateToken(data.email, token);
+      await this.userService.updateToken(data.email, token);
       console.log('token atualizado!');
     }
 
@@ -115,7 +119,7 @@ export class AuthService {
 
     const data: IntraData = await this.checkIfIsSignInOrSignUp(code);
 
-    const finalUser: User = this.userService.getUser(data.email) as User;
+    const finalUser: User = await this.userService.findUserByEmail(data.email) as User;
 
     const payload: UserPayload = {
       email: finalUser.email,

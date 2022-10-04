@@ -24,7 +24,6 @@ function useAuth() {
 
   return {
     async login() {
-      console.log(searchParams.get('code'));
       const token = await axios(`http://localhost:3000/auth/code/${searchParams.get('code')}`).then(
         response => {
           return (response.data as AccessTokenResponse);
