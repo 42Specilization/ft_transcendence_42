@@ -56,4 +56,9 @@
 .navBar__logout {
   @include flexCenter(center, column);
   color: $primaryColor;
+
+  &:hover {
+    cursor: pointer;
+    color: $primaryColorHover;
+  }
 }
