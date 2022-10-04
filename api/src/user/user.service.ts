@@ -1,24 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { AccessTokenResponse } from 'src/auth/dto/AccessTokenResponse.dto';
 import { IntraData } from 'src/auth/dto/IntraData.dto';
-import { User } from './dto/user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { User } from './entities/user.entity';
+import { UserRepository } from './user.repository';
 
 
 @Injectable()
 export class UserService {
 
+  constructor(private userRepository: UserRepository) { }
+
   private users = new Map<string, User>();
 
-  createUser(data: IntraData, token: AccessTokenResponse) {
-    console.log(IntraData, token);
-    const user: User = {
-      name: data.first_name,
-      email: data.email,
-      login: data.login,
-      imgUrl: data.image_url,
-      token: token.access_token
-    };
-    this.users.set(user.email, user);
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
+    return (this.userRepository.createUser(createUserDto));
   }
 
   getUser(email: string): User | undefined {
