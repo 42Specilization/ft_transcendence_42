@@ -25,6 +25,7 @@ export class AuthService {
    * @returns Access token to get infos from intra.
    */
   async getToken(code: string): Promise<AccessTokenResponse> {
+
     const url = `${process.env['ACCESS_TOKEN_URI']}?grant_type=authorization_code&client_id=${process.env['CLIENT_ID']}&client_secret=${process.env['CLIENT_SECRET']}&redirect_uri=${process.env['REDIRECT_URI']}&code=${code}`;
 
     return (
@@ -34,6 +35,7 @@ export class AuthService {
         throw new InternalServerErrorException('getToken: Fail to request access token to intra!');
       })
     );
+
   }
 
   /**
@@ -43,8 +45,18 @@ export class AuthService {
    * @returns User data.
    */
   async getUserInfos(data: UserFromJwt): Promise<IntraData> {
+
     const user = await this.userService.findUserByEmail(data.email) as User;
-    return ({ ...user, image_url: user.imgUrl, login: user.nick });
+    const intraData = {
+      email: user.email,
+      first_name: user.first_name,
+      image_url: user.imgUrl,
+      login: user.nick,
+      usual_full_name: user.usual_full_name
+    };
+
+    return (intraData);
+
   }
 
   /**
@@ -54,13 +66,15 @@ export class AuthService {
    * @param token Access token received from intra.
    * @returns The data about the user received from intra.
    */
-  async getData(token: string): Promise<IntraData> {
+  async getDataFromIntra(token: string): Promise<IntraData> {
+
     const config = {
       headers: {
         Authorization: `Bearer ${token}`
       }
     };
     const urlMe = `${process.env['URL_ME']}`;
+
     return (
       await axios(urlMe, config).then(response => {
         return ({
@@ -77,6 +91,7 @@ export class AuthService {
           throw new InternalServerErrorException('getData: Something is wrong!');
       })
     );
+
   }
 
   /**
@@ -89,9 +104,11 @@ export class AuthService {
    * @returns Data received from intra.
    */
   async checkIfIsSignInOrSignUp(code: string): Promise<IntraData> {
+
     const token: AccessTokenResponse = await this.getToken(code);
-    const data: IntraData = await this.getData(token.access_token);
+    const data: IntraData = await this.getDataFromIntra(token.access_token);
     const user: User | null = await this.userService.findUserByEmail(data.email);
+
     if (!user) {
       await this.userService.createUser({
         email: data.email, imgUrl: data.image_url,
@@ -105,6 +122,7 @@ export class AuthService {
     }
 
     return (data);
+
   }
 
   /**
@@ -129,6 +147,7 @@ export class AuthService {
     return ({
       access_token: this.jwtService.sign(payload)
     });
+
   }
 
 }

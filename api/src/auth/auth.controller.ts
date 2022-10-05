@@ -1,6 +1,7 @@
-import { Controller, Get, Param, Request, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
+import { GetUserFromJwt } from './decorators/get-user.decorator';
 import { IsPublic } from './decorators/is-public.decorator';
 import { IntraData } from './dto/IntraData.dto';
 import { JwtTokenAccess } from './dto/JwtTokenAccess.dto';
@@ -23,8 +24,8 @@ export class AuthController {
   @Get('me')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async getMe(@Request() req: { user: UserFromJwt }): Promise<IntraData> {
-    return (await this.authService.getUserInfos(req.user));
+  async getMe(@GetUserFromJwt() userFromJwt: UserFromJwt): Promise<IntraData> {
+    return (await this.authService.getUserInfos(userFromJwt));
   }
 
 }
