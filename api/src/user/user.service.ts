@@ -1,23 +1,45 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { AccessTokenResponse } from 'src/auth/dto/AccessTokenResponse.dto';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
-import { AppDataSource } from './user.index';
-import { UserRepository } from './user.repository';
+import * as bcrypt from 'bcrypt';
+import { CredentialsDto } from './dto/credentials.dto';
 
 
 @Injectable()
 export class UserService {
 
-  constructor(private userRepository: UserRepository) { }
+  constructor(@InjectRepository(User) private usersRepository: Repository<User>) { }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    return (this.userRepository.createUser(createUserDto));
+    const { email, imgUrl, first_name, usual_full_name, nick, token } = createUserDto;
+
+    const user = new User();
+    user.email = email;
+    user.imgUrl = imgUrl;
+    user.first_name = first_name;
+    user.usual_full_name = usual_full_name;
+    user.nick = nick;
+    user.token = await bcrypt.hash(token, 10);
+
+    try {
+      await this.usersRepository.save(user);
+      user.token = '';
+      return (user);
+    } catch (error) {
+      if (error.code.toString() === '23505') {
+        throw new ConflictException('E-mail address already in use!');
+      } else {
+        throw new InternalServerErrorException('createUser: Error to create a user!');
+      }
+
+    }
   }
 
   async findUserByEmail(email: string): Promise<User | null> {
-    const repositoryUser = AppDataSource.getRepository(User);
-    return (await repositoryUser.findOneBy({ email }));
+    return (await this.usersRepository.findOneBy({ email }));
   }
 
   async updateToken(email: string, token: AccessTokenResponse) {
@@ -31,8 +53,18 @@ export class UserService {
   }
 
   async getUsers(): Promise<User[]> {
-    const repositoryUser = AppDataSource.getRepository(User);
-    return (await repositoryUser.find());
+    return (await this.usersRepository.find());
+  }
+
+  async checkCredentials(credentialsDto: CredentialsDto): Promise<User | null> {
+    const { email, token } = credentialsDto;
+
+    const user = await this.usersRepository.findOneBy({ email });
+    if (user && (await user.checkToken(token))) {
+      return (user);
+    } else {
+      return (null);
+    }
   }
 
 }
