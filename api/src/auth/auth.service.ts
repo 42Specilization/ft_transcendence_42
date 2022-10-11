@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
-import { User } from 'src/user/dto/user.dto';
+import { User } from '../user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { AccessTokenResponse } from './dto/AccessTokenResponse.dto';
 import { JwtTokenAccess } from './dto/JwtTokenAccess.dto';
@@ -25,6 +25,7 @@ export class AuthService {
    * @returns Access token to get infos from intra.
    */
   async getToken(code: string): Promise<AccessTokenResponse> {
+
     const url = `${process.env['ACCESS_TOKEN_URI']}?grant_type=authorization_code&client_id=${process.env['CLIENT_ID']}&client_secret=${process.env['CLIENT_SECRET']}&redirect_uri=${process.env['REDIRECT_URI']}&code=${code}`;
 
     return (
@@ -34,6 +35,7 @@ export class AuthService {
         throw new InternalServerErrorException('getToken: Fail to request access token to intra!');
       })
     );
+
   }
 
   /**
@@ -42,9 +44,19 @@ export class AuthService {
    * @param data Data get from jwt extract.
    * @returns User data.
    */
-  getUserInfos(data: UserFromJwt): User {
-    const user: User = this.userService.getUser(data.email) as User;
-    return (user);
+  async getUserInfos(data: UserFromJwt): Promise<IntraData> {
+
+    const user = await this.userService.findUserByEmail(data.email) as User;
+    const intraData = {
+      email: user.email,
+      first_name: user.first_name,
+      image_url: user.imgUrl,
+      login: user.nick,
+      usual_full_name: user.usual_full_name
+    };
+
+    return (intraData);
+
   }
 
   /**
@@ -54,13 +66,15 @@ export class AuthService {
    * @param token Access token received from intra.
    * @returns The data about the user received from intra.
    */
-  async getData(token: string): Promise<IntraData> {
+  async getDataFromIntra(token: string): Promise<IntraData> {
+
     const config = {
       headers: {
         Authorization: `Bearer ${token}`
       }
     };
     const urlMe = `${process.env['URL_ME']}`;
+
     return (
       await axios(urlMe, config).then(response => {
         return ({
@@ -77,6 +91,7 @@ export class AuthService {
           throw new InternalServerErrorException('getData: Something is wrong!');
       })
     );
+
   }
 
   /**
@@ -89,18 +104,25 @@ export class AuthService {
    * @returns Data received from intra.
    */
   async checkIfIsSignInOrSignUp(code: string): Promise<IntraData> {
+
     const token: AccessTokenResponse = await this.getToken(code);
-    const data: IntraData = await this.getData(token.access_token);
-    const user: User | undefined = this.userService.getUser(data.email);
+    const data: IntraData = await this.getDataFromIntra(token.access_token);
+    const user: User | null = await this.userService.findUserByEmail(data.email);
+
     if (!user) {
-      await this.userService.createUser(data, token);
+      await this.userService.createUser({
+        email: data.email, imgUrl: data.image_url,
+        first_name: data.first_name, usual_full_name: data.usual_full_name,
+        nick: data.login, token: token.access_token
+      });
       console.log('user Criado!');
     } else {
-      this.userService.updateToken(data.email, token);
+      await this.userService.updateToken(data.email, token);
       console.log('token atualizado!');
     }
 
     return (data);
+
   }
 
   /**
@@ -115,7 +137,7 @@ export class AuthService {
 
     const data: IntraData = await this.checkIfIsSignInOrSignUp(code);
 
-    const finalUser: User = this.userService.getUser(data.email) as User;
+    const finalUser: User = await this.userService.findUserByEmail(data.email) as User;
 
     const payload: UserPayload = {
       email: finalUser.email,
@@ -125,6 +147,7 @@ export class AuthService {
     return ({
       access_token: this.jwtService.sign(payload)
     });
+
   }
 
 }
