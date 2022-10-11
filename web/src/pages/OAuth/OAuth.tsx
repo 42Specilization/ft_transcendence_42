@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect } from 'react';
 import useAuth from '../../auth/auth';
+import { DoubleBubble } from '../../components/DoubleBubble/DoubleBubble';
 import { ErrResponse, IntraData } from '../../Interfaces/interfaces';
 import './OAuth.scss';
 
@@ -40,6 +41,6 @@ export default function OAuth() {
   }, []);
 
   return (
-    <h1>hello</h1>
+    <DoubleBubble speed={5} customText='Loading...'></DoubleBubble>
   );
 }
