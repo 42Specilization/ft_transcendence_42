@@ -43,9 +43,12 @@
 }
 
 .navBar__user__icon {
-  @include flexCenter(center);
-  border: 2px solid white;
-  border-radius: 100%;
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  background-repeat: none;
+  background-size: cover;
+  background-position: 50% 50%;
 }
 
 .navBar__user__name {

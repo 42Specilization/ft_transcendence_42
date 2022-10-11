@@ -47,8 +47,10 @@ export function NavBar({ name, imgUrl }: NavBarProps) {
 
         <li>
           <div className='navBar__user'>
-            <div className='navBar__user__icon'>
-              <User size={46} />
+            <div
+              className='navBar__user__icon'
+              style={{ 'backgroundImage': `url(${imgUrl})` }}
+            >
             </div>
             <div className='navBar__user__name'>
               {name}
@@ -57,11 +59,11 @@ export function NavBar({ name, imgUrl }: NavBarProps) {
         </li>
 
         <li className='navBar__logout' onClick={handleLogOut}>
-          <SignOut size={32} values={imgUrl} />
+          <SignOut size={32} />
           Log-out
         </li>
 
       </ul>
-    </div>
+    </div >
   );
 }
