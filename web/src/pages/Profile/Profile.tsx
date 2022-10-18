@@ -1,10 +1,12 @@
-import './Home.scss';
+import './Profile.scss';
 import { NavBar } from '../../components/NavBar/NavBar';
 import { useEffect, useState } from 'react';
 import { getInfos } from '../OAuth/OAuth';
 import { IntraData } from '../../Interfaces/interfaces';
+import React from 'react';
+import ProfileCard from '../../components/ProfileCard/ProfileCard';
 
-export default function Home() {
+export default function Profile() {
   const defaultIntra: IntraData = {
     email: 'ft_transcendence@gmail.com',
     first_name: 'ft',
@@ -33,8 +35,9 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="home">
+    <div className="profile">
       <NavBar name={intraData.login} imgUrl={intraData.image_url} />
+      <ProfileCard />
     </div >
   );
 }

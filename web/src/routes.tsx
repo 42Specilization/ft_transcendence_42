@@ -5,6 +5,8 @@ import NotFound from './pages/NotFound/NotFound';
 import OAuth from './pages/OAuth/OAuth';
 import { AuthProvider } from './auth/auth';
 import './main.css';
+import Profile from './pages/Profile/Profile';
+import { Link } from 'react-router-dom';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function RequireAuth({ children }: any) {
@@ -24,6 +26,11 @@ export default function AppRouter() {
               <Home />
             </RequireAuth>
           } />
+          <Route exact path='/profile' element={
+            <RequireAuth>
+              <Profile />
+            </RequireAuth>
+          }/>
           <Route path='/oauth' element={<OAuth />} />
           <Route path='/signin' element={<SignIn />} />
           <Route path='*' element={<NotFound />} />

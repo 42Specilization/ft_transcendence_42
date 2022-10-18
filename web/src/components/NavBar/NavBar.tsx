@@ -2,7 +2,8 @@ import logoSmall from '../../assets/logo-small.png';
 import { Chats, SignOut, User } from 'phosphor-react';
 import './NavBar.scss';
 import useAuth from '../../auth/auth';
-
+import { Link } from 'react-router-dom';
+import React from 'react';
 interface NavBarProps {
   name: string,
   imgUrl: string,
@@ -16,16 +17,17 @@ export function NavBar({ name, imgUrl }: NavBarProps) {
     logout();
   }
 
+  async function handleProfile() {
+    redirect ('/profile');
+  }
+
   return (
     <div className='navBar'>
       <ul className='navBar__list '>
-
         <li className='navBar__logo'>
-          <img src={logoSmall} alt='logo small' />
+          <Link to='/'><img src={logoSmall} alt='logo small' /></Link>
         </li>
-
         <li className='navBar__divider' />
-
         <li>
           <strong>Achievements</strong>
         </li>
@@ -44,7 +46,6 @@ export function NavBar({ name, imgUrl }: NavBarProps) {
           <Chats size={32} />
           Chats
         </li>
-
         <li>
           <div className='navBar__user'>
             <div
@@ -53,7 +54,7 @@ export function NavBar({ name, imgUrl }: NavBarProps) {
             >
             </div>
             <div className='navBar__user__name'>
-              {name}
+              <Link to='/profile'>{name}</Link>
             </div>
           </div>
         </li>
