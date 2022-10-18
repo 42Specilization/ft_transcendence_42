@@ -5,7 +5,7 @@ $primaryColorHover: #7C1CED;
 
 @mixin flexCenter($justify_content, $flex_direction: row) {
   display: flex;
-  align-items: center;
+  align-items: right;
   justify-content: $justify_content;
   flex-direction: $flex_direction;
 }

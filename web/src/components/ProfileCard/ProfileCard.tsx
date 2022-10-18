@@ -1,6 +1,7 @@
 import React from 'react';
 import './ProfileCard.scss';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 export default function ProfileCard({email, image_url, login, full_name}) {
 
@@ -14,10 +15,15 @@ export default function ProfileCard({email, image_url, login, full_name}) {
         <strong className="profileCard__infos__email">{email}</strong><br/>
         <div className="profileCard__infos__nick">
           <div>
-            <strong >{login}</strong>
+            <strong>{login}</strong>
           </div>
           <div>
-            <button onClick={() =>console.log('Hello')} className="profileCard__infos__changeNickButton">Change Nickname</button>
+            <Link to='/profile/change'
+              onClick={() =>console.log('Hello')}
+              className="profileCard__infos__changeNickButton"
+            >
+              Change Nickname
+            </Link>
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
@@ -20,10 +21,21 @@ export class UserController {
     });
   }
 
+  @Post('/profile/updateNick')
+  updadeUser() {
+    return ({
+      msg: 'Hello'
+    });
+  }
+
+
   @Get()
   @HttpCode(HttpStatus.OK)
   async getUsers(): Promise<User[]> {
     return (await this.userService.getUsers());
   }
+
+
+
 
 }

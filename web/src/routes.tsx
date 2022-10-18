@@ -6,7 +6,9 @@ import OAuth from './pages/OAuth/OAuth';
 import { AuthProvider } from './auth/auth';
 import './main.css';
 import Profile from './pages/Profile/Profile';
+import ProfileChange from './pages/ProfileUpdateNick/ProfileUpdateNick';
 import { Link } from 'react-router-dom';
+import ProfileUpdateNick from './pages/ProfileUpdateNick/ProfileUpdateNick';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function RequireAuth({ children }: any) {
@@ -28,6 +30,11 @@ export default function AppRouter() {
           <Route exact path='/profile' element={
             <RequireAuth>
               <Profile />
+            </RequireAuth>
+          }/>
+          <Route exact path='/profile/updateNick' element={
+            <RequireAuth>
+              <ProfileUpdateNick />
             </RequireAuth>
           }/>
           <Route path='/oauth' element={<OAuth />} />
