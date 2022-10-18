@@ -5,7 +5,7 @@ services:
     image: postgres:alpine
     ports:
       - '5432:5432'
-    container_name: 'pgsql'
+    container_name: 'pgsql_dev'
     restart: always
     environment:
       POSTGRES_USER: pguser
@@ -13,6 +13,7 @@ services:
 
   adminer:
     image: adminer
+    container_name: 'adminer_dev'
     restart: always
     ports:
       - 8000:8080

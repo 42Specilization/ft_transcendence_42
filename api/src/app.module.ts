@@ -16,7 +16,7 @@ import { User } from './user/entities/user.entity';
     port: 5432,
     username: 'pguser',
     password: 'pgpassword',
-    database: 'transcendence',
+    database: 'postgres',
     entities: [User],
     synchronize: true,
     logging: false,

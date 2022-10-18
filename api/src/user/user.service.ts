@@ -18,7 +18,7 @@ export class UserService {
 
     const user = new User();
     user.email = email;
-    user.imgUrl = imgUrl;
+    user.imgUrl = !imgUrl  ? 'https://e7.pngegg.com/pngimages/498/183/png-clipart-homer-simpson-homer-simpson-eating-a-donut-at-the-movies-cartoons-thumbnail.png' : imgUrl;
     user.first_name = first_name;
     user.usual_full_name = usual_full_name;
     user.nick = nick;
