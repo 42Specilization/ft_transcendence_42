@@ -37,7 +37,12 @@ export default function Profile() {
   return (
     <div className="profile">
       <NavBar name={intraData.login} imgUrl={intraData.image_url} />
-      <ProfileCard />
+      <ProfileCard
+        email={intraData.email}
+        image_url={intraData.image_url}
+        login={intraData.login}
+        full_name={intraData.usual_full_name}
+      />
     </div >
   );
 }

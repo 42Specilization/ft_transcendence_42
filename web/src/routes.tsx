@@ -12,7 +12,6 @@ import { Link } from 'react-router-dom';
 function RequireAuth({ children }: any) {
 
   const token = window.localStorage.getItem('token');
-  console.log('token is    {', token, '}');
   return (token ? children : <Navigate to='/signin' replace />);
 }
 export default function AppRouter() {
