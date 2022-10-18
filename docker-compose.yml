@@ -12,8 +12,12 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8080"
+    environment:
+      - VITE_API_URL=api
 
   api:
+    depends_on:
+      - pgsql
     build: ./api
     image: api
     container_name: api
@@ -22,12 +26,16 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
+    environment:
+      - DATABASE_HOST=pgsql
     
   pgsql:
     image: postgres:alpine
     ports:
       - '5432:5432'
     container_name: 'pgsql'
+    networks:
+      - transcendence-network
     restart: always
     environment:
       POSTGRES_USER: pguser
@@ -35,6 +43,9 @@ services:
 
   adminer:
     image: adminer
+    container_name: adminer
+    networks:
+      - transcendence-network
     restart: always
     ports:
       - 8000:8080

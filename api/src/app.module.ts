@@ -12,7 +12,7 @@ import { User } from './user/entities/user.entity';
 @Module({
   imports: [TypeOrmModule.forRoot({
     type: 'postgres',
-    host: 'localhost',
+    host: process.env['DATABASE_HOST'],
     port: 5432,
     username: 'pguser',
     password: 'pgpassword',

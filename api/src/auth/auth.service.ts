@@ -27,7 +27,6 @@ export class AuthService {
   async getToken(code: string): Promise<AccessTokenResponse> {
 
     const url = `${process.env['ACCESS_TOKEN_URI']}?grant_type=authorization_code&client_id=${process.env['CLIENT_ID']}&client_secret=${process.env['CLIENT_SECRET']}&redirect_uri=${process.env['REDIRECT_URI']}&code=${code}`;
-
     return (
       await axios.post(url).then((response) => {
         return response.data as AccessTokenResponse;

@@ -24,14 +24,13 @@ function useAuth() {
 
   return {
     async login() {
-      const token = await axios(`http://localhost:3000/auth/code/${searchParams.get('code')}`).then(
+      const token = await axios(`http://${import.meta.env.VITE_API_URL}:3000/auth/code/${searchParams.get('code')}`).then(
         response => {
           return (response.data as AccessTokenResponse);
         }
       ).catch(err => {
-        console.log(err.data);
+        console.log('erro no login aq', err.data);
       });
-
       if (!token) {
         if (process.env.NODE_ENV == 'production')
           return (navigate('/signin'));
