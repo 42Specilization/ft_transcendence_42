@@ -18,7 +18,7 @@ export default function ProfileCard({email, image_url, login, full_name}) {
             <strong>{login}</strong>
           </div>
           <div>
-            <Link to='/profile/change'
+            <Link to='/profile/updateNick'
               onClick={() =>console.log('Hello')}
               className="profileCard__infos__changeNickButton"
             >

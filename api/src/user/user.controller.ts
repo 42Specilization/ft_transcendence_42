@@ -1,7 +1,7 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Body, Controller, ForbiddenException, Get, HttpCode, HttpStatus, Param, Patch, Post, ValidationPipe } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 
@@ -21,21 +21,24 @@ export class UserController {
     });
   }
 
-  @Post('/profile/updateNick')
-  updadeUser() {
-    return ({
-      msg: 'Hello'
-    });
-  }
+  @Patch('/updateNick/:id')
+  async updateNick(
+    @Body(ValidationPipe) updateUserDto: UpdateUserDto,
+    @Param('id')id : string,
 
+  ) {
+    const user = await this.userService.findUserById(id);
+    if (user.id != id) {
+      throw new ForbiddenException('you do not have permission to change this user');
+    } else {
+      return this.userService.updateUser(updateUserDto, id);
+    }
+  }
 
   @Get()
   @HttpCode(HttpStatus.OK)
   async getUsers(): Promise<User[]> {
     return (await this.userService.getUsers());
   }
-
-
-
 
 }
