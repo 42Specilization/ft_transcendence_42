@@ -1,35 +1,16 @@
 # ft_transcendence_42
 No more C! No more C++! This project is about doing something you’ve never done before. Remind yourself the beginning of your journey in computer science. Look at you now. Time to shine!
 
+# How to use
 
+* Pegar as variaveis de ambient no discord.
 
-### Auth
+## Desenvolvimento
 
-* production:
-	* @nestjs/passport 
-	* @nestjs/jwt
-	* @bcrypt
-	* class-validator
-	* class-transformer
-	* passport
-	* passport-jwt
-	* passport-local
+* Entrar na pasta db e rodar `docker-compose up`
+* Entrar na pasta api e rodar `npm run start:dev`
+* Entrar na pasta web e rodar `npm run dev`;
 
-* dev 
-	* @types/passport-jwt
-	* @types/passport-local
-	* @types/bcrypt
+## Produção
 
-
-- global validation(validation pipe global)
-```typescript
-# main.ts
-app.useGlobalPipes(
-	new ValidationPipe({
-		transform: true,
-		whitelist: true,
-		forbidNonWhitelisted: true
-	})
-)
-```
-
+* na raiz do projeto rodar `docker-compose up`
