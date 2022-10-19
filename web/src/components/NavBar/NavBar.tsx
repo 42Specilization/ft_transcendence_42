@@ -1,5 +1,5 @@
 import logoSmall from '../../assets/logo-small.png';
-import { Chats, SignOut, User } from 'phosphor-react';
+import { Chats, SignOut} from 'phosphor-react';
 import './NavBar.scss';
 import useAuth from '../../auth/auth';
 import { Link } from 'react-router-dom';
@@ -15,10 +15,6 @@ export function NavBar({ name, imgUrl }: NavBarProps) {
 
   async function handleLogOut() {
     logout();
-  }
-
-  async function handleProfile() {
-    redirect ('/profile');
   }
 
   return (

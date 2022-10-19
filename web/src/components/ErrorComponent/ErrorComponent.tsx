@@ -1,4 +1,5 @@
 import { WarningCircle } from 'phosphor-react';
+import PropTypes from 'prop-types';
 import './ErrorComponent.scss';
 
 export default function ErrorComponent ({ defaultError }){
@@ -12,3 +13,7 @@ export default function ErrorComponent ({ defaultError }){
     </div>
   );
 }
+
+ErrorComponent.propTypes = {
+  defaultError: PropTypes.string.isRequired,
+};

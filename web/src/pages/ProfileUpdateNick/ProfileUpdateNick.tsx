@@ -2,7 +2,6 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import ErrorComponent from '../../components/ErrorComponent/ErrorComponent';
 import { NavBar } from '../../components/NavBar/NavBar';
-import ProfileCard from '../../components/ProfileCard/ProfileCard';
 import { IntraData } from '../../Interfaces/interfaces';
 import { getInfos } from '../OAuth/OAuth';
 import './ProfileUpdateNick.scss';
@@ -45,7 +44,6 @@ export default function ProfileUpdateNick(){
         Authorization: `Bearer ${token}`
       },
     };
-    const input = document.querySelector('.profileChange__inputErrors') as Element;
 
     try {
       const result = await axios.patch(`http://${import.meta.env.VITE_API_URL}:3000/user/updateNick`, {nick:nick}, config);

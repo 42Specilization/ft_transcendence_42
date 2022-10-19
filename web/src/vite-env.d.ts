@@ -1,2 +1,2 @@
 /// <reference types="vite/client" />
-VITE_API_URL='localhost'
+VITE_API_URL='localhost';

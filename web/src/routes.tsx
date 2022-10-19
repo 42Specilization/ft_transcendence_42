@@ -6,8 +6,6 @@ import OAuth from './pages/OAuth/OAuth';
 import { AuthProvider } from './auth/auth';
 import './main.css';
 import Profile from './pages/Profile/Profile';
-import ProfileChange from './pages/ProfileUpdateNick/ProfileUpdateNick';
-import { Link } from 'react-router-dom';
 import ProfileUpdateNick from './pages/ProfileUpdateNick/ProfileUpdateNick';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
