@@ -1,5 +1,8 @@
-import { Body, Controller, ForbiddenException, Get, HttpCode, HttpStatus, Param, Patch, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Get, HttpCode, HttpStatus, Patch, Post, UseGuards, ValidationPipe } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { GetUserFromJwt } from 'src/auth/decorators/get-user.decorator';
+import { UserFromJwt } from 'src/auth/dto/UserFromJwt.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -21,17 +24,17 @@ export class UserController {
     });
   }
 
-  @Patch('/updateNick/:id')
+  @Patch('/updateNick/')
+  @UseGuards(JwtAuthGuard)
   async updateNick(
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
-    @Param('id')id : string,
-
+    @GetUserFromJwt() userFromJwt : UserFromJwt,
   ) {
-    const user = await this.userService.findUserById(id);
-    if (user.id != id) {
+    const user = await this.userService.findUserByEmail(userFromJwt.email);
+    if (user?.email != userFromJwt.email) {
       throw new ForbiddenException('you do not have permission to change this user');
     } else {
-      return this.userService.updateUser(updateUserDto, id);
+      return this.userService.updateUser(updateUserDto, userFromJwt.email);
     }
   }
 

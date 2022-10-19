@@ -1,4 +1,4 @@
-import { ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AccessTokenResponse } from 'src/auth/dto/AccessTokenResponse.dto';
 import { Repository } from 'typeorm';
@@ -89,13 +89,17 @@ export class UserService {
     }
   }
 
-  async updateUser(updateUserDto: UpdateUserDto, id: string) : Promise<User> {
-    const user = await this.findUserById(id);
+  async updateUser(updateUserDto: UpdateUserDto, email: string) : Promise<User> {
+    const user = await this.findUserByEmail(email) as User;
     const { nick, imgUrl } = updateUserDto;
     if (await this.checkDuplicateNick(nick))
       throw new ForbiddenException('Duplicated nickname');
-    user.nick = nick ? nick : user.nick;
-    user.imgUrl = imgUrl ? imgUrl : user.imgUrl;
+
+    if (nick.length > 15)
+      throw new BadRequestException('Invalid Length');
+
+    user.nick = nick ? nick : user?.nick;
+    user.imgUrl = imgUrl ? imgUrl : user?.imgUrl;
     try {
       await user.save();
       return user;

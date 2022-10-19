@@ -1,0 +1,15 @@
+@import '../../styles/variables.scss';
+
+.errorComponent{
+  display: inline-flex;
+  color: red;
+  text-align: center;
+  padding: 5px;
+}
+
+.errorComponent__warning,
+.errorComponent__text {
+  align-items: center;
+  display: flex;
+  margin-left: 5px;
+}
