@@ -1,0 +1,59 @@
+@import '../../styles/variables.scss';
+
+.profileCard {
+	display: flex;
+	justify-content: center;
+}
+
+.profileCard__userImage{
+  border-radius: 50%;
+  height: 300px;
+  width: 300px;
+  background-repeat: none;
+  background-size: cover;
+  background-position: 50% 50%;
+  cursor: pointer;
+  margin-bottom: 30px;
+}
+
+.profileCard__infos {
+  font-family: 'Oxanium', cursive;
+  font-size: 2em;
+  color: rgb(255, 255, 255);
+  justify-content: center;
+  margin-left: 40px;
+  margin-inline-end: 40px;
+}
+
+.profileCard__infos__name {
+  @include flexCenter(center, column);
+  font-family: 'Oxanium', cursive;
+  font-size: 2em;
+  color: rgb(255, 255, 255);
+}
+
+.profileCard__infos__email{
+  @include flexCenter(center, column);
+}
+
+.profileCard__infos__nick{
+  @include flexCenter(center, column);
+  display: flex;
+  flex-direction: row;
+}
+
+.profileCard__infos__changeNickButton {
+  @include flexCenter(right, );
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: $primaryColor;
+  color: white;
+  font-size: 15px;
+  padding: 10px;
+  margin-left: 15px;
+}
+
+.profileCard__infos__changeNickButton:hover {
+  background-color: $primaryColorHover;
+}

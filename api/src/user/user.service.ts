@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {  ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AccessTokenResponse } from 'src/auth/dto/AccessTokenResponse.dto';
 import { Repository } from 'typeorm';
@@ -6,6 +6,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { CredentialsDto } from './dto/credentials.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 
 @Injectable()
@@ -42,6 +43,27 @@ export class UserService {
     return (await this.usersRepository.findOneBy({ email }));
   }
 
+  async findUserById(id: string): Promise<User> {
+    const user = await this.usersRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!user) throw new NotFoundException('Usuário não encontrado');
+
+    return user;
+  }
+
+  async checkDuplicateNick(nick: string): Promise<boolean> {
+    const user = await this.usersRepository.findOne({
+      where: {
+        nick,
+      },
+    });
+    if (user) return true;
+    return false;
+  }
+
   async updateToken(email: string, token: AccessTokenResponse) {
     const user = await this.findUserByEmail(email) as User;
     user.token = token.access_token;
@@ -67,4 +89,19 @@ export class UserService {
     }
   }
 
+  async updateUser(updateUserDto: UpdateUserDto, email: string) : Promise<User> {
+    const user = await this.findUserByEmail(email) as User;
+    const { nick, imgUrl } = updateUserDto;
+    if (await this.checkDuplicateNick(nick))
+      throw new ForbiddenException('Duplicated nickname');
+
+    user.nick = nick ? nick : user?.nick;
+    user.imgUrl = imgUrl ? imgUrl : user?.imgUrl;
+    try {
+      await user.save();
+      return user;
+    } catch (error) {
+      throw new InternalServerErrorException('Erro ao salvar os dados no db');
+    }
+  }
 }

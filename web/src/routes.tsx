@@ -5,12 +5,13 @@ import NotFound from './pages/NotFound/NotFound';
 import OAuth from './pages/OAuth/OAuth';
 import { AuthProvider } from './auth/auth';
 import './main.css';
+import Profile from './pages/Profile/Profile';
+import ProfileUpdateNick from './pages/ProfileUpdateNick/ProfileUpdateNick';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function RequireAuth({ children }: any) {
 
   const token = window.localStorage.getItem('token');
-  console.log('token is    {', token, '}');
   return (token ? children : <Navigate to='/signin' replace />);
 }
 export default function AppRouter() {
@@ -24,6 +25,16 @@ export default function AppRouter() {
               <Home />
             </RequireAuth>
           } />
+          <Route exact path='/profile' element={
+            <RequireAuth>
+              <Profile />
+            </RequireAuth>
+          }/>
+          <Route exact path='/profile/updateNick' element={
+            <RequireAuth>
+              <ProfileUpdateNick />
+            </RequireAuth>
+          }/>
           <Route path='/oauth' element={<OAuth />} />
           <Route path='/signin' element={<SignIn />} />
           <Route path='*' element={<NotFound />} />

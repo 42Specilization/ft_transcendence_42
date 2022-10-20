@@ -1,8 +1,22 @@
 import './Home.scss';
 import { NavBar } from '../../components/NavBar/NavBar';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { getInfos } from '../OAuth/OAuth';
 import { IntraData } from '../../Interfaces/interfaces';
+
+
+
+export async function getStoredData(setIntraData: Dispatch<SetStateAction<IntraData>>) {
+  let localStore = window.localStorage.getItem('userData');
+  if (!localStore) {
+    await getInfos();
+    localStore = window.localStorage.getItem('userData');
+    if (!localStore)
+      return;
+  }
+  const data: IntraData = JSON.parse(localStore);
+  setIntraData(data);
+}
 
 export default function Home() {
   const defaultIntra: IntraData = {
@@ -15,21 +29,8 @@ export default function Home() {
 
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
 
-  async function getStoredData() {
-
-    let localStore = window.localStorage.getItem('userData');
-    if (!localStore) {
-      await getInfos();
-      localStore = window.localStorage.getItem('userData');
-      if (!localStore)
-        return;
-    }
-    const data: IntraData = JSON.parse(localStore);
-    setIntraData(data);
-  }
-
   useEffect(() => {
-    getStoredData();
+    getStoredData(setIntraData);
   }, []);
 
   return (
