@@ -1,9 +1,14 @@
 import React from 'react';
 import './ProfileCard.scss';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+interface ProfileCardProps{
+    email: string;
+    image_url: string;
+    login: string;
+    full_name: string;
+}
 
-export default function ProfileCard({ email, image_url, login, full_name }) {
+export function ProfileCard({ email, image_url, login, full_name }:ProfileCardProps) {
   return (
     <div className="profileCard">
       <div>
@@ -29,10 +34,3 @@ export default function ProfileCard({ email, image_url, login, full_name }) {
     </div >
   );
 }
-
-ProfileCard.propTypes = {
-  email: PropTypes.string.isRequired,
-  image_url: PropTypes.string.isRequired,
-  login: PropTypes.string.isRequired,
-  full_name: PropTypes.string.isRequired,
-};

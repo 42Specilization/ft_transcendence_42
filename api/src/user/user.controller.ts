@@ -1,4 +1,4 @@
-import { Body, Controller, ForbiddenException, Get, HttpCode, HttpStatus, Patch, Post, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Post, UseGuards, ValidationPipe } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { GetUserFromJwt } from 'src/auth/decorators/get-user.decorator';
 import { UserFromJwt } from 'src/auth/dto/UserFromJwt.dto';
@@ -30,12 +30,7 @@ export class UserController {
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
     @GetUserFromJwt() userFromJwt : UserFromJwt,
   ) {
-    const user = await this.userService.findUserByEmail(userFromJwt.email);
-    if (user?.email != userFromJwt.email) {
-      throw new ForbiddenException('you do not have permission to change this user');
-    } else {
-      return this.userService.updateUser(updateUserDto, userFromJwt.email);
-    }
+    return this.userService.updateUser(updateUserDto, userFromJwt.email);
   }
 
   @Get()

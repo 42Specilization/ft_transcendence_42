@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import ErrorComponent from '../../components/ErrorComponent/ErrorComponent';
+import { ErrorComponent } from '../../components/ErrorComponent/ErrorComponent';
 import { NavBar } from '../../components/NavBar/NavBar';
 import { IntraData } from '../../Interfaces/interfaces';
-import { getInfos } from '../OAuth/OAuth';
+import { getStoredData } from '../Home/Home';
 import './ProfileUpdateNick.scss';
 
 export default function ProfileUpdateNick(){
@@ -16,24 +16,12 @@ export default function ProfileUpdateNick(){
     usual_full_name: 'ft_transcendence'
   };
 
-  const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
   const [nick, setNick] = useState<string>('');
   const [errorString, setErrorString] = useState<string>('');
-
-  async function getStoredData() {
-    let localStore = window.localStorage.getItem('userData');
-    if (!localStore) {
-      await getInfos();
-      localStore = window.localStorage.getItem('userData');
-      if (!localStore)
-        return;
-    }
-    const data: IntraData = JSON.parse(localStore);
-    setIntraData(data);
-  }
+  const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
 
   useEffect(() => {
-    getStoredData();
+    getStoredData(setIntraData);
   }, []);
 
 
@@ -51,7 +39,7 @@ export default function ProfileUpdateNick(){
         setErrorString('');
         window.localStorage.removeItem('userData');
         console.log(result.data);
-        getStoredData();
+        getStoredData(setIntraData);
         const input = document.querySelector('.profileChange__inputErrors') as Element;
         input.innerHTML = '';
         return {
@@ -59,12 +47,14 @@ export default function ProfileUpdateNick(){
         };
       }
     } catch (e) {
-      if (e.response.data.statusCode === 403){
-        setErrorString('Usuário indisponivel');
-      } else if (e.response.data.statusCode === 400){
-        setErrorString('Usuário deve conter entre 3 e 15 caracteres');
-      } else {
-        setErrorString('Usuário invalido');
+      if (e && e.response) {
+        if (e.response.data.statusCode === 403){
+          setErrorString('Usuário indisponivel');
+        } else if (e.response.data.statusCode === 400){
+          setErrorString('Usuário deve conter entre 3 e 15 caracteres');
+        } else {
+          setErrorString('Usuário invalido');
+        }
       }
     }
   }

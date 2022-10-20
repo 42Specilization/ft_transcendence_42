@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {  ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AccessTokenResponse } from 'src/auth/dto/AccessTokenResponse.dto';
 import { Repository } from 'typeorm';
@@ -95,19 +95,13 @@ export class UserService {
     if (await this.checkDuplicateNick(nick))
       throw new ForbiddenException('Duplicated nickname');
 
-    if (nick.length > 15)
-      throw new BadRequestException('Invalid Length');
-
     user.nick = nick ? nick : user?.nick;
     user.imgUrl = imgUrl ? imgUrl : user?.imgUrl;
     try {
       await user.save();
       return user;
-
     } catch (error) {
       throw new InternalServerErrorException('Erro ao salvar os dados no db');
     }
   }
-
-
 }

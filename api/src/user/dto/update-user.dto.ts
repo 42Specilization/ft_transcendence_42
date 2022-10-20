@@ -4,7 +4,7 @@ export class UpdateUserDto {
   @IsOptional()
   @IsNotEmpty({ message: 'Inform a name!' })
   @MinLength(3, { message: 'The nick must have at least 3 characters!' })
-  @MaxLength(50, { message: 'The nick must have less then 50 characters'})
+  @MaxLength(15, { message: 'The nick must have less then 15 characters'})
     nick: string;
 
   @IsOptional()

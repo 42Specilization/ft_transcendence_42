@@ -9,7 +9,6 @@
 
 .errorComponent__warning,
 .errorComponent__text {
-  align-items: center;
-  display: flex;
+  @include flexCenter(center, column);
   margin-left: 5px;
 }
