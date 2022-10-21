@@ -10,7 +10,6 @@ import ProfileUpdateNick from './pages/ProfileUpdateNick/ProfileUpdateNick';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function RequireAuth({ children }: any) {
-
   const token = window.localStorage.getItem('token');
   return (token ? children : <Navigate to='/signin' replace />);
 }

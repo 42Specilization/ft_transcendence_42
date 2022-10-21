@@ -5,17 +5,6 @@
 	justify-content: center;
 }
 
-.profileCard__userImage{
-  border-radius: 50%;
-  height: 300px;
-  width: 300px;
-  background-repeat: none;
-  background-size: cover;
-  background-position: 50% 50%;
-  cursor: pointer;
-  margin-bottom: 30px;
-}
-
 .profileCard__infos {
   font-family: 'Oxanium', cursive;
   font-size: 2em;
@@ -54,6 +43,8 @@
   margin-left: 15px;
 }
 
+
 .profileCard__infos__changeNickButton:hover {
   background-color: $primaryColorHover;
 }
+
