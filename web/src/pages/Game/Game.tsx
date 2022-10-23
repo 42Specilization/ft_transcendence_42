@@ -11,15 +11,16 @@ export default function Game() {
 
   const move = (direction: string) => {
     console.log('move is ', direction);
-
+    currentState.socket?.emit('move', direction);
   };
 
-  function drawCircle() {
+  function drawCircle(x = 10, y = 10) {
     if (!context) {
       return;
     }
     context.beginPath();
-    context.arc(100, 100, 10, 0, 360);
+    console.log(x, y);
+    context.arc(x, y, 10, 0, 360);
     context.fillStyle = 'blue';
     context.fill();
   }
@@ -37,8 +38,10 @@ export default function Game() {
     if (!context) {
       return;
     }
-    drawCircle();
-  }, []);
+    context.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+    drawCircle(currentState.game?.player1.position.x, currentState.game?.player1.position.y);
+    drawCircle(currentState.game?.player2.position.x, currentState.game?.player2.position.y);
+  }, [currentState]);
 
   return (
     <div className='game'>

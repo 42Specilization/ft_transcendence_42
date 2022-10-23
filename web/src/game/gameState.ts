@@ -12,39 +12,66 @@ export interface Position {
   y: number;
 }
 
+export interface Player {
+  position: Position;
+}
+
+export interface Game {
+  player1: Player;
+  player2: Player;
+  watchers: [];
+  ball: Position;
+}
+
 export interface AppState {
   socket?: Socket;
   me?: Me;
   accessToken?: string | null;
   isPlayer: boolean;
-  positionPlayer1: Position;
-  positionPlayer2: Position;
+  game?: Game;
+  player1: Player;
+  player2: Player;
 }
 
 const state = proxy<AppState>({
   get isPlayer() {
     return (false);
   },
-  get positionPlayer1() {
-    return ({ x: 100, y: 100 });
+  get player1() {
+    return (this.game?.player1);
   },
-  get positionPlayer2() {
-    return ({ x: 100, y: 100 });
+  get player2() {
+    return (this.game?.player2);
   }
 });
 
 const actions = {
+  initializeGame: (game?: Game): void => {
+    state.game = game;
+  },
   initializeSocket: (): void => {
     if (!state.socket) {
       const createSocketOptions: CreateSocketOptions = {
         accessToken: getAccessToken(),
-        socketIOUrl: socketIOUrl
+        socketIOUrl: socketIOUrl,
+        actions: actions,
+        state: state,
       };
       state.socket = ref(createSocket(createSocketOptions));
-    } else {
-      state.socket.connect();
+
+      return;
     }
+
+    if (!state.socket.connected) {
+      state.socket.connect();
+      return;
+    }
+  },
+  updateGame(game?: Game) {
+    state.game = game;
   }
 };
+
+export type AppActions = typeof actions;
 
 export { state, actions };
