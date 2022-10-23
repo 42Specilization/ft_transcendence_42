@@ -1,0 +1,10 @@
+@import '../../styles/variables.scss';
+
+.game {
+	display: flex;
+	justify-content: center;
+}
+
+.canvas {
+  border: 1px solid black;
+}

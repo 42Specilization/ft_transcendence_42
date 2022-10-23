@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { createContext, useContext } from 'react';
+import { createContext, ReactNode, useContext } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 interface UserType {
@@ -24,7 +24,7 @@ function useAuth() {
 
   return {
     async login() {
-      const token = await axios(`http://${import.meta.env.VITE_API_URL}:3000/auth/code/${searchParams.get('code')}`).then(
+      const token = await axios(`http://${import.meta.env.VITE_API_HOST}:3000/auth/code/${searchParams.get('code')}`).then(
         response => {
           return (response.data as AccessTokenResponse);
         }
@@ -49,8 +49,11 @@ function useAuth() {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function AuthProvider({ children }: any) {
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export function AuthProvider({ children }: AuthProviderProps) {
   const auth = useAuth();
 
   return (
