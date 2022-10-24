@@ -25,6 +25,20 @@ export default function Game() {
     context.fill();
   }
 
+  function drawFillRect(info: any, style: any = {}) {
+    const { x, y, w, h } = info;
+    const { backgroundColor = 'black' } = style;
+
+    if (!context) {
+      return;
+    }
+
+    context.beginPath();
+    context.fillStyle = backgroundColor;
+
+    context.fillRect(x, y, w, h);
+  }
+
 
   useEffect(() => {
     actions.initializeSocket();
@@ -39,25 +53,45 @@ export default function Game() {
       return;
     }
     context.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-    drawCircle(currentState.game?.player1.position.x, currentState.game?.player1.position.y);
-    drawCircle(currentState.game?.player2.position.x, currentState.game?.player2.position.y);
+    // drawCircle(currentState.game?.player1.position.x, currentState.game?.player1.position.y);
+    // drawCircle(currentState.game?.player2.position.x, currentState.game?.player2.position.y);
+
+    const player1Rec = {
+      x: currentState.game?.player1.position.x,
+      y: currentState.game?.player1.position.y,
+      w: 20, h: 150
+    };
+    const player2Rec = {
+      x: currentState.game?.player2.position.x,
+      y: currentState.game?.player2.position.y,
+      w: 20, h: 150
+    };
+    drawFillRect(player1Rec);
+    drawFillRect(player2Rec);
   }, [currentState]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyboard, true);
+  }, []);
+
+  function handleKeyboard(event: KeyboardEvent) {
+    if (event.key == 'ArrowUp') {
+      move('up');
+    } else if (event.key == 'ArrowDown') {
+      move('down');
+    }
+  }
 
   return (
     <div className='game'>
-      <h1>Play Game</h1>
-      <canvas
-        ref={canvasRef}
-        className='canvas'
-        width='640'
-        height='480'
-      ></canvas>
-      <p>
-        <button onClick={() => move('right')}>Right</button>
-        <button onClick={() => move('left')}>Left</button>
-        <button onClick={() => move('up')}>Up</button>
-        <button onClick={() => move('down')}>Down</button>
-      </p>
+      <div className='canvas-div'>
+        <canvas
+          ref={canvasRef}
+          className='canvas'
+          width='640'
+          height='480'
+        ></canvas>
+      </div>
     </div>
   );
 }

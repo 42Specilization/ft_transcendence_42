@@ -19,19 +19,20 @@ export interface Game {
   player2?: Player;
   watchers?: [];
   ball?: Position;
+  id: string;
 }
 
 const game = {
   player1: {
     position: {
-      x: 200,
+      x: 20,
       y: 200
     },
     id: ''
   },
   player2: {
     position: {
-      x: 400,
+      x: 600,
       y: 200
     },
     id: ''
