@@ -34,6 +34,12 @@ export default function AppRouter() {
               <ProfileUpdateNick />
             </RequireAuth>
           }/>
+
+          {/* <Route exact path='/profile/updateImage' element={
+            <RequireAuth>
+              <Profile />
+            </RequireAuth>
+          }/> */}
           <Route path='/oauth' element={<OAuth />} />
           <Route path='/signin' element={<SignIn />} />
           <Route path='*' element={<NotFound />} />

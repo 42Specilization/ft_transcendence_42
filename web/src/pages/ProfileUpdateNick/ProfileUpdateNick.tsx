@@ -1,7 +1,10 @@
 import axios from 'axios';
+import React from 'react';
 import { useEffect, useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import { ErrorComponent } from '../../components/ErrorComponent/ErrorComponent';
 import { NavBar } from '../../components/NavBar/NavBar';
+import { UserImage } from '../../components/UserImage/UserImage';
 import { IntraData } from '../../Interfaces/interfaces';
 import { getStoredData } from '../Home/Home';
 import './ProfileUpdateNick.scss';
@@ -56,6 +59,7 @@ export default function ProfileUpdateNick(){
           setErrorString('Usuário invalido');
         }
       }
+
     }
   }
 
@@ -63,8 +67,12 @@ export default function ProfileUpdateNick(){
     <>
       <div className="profileChange">
         <NavBar name={intraData.login} imgUrl={intraData.image_url} />
-        <img className="profileChange__userImage" src={intraData.image_url} alt="User Image" />
-        <div>
+
+        <UserImage
+          image_url={intraData.image_url}
+          login={intraData.login}/>
+        {/* <img className="profileChange__userImage" src={intraData.image_url} alt="User Image" /> */}
+        <div className="profileChange__input">
           <div className="profileChange__inputText">
             <strong>Digite o novo usuario:</strong>
           </div>

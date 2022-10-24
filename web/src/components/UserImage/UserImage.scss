@@ -1,6 +1,6 @@
 @import '../../styles/variables.scss';
 
-.userImage__button_text{
+.userImage__button_text {
   display: none;
 }
 
@@ -11,6 +11,7 @@
   background-color: $primaryColor;
   color: white;
   padding: 8px;
+  margin-right: 10px;
   width: 250px;
   height: 250px;
 }
