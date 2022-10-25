@@ -2,6 +2,9 @@ import { WsException } from '@nestjs/websockets';
 
 type WsExceptionType = 'BadRequest' | 'Unauthorized' | 'Unknown';
 
+/**
+ * Web Socket custom exceptions.
+ */
 export class WsTypeException extends WsException {
   readonly type: WsExceptionType;
 

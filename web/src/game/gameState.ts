@@ -21,6 +21,8 @@ export interface Game {
   player2: Player;
   watchers: [];
   ball: Position;
+  id: number;
+  index: number;
 }
 
 export interface AppState {

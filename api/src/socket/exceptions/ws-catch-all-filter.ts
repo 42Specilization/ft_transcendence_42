@@ -2,6 +2,11 @@ import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter } from '@nes
 import { SocketWithAuth } from '../types/SocketWithAuth.types';
 import { WsBadRequestException, WsTypeException, WsUnknownException } from './ws-exceptions';
 
+/**
+ * WsCatchAllFilter class to filter exceptions on socket.
+ * If the socket will emit some exception and this class will filter what kind of exception is.
+ * The send exception will be change by a more specific Web Socket exception.
+ */
 @Catch()
 export class WsCatchAllFilter implements ExceptionFilter {
   catch(exception: Error, host: ArgumentsHost) {

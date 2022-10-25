@@ -10,8 +10,10 @@ export default function Game() {
   let context: CanvasRenderingContext2D | null;
 
   const move = (direction: string) => {
-    console.log('move is ', direction);
-    currentState.socket?.emit('move', direction);
+    console.log('move to ', direction);
+    state.socket?.emit('move', {
+      direction: direction, index: state.game?.index
+    });
   };
 
   function drawCircle(x = 10, y = 10) {
@@ -42,7 +44,6 @@ export default function Game() {
 
   useEffect(() => {
     actions.initializeSocket();
-
     const canvas = canvasRef.current;
     if (!canvas) {
       return;
@@ -66,6 +67,7 @@ export default function Game() {
       y: currentState.game?.player2.position.y,
       w: 20, h: 150
     };
+    console.log(currentState.game);
     drawFillRect(player1Rec);
     drawFillRect(player2Rec);
   }, [currentState]);
@@ -73,6 +75,23 @@ export default function Game() {
   useEffect(() => {
     document.addEventListener('keydown', handleKeyboard, true);
   }, []);
+
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     if (!context) {
+  //       return;
+  //     }
+
+  //     context.canvas.height = window.innerHeight;
+  //     context.canvas.width = window.innerWidth;
+  //   };
+
+  //   handleResize();
+  //   window.addEventListener('resize', handleResize);
+
+  //   return () => window.removeEventListener('resize', handleResize);
+
+  // }, []);
 
   function handleKeyboard(event: KeyboardEvent) {
     if (event.key == 'ArrowUp') {
@@ -88,8 +107,8 @@ export default function Game() {
         <canvas
           ref={canvasRef}
           className='canvas'
-          width='640'
-          height='480'
+          width={640}
+          height={440}
         ></canvas>
       </div>
     </div>
