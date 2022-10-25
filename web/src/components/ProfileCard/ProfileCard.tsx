@@ -1,23 +1,24 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import './ProfileCard.scss';
 import { Link } from 'react-router-dom';
-import { Dropzone } from '../Dropzone/Dropzone';
-import { UserImage } from '../UserImage/UserImage'
+import { UserImage } from '../UserImage/UserImage';
+import { IntraData } from '../../Interfaces/interfaces';
 interface ProfileCardProps{
     email: string;
     image_url: string;
     login: string;
     full_name: string;
+    setIntraData: Dispatch<SetStateAction<IntraData>>;
 }
 
-export function ProfileCard({ email, image_url, login, full_name }:ProfileCardProps) {
-  const [selectedFile, setSelectedFile] = useState<File>();
+export function ProfileCard({ email, image_url, login, full_name, setIntraData }:ProfileCardProps) {
   return (
     <div className="profileCard">
       <div className="profileCard__userImage" >
         <UserImage
           image_url={image_url}
           login={login}
+          setIntraData={setIntraData}
         ></UserImage>
       </div>
       <div className="profileCard__infos">
@@ -28,7 +29,7 @@ export function ProfileCard({ email, image_url, login, full_name }:ProfileCardPr
             <strong>{login}</strong>
           </div>
           <div>
-            <Link to='/profile/updateNick'
+            <Link to='/updateNick'
               onClick={() =>console.log('Hello')}
               className="profileCard__infos__changeNickButton"
             >

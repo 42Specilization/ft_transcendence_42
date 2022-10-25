@@ -5,7 +5,6 @@
 	justify-content: center;
 }
 
-
 .profileChange__input{
   @include flexCenter(center, column, left);
   margin-left: 10px;
@@ -50,4 +49,36 @@
   font-family: 'Oxanium', cursive;
   margin-top: 5px;
 }
+
+
+.profileChange__userImage img{
+  @include flexCenter(center, row, right);
+  border-radius: 150px;
+  cursor: pointer;
+  background-color: $primaryColor;
+  color: white;
+  padding: 8px;
+  margin-right: 10px;
+  width: 250px;
+  height: 250px;
+}
+
+// .profileChange__userImage:hover {
+//   filter:grayscale(0.5);
+//   .userImage__button_text {
+//     @include flexCenter(center, row, right);
+//     position: fixed;
+//     color: #fff;
+//     text-align: center;
+//     border: none;
+//     border-radius: 5px;
+//     cursor: pointer;
+//     background-color: $primaryColor;
+//     filter:grayscale(0.5);
+//     top: 90%;
+//     width: 250px;
+//     line-height: 30px;
+//     height: 30px;
+//   }
+// }
 

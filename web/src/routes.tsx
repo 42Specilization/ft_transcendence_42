@@ -29,7 +29,7 @@ export default function AppRouter() {
               <Profile />
             </RequireAuth>
           }/>
-          <Route exact path='/profile/updateNick' element={
+          <Route exact path='/updateNick' element={
             <RequireAuth>
               <ProfileUpdateNick />
             </RequireAuth>

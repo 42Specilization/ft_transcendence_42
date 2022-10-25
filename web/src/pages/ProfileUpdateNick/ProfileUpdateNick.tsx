@@ -1,10 +1,8 @@
 import axios from 'axios';
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { Redirect } from 'react-router-dom';
 import { ErrorComponent } from '../../components/ErrorComponent/ErrorComponent';
 import { NavBar } from '../../components/NavBar/NavBar';
-import { UserImage } from '../../components/UserImage/UserImage';
 import { IntraData } from '../../Interfaces/interfaces';
 import { getStoredData } from '../Home/Home';
 import './ProfileUpdateNick.scss';
@@ -19,9 +17,9 @@ export default function ProfileUpdateNick(){
     usual_full_name: 'ft_transcendence'
   };
 
+  const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
   const [nick, setNick] = useState<string>('');
   const [errorString, setErrorString] = useState<string>('');
-  const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
 
   useEffect(() => {
     getStoredData(setIntraData);
@@ -41,10 +39,9 @@ export default function ProfileUpdateNick(){
       if (result.status === 200) {
         setErrorString('');
         window.localStorage.removeItem('userData');
-        console.log(result.data);
         getStoredData(setIntraData);
-        const input = document.querySelector('.profileChange__inputErrors') as Element;
-        input.innerHTML = '';
+        console.log('entrou no if');
+        window.location.href ='/';
         return {
           message: 'done'
         };
@@ -59,7 +56,6 @@ export default function ProfileUpdateNick(){
           setErrorString('Usuário invalido');
         }
       }
-
     }
   }
 
@@ -67,11 +63,9 @@ export default function ProfileUpdateNick(){
     <>
       <div className="profileChange">
         <NavBar name={intraData.login} imgUrl={intraData.image_url} />
-
-        <UserImage
-          image_url={intraData.image_url}
-          login={intraData.login}/>
-        {/* <img className="profileChange__userImage" src={intraData.image_url} alt="User Image" /> */}
+        <div className="profileChange__userImage" >
+          <img src={intraData.image_url} alt="User Image" />
+        </div>
         <div className="profileChange__input">
           <div className="profileChange__inputText">
             <strong>Digite o novo usuario:</strong>

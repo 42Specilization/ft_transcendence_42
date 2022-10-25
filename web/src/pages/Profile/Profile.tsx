@@ -17,19 +17,20 @@ export default function Profile() {
 
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
 
-  useEffect(() => {
+  useEffect(()=>{
     getStoredData(setIntraData);
   }, []);
 
   return (
     <div className="profile">
-      <NavBar name={intraData.login} imgUrl={intraData.image_url} />
       <ProfileCard
         email={intraData.email}
         image_url={intraData.image_url}
         login={intraData.login}
         full_name={intraData.usual_full_name}
+        setIntraData={setIntraData}
       />
+      <NavBar name={intraData.login} imgUrl={intraData.image_url} />
     </div >
   );
 }

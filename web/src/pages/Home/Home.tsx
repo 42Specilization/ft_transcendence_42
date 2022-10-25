@@ -4,8 +4,6 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { getInfos } from '../OAuth/OAuth';
 import { IntraData } from '../../Interfaces/interfaces';
 
-
-
 export async function getStoredData(setIntraData: Dispatch<SetStateAction<IntraData>>) {
   let localStore = window.localStorage.getItem('userData');
   if (!localStore) {

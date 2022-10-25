@@ -31,6 +31,7 @@ function useAuth() {
       ).catch(err => {
         console.log('erro no login aq', err.data);
       });
+      console.log(token);
       if (!token) {
         if (process.env.NODE_ENV == 'production')
           return (navigate('/signin'));
