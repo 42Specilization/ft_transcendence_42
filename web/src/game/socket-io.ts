@@ -26,7 +26,7 @@ export function createSocket({ accessToken, socketIOUrl, actions }: CreateSocket
   });
 
   socket.on('start-game', (game: Game) => {
-    actions.initializeGame(game);
+    actions.updateGame(game);
     console.log('game initialized Game: ', game);
   });
 

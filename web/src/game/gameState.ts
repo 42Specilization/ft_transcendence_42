@@ -23,6 +23,8 @@ export interface Game {
   ball: Position;
   id: number;
   index: number;
+  hasStarted: boolean;
+  hasEnded: boolean;
 }
 
 export interface AppState {
@@ -48,8 +50,8 @@ const state = proxy<AppState>({
 });
 
 const actions = {
-  initializeGame: (game?: Game): void => {
-    state.game = game;
+  initializeGame: (): void => {
+    state.socket?.emit('join-game');
   },
   initializeSocket: (): void => {
     if (!state.socket) {
@@ -71,7 +73,7 @@ const actions = {
   },
   updateGame(game?: Game) {
     state.game = game;
-  }
+  },
 };
 
 export type AppActions = typeof actions;

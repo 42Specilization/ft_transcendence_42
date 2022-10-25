@@ -3,10 +3,10 @@
   padding: 0;
   box-sizing: border-box;
   border: none;
-  background-color: none;
+  background-color: transparent;
 }
 
-body {
+#root {
   background-color: rgb(18 18 20 / 1);
   background-image: url('/background-galaxy.png');
   background-size: cover;

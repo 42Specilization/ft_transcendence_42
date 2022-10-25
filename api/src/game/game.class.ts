@@ -13,7 +13,16 @@ export class Game {
   constructor(id: number, index: number) {
     this.id = id;
     this.index = index;
+    this.waiting = true;
+    this.hasEnded = false;
+    this.hasStarted = false;
   }
+
+  id: number;
+  index: number;
+  waiting: boolean;
+  hasStarted: boolean;
+  hasEnded: boolean;
 
   player1: Player = {
     position: {
@@ -37,7 +46,5 @@ export class Game {
     y: 200
   };
 
-  id: number;
-  index: number;
 
 }

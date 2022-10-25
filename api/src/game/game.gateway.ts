@@ -55,9 +55,6 @@ export class GameGateway implements
 
   /**
    * Always when someone connected the socket this function will be send.
-   * Currently this function get the instance of the a game on queue array.
-   * After that will verify which player is missing and add the socket id there.
-   * The user will enter a room with the gameId.
    * @param user Socket of the connected player.
    */
   handleConnection(user: Socket) {
@@ -66,18 +63,8 @@ export class GameGateway implements
     this.logger.log(`WS user with id: ${user.id} connected!`);
     this.logger.debug(`Number of connected sockets: ${sockets.size}`);
 
-    const index = this.checkGameArray();
-    if (this.queue[index].player1.id === '') {
-      this.queue[index].player1.id = user.id;
-      user.join(this.queue[index].id.toString());
-      this.logger.debug(`Player one connected socket id: ${user.id} Game index:${index} Game id:${this.queue[index].id}`);
-    } else if (this.queue[index].player2.id === '') {
-      this.queue[index].player2.id = user.id;
-      user.join(this.queue[index].id.toString());
-      this.logger.debug(`Player two connected socket id: ${user.id} Game index:${index} Game id:${this.queue[index].id}`);
-    }//TODO: add watchers
 
-    this.io.to(this.queue[index].id.toString()).emit('start-game', this.queue[index]);
+
   }
 
   /**
@@ -90,8 +77,8 @@ export class GameGateway implements
   finishGame(id: string) {
     for (let i = 0; i < this.queue.length; i++) {
       if (this.queue[i].player1.id === id || this.queue[i].player2.id === id) {
-        this.queue[i].player1.id = '';
         this.io.to(this.queue[i].id.toString()).emit('end-game', 'send who is the winner');
+        delete this.queue[i];
         this.queue.splice(i, 1);
         break;
       }
@@ -110,6 +97,29 @@ export class GameGateway implements
 
     this.logger.log(`Disconnected socket id: ${user.id}`);
     this.logger.debug(`Number of connected sockets: ${sockets.size}`);
+  }
+
+  /**
+   * This function get the instance of the a game on queue array.
+   * After that will verify which player is missing and add the socket id there.
+   * The user will enter a room with the gameId.
+   * @param user Socket of the user player.
+   */
+  @SubscribeMessage('join-game')
+  async joinGame(@ConnectedSocket() user: Socket) {
+    const index = this.checkGameArray();
+    if (this.queue[index].player1.id === '') {
+      this.queue[index].player1.id = user.id;
+      user.join(this.queue[index].id.toString());
+      this.logger.debug(`Player one connected socket id: ${user.id} Game index:${index} Game id:${this.queue[index].id}`);
+    } else if (this.queue[index].player2.id === '') {
+      this.queue[index].player2.id = user.id;
+      user.join(this.queue[index].id.toString());
+      this.logger.debug(`Player two connected socket id: ${user.id} Game index:${index} Game id:${this.queue[index].id}`);
+      this.queue[index].hasStarted = true;
+      this.queue[index].waiting = false;
+      this.io.to(this.queue[index].id.toString()).emit('start-game', this.queue[index]);
+    }//TODO: add watchers
   }
 
   /**

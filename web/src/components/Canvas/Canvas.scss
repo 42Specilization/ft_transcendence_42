@@ -1,0 +1,11 @@
+@import '../../styles/variables.scss';
+
+
+.canvas {
+  border: 4px solid black;
+  background-image: url('/canvas-background.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width:  100%;
+}
