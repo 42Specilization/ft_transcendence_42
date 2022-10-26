@@ -16,7 +16,6 @@ export default function Game() {
 
   return (
     <div className='game'>
-      {/* <PongGame /> */}
       {
         currentState.game?.hasStarted ? <PongGame /> : <GameMenu />
       }
