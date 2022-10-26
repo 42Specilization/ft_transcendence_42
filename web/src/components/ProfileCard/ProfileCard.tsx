@@ -30,7 +30,6 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
           </div>
           <div>
             <Link to='/updateNick'
-              onClick={() =>console.log('Hello')}
               className="profileCard__infos__changeNickButton"
             >
               Change Nickname

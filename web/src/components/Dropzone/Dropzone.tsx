@@ -14,7 +14,6 @@ export function Dropzone({ onFileUploaded, setIntraData }: DropzoneProps) {
       const localStore : string | null = window.localStorage.getItem('userData');
       if (localStore){
         const data: IntraData = JSON.parse(localStore);
-        console.log('Dropzone', data);
         const file = new File([acceptepFiles[0]], `${data.login}_avatar.jpg`);
         onFileUploaded(file);
         window.localStorage.removeItem('userData');

@@ -40,7 +40,6 @@ export default function ProfileUpdateNick(){
         setErrorString('');
         window.localStorage.removeItem('userData');
         getStoredData(setIntraData);
-        console.log('entrou no if');
         window.location.href ='/';
         return {
           message: 'done'
