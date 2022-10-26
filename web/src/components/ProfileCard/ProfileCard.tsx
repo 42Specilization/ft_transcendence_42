@@ -14,27 +14,23 @@ interface ProfileCardProps{
 export function ProfileCard({ email, image_url, login, full_name, setIntraData }:ProfileCardProps) {
   return (
     <div className="profileCard">
-      <div className="profileCard__userImage" >
-        <UserImage
-          image_url={image_url}
-          login={login}
-          setIntraData={setIntraData}
-        ></UserImage>
-      </div>
-      <div className="profileCard__infos">
-        <strong className="profileCard__infos__name">{full_name}</strong><br/>
-        <strong className="profileCard__infos__email">{email}</strong><br/>
-        <div className="profileCard__infos__nick">
-          <div>
-            <strong>{login}</strong>
-          </div>
-          <div>
-            <Link to='/updateNick'
-              className="profileCard__infos__changeNickButton"
-            >
+      <UserImage
+        image_url={image_url}
+        login={login}
+        setIntraData={setIntraData}
+      ></UserImage>
+      <strong className="profileCard__infos__name">{full_name}</strong><br/>
+      <strong className="profileCard__infos__email">{email}</strong><br/>
+      <div className="profileCard__infos__nick">
+        <div>
+          <strong>{login}</strong>
+        </div>
+        <div>
+          <Link to='/updateNick'
+            className="profileCard__infos__changeNickButton"
+          >
               Change Nickname
-            </Link>
-          </div>
+          </Link>
         </div>
       </div>
     </div >

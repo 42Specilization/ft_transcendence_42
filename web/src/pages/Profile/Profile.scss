@@ -1,6 +1,79 @@
 @import '../../styles/variables.scss';
 
 .profile {
-	display: flex;
-	justify-content: center;
+  @include flexCenter(start, column);
+	background-color: rgba(139, 92, 246, 0.31);
+  border-radius: 0 0 50px 50px;// top-left top-right bottom-right bottom-left
+  width: 500px;
+  height: 750px;
+  position: relative;
+  font-family: 'Oxanium', cursive;
+}
+
+.profile__stats {
+  @include flexCenter(unset, column, center);
+  background-color: rgba(139, 92, 246, 0.4);
+  border-radius: 50px 50px;// top-left top-right bottom-right bottom-left
+  width: 500px;
+  height: 380px;
+  margin-top: 20px
+}
+
+.profile__stats__title {
+  @include flexCenter(center, row, start);
+  margin-top: 20px;
+  font-size: 3em;
+}
+
+.profile__stats__matches {
+  @include flexCenter(space-between, row);
+  font-size: 1.5em;
+  width: 80%;
+  margin-bottom: 8px
+
+}
+
+.profile__stats__wins {
+  @include flexCenter(space-between, row);
+  font-size: 1.5em;
+  width: 80%;
+  margin-bottom: 8px
+}
+
+.profile__stats__lose {
+  @include flexCenter(space-between, row);
+  font-size: 1.5em;
+  width: 80%;
+  margin-bottom: 8px
+
+}
+
+.profile__stats__ratio {
+  @include flexCenter(space-between, row);
+  font-size: 1.5em;
+  width: 80%;
+}
+
+@media(min-width:950px){
+  .profile {
+    @include flexCenter(center, row, center);
+    background-color: rgba(139, 92, 246, 0.31);
+    border-radius: 0 0 50px 50px;// top-left top-right bottom-right bottom-left
+    width: 1150px;
+    height: 550px;
+    font-family: 'Oxanium', cursive;
+  }
+
+  .profile__stats {
+    @include flexCenter(unset, column, center);
+    background-color: rgba(139, 92, 246, 0.4);
+    border-radius: 50px 50px;// top-left top-right bottom-right bottom-left
+    width: 620px;
+    height: 300px;
+    margin-top: 30px;
+    color: white;
+    margin-left: 90px;
+    font-size: 1.3em;
+   }
+
 }

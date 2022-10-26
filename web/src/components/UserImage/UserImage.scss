@@ -5,7 +5,7 @@
 }
 
 .userImage__image img{
-  @include flexCenter(center, row, right);
+  @include flexCenter(center, row,start);
   border-radius: 150px;
   cursor: pointer;
   background-color: $primaryColor;

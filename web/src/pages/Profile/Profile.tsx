@@ -30,6 +30,27 @@ export default function Profile() {
         full_name={intraData.usual_full_name}
         setIntraData={setIntraData}
       />
+      <div className='profile__stats'>
+        <div className='profile__stats__title'>
+          <p >Stats</p>
+        </div>
+        <div className='profile__stats__matches'>
+          <span>Matches:</span>
+          <a>10</a>
+        </div>
+        <div className='profile__stats__wins'>
+          <a>Wins:</a>
+          <a>10</a>
+        </div>
+        <div className='profile__stats__lose'>
+          <a>Lose:</a>
+          <a>10</a>
+        </div>
+        <div className='profile__stats__ratio'>
+          <a>Ratio W/L:</a>
+          <a>10</a>
+        </div>
+      </div>
       <NavBar name={intraData.login} imgUrl={intraData.image_url} />
     </div >
   );

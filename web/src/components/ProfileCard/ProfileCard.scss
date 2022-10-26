@@ -1,32 +1,35 @@
 @import '../../styles/variables.scss';
 
 .profileCard {
-	display: flex;
-	justify-content: center;
+  @include flexCenter(center, column);
+  margin: 20px;
+  margin-left: 0;;
+  font-family: 'Oxanium', cursive;
 }
 
 .profileCard__infos {
-  font-family: 'Oxanium', cursive;
-  font-size: 2em;
+  font-size: 1em;
   color: rgb(255, 255, 255);
-  justify-content: center;
-  margin-left: 40px;
+  justify-content: start;
+  margin: 40px;
   margin-inline-end: 40px;
 }
 
 .profileCard__infos__name {
   @include flexCenter(center, column);
-  font-family: 'Oxanium', cursive;
-  font-size: 2em;
+  font-size: 1.5em;
   color: rgb(255, 255, 255);
+  margin-top: 15px;
 }
 
 .profileCard__infos__email{
   @include flexCenter(center, column);
+  font-size: 1.5em;
 }
 
 .profileCard__infos__nick{
   @include flexCenter(center, column);
+  font-size: 1.5em;
   display: flex;
   flex-direction: row;
 }
