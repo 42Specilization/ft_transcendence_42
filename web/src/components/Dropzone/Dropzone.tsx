@@ -1,3 +1,4 @@
+import { NotePencil } from 'phosphor-react';
 import React, { Dispatch, SetStateAction, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { IntraData } from '../../Interfaces/interfaces';
@@ -36,7 +37,8 @@ export function Dropzone({ onFileUploaded, setIntraData }: DropzoneProps) {
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()} accept="image/*" />
-      <p>Change Image</p>
+      <NotePencil size={120} className='dropzone__button'>
+      </NotePencil>
     </div>
   );
 }

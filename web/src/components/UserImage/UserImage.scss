@@ -17,20 +17,38 @@
 }
 
 .userImage__image:hover {
-  filter:grayscale(0.5);
+  filter:grayscale(0.8);
   .userImage__button_text {
     @include flexCenter(center, row, right);
-    position: fixed;
     color: #fff;
     text-align: center;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    background-color: $primaryColor;
-    filter:grayscale(0.5);
-    top: 90%;
-    width: 250px;
-    line-height: 30px;
-    height: 30px;
+    // filter:grayscale(0.5);
+    color: black;
+    top: -75%;
+    position: relative;
+    height: 0px;
   }
+}
+
+@media (min-width:950px){
+  .userImage__image:hover {
+    @include flexCenter(center, row, start);
+    filter:grayscale(0.8);
+    .userImage__button_text {
+      @include flexCenter(center, row, start);
+      color: #fff;
+      text-align: center;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: black;
+      top: 28%;
+      position: absolute;
+      height: 0px;
+    }
+  }
+
 }

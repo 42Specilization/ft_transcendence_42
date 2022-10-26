@@ -1,8 +1,8 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import './ProfileCard.scss';
-import { Link } from 'react-router-dom';
 import { UserImage } from '../UserImage/UserImage';
 import { IntraData } from '../../Interfaces/interfaces';
+import { NotePencil } from 'phosphor-react';
 interface ProfileCardProps{
     email: string;
     image_url: string;
@@ -12,6 +12,10 @@ interface ProfileCardProps{
 }
 
 export function ProfileCard({ email, image_url, login, full_name, setIntraData }:ProfileCardProps) {
+  function handleClick() {
+    window.location.href = '/updateNick';
+  }
+
   return (
     <div className="profileCard">
       <UserImage
@@ -25,12 +29,8 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
         <div>
           <strong>{login}</strong>
         </div>
-        <div>
-          <Link to='/updateNick'
-            className="profileCard__infos__changeNickButton"
-          >
-              Change Nickname
-          </Link>
+        <div className='profileCard__infos__button'>
+          <NotePencil size={32} onClick={handleClick}/>
         </div>
       </div>
     </div >

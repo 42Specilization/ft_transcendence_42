@@ -3,6 +3,7 @@ import { Dropzone } from '../Dropzone/Dropzone';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import axios from 'axios';
 import { IntraData } from '../../Interfaces/interfaces';
+import { NotePencil } from 'phosphor-react';
 
 interface UserImageProps {
   image_url: string;

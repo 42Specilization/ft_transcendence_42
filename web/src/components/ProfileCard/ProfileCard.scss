@@ -5,6 +5,7 @@
   margin: 20px;
   margin-left: 0;;
   font-family: 'Oxanium', cursive;
+  color: white;
 }
 
 .profileCard__infos {
@@ -51,3 +52,10 @@
   background-color: $primaryColorHover;
 }
 
+.profileCard__infos__button {
+  @include flexCenter(right);
+  margin-left: 10px;
+  :hover {
+    color: rgb(156, 153, 153);
+  }
+}
