@@ -23,6 +23,7 @@ export interface Game {
   ball: Position;
   id: number;
   index: number;
+  waiting: boolean;
   hasStarted: boolean;
   hasEnded: boolean;
 }

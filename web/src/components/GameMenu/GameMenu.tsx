@@ -11,7 +11,6 @@ export function GameMenu() {
     actions.initializeGame();
   };
 
-
   return (
     <div className='gameMenu'>
       <div className='gameMenu__buttons'>

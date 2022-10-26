@@ -111,6 +111,7 @@ export class GameGateway implements
     if (this.queue[index].player1.id === '') {
       this.queue[index].player1.id = user.id;
       user.join(this.queue[index].id.toString());
+      this.io.to(this.queue[index].id.toString()).emit('start-game', this.queue[index]);
       this.logger.debug(`Player one connected socket id: ${user.id} Game index:${index} Game id:${this.queue[index].id}`);
     } else if (this.queue[index].player2.id === '') {
       this.queue[index].player2.id = user.id;
