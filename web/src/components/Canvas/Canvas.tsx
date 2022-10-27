@@ -42,8 +42,8 @@ export function Canvas({ canvasRef, ...props }: CanvasProps) {
       {...props}
       className='canvas'
       ref={canvasRef}
-      width={640}
-      height={440}
+      width={800}
+      height={600}
     />
   );
 }

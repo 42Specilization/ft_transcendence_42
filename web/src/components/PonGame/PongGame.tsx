@@ -55,9 +55,9 @@ export function PongGame() {
   }, []);
 
   function handleKeyboard(event: KeyboardEvent) {
-    if (event.key == 'ArrowUp') {
+    if (event.key === 'ArrowUp' || event.key === 'w') {
       move('up');
-    } else if (event.key == 'ArrowDown') {
+    } else if (event.key === 'ArrowDown' || event.key === 's') {
       move('down');
     }
   }
