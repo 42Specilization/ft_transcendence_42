@@ -14,7 +14,10 @@ export default function ProfileUpdateNick(){
     first_name: 'ft',
     image_url: 'nop',
     login: 'PingPong',
-    usual_full_name: 'ft_transcendence'
+    usual_full_name: 'ft_transcendence',
+    matches: '0',
+    wins: '0',
+    lose: '0'
   };
 
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);

@@ -23,6 +23,9 @@ export class UserService {
     user.usual_full_name = usual_full_name;
     user.nick = nick;
     user.token = await bcrypt.hash(token, 10);
+    user.matches = '0';
+    user.wins = '0';
+    user.lose = '0';
     try {
       await this.usersRepository.save(user);
       user.token = '';
@@ -31,6 +34,7 @@ export class UserService {
       if (error.code.toString() === '23505') {
         throw new ConflictException('E-mail address already in use!');
       } else {
+        console.log(error);
         throw new InternalServerErrorException('createUser: Error to create a user!');
       }
 

@@ -37,4 +37,16 @@ export class CreateUserDto {
   @ApiProperty()
   token: string;
 
+  @IsNotEmpty({ message: 'Inform number of matches' })
+  @ApiProperty()
+  matches: string;
+
+  @IsNotEmpty({ message: 'Inform number of wins' })
+  @ApiProperty()
+  wins: string;
+
+  @IsNotEmpty({ message: 'Inform number of lose' })
+  @ApiProperty()
+  lose: string;
+
 }
