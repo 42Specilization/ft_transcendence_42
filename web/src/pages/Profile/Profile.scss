@@ -1,22 +1,22 @@
 @import '../../styles/variables.scss';
 
 .profile {
-  @include flexCenter(start, column);
+  @include flexCenter(center, column);
 	background-color: rgba(139, 92, 246, 0.31);
   border-radius: 0 0 50px 50px;// top-left top-right bottom-right bottom-left
   width: 500px;
   height: 750px;
-  position: relative;
   font-family: 'Oxanium', cursive;
 }
 
 .profile__stats {
   @include flexCenter(unset, column, center);
   background-color: rgba(139, 92, 246, 0.4);
-  border-radius: 50px 50px;// top-left top-right bottom-right bottom-left
+  border-radius: 30px;// top-left top-right bottom-right bottom-left
   width: 500px;
   height: 380px;
-  margin-top: 20px
+  margin-top: 20px;
+  color: white;
 }
 
 .profile__stats__title {
@@ -45,7 +45,6 @@
   font-size: 1.5em;
   width: 80%;
   margin-bottom: 8px
-
 }
 
 .profile__stats__ratio {
@@ -54,29 +53,80 @@
   width: 80%;
 }
 
-@media(min-width:950px){
+@media ( min-width: 300px) and (max-width:950px){
   .profile {
-    @include flexCenter(center, row, center);
-    background-color: rgba(139, 92, 246, 0.31);
-    border-radius: 0 0 50px 50px;// top-left top-right bottom-right bottom-left
-    width: 1100px;
-    height: 500px;
-    font-family: 'Oxanium', cursive;
-    position: relative;
+    width: 290px;
+    height: 550px;
+    margin: 0;
+    margin-top: 25px;
   }
 
   .profile__stats {
-    @include flexCenter(unset, column, center);
-    background-color: rgba(139, 92, 246, 0.4);
-    border-radius: 50px 50px;// top-left top-right bottom-right bottom-left
-    width: 500px;
-    height: 250px;
-    margin-top: 0px;
-    color: white;
-    margin-left: 90px;
-    font-size: 1em;
-    top: -15%;
-    position: relative;
+    width: 250px;
+    height: 140px;
+    margin-top: 8px;
   }
 
+  .profile__stats__title {
+    margin-top: 10px;
+    font-size: 1.5em;
+  }
+
+  .profile__stats__matches {
+    font-size: 1em;
+    margin-bottom: 2px
+  }
+
+  .profile__stats__wins {
+    font-size: 1em;
+    margin-bottom: 2px
+  }
+
+  .profile__stats__lose {
+    font-size: 1em;
+    margin-bottom: 2px
+  }
+  .profile__stats__ratio {
+    font-size: 1em;
+  }
+}
+
+@media(min-width:950px) and (max-width: 1200px){
+  .profile {
+    @include flexCenter(center, row, center);
+    width: 900px;
+    height: 500px;
+    position: relative;
+    top: -15%
+  }
+
+  .profile__stats {
+    width: 500px;
+    height: 250px;
+    margin-top: -80px;
+    color: white;
+    margin-left: 70px;
+    margin-right: 25px;
+    font-size: 1em;
+    position: relative;
+  }
+}
+
+@media(min-width:1201px) {
+  .profile {
+    @include flexCenter(center, row, center);
+    width: 1100px;
+    height: 500px;
+    position: relative;
+    top: -15%
+  }
+
+  .profile__stats {
+    width: 580px;
+    height: 280px;
+    margin-top: -80px;
+    margin-left: 100px;
+    font-size: 1.1em;
+    position: relative;
+  }
 }
