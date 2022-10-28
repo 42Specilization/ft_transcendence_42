@@ -1,0 +1,109 @@
+@import '../../styles/variables.scss';
+
+.historic .navBar {
+  top: 0;
+  left: 0;
+}
+
+@media (max-width: 1200px){
+  .historic{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background-color: $backgroundColor;
+    color: white;
+    top: 0;
+    left: 50%;
+    margin-left: -150px;
+    align-items: center;
+    position: absolute;
+    min-width: 300px;
+    min-height: 450px;
+    height: 550px;
+  border-radius: 20px;
+  font-family: 'Oxanium', cursive;
+  }
+  .historic__date__text,
+  .historic__nick__text,
+  .historic__result__text{
+    display: none;
+  }
+
+  .historic__title{
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    align-items: center;
+    top: 120px;
+    left: 33%;
+    font-size: 1.9em;
+  }
+
+}
+
+@media (min-width:1200px) {
+
+  .historic{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background-color: $backgroundColor;
+    color: white;
+    top: 0;
+    left: 50%;
+    margin-left: -500px;
+    align-items: center;
+    position: absolute;
+    min-width: 1000px;
+    min-height: 700px;
+    border-radius: 20px;
+    font-family: 'Oxanium', cursive;
+  }
+
+  .historic__header{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    font-size: 1.5em;
+    min-width: 800px;
+    padding: 10px;
+    height: 30px;
+    padding-bottom: 20px;
+  }
+
+  .historic__header__title{
+    display: flex;
+    position: relative;
+    justify-content: center;
+    top: -210px;
+    right: 8%;
+    align-items: center;
+
+  }
+
+  .historic__columns{
+    display: flex;
+    justify-content: space-around;
+    position: relative;
+    align-items: center;
+    top: -170px;
+    width: 100%;
+    font-size: 1.5em;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .historic__title {
+    position: relative;
+    top: 50px;
+    font-size: 2em;
+    left: 35%;
+  }
+
+  .historic__date__text{
+    position: relative;
+  }
+
+}

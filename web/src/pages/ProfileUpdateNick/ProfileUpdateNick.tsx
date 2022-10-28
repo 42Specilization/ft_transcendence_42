@@ -21,12 +21,12 @@ export default function ProfileUpdateNick(){
   };
 
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
-  const [nick, setNick] = useState<string>('');
-  const [errorString, setErrorString] = useState<string>('');
-
   useEffect(() => {
     getStoredData(setIntraData);
   }, []);
+  const [nick, setNick] = useState<string>('');
+  const [errorString, setErrorString] = useState<string>('');
+
 
 
   async function handleChangeNick() {

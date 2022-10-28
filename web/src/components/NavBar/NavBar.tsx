@@ -28,7 +28,7 @@ export function NavBar({ name, imgUrl }: NavBarProps) {
           <p  className='navBar__menus__list'><span><List size={22} /></span></p>
           <nav className='navBar__menu'>
             <Link  to='/' className='navBar__achievements'>Achievements</Link>
-            <Link  to='/' className='navBar__historic'>Historic</Link>
+            <Link  to='/historic' className='navBar__historic'>Historic</Link>
             <Link  to='/' className='navBar__ladderLevel'>Ladder level</Link>
           </nav>
         </div>
