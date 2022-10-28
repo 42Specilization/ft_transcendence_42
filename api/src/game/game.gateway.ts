@@ -137,9 +137,9 @@ export class GameGateway implements
     const game = this.queue[move.index];
     this.logger.debug(`Move to ${direction} on Socket id: ${client.id} Game index:${move.index} Game id:${game.id}`);
 
-    let position = game.player1.position;
+    let position = game.player1.paddle;
     if (client.id === game.player2.id) {
-      position = game.player2.position;
+      position = game.player2.paddle;
     }
     switch (direction) {
       case 'up':
@@ -151,6 +151,13 @@ export class GameGateway implements
         this.io.to(game.id.toString()).emit('update-game', game);
         break;
     }
+  }
+
+  @SubscribeMessage('update-ball')
+  async update(@MessageBody() index: number) {
+    const game = this.queue[index];
+    game.update();
+    this.io.to(game.id.toString()).emit('update-ball', game);
   }
 
 }

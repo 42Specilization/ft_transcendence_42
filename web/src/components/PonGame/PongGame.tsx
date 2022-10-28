@@ -1,6 +1,7 @@
+/* eslint-disable indent */
 import { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
-import { Canvas, drawFillRect, Rect } from '../../components/Canvas/Canvas';
+import { Ball, Canvas, drawCircle, drawFillRect, drawNet, drawText, Rect, TextCanvas } from '../../components/Canvas/Canvas';
 import { actions, state } from '../../game/gameState';
 import './PongGame.scss';
 
@@ -11,39 +12,64 @@ export function PongGame() {
   let context: CanvasRenderingContext2D | undefined | null;
 
   const move = (direction: string) => {
+    if (!state.game) {
+      return;
+    }
     console.log('move to ', direction);
+
     state.socket?.emit('move', {
       direction: direction, index: state.game?.index
     });
   };
 
   const drawGame = () => {
-    console.log('before draw game', currentState.game);
-
     if (!context || !currentState.game) {
       return;
     }
     context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight);
-    // drawCircle(currentState.game?.player1.position.x, currentState.game?.player1.position.y);
-    // drawCircle(currentState.game?.player2.position.x, currentState.game?.player2.position.y);
     const player1Rec: Rect = {
-      x: currentState.game.player1.position.x,
-      y: currentState.game.player1.position.y,
-      w: 20, h: 150
+      x: currentState.game.player1.paddle.x,
+      y: currentState.game.player1.paddle.y,
+      w: currentState.game.player1.paddle.w,
+      h: currentState.game.player1.paddle.h,
+      color: currentState.game.player1.paddle.color
     };
     const player2Rec: Rect = {
-      x: currentState.game.player2.position.x,
-      y: currentState.game.player2.position.y,
-      w: 20, h: 150
+      x: currentState.game.player2.paddle.x,
+      y: currentState.game.player2.paddle.y,
+      w: currentState.game.player2.paddle.w,
+      h: currentState.game.player2.paddle.h,
+      color: currentState.game.player2.paddle.color
     };
-    console.log('draw game', currentState.game);
+    const ball: Ball = {
+      x: currentState.game.ball.x,
+      y: currentState.game.ball.y,
+      radius: currentState.game.ball.radius,
+      color: currentState.game.ball.color
+    };
+    const scorePlayer1: TextCanvas = {
+      x: context.canvas.width / 4,
+      y: context.canvas.height / 5,
+      color: 'WHITE',
+      msg: currentState.game.player1.score
+    };
+
+    const scorePlayer2: TextCanvas = {
+      x: 3 * context.canvas.width / 4,
+      y: context.canvas.height / 5,
+      color: 'WHITE',
+      msg: currentState.game.player2.score
+    };
+    drawText(context, scorePlayer1);
+    drawText(context, scorePlayer2);
     drawFillRect(context, player1Rec);
     drawFillRect(context, player2Rec);
+    drawNet(context);
+    drawCircle(context, ball);
   };
 
   useEffect(() => {
     context = canvasRef.current?.getContext('2d');
-    console.log('current state change');
     drawGame();
   }, [currentState]);
 
@@ -55,6 +81,22 @@ export function PongGame() {
   }, []);
 
   function handleKeyboard(event: KeyboardEvent) {
+    switch (event.key) {
+      case 'ArrowUp':
+      case 'w':
+      case 'W':
+        move('up');
+        break;
+
+      case 'ArrowDown':
+      case 's':
+      case 'S':
+        move('down');
+        break;
+
+      default:
+        break;
+    }
     if (event.key === 'ArrowUp' || event.key === 'w') {
       move('up');
     } else if (event.key === 'ArrowDown' || event.key === 's') {

@@ -11,7 +11,7 @@ export interface CreateSocketOptions {
   actions: AppActions;
 }
 
-export function createSocket({ accessToken, socketIOUrl, actions }: CreateSocketOptions): Socket {
+export function createSocket({ accessToken, socketIOUrl, actions, state }: CreateSocketOptions): Socket {
   console.log('Creating socket with accessToken: ', accessToken);
 
   const socket = io(socketIOUrl, {
@@ -30,11 +30,18 @@ export function createSocket({ accessToken, socketIOUrl, actions }: CreateSocket
     console.log('game initialized Game: ', game);
   });
 
-  socket.on('update-game', (game) => {
-    console.log('update game ', game);
-
+  socket.on('update-game', (game: Game) => {
     actions.updateGame(game);
   });
+
+  setInterval(() => {
+    if (state.game?.hasStarted) {
+      socket.emit('update-ball', state.game?.index);
+      socket.on('update-ball', (game: Game) => {
+        actions.updateGame(game);
+      });
+    }
+  }, 1000 / 10);
 
   return (socket);
 }
