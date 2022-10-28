@@ -47,7 +47,6 @@
   margin-left: 15px;
 }
 
-
 .profileCard__infos__changeNickButton:hover {
   background-color: $primaryColorHover;
 }
@@ -60,25 +59,7 @@
   }
 }
 
-
-@media (min-width:300px){
-  .profileCard {
-    margin: 0;
-  }
-  .profileCard__infos__name {
-    font-size: 1.2em;
-    margin-top: 15px;
-  }
-
-  .profileCard__infos__email{
-    font-size: 1em;
-  }
-  .profileCard__infos__nick{
-    font-size: 1.2em;
-  }
-}
-
-@media (min-width:950px) and (max-width: 1200px){
+@media (max-width: 1201px){
   .profileCard {
     margin: 0;
     margin-left: 25px;
@@ -96,7 +77,7 @@
   }
 }
 
-@media (min-width:1201px) {
+@media (min-width:1200px) {
   .profileCard {
     margin: 0;
     margin-left: 20px;

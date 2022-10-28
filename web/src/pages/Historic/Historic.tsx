@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { HistoricMatch } from '../../components/HistoricMatch/HistoricMatch';
 import { NavBar } from '../../components/NavBar/NavBar';
-import { UserImage } from '../../components/UserImage/UserImage';
 import { IntraData } from '../../Interfaces/interfaces';
 import { getStoredData } from '../Home/Home';
 import './Historic.scss';
