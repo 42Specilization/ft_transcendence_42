@@ -1,5 +1,7 @@
 @import '../../styles/variables.scss';
 
+$chatSize: 22;
+
 .navBar {
   font-family: 'Oxanium', cursive;
   position: fixed;
@@ -46,7 +48,11 @@
 .navBar__ladderLevel{
   color: white;
   margin-top: 10px;
+  &:hover {
+    color: rgb(65, 62, 62);
+  }
 }
+
 .navBar__ladderLevel{
   margin-bottom: 10px;
 }
@@ -57,9 +63,9 @@
   border-radius: 8px;
   width: 100px;
   height: auto;
-  transform: translateX(-50%);
-  background-color: $primaryColorHover;
-  transition: all 0.3s;
+  transform: translateX(-28%);
+  background-color: $primaryColor;
+  transition: all 0.5s;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -69,6 +75,7 @@
 
 .navBar__menu:hover {
   top: 55px;
+
 }
 
 .navBar__menus__list {
@@ -76,8 +83,7 @@
   border-radius: 8px;
   z-index: 2;
   :hover{
-    background-color: #4F456A;
-    background-size: cover;
+    color: gray;
   }
 
 }
@@ -96,20 +102,39 @@
   .navBar__logo__image{
     width: 130px;
   }
+  &:hover  {
+    cursor: pointer;
+    filter: grayscale(0.6);
+  }
 }
 
 .navBar__chats {
   @include flexCenter(center, column);
-  font-size: 10px;
+  font-size: 30px;
+  .navBar__chats__icon {
+    size: 32;
+  }
+  .navBar__chats__text{
+    font-size: 10px;
+  }
+  &:hover  {
+    cursor: pointer;
+    color: gray;
+  }
 }
 
 .navBar__user {
   @include flexCenter(center);
   font-size: 15px;
   border-radius: 25px;
-  width: 90px;
+  width: 95px;
   height: 30px;
   background-color: $primaryColor;
+  &:hover{
+    background-color: $primaryColorHover;
+
+  }
+
 }
 
 .navBar__user__icon {
@@ -119,21 +144,22 @@
   background-repeat: none;
   background-size: cover;
   background-position: 50% 50%;
+
 }
 
 .navBar__user__name {
-  // padding: 10px 15px 10px 15px;
   padding-right: 5px;
-}
+  padding-left: 5px
+ }
 
 .navBar__logout {
   @include flexCenter(center, column);
   color: $primaryColor;
-  size: 25;
-  &:hover {
+  &:hover  {
     cursor: pointer;
     color: $primaryColorHover;
   }
+
 }
 
 @media (min-width: 600px) and (max-width:850px) {
@@ -149,10 +175,6 @@
 
   .navBar__divider {
     border-right: 2px solid #4F456A;
-  }
-
- .navBar__chats {
-    font-size: 15px;
   }
 
   .navBar__user {
@@ -191,14 +213,17 @@
     border-right: 3px solid #4F456A;
   }
 
- .navBar__chats {
-    font-size: 20px;
+  .navBar__chats {
+    font-size: 40px;
+    .navBar__chats__text{
+      font-size: 20px;
+    }
   }
 
   .navBar__user {
     font-size: 25px;
-    width: 160px;
-    height: 50px;
+    width: 155px;
+    height: 55px;
   }
 
   .navBar__user__icon {
@@ -207,9 +232,7 @@
   }
 
   .navBar__user__name {
-    // padding: 10px 15px 10px 15px;
     padding-left: 5px;
-    padding-right: 5px;
   }
 
   .navBar__logout {
@@ -241,18 +264,21 @@
   }
 
  .navBar__chats {
-    font-size: 20px;
+    font-size: 40px;
+    .navBar__chats__text{
+      font-size: 20px;
+    }
   }
 
   .navBar__user {
-    font-size: 25px;
-    width: 160px;
-    height: 50px;
+    font-size: 30px;
+    width: 185px;
+    height: 60px;
   }
 
   .navBar__user__icon {
-    height: 45px;
-    width: 45px;
+    height: 50px;
+    width: 55px;
   }
 
   .navBar__user__name {
@@ -268,7 +294,9 @@
   .navBar__historic,
   .navBar__ladderLevel{
     color: white;
-    margin: 10px;
+    margin: 12px;
+    font-size: 20px;
+
   }
 
   .navBar__div__menu{

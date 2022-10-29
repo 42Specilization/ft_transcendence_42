@@ -4,6 +4,7 @@ import './NavBar.scss';
 import useAuth from '../../auth/auth';
 import { Link } from 'react-router-dom';
 import React from 'react';
+
 interface NavBarProps {
   name: string,
   imgUrl: string,
@@ -34,8 +35,10 @@ export function NavBar({ name, imgUrl }: NavBarProps) {
         </div>
         <li className='navBar__divider' />
         <li className='navBar__chats'>
-          <Chats size={22} />
-          Chats
+          <Chats className='navBar__chats__icon'/>
+          <p className="navBar__chats__text">
+            Chats
+          </p>
         </li>
         <li>
           <div className='navBar__user'>

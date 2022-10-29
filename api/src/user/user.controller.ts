@@ -43,12 +43,12 @@ export class UserController {
 
   @Post('/updateImage')
   @ApiConsumes('multipart/form-data')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
       // Destination storage path details
       destination: (req, file, cb) => {
         const uploadPath ='../web/public';
-        // ver como criar a pasta dinamicamente
         req;
         file;
         cb(null, uploadPath);
@@ -60,11 +60,13 @@ export class UserController {
       },
     }),
   }))
-  getFile(@UploadedFile() file: Express.Multer.File) {
-    console.log('teste', file.originalname);
+  getFile(
+    @UploadedFile() file: Express.Multer.File,
+    @GetUserFromJwt() userFromJwt : UserFromJwt
+  ) {
     const updateUserDto: UpdateUserDto = {imgUrl: file.originalname};
     console.log(file);
-    this.userService.updateUser(updateUserDto,'gsilva-v@student.42sp.org.br');
+    this.userService.updateUser(updateUserDto,userFromJwt.email);
     return { message: 'succes', path: file.path};
   }
 
