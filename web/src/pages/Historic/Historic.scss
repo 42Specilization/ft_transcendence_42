@@ -20,8 +20,18 @@
     min-width: 300px;
     min-height: 450px;
     height: 550px;
-  border-radius: 20px;
-  font-family: 'Oxanium', cursive;
+    border-radius: 20px;
+    font-family: 'Oxanium', cursive;
+    .navBar__historic{
+      background: rgb(120, 27, 213);
+      border-radius: 10px;
+      height: 100%;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
   .historic__date__text,
   .historic__nick__text,
@@ -58,6 +68,18 @@
     min-height: 700px;
     border-radius: 20px;
     font-family: 'Oxanium', cursive;
+
+    .navBar__historic{
+      background: $primaryColor;
+      border-radius: 10px 10px 0 0;
+      height: 100%;
+      width: 120px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
   }
 
   .historic__header{
@@ -105,5 +127,6 @@
   .historic__date__text{
     position: relative;
   }
+
 
 }
