@@ -1,3 +1,4 @@
+import { ErrorResponse } from '@remix-run/router';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { ErrorComponent } from '../../components/ErrorComponent/ErrorComponent';
@@ -46,7 +47,7 @@ export default function ProfileUpdateNick(){
           message: 'done'
         };
       }
-    } catch (e) {
+    } catch (e: any) {
       if (e && e.response) {
         if (e.response.data.statusCode === 403){
           setErrorString('Usuário indisponivel');

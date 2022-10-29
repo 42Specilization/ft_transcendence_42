@@ -105,5 +105,3 @@ dist
 
 .vscode/
 .editorconfig
-
-package-lock.json

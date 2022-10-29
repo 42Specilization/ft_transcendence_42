@@ -10,7 +10,7 @@ WORKDIR /app/
 
 COPY package*.json ./
 
-RUN npm ci
+RUN npm i
 
 COPY . .
 
@@ -24,6 +24,8 @@ RUN npm run build \
 FROM node:16.17-alpine3.15 as production
 
 ENV NODE_ENV production
+ENV VITE_API_PORT "3000"
+ENV VITE_GAME_NAMESPACE "game"
 
 WORKDIR /app/
 
