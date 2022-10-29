@@ -1,5 +1,25 @@
 @import '../../styles/variables.scss';
 
+.historic {
+  @include flexCenter(center, column);
+  background-color: $backgroundColor;
+  color: white;
+  top: 0;
+  left: 50%;
+  align-items: center;
+  position: absolute;
+  font-family: 'Oxanium', cursive;
+  border-radius: 20px;
+  .navBar__historic{
+    @include flexCenter(center, column);
+    background: rgb(120, 27, 213);
+    border-radius: 10px;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+  }
+}
+
 .historic .navBar {
   top: 0;
   left: 0;
@@ -7,32 +27,12 @@
 
 @media (max-width: 1200px){
   .historic{
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    background-color: $backgroundColor;
-    color: white;
-    top: 0;
-    left: 50%;
     margin-left: -150px;
-    align-items: center;
-    position: absolute;
     min-width: 300px;
     min-height: 450px;
     height: 550px;
-    border-radius: 20px;
-    font-family: 'Oxanium', cursive;
-    .navBar__historic{
-      background: rgb(120, 27, 213);
-      border-radius: 10px;
-      height: 100%;
-      width: 100%;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
   }
+
   .historic__date__text,
   .historic__nick__text,
   .historic__result__text{
@@ -40,53 +40,28 @@
   }
 
   .historic__title{
-    display: flex;
-    justify-content: center;
+    @include flexCenter(center, column, center);
     position: absolute;
-    align-items: center;
     top: 120px;
     left: 33%;
     font-size: 1.9em;
   }
-
 }
 
 @media (min-width:1200px) {
 
   .historic{
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    background-color: $backgroundColor;
-    color: white;
-    top: 0;
-    left: 50%;
     margin-left: -500px;
-    align-items: center;
-    position: absolute;
     min-width: 1000px;
     min-height: 700px;
-    border-radius: 20px;
-    font-family: 'Oxanium', cursive;
-
     .navBar__historic{
-      background: $primaryColor;
       border-radius: 10px 10px 0 0;
-      height: 100%;
-      width: 120px;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      max-width: 250px;
     }
-
   }
 
   .historic__header{
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
+    @include flexCenter(center, column, center);
     position: absolute;
     font-size: 1.5em;
     min-width: 800px;
@@ -96,20 +71,15 @@
   }
 
   .historic__header__title{
-    display: flex;
+    @include flexCenter(center, column, center);
     position: relative;
-    justify-content: center;
     top: -210px;
     right: 8%;
-    align-items: center;
-
   }
 
   .historic__columns{
-    display: flex;
-    justify-content: space-around;
+    @include flexCenter(space-around, row, center);
     position: relative;
-    align-items: center;
     top: -170px;
     width: 100%;
     font-size: 1.5em;
@@ -127,6 +97,4 @@
   .historic__date__text{
     position: relative;
   }
-
-
 }

@@ -35,10 +35,12 @@ export function NavBar({ name, imgUrl }: NavBarProps) {
         </div>
         <li className='navBar__divider' />
         <li className='navBar__chats'>
-          <Chats className='navBar__chats__icon'/>
-          <p className="navBar__chats__text">
+          <Link to='/' className='navBar__chats__link'>
+            <Chats className='navBar__chats__icon'/>
+            <p className="navBar__chats__text">
             Chats
-          </p>
+            </p>
+          </Link>
         </li>
         <li>
           <div className='navBar__user'>

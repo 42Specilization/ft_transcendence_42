@@ -1,8 +1,8 @@
 @import '../../styles/variables.scss';
 
 .profile {
-  font-family: 'Oxanium', cursive;
   @include flexCenter(center, column);
+  font-family: 'Oxanium', cursive;
   background-color: rgba(139, 92, 246, 0.31);
   border-radius: 0 0 50px 50px;
   top: 0;
