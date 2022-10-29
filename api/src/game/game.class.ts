@@ -24,6 +24,7 @@ export interface Player {
   paddle: Paddle;
   score: number;
   id: string;
+  name: string;
 }
 
 interface PaddleOrBallSides {
@@ -51,6 +52,7 @@ export class Game {
   waiting: boolean;
   hasStarted: boolean;
   hasEnded: boolean;
+  winner: Player;
 
   player1: Player = {
     paddle: {
@@ -61,7 +63,8 @@ export class Game {
       color: 'WHITE'
     },
     id: '',
-    score: 0
+    score: 0,
+    name: ''
   };
 
   player2: Player = {
@@ -73,7 +76,8 @@ export class Game {
       color: 'WHITE'
     },
     id: '',
-    score: 0
+    score: 0,
+    name: ''
   };
 
 
@@ -122,6 +126,20 @@ export class Game {
     this.ball.y = CANVAS_HEIGHT / 2;
     this.ball.speed = 5;
     this.ball.velocityX = -this.ball.velocityX;
+  }
+
+  checkWinner(): boolean {
+    if (this.player1.score >= 1) {
+      this.hasEnded = true;
+      this.winner = this.player1;
+      return (true);
+    } else if (this.player2.score >= 1) {
+      this.hasEnded = true;
+      this.winner = this.player2;
+      return (true);
+    } else {
+      return (false);
+    }
   }
 
   update() {

@@ -34,6 +34,11 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
     actions.updateGame(game);
   });
 
+  socket.on('end-game', (game: Game) => {
+    actions.updateGame(game);
+    actions.endGame();
+  });
+
   setInterval(() => {
     if (state.game?.hasStarted) {
       socket.emit('update-ball', state.game?.index);

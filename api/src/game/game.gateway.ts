@@ -106,15 +106,17 @@ export class GameGateway implements
    * @param user Socket of the user player.
    */
   @SubscribeMessage('join-game')
-  async joinGame(@ConnectedSocket() user: Socket) {
+  async joinGame(@ConnectedSocket() user: Socket, @MessageBody() name: string) {
     const index = this.checkGameArray();
     if (this.queue[index].player1.id === '') {
       this.queue[index].player1.id = user.id;
+      this.queue[index].player1.name = name;
       user.join(this.queue[index].id.toString());
       this.io.to(this.queue[index].id.toString()).emit('start-game', this.queue[index]);
       this.logger.debug(`Player one connected socket id: ${user.id} Game index:${index} Game id:${this.queue[index].id}`);
     } else if (this.queue[index].player2.id === '') {
       this.queue[index].player2.id = user.id;
+      this.queue[index].player2.name = name;
       user.join(this.queue[index].id.toString());
       this.logger.debug(`Player two connected socket id: ${user.id} Game index:${index} Game id:${this.queue[index].id}`);
       this.queue[index].hasStarted = true;
@@ -157,7 +159,11 @@ export class GameGateway implements
   async update(@MessageBody() index: number) {
     const game = this.queue[index];
     game.update();
-    this.io.to(game.id.toString()).emit('update-ball', game);
+    if (game.checkWinner()) {
+      this.io.to(game.id.toString()).emit('end-game', game);
+    } else {
+      this.io.to(game.id.toString()).emit('update-ball', game);
+    }
   }
 
 }

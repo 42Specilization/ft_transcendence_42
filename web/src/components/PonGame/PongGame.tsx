@@ -71,6 +71,29 @@ export function PongGame() {
   useEffect(() => {
     context = canvasRef.current?.getContext('2d');
     drawGame();
+    if (currentState.game?.hasEnded) {
+      if (!context) {
+        return ;
+      }
+      
+      let winner: string;
+      if (currentState.game.player1.name === currentState.me?.name) {
+        winner = 'You Win!'
+      } else if (currentState.game.player2.name === currentState.me?.name) {
+        winner = 'You Lose!';
+      } else {
+        winner = `${currentState.me?.name} is the Winner`;
+      }
+
+      const endMessage: TextCanvas = {
+        x: 1.4 * context.canvas.width / 4,
+        y: context.canvas.height / 2,
+        color: 'WHITE',
+        msg: winner
+      };
+      drawText(context, endMessage);
+      return ;
+    }
   }, [currentState]);
 
 
@@ -81,6 +104,10 @@ export function PongGame() {
   }, []);
 
   function handleKeyboard(event: KeyboardEvent) {
+    if (currentState.game?.hasEnded) {
+      document.removeEventListener('keydown', handleKeyboard);
+      return ;
+    }
     switch (event.key) {
       case 'ArrowUp':
       case 'w':

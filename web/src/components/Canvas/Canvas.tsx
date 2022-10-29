@@ -27,7 +27,7 @@ export interface TextCanvas {
   x: number;
   y: number;
   color: string;
-  msg: number;
+  msg: number | string;
 }
 
 export function drawCircle(context: CanvasRenderingContext2D, ball: Ball) {
