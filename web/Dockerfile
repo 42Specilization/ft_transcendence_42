@@ -23,10 +23,9 @@ RUN npm run build \
 
 FROM node:16.17-alpine3.15 as production
 
+EXPOSE 80
+
 ENV NODE_ENV production
-ENV VITE_API_PORT "3000"
-ENV VITE_GAME_NAMESPACE "game"
-ENV VITE_REDIRECT_LOGIN_URL "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-1a271168fad6ea9cf350d1d8b91210e566a716367e518fed6875721305fc8050&redirect_uri=http%3A%2F%2F3.86.245.190%2Foauth&response_type=code"
 
 WORKDIR /app/
 

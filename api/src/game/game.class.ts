@@ -129,11 +129,11 @@ export class Game {
   }
 
   checkWinner(): boolean {
-    if (this.player1.score >= 1) {
+    if (this.player1.score >= 10) {
       this.hasEnded = true;
       this.winner = this.player1;
       return (true);
-    } else if (this.player2.score >= 1) {
+    } else if (this.player2.score >= 10) {
       this.hasEnded = true;
       this.winner = this.player2;
       return (true);

@@ -3,7 +3,6 @@ import './SignIn.scss';
 
 
 export default function SignIn() {
-
   return (
     <div className='signin'>
       <img src={pongGame} alt='title' className='signin__img' />

@@ -13,13 +13,14 @@ async function bootstrap() {
   const port = configService.get('PORT');
   const host = configService.get('HOST');
   const clientPort = configService.get('CLIENT_PORT');
-  app.enableCors({
-    origin: [
-      `http://${host}:${clientPort}`,
-      // eslint-disable-next-line no-useless-escape
-      new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${clientPort}$/`)
-    ]
-  });
+  app.enableCors();
+  // app.enableCors({
+  //   origin: [
+  //     `http://${host}:${clientPort}`,
+  //     // eslint-disable-next-line no-useless-escape
+  //     new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${clientPort}$/`)
+  //   ]
+  // });
 
   const config = new DocumentBuilder()
     .setTitle('Transcendence Api')
