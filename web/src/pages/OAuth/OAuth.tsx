@@ -12,18 +12,14 @@ export async function getInfos() {
       Authorization: `Bearer ${token}`
     }
   };
-  console.log('config', config)
   await axios(`http://${import.meta.env.VITE_API_HOST}:3000/auth/me`, config).then(response => {
-    console.log('aqui');
     const data = response.data as IntraData;
     console.log('response', response.data);
     window.localStorage.setItem('userData', JSON.stringify(data));
     return (data);
   }).catch(err => {
     const data = err.response.data as ErrResponse;
-
-    console.log('data', data);
-    // console.log('erro aq', err);
+    console.log('erro aq', err);
     if (data.statusCode == 401 && process.env.NODE_ENV == 'production')
       window.location.pathname = '/signin';
   }
