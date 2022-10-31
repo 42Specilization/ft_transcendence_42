@@ -64,6 +64,10 @@ export class User extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @ApiProperty()
+  @Column({ nullable: true })
+  tfaSecret?: string;
+
   async checkToken(token: string): Promise<boolean> {
     try {
       return (await bcrypt.compare(token, this.token));

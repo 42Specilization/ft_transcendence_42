@@ -106,4 +106,11 @@ export class UserService {
       throw new InternalServerErrorException('Erro ao salvar os dados no db');
     }
   }
+
+  async setTFASecret(secret: string, userId: string) {
+    return this.usersRepository.update(userId,  {
+      tfaSecret: secret
+    });
+  }
+
 }
