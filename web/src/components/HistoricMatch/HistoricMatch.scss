@@ -43,8 +43,8 @@
     font-size: 1.3em;
     height: 20px;
     width: max-content;
-    max-width: 60px;
     overflow: hidden;
+    max-width: 60px;
     padding-top: 2px;
     padding-right: 5px;
     padding-left: 5px;
@@ -76,13 +76,15 @@
 }
 
 .historicMatch__player__nick{
-  @include flexCenter(center, row, center);
+  @include flexCenter(initial, row, center);
   text-align: center;
   background-color: $backgroundColor;
   border-radius: 10px;
   font-size: 1.2em;
   height: 50px;
-  width: 155px;
+  width: 100%;
+  max-width: 160px;
+  overflow: hidden;
 
 }
 

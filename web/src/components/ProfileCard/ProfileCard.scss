@@ -81,10 +81,16 @@
   .profileCard {
     margin: 0;
     margin-left: 20px;
+    max-width: 400px;
+    width: max-content;
+    overflow: hidden;
   }
   .profileCard__infos__name {
     font-size: 2em;
     margin-top: 15px;
+    max-width: 400px;
+    width: max-content;
+    overflow: hidden;
   }
 
   .profileCard__infos__email{
@@ -93,4 +99,26 @@
   .profileCard__infos__nick{
     font-size: 2em;
   }
+
+  .profileCard__2fa{
+    margin-top: 15px;
+    display: flex;
+    flex: row;
+    width: 100%;
+    justify-content: space-between;
+    font-size: 1.3em;
+  }
+
+  .profileCard__2fa__button{
+    background-color: $primaryColor;
+    color: white;
+    font-size: 15px;
+    padding: 5px;
+    border-radius: 5px;
+    &:hover {
+      background-color: $primaryColorHover;
+    }
+  }
+
+
 }

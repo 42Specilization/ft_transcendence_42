@@ -12,7 +12,7 @@ interface ProfileCardProps{
 }
 
 export function ProfileCard({ email, image_url, login, full_name, setIntraData }:ProfileCardProps) {
-  function handleClick() {
+  function handleChangeNick() {
     window.location.href = '/updateNick';
   }
 
@@ -30,8 +30,12 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
           <strong>{login}</strong>
         </div>
         <div className='profileCard__infos__button'>
-          <NotePencil size={32} onClick={handleClick}/>
+          <NotePencil size={32} onClick={handleChangeNick}/>
         </div>
+      </div>
+      <div className="profileCard__2fa">
+        <strong>2FA Authentication</strong>
+        <button className='profileCard__2fa__button' >Turn On</button>
       </div>
     </div >
   );
