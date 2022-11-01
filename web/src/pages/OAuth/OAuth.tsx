@@ -12,6 +12,7 @@ export async function getInfos() {
       Authorization: `Bearer ${token}`
     }
   };
+
   await axios(`http://${import.meta.env.VITE_API_HOST}:3000/auth/me`, config).then(response => {
     const data = response.data as IntraData;
     console.log('response', response.data);

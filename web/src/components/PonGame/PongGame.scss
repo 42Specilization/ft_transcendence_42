@@ -1,0 +1,6 @@
+@import '../../styles/variables.scss';
+
+.pongGame {
+  @include flexCenter(center);
+  width: 100%;
+}

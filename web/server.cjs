@@ -1,7 +1,7 @@
 const express = require('express')
 const serveStatic = require('serve-static')
 const path = require('path')
-var port = 8080;
+var port = 80;
 const app = express()
 
 app.use(function (req, res, next) {

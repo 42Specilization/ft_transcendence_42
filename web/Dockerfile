@@ -10,7 +10,7 @@ WORKDIR /app/
 
 COPY package*.json ./
 
-RUN npm ci
+RUN npm i
 
 COPY . .
 
@@ -22,6 +22,8 @@ RUN npm run build \
 ########################
 
 FROM node:16.17-alpine3.15 as production
+
+EXPOSE 80
 
 ENV NODE_ENV production
 

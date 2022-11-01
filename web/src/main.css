@@ -3,15 +3,16 @@
   padding: 0;
   box-sizing: border-box;
   border: none;
-  background-color: none;
+  background-color: transparent;
 }
 
-body {
+#root {
   background-color: rgb(18 18 20 / 1);
   background-image: url('/background-galaxy.png');
   background-size: cover;
   background-repeat: no-repeat;
 
+  font-family: 'Oxanium', cursive;
   display: flex;
   justify-content: center;
   align-items: center;
