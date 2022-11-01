@@ -1,0 +1,15 @@
+@import '../../styles/variables.scss';
+
+
+.waiting-room {
+  @include flexCenter(center, column);
+  width: 800px;
+  height: 600px;
+  border: 2px solid $primaryColor;
+  background-color: rgba(42, 38, 52, 0.46);
+  color: white;
+
+  h1 {
+    font-weight: 400;
+  }
+}

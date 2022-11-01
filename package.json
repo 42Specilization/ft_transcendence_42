@@ -1,0 +1,33 @@
+{
+  "name": "ft_transcendence_42",
+  "version": "1.0.0",
+  "description": "start dev developer",
+  "main": "index.js",
+  "workspaces": [
+    "api",
+    "web",
+    "db"
+  ],
+  "scripts": {
+    "docker:compose": "docker-compose -f db/docker-compose.yml up -d",
+    "api:dev": "wait-on tcp:5432 && npm run start:dev --workspace=api",
+    "web:dev": "npm run dev --workspace=web",
+    "start": "concurrently 'npm:docker:compose' 'npm:api:dev' 'npm:web:dev'",
+    "stop": "docker-compose -f db/docker-compose.yml down"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FtTranscendence42sp/ft_transcendence_42.git"
+  },
+  "author": "Marcus Vinicius",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FtTranscendence42sp/ft_transcendence_42/issues"
+  },
+  "homepage": "https://github.com/FtTranscendence42sp/ft_transcendence_42#readme",
+  "devDependencies": {
+    "@types/webpack": "^5.28.0",
+    "concurrently": "^7.5.0",
+    "wait-on": "^6.0.1"
+  }
+}

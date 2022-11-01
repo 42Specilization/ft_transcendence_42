@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { createContext, useContext } from 'react';
+import { createContext, ReactNode, useContext } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 interface UserType {
@@ -50,8 +50,11 @@ function useAuth() {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function AuthProvider({ children }: any) {
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export function AuthProvider({ children }: AuthProviderProps) {
   const auth = useAuth();
 
   return (

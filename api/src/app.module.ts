@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
+import { GameModule } from './game/game.module';
 // import { APP_GUARD } from '@nestjs/core';
 // import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
@@ -20,7 +21,7 @@ import { User } from './user/entities/user.entity';
     entities: [User],
     synchronize: true,
     logging: false,
-  }), AuthModule, ConfigModule.forRoot(), UserModule],
+  }), AuthModule, ConfigModule.forRoot(), UserModule, GameModule],
   controllers: [AppController],
   providers: [
     AppService,
