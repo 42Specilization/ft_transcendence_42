@@ -28,6 +28,7 @@ export interface TextCanvas {
   y: number;
   color: string;
   msg: number | string;
+  fontSize?: string;
 }
 
 export function drawCircle(context: CanvasRenderingContext2D, ball: Ball) {
@@ -46,7 +47,10 @@ export function drawFillRect(context: CanvasRenderingContext2D, rect: Rect) {
 
 export function drawText(context: CanvasRenderingContext2D, text: TextCanvas) {
   context.fillStyle = text.color;
-  context.font = '75px fantasy';
+  if (!text.fontSize) {
+    text.fontSize = '75'
+  }
+  context.font = text.fontSize + 'px fantasy';
   context.fillText(text.msg.toString(), text.x, text.y);
 }
 
@@ -54,9 +58,9 @@ export function drawNet(context: CanvasRenderingContext2D) {
   const net: Rect = {
     x: context.canvas.width / 2 - 2 / 2,
     y: 0,
-    w: 5,
+    w: 10,
     h: 10,
-    color: 'WHITE'
+    color: 'black'
   };
 
   for (let i = 0; i <= context.canvas.height; i += 15) {

@@ -11,7 +11,7 @@ export default function Game() {
   const currentState = useSnapshot(state);
 
   useEffect(() => {
-    console.log(currentState.game);
+    console.log('is a player ', currentState.isPlayer);
   }, [currentState]);
 
 

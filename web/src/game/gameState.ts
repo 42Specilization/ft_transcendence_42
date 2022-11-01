@@ -98,6 +98,10 @@ const actions = {
   },
   endGame() {
     state.socket?.disconnect();
+  },
+  destroyGame() {
+    this.endGame();
+    state.game = undefined;
   }
 };
 

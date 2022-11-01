@@ -77,9 +77,20 @@ export class GameGateway implements
   finishGame(id: string) {
     for (let i = 0; i < this.queue.length; i++) {
       if (this.queue[i].player1.id === id || this.queue[i].player2.id === id) {
-        this.io.to(this.queue[i].id.toString()).emit('end-game', 'send who is the winner');
-        delete this.queue[i];
-        this.queue.splice(i, 1);
+        //delete who left
+        if (this.queue[i].player1.id === id) {
+          this.queue[i].player1.id = '';
+        } else if (this.queue[i].player2.id === id) {
+          this.queue[i].player2.id = ''
+        }
+        // announce the winner who left before the end-game will be the loser.
+        this.queue[i].checkWinner();
+        this.io.to(this.queue[i].id.toString()).emit('end-game', this.queue[i]);
+        //if both players left the game instance will be destroyed
+        if (this.queue[i].player1.id === '' && this.queue[i].player2.id === '') {
+          delete this.queue[i];
+          this.queue.splice(i, 1);
+        }
         break;
       }
     }

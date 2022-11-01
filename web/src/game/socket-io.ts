@@ -39,8 +39,14 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
     actions.endGame();
   });
 
+  socket.on('connect_error', () => {
+    console.log('some error ocurred!');
+    //handle socket errors
+  });
+
+
   setInterval(() => {
-    if (state.game?.hasStarted) {
+    if (state.game?.hasStarted && !state.game.hasEnded) {
       socket.emit('update-ball', state.game?.index);
       socket.on('update-ball', (game: Game) => {
         actions.updateGame(game);

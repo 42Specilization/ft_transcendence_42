@@ -1,3 +1,4 @@
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useSnapshot } from 'valtio';
 import { actions, state } from '../../game/gameState';
 import './GameMenu.scss';
@@ -9,6 +10,10 @@ export function GameMenu() {
   const handleStartGame = () => {
     actions.initializeSocket();
     actions.initializeGame();
+  };
+
+  const handleQuit = () => {
+    window.location.href = '/';
   };
 
   return (
@@ -32,6 +37,7 @@ export function GameMenu() {
         </button>
         <button
           className='gameMenu__buttons__button'
+          onClick={handleQuit}
         >
           Quit
         </button>

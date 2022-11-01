@@ -60,7 +60,7 @@ export class Game {
       y: (CANVAS_HEIGHT / 2) - (100 / 2),
       w: 10,
       h: 100,
-      color: 'WHITE'
+      color: 'black'
     },
     id: '',
     score: 0,
@@ -73,7 +73,7 @@ export class Game {
       y: (CANVAS_HEIGHT / 2) - (100 / 2),
       w: 10,
       h: 100,
-      color: 'WHITE'
+      color: 'black'
     },
     id: '',
     score: 0,
@@ -90,7 +90,7 @@ export class Game {
     speed: 5,
     velocityX: 5,
     velocityY: 5,
-    color: 'WHITE'
+    color: 'black'
   };
 
   paddleSides(paddle: Paddle): PaddleOrBallSides {
@@ -129,11 +129,11 @@ export class Game {
   }
 
   checkWinner(): boolean {
-    if (this.player1.score >= 10) {
+    if (this.player1.score >= 10 || this.player2.id === '') {
       this.hasEnded = true;
       this.winner = this.player1;
       return (true);
-    } else if (this.player2.score >= 10) {
+    } else if (this.player2.score >= 10 || this.player1.id === '') {
       this.hasEnded = true;
       this.winner = this.player2;
       return (true);
@@ -183,5 +183,5 @@ export class Game {
     }
   }
 
-  
+
 }
