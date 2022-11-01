@@ -16,10 +16,9 @@ export class TfaService {
 
   async generateTFASecret(user: User) {
     const secret = authenticator.generateSecret();
-    console.log('User é', user);
     const otpauthUrl = authenticator.keyuri(user.email, this.configService.get('TWO_FACTOR_AUTHENTICATION_APP_NAME') as string,  secret);
-
-    await this.userService.setTFASecret(secret, user.id);
+    // console.log(secret);
+    await this.userService.setTFASecret(secret, user.email);
     return {
       secret,
       otpauthUrl

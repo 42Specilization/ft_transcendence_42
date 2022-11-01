@@ -52,7 +52,7 @@ export default function Profile() {
         </div>
         <div className='profile__stats__ratio'>
           <a>Ratio W/L:</a>
-          <a>{Number(intraData.wins) / Number(intraData.lose)}</a>
+          <a>{Number(intraData.wins) / (Number(intraData.lose) > 0 ? Number(intraData.lose) : 1)}</a>
         </div>
       </div>
       <NavBar name={intraData.login} imgUrl={intraData.image_url} />

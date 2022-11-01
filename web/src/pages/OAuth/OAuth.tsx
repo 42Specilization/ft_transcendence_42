@@ -13,7 +13,7 @@ export async function getInfos() {
     }
   };
 
-  await axios(`http://${import.meta.env.VITE_API_URL}:3000/auth/me`, config).then(response => {
+  await axios(`http://${import.meta.env.VITE_API_HOST}:3000/auth/me`, config).then(response => {
     const data = response.data as IntraData;
     console.log('response', response.data);
     window.localStorage.setItem('userData', JSON.stringify(data));

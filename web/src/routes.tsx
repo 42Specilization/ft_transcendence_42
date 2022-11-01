@@ -24,18 +24,18 @@ export default function AppRouter() {
               <Home />
             </RequireAuth>
           } />
-          <Route exact path='/profile' element={
+          <Route path='/profile' element={
             <RequireAuth>
               <Profile />
             </RequireAuth>
           }/>
-          <Route exact path='/updateNick' element={
+          <Route path='/updateNick' element={
             <RequireAuth>
               <ProfileUpdateNick />
             </RequireAuth>
           }/>
 
-          <Route exact path='/historic' element={
+          <Route path='/historic' element={
             <RequireAuth>
               <Historic />
             </RequireAuth>

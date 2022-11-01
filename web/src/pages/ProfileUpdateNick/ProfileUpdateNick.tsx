@@ -38,7 +38,7 @@ export default function ProfileUpdateNick(){
     };
 
     try {
-      const result = await axios.patch(`http://${import.meta.env.VITE_API_URL}:3000/user/updateNick`, {nick:nick}, config);
+      const result = await axios.patch(`http://${import.meta.env.VITE_API_HOST}:3000/user/updateNick`, {nick:nick}, config);
       if (result.status === 200) {
         setErrorString('');
         window.localStorage.removeItem('userData');
