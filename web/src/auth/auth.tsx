@@ -29,9 +29,9 @@ function useAuth() {
           return (response.data as AccessTokenResponse);
         }
       ).catch(err => {
-        console.log('erro no login aq', err.data);
+        //TODO: HANDLE ERROR
+        console.log('login error ', err.data);
       });
-      console.log(token);
       if (!token) {
         if (process.env.NODE_ENV == 'production')
           return (navigate('/signin'));

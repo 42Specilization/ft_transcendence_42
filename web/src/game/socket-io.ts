@@ -12,7 +12,6 @@ export interface CreateSocketOptions {
 }
 
 export function createSocket({ accessToken, socketIOUrl, actions, state }: CreateSocketOptions): Socket {
-  console.log('Creating socket with accessToken: ', accessToken);
 
   const socket = io(socketIOUrl, {
     auth: {
@@ -21,13 +20,11 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
     transports: ['websocket', 'polling']
   });
 
-  socket.on('connect', () => {
-    console.log('Connected with socked ID: ', socket.id);
-  });
+  // socket.on('connect', () => {
+  // });
 
   socket.on('start-game', (game: Game) => {
     actions.updateGame(game);
-    console.log('game initialized Game: ', game);
   });
 
   socket.on('update-game', (game: Game) => {

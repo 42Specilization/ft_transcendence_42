@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
 import { User } from '../user/entities/user.entity';
@@ -11,6 +11,8 @@ import { UserPayload } from './dto/UserPayload.dto';
 
 @Injectable()
 export class AuthService {
+
+  logger = new Logger('AuthService');
 
   constructor(
     private readonly userService: UserService,
@@ -117,12 +119,13 @@ export class AuthService {
         email: data.email, imgUrl: data.image_url,
         first_name: data.first_name, usual_full_name: data.usual_full_name,
         nick: data.login, token: token.access_token,
-        matches: '0',wins: '0', lose: '0',
+        matches: '0', wins: '0', lose: '0',
       });
-      console.log('user Criado!');
+
+      this.logger.log('user Criado!');
     } else {
       await this.userService.updateToken(data.email, token);
-      console.log('token atualizado!');
+      this.logger.log('token atualizado!');
     }
 
     return (data);

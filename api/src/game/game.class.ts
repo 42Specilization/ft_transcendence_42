@@ -60,7 +60,7 @@ export class Game {
       y: (CANVAS_HEIGHT / 2) - (100 / 2),
       w: 10,
       h: 100,
-      color: 'black'
+      color: '#7C1CED'
     },
     id: '',
     score: 0,
@@ -73,7 +73,7 @@ export class Game {
       y: (CANVAS_HEIGHT / 2) - (100 / 2),
       w: 10,
       h: 100,
-      color: 'black'
+      color: '#7C1CED'
     },
     id: '',
     score: 0,
@@ -90,7 +90,7 @@ export class Game {
     speed: 5,
     velocityX: 5,
     velocityY: 5,
-    color: 'black'
+    color: '#7C1CED'
   };
 
   paddleSides(paddle: Paddle): PaddleOrBallSides {

@@ -30,7 +30,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async updateNick(
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
-    @GetUserFromJwt() userFromJwt : UserFromJwt,
+    @GetUserFromJwt() userFromJwt: UserFromJwt,
   ) {
     return this.userService.updateUser(updateUserDto, userFromJwt.email);
   }
@@ -48,7 +48,7 @@ export class UserController {
     storage: diskStorage({
       // Destination storage path details
       destination: (req, file, cb) => {
-        const uploadPath ='../web/public';
+        const uploadPath = '../web/public';
         req;
         file;
         cb(null, uploadPath);
@@ -62,12 +62,11 @@ export class UserController {
   }))
   getFile(
     @UploadedFile() file: Express.Multer.File,
-    @GetUserFromJwt() userFromJwt : UserFromJwt
+    @GetUserFromJwt() userFromJwt: UserFromJwt
   ) {
-    const updateUserDto: UpdateUserDto = {imgUrl: file.originalname};
-    console.log(file);
-    this.userService.updateUser(updateUserDto,userFromJwt.email);
-    return { message: 'succes', path: file.path};
+    const updateUserDto: UpdateUserDto = { imgUrl: file.originalname };
+    this.userService.updateUser(updateUserDto, userFromJwt.email);
+    return { message: 'succes', path: file.path };
   }
 
 }

@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 import { GameMenu } from '../../components/GameMenu/GameMenu';
 import { PongGame } from '../../components/PonGame/PongGame';
@@ -9,11 +8,6 @@ import './Game.scss';
 export default function Game() {
 
   const currentState = useSnapshot(state);
-
-  useEffect(() => {
-    console.log('is a player ', currentState.isPlayer);
-  }, [currentState]);
-
 
   return (
     <div className='game'>

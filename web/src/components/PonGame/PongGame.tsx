@@ -15,8 +15,6 @@ export function PongGame() {
     if (!state.game) {
       return;
     }
-    console.log('move to ', direction);
-
     state.socket?.emit('move', {
       direction: direction, index: state.game?.index
     });
@@ -55,7 +53,7 @@ export function PongGame() {
       fontSize: '50'
     };
     const playerOneName: TextCanvas = {
-      x: 15,
+      x: 30,
       y: 30,
       color: 'WHITE',
       msg: currentState.player1.name,
@@ -68,11 +66,13 @@ export function PongGame() {
       msg: currentState.game.player2.score,
       fontSize: '50'
     };
+    const name = currentState.player1.name;
+    const delta = name.length < 7 ? 45 : 55;
     const playerTwoName: TextCanvas = {
-      x: context.canvas.width - 150,
+      x: context.canvas.width - (name.substring(0, 10).length * 10) - delta,
       y: 30,
       color: 'WHITE',
-      msg: 'mavinici',
+      msg: name.substring(0, 10),
       fontSize: '25'
     };
     drawText(context, scorePlayer1);
@@ -112,7 +112,7 @@ export function PongGame() {
       const quitHelp: TextCanvas = {
         x: 1.6 * context.canvas.width / 4,
         y: 1.4 * context.canvas.height / 2,
-        color: 'green',
+        color: 'white',
         msg: 'Press ESC to leave',
         fontSize: '25'
       };

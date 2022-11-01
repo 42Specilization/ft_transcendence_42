@@ -15,16 +15,14 @@ export async function getInfos() {
 
   await axios(`http://${import.meta.env.VITE_API_HOST}:3000/auth/me`, config).then(response => {
     const data = response.data as IntraData;
-    console.log('response', response.data);
     window.localStorage.setItem('userData', JSON.stringify(data));
     return (data);
   }).catch(err => {
     const data = err.response.data as ErrResponse;
-    console.log('erro aq', err);
+    console.log('error on getInfos', err);
     if (data.statusCode == 401 && process.env.NODE_ENV == 'production')
       window.location.pathname = '/signin';
   }
-
   );
 }
 

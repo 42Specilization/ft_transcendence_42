@@ -60,7 +60,7 @@ export function drawNet(context: CanvasRenderingContext2D) {
     y: 0,
     w: 10,
     h: 10,
-    color: 'black'
+    color: '#7C1CED'
   };
 
   for (let i = 0; i <= context.canvas.height; i += 15) {
