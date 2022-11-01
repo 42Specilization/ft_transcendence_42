@@ -4,6 +4,9 @@ export interface IntraData {
   usual_full_name: string;
   image_url: string;
   login: string;
+  matches: string;
+  wins: string;
+  lose: string;
 }
 
 export interface ErrResponse {

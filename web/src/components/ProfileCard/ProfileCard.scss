@@ -1,43 +1,36 @@
 @import '../../styles/variables.scss';
 
 .profileCard {
-	display: flex;
-	justify-content: center;
-}
-
-.profileCard__userImage{
-  border-radius: 50%;
-  height: 300px;
-  width: 300px;
-  background-repeat: none;
-  background-size: cover;
-  background-position: 50% 50%;
-  cursor: pointer;
-  margin-bottom: 30px;
+  @include flexCenter(center, column);
+  margin: 20px;
+  margin-left: 0;;
+  font-family: 'Oxanium', cursive;
+  color: white;
 }
 
 .profileCard__infos {
-  font-family: 'Oxanium', cursive;
-  font-size: 2em;
+  font-size: 1em;
   color: rgb(255, 255, 255);
-  justify-content: center;
-  margin-left: 40px;
+  justify-content: start;
+  margin: 40px;
   margin-inline-end: 40px;
 }
 
 .profileCard__infos__name {
   @include flexCenter(center, column);
-  font-family: 'Oxanium', cursive;
-  font-size: 2em;
+  font-size: 1.5em;
   color: rgb(255, 255, 255);
+  margin-top: 15px;
 }
 
 .profileCard__infos__email{
   @include flexCenter(center, column);
+  font-size: 1.5em;
 }
 
 .profileCard__infos__nick{
   @include flexCenter(center, column);
+  font-size: 1.5em;
   display: flex;
   flex-direction: row;
 }
@@ -56,4 +49,48 @@
 
 .profileCard__infos__changeNickButton:hover {
   background-color: $primaryColorHover;
+}
+
+.profileCard__infos__button {
+  @include flexCenter(right);
+  margin-left: 10px;
+  :hover {
+    color: rgb(156, 153, 153);
+  }
+}
+
+@media (max-width: 1201px){
+  .profileCard {
+    margin: 0;
+    margin-left: 25px;
+  }
+  .profileCard__infos__name {
+    font-size: 1.5em;
+    margin-top: 15px;
+  }
+
+  .profileCard__infos__email{
+    font-size: 1.1em;
+  }
+  .profileCard__infos__nick{
+    font-size: 1.5em;
+  }
+}
+
+@media (min-width:1200px) {
+  .profileCard {
+    margin: 0;
+    margin-left: 20px;
+  }
+  .profileCard__infos__name {
+    font-size: 2em;
+    margin-top: 15px;
+  }
+
+  .profileCard__infos__email{
+    font-size: 1.3em;
+  }
+  .profileCard__infos__nick{
+    font-size: 2em;
+  }
 }

@@ -4,8 +4,6 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { getInfos } from '../OAuth/OAuth';
 import { IntraData } from '../../Interfaces/interfaces';
 
-
-
 export async function getStoredData(setIntraData: Dispatch<SetStateAction<IntraData>>) {
   let localStore = window.localStorage.getItem('userData');
   if (!localStore) {
@@ -24,7 +22,10 @@ export default function Home() {
     first_name: 'ft',
     image_url: 'nop',
     login: 'PingPong',
-    usual_full_name: 'ft_transcendence'
+    usual_full_name: 'ft_transcendence',
+    matches: '0',
+    wins: '0',
+    lose: '0'
   };
 
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);

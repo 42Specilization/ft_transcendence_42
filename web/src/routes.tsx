@@ -7,10 +7,9 @@ import { AuthProvider } from './auth/auth';
 import './main.css';
 import Profile from './pages/Profile/Profile';
 import ProfileUpdateNick from './pages/ProfileUpdateNick/ProfileUpdateNick';
-
+import Historic from './pages/Historic/Historic';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function RequireAuth({ children }: any) {
-
   const token = window.localStorage.getItem('token');
   return (token ? children : <Navigate to='/signin' replace />);
 }
@@ -30,9 +29,15 @@ export default function AppRouter() {
               <Profile />
             </RequireAuth>
           }/>
-          <Route exact path='/profile/updateNick' element={
+          <Route exact path='/updateNick' element={
             <RequireAuth>
               <ProfileUpdateNick />
+            </RequireAuth>
+          }/>
+
+          <Route exact path='/historic' element={
+            <RequireAuth>
+              <Historic />
             </RequireAuth>
           }/>
           <Route path='/oauth' element={<OAuth />} />

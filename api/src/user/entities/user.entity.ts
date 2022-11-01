@@ -45,6 +45,18 @@ export class User extends BaseEntity {
   token: string;
 
   @ApiProperty()
+  @Column({ nullable: false, type: 'varchar' })
+  matches: string;
+
+  @ApiProperty()
+  @Column({ nullable: false, type: 'varchar' })
+  wins: string;
+
+  @ApiProperty()
+  @Column({ nullable: false, type: 'varchar' })
+  lose: string;
+
+  @ApiProperty()
   @CreateDateColumn()
   createdAt: Date;
 
