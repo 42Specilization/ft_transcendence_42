@@ -81,7 +81,7 @@ export class GameGateway implements
         if (this.queue[i].player1.id === id) {
           this.queue[i].player1.id = '';
         } else if (this.queue[i].player2.id === id) {
-          this.queue[i].player2.id = ''
+          this.queue[i].player2.id = '';
         }
         // announce the winner who left before the end-game will be the loser.
         this.queue[i].checkWinner();

@@ -1,11 +1,7 @@
-import { Navigate, useNavigate } from 'react-router-dom';
-import { useSnapshot } from 'valtio';
-import { actions, state } from '../../game/gameState';
+import { actions } from '../../game/gameState';
 import './GameMenu.scss';
 
 export function GameMenu() {
-
-  const currentState = useSnapshot(state);
 
   const handleStartGame = () => {
     actions.initializeSocket();

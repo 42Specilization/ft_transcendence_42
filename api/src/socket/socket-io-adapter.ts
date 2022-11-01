@@ -60,6 +60,7 @@ export class SocketIOAdapter extends IoAdapter {
  */
 const createTokenMiddleware =
   (jwtService: JwtService, logger: Logger) =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (socket: SocketWithAuth, next: any) => {
       const token = socket.handshake.auth['token'] || socket.handshake.headers['token'];
 

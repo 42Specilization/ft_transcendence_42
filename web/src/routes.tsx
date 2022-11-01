@@ -38,18 +38,17 @@ export default function AppRouter() {
             </RequireAuth>
           } />
 
-          }/>
           <Route path='/updateNick' element={
             <RequireAuth>
               <ProfileUpdateNick />
             </RequireAuth>
-          }/>
+          } />
 
           <Route path='/historic' element={
             <RequireAuth>
               <Historic />
             </RequireAuth>
-          }/>
+          } />
           <Route path='/oauth' element={<OAuth />} />
           <Route path='/signin' element={<SignIn />} />
           <Route path='*' element={<NotFound />} />

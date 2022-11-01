@@ -96,7 +96,7 @@ export function PongGame() {
 
       let winner: string;
       if (currentState.game.player1.name === currentState.me?.name) {
-        winner = 'You Win!'
+        winner = 'You Win!';
       } else if (currentState.game.player2.name === currentState.me?.name) {
         winner = 'You Lose!';
       } else {

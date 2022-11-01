@@ -48,7 +48,7 @@ export function drawFillRect(context: CanvasRenderingContext2D, rect: Rect) {
 export function drawText(context: CanvasRenderingContext2D, text: TextCanvas) {
   context.fillStyle = text.color;
   if (!text.fontSize) {
-    text.fontSize = '75'
+    text.fontSize = '75';
   }
   context.font = text.fontSize + 'px fantasy';
   context.fillText(text.msg.toString(), text.x, text.y);

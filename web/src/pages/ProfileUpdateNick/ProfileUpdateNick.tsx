@@ -1,4 +1,3 @@
-import { ErrorResponse } from '@remix-run/router';
 import axios from 'axios';
 import React from 'react';
 import { useEffect, useState } from 'react';
@@ -8,7 +7,7 @@ import { IntraData } from '../../Interfaces/interfaces';
 import { getStoredData } from '../Home/Home';
 import './ProfileUpdateNick.scss';
 
-export default function ProfileUpdateNick(){
+export default function ProfileUpdateNick() {
 
   const defaultIntra: IntraData = {
     email: 'ft_transcendence@gmail.com',
@@ -39,21 +38,22 @@ export default function ProfileUpdateNick(){
     };
 
     try {
-      const result = await axios.patch(`http://${import.meta.env.VITE_API_HOST}:3000/user/updateNick`, {nick:nick}, config);
+      const result = await axios.patch(`http://${import.meta.env.VITE_API_HOST}:3000/user/updateNick`, { nick: nick }, config);
       if (result.status === 200) {
         setErrorString('');
         window.localStorage.removeItem('userData');
         getStoredData(setIntraData);
-        window.location.href ='/';
+        window.location.href = '/';
         return {
           message: 'done'
         };
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       if (e && e.response) {
-        if (e.response.data.statusCode === 403){
+        if (e.response.data.statusCode === 403) {
           setErrorString('Usuário indisponivel');
-        } else if (e.response.data.statusCode === 400){
+        } else if (e.response.data.statusCode === 400) {
           setErrorString('Usuário deve conter entre 3 e 15 caracteres');
         } else {
           setErrorString('Usuário invalido');
@@ -74,9 +74,9 @@ export default function ProfileUpdateNick(){
             <strong>Digite o novo usuario:</strong>
           </div>
           <div className="profileChange__inputArea">
-            <input onChange={(e)=> setNick(e.target.value)} type="text"></input>
+            <input onChange={(e) => setNick(e.target.value)} type="text"></input>
             <div className=".profileChange__inputErrors">
-              <ErrorComponent defaultError={errorString}/>
+              <ErrorComponent defaultError={errorString} />
             </div>
           </div>
           <div>

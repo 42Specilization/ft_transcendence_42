@@ -59,7 +59,7 @@ const state = proxy<AppState>({
     return (this.game?.player2);
   },
   get me() {
-    let localStore = window.localStorage.getItem('userData');
+    const localStore = window.localStorage.getItem('userData');
     if (!localStore) {
       return (undefined);
     }
