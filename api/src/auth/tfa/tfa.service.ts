@@ -17,17 +17,17 @@ export class TfaService {
   async generateTFASecret(user: User) {
     const secret = authenticator.generateSecret();
     const otpauthUrl = authenticator.keyuri(user.email, this.configService.get('TWO_FACTOR_AUTHENTICATION_APP_NAME') as string,  secret);
-    // console.log(secret);
     await this.userService.setTFASecret(secret, user.email);
-    return {
-      secret,
-      otpauthUrl
+    const secrets ={
+      secret: secret,
+      otpauthUrl: otpauthUrl
     };
+    return secrets;
   }
 
   public async pipeQrCodeStream(stream : Response, otpauthUrl: string) {
-    return toFileStream(stream, otpauthUrl);
+    toFileStream(stream, otpauthUrl);
+    stream.statusMessage = otpauthUrl;
+    return otpauthUrl;
   }
-
-
 }

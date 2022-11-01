@@ -109,12 +109,9 @@ export class UserService {
 
   async setTFASecret(secret: string, email: string) {
     const user = await this.findUserByEmail(email) as User;
-    // console.log(user);
-    user.tfaSecret = secret;
-    // ? secret : user?.tfaSecret;
+    user.tfaSecret = secret ? secret : user?.tfaSecret;
     try {
       await user.save();
-      // console.log('user', user);
       return user;
     } catch (error) {
       throw new InternalServerErrorException('Erro ao salvar os dados no db');

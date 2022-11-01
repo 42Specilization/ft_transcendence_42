@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { getInfos } from '../OAuth/OAuth';
 import { IntraData } from '../../Interfaces/interfaces';
 import axios from 'axios';
+import QRCode from 'react-qr-code';
 
 export async function getStoredData(setIntraData: Dispatch<SetStateAction<IntraData>>) {
   let localStore = window.localStorage.getItem('userData');
@@ -17,8 +18,6 @@ export async function getStoredData(setIntraData: Dispatch<SetStateAction<IntraD
   setIntraData(data);
 }
 
-
-
 export default function Home() {
   const defaultIntra: IntraData = {
     email: 'ft_transcendence@gmail.com',
@@ -31,6 +30,7 @@ export default function Home() {
     lose: '0'
   };
 
+  const [qrCodeLink, setQrCodeLink] = useState<string>('');
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
   useEffect(() => {
     getStoredData(setIntraData);
@@ -41,10 +41,7 @@ export default function Home() {
 
   async function handleClick() {
     const token = window.localStorage.getItem('token');
-    const data = new FormData();
-    // data.append('name', intraData.login);
     const config = {
-      // responseType:'blob',
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -52,18 +49,14 @@ export default function Home() {
     const api = axios.create({
       baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
     });
-    response = await api.post('/2fa/generate', data, config);
-    console.log ('resultado e', response);
+    response = await api.get('/2fa/generate', config);
+    setQrCodeLink(response.statusText)
   }
-
 
   return (
     <div className="home">
       <NavBar name={intraData.login} imgUrl={intraData.image_url} />
-      <button onClick={handleClick}>botao</button>
-      <img
-        alt=""
-      />
+      <QRCode value={qrCodeLink}/>
     </div >
   );
 }

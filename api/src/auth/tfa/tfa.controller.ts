@@ -1,4 +1,5 @@
-import { ClassSerializerInterceptor, Controller, Post, Res, UseGuards, UseInterceptors } from '@nestjs/common';
+import { ClassSerializerInterceptor, Controller,Get, Res,  UseInterceptors } from '@nestjs/common';
+import {UseGuards} from '@nestjs/common';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { TfaService } from './tfa.service';
 // import RequestWithUser from 'src/auth/interfaces/requestWithUser.interface';
@@ -15,13 +16,11 @@ export class TfaController {
     private readonly tfaService: TfaService,
   ) {}
 
-  @Post('generate')
+  @Get('generate')
   @UseGuards(JwtAuthGuard)
   async register(@Res() response: Response, @GetUserFromJwt() userFromJwt: UserFromJwt) {
-    // console.log('request user tfa controler register', userFromJwt);
     const { otpauthUrl } = await this.tfaService.generateTFASecret(userFromJwt as User);
-    this.tfaService.pipeQrCodeStream(response, otpauthUrl);
-    return await this.tfaService.pipeQrCodeStream(response, otpauthUrl);
+    return (await this.tfaService.pipeQrCodeStream(response, otpauthUrl));
   }
 }
 

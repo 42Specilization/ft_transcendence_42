@@ -44,7 +44,6 @@ export class AuthService {
    * @returns User data.
    */
   async getUserInfos(data: UserFromJwt): Promise<IntraData> {
-
     const user = await this.userService.findUserByEmail(data.email) as User;
     const intraData = {
       email: user.email,
