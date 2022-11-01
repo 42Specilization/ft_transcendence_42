@@ -20,7 +20,7 @@ export class AuthService {
   /**
    * With the code received, make a request to intra service to get the access token.
    * Async function.
-   * 
+   *
    * @param code Code received from login with intra.
    * @returns Access token to get infos from intra.
    */
@@ -39,7 +39,7 @@ export class AuthService {
 
   /**
    * With the data from jwt received, get the user from userService.
-   * 
+   *
    * @param data Data get from jwt extract.
    * @returns User data.
    */
@@ -51,17 +51,18 @@ export class AuthService {
       first_name: user.first_name,
       image_url: user.imgUrl,
       login: user.nick,
-      usual_full_name: user.usual_full_name
+      usual_full_name: user.usual_full_name,
+      matches: user.matches,
+      wins: user.wins,
+      lose: user.lose,
     };
-
     return (intraData);
-
   }
 
   /**
    * With the Access token received, make a request to intra to get the user data.
    * Async function
-   * 
+   *
    * @param token Access token received from intra.
    * @returns The data about the user received from intra.
    */
@@ -81,7 +82,10 @@ export class AuthService {
           email: response.data.email,
           usual_full_name: response.data.usual_full_name,
           image_url: response.data.image_url,
-          login: response.data.login
+          login: response.data.login,
+          matches: response.data.matches,
+          wins: response.data.wins,
+          lose: response.data.lose,
         });
       }).catch(err => {
         if (err.code == 'ERR_BAD_REQUEST')
@@ -98,7 +102,7 @@ export class AuthService {
    * If the user exist in db the token saved will be updated,
    * otherwise a new user will be created on db.
    * Async function.
-   * 
+   *
    * @param code Code received from login with intra.
    * @returns Data received from intra.
    */
@@ -112,7 +116,8 @@ export class AuthService {
       await this.userService.createUser({
         email: data.email, imgUrl: data.image_url,
         first_name: data.first_name, usual_full_name: data.usual_full_name,
-        nick: data.login, token: token.access_token
+        nick: data.login, token: token.access_token,
+        matches: '0',wins: '0', lose: '0',
       });
       console.log('user Criado!');
     } else {
@@ -128,7 +133,7 @@ export class AuthService {
    * Create a user if doesn't exist. Other just login.
    * Create a jwt token and return to user.
    * Async function
-   * 
+   *
    * @param code Code received from login with intra.
    * @returns Jwt token access.
    */

@@ -1,5 +1,6 @@
 import { ErrorResponse } from '@remix-run/router';
 import axios from 'axios';
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { ErrorComponent } from '../../components/ErrorComponent/ErrorComponent';
 import { NavBar } from '../../components/NavBar/NavBar';
@@ -14,16 +15,19 @@ export default function ProfileUpdateNick(){
     first_name: 'ft',
     image_url: 'nop',
     login: 'PingPong',
-    usual_full_name: 'ft_transcendence'
+    usual_full_name: 'ft_transcendence',
+    matches: '0',
+    wins: '0',
+    lose: '0'
   };
 
-  const [nick, setNick] = useState<string>('');
-  const [errorString, setErrorString] = useState<string>('');
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
-
   useEffect(() => {
     getStoredData(setIntraData);
   }, []);
+  const [nick, setNick] = useState<string>('');
+  const [errorString, setErrorString] = useState<string>('');
+
 
 
   async function handleChangeNick() {
@@ -39,10 +43,8 @@ export default function ProfileUpdateNick(){
       if (result.status === 200) {
         setErrorString('');
         window.localStorage.removeItem('userData');
-        console.log(result.data);
         getStoredData(setIntraData);
-        const input = document.querySelector('.profileChange__inputErrors') as Element;
-        input.innerHTML = '';
+        window.location.href ='/';
         return {
           message: 'done'
         };
@@ -64,8 +66,10 @@ export default function ProfileUpdateNick(){
     <>
       <div className="profileChange">
         <NavBar name={intraData.login} imgUrl={intraData.image_url} />
-        <img className="profileChange__userImage" src={intraData.image_url} alt="User Image" />
-        <div>
+        <div className="profileChange__userImage" >
+          <img src={intraData.image_url} alt="User Image" />
+        </div>
+        <div className="profileChange__input">
           <div className="profileChange__inputText">
             <strong>Digite o novo usuario:</strong>
           </div>

@@ -1,6 +1,87 @@
 @import '../../styles/variables.scss';
 
 .profile {
-	display: flex;
-	justify-content: center;
+  @include flexCenter(center, column);
+  font-family: 'Oxanium', cursive;
+  background-color: rgba(139, 92, 246, 0.31);
+  border-radius: 0 0 50px 50px;
+  top: 0;
+  left:50%;
+  position: absolute;
+
+}
+
+.profile .navBar {
+  top: 0;
+  left: 0;
+}
+
+.profile__stats {
+  @include flexCenter(unset, column, center);
+  background-color: rgba(139, 92, 246, 0.4);
+  border-radius: 30px;
+  color: white;
+  position: relative;
+  top: 40px;
+  width: 350px;
+}
+
+.profile .profileCard{
+  position: relative;
+  top : 40px;
+  justify-content: center;
+  margin-left: 0;
+}
+
+.profile__stats__title {
+  @include flexCenter(center, row, start);
+  margin-top: 20px;
+  font-size: 3em;
+}
+
+.profile__stats__wins,
+.profile__stats__lose,
+.profile__stats__ratio,
+.profile__stats__matches {
+  @include flexCenter(space-between, row);
+  font-size: 1.3em;
+  width: 80%;
+  margin-bottom: 8px
+}
+
+@media (max-width: 1199px){
+  .profile {
+    max-width: 350px;
+    height: 740px;
+    margin-left: -175px;
+  }
+
+  .profile__stats {
+    height: 260px;
+    margin-top: 20px;
+  }
+}
+
+@media (min-width:1199px){
+  .profile {
+    @include flexCenter(center, row, center);
+    width: 1100px;
+    height: 600px;
+    margin-left: -550px;
+  }
+
+  .profile .profileCard{
+    right: 5%;
+  }
+
+  .profile__stats {
+    display: flex;
+    height:350px;
+    margin-left: 100px;
+    font-size: 1.8em;
+  }
+
+ .profile__stats__title {
+    font-size: 2em;
+  }
 }
