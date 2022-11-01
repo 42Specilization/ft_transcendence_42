@@ -34,29 +34,12 @@ export default function Home() {
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
   useEffect(() => {
     getStoredData(setIntraData);
-    handleClick();
-  }, []);
-
-  let response;
-
-  async function handleClick() {
-    const token = window.localStorage.getItem('token');
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    const api = axios.create({
-      baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
-    });
-    response = await api.get('/2fa/generate', config);
-    setQrCodeLink(response.statusText)
-  }
+      }, []);
 
   return (
     <div className="home">
       <NavBar name={intraData.login} imgUrl={intraData.image_url} />
-      <QRCode value={qrCodeLink}/>
+
     </div >
   );
 }

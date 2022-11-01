@@ -59,6 +59,27 @@
   }
 }
 
+.profileCard__2fa{
+  margin-top: 15px;
+  display: flex;
+  flex: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1em;
+}
+
+.profileCard__2fa__button{
+  background-color: $primaryColor;
+  color: white;
+  font-size: 15px;
+  padding: 5px;
+  border-radius: 5px;
+  &:hover {
+    background-color: $primaryColorHover;
+  }
+}
+
 @media (max-width: 1201px){
   .profileCard {
     margin: 0;
@@ -101,24 +122,6 @@
   }
 
   .profileCard__2fa{
-    margin-top: 15px;
-    display: flex;
-    flex: row;
-    width: 100%;
-    justify-content: space-between;
     font-size: 1.3em;
   }
-
-  .profileCard__2fa__button{
-    background-color: $primaryColor;
-    color: white;
-    font-size: 15px;
-    padding: 5px;
-    border-radius: 5px;
-    &:hover {
-      background-color: $primaryColorHover;
-    }
-  }
-
-
 }
