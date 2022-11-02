@@ -15,21 +15,17 @@ import ValidateTfa from './pages/ValidateTfa/ValidateTfa';
 function RequireAuth({ children }: any) {
   const token = window.localStorage.getItem('token');
   const tfaValidate = window.localStorage.getItem('tfaValidate');
-  console.log('Tfavalidate', tfaValidate);
   if (tfaValidate == 'false'){
-    console.log('entou no if');
     return (
       <div>
         <ValidateTfa/>
       </div>
     );
   }
-
   return (token ? children : <Navigate to='/signin' replace />);
-
 }
-export default function AppRouter() {
 
+export default function AppRouter() {
   return (
     <Router>
       <AuthProvider>
@@ -39,6 +35,7 @@ export default function AppRouter() {
               <Home />
             </RequireAuth>
           } />
+
           <Route path='/profile' element={
             <RequireAuth>
               <Profile />
@@ -62,7 +59,6 @@ export default function AppRouter() {
               <Historic />
             </RequireAuth>
           } />
-          <Route path='/validate-tfa' element={<ValidateTfa />} />
           <Route path='/oauth' element={<OAuth />} />
           <Route path='/signin' element={<SignIn />} />
           <Route path='*' element={<NotFound />} />

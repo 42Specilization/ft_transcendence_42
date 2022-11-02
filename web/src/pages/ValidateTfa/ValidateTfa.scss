@@ -10,68 +10,104 @@
       display: none;
     }
   }
-}
+  .modal__container {
+    max-width: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    .tfaRequestModal__requestArea{
+      font-size: 20px;
+      width: 100%;
+      height: 50%;
+      justify-content: space-between;
+    }
+    .tfaLoading{
+      font-size: 20px;
+      width: 72%;
+      align-items: center;
+    }
+  }
 
-.tfaVerifyModal__inputArea{
-  width: 80%;
-  display: flex;
-  justify-content: space-between;
-  font-size: 1em;
-}
+  .tfaRequestModal__inputArea{
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1em;
+  }
 
-.tfaVerifyModal__input{
-  font-family: 'Oxanium', cursive;
-  width: 200px;
-  height: 35px;
-  padding: 5px;
-  font-size: 1em;
-  border-radius: 5px;
-  outline: 0;
-  border: 3px solid black;
-  box-shadow: 3px 3px 4px 2px rgba(67, 66, 66, 0.8);
-}
+  .tfaRequestModal__input{
+    font-family: 'Oxanium', cursive;
+    width: 200px;
+    height: 35px;
+    padding: 5px;
+    font-size: 1em;
+    border-radius: 5px;
+    outline: 0;
+    border: 3px solid black;
+    box-shadow: 3px 3px 4px 2px rgba(67, 66, 66, 0.8);
+  }
 
-.tfaVerifyModal__button {
-  font-family: 'Oxanium', cursive;
-  width: 70px;
-  background-color: $primaryColor;
-  border-radius: 5px;
-  font-size: 16px;
-  &:hover {
-    background-color: $primaryColorHover;
+  .tfaRequestModal__button {
+    font-family: 'Oxanium', cursive;
+    width: 70px;
+    background-color: $primaryColor;
+    border-radius: 5px;
+    font-size: 16px;
+    &:hover {
+      background-color: $primaryColorHover;
+    }
+  }
+
+  .tfaVerifyModal__buttonCancel{
+    font-family: 'Oxanium', cursive;
+    width: 65px;
+    color:rgb(0, 0, 0);
+    background-color: rgba(250, 6, 6, 0.94);
+    border-radius: 5px;
+    font-size: 16px;
+    &:hover {
+      background-color: $primaryColorHover;
+    }
+  }
+
+  .tfaRequestModal__requestArea{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .tfaRequestModal__buttonRequest{
+    font-family: 'Oxanium', cursive;
+    background-color: green;
+    width: 100px;
+    height: 30px;
+    font-size: 15px;
+    border-radius: 5px;
+    box-shadow: 3px 3px 4px 1px rgba(67, 66, 66, 0.8);
+    &:hover {
+      background-color: rgb(2, 69, 2);
+    }
   }
 }
 
-.tfaVerifyModal__buttonCancel{
-  font-family: 'Oxanium', cursive;
-  width: 65px;
-  color:rgb(0, 0, 0);
-  background-color: rgba(250, 6, 6, 0.94);
-  border-radius: 5px;
-  font-size: 16px;
-  &:hover {
-    background-color: $primaryColorHover;
+#tfaVerifyModal {
+  .modal__container {
+    max-width: 340px;
   }
-
-}
-
-.tfaVerifyModal__requestArea{
-  display: flex;
-  flex-direction: column;
-  width: 80%;
-  justify-content: center;
-  align-items: center;
-}
-
-.tfaVerifyModal__buttonRequest{
-  font-family: 'Oxanium', cursive;
-  background-color: green;
-  width: 100px;
-  height: 30px;
-  font-size: 15px;
-  border-radius: 5px;
-  box-shadow: 3px 3px 4px 1px rgba(67, 66, 66, 0.8);
-  &:hover {
-    background-color: rgb(2, 69, 2);
+  .tfaVerifyModal__inputArea {
+    width: 100%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    .tfaVerifyModal__button{
+      font-size: 20px;
+      width: 100px;
+      height: 30px;
+      box-shadow:3px 3px 4px 1px rgba(67, 66, 66, 0.8);
+    }
   }
 }

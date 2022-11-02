@@ -95,11 +95,8 @@ export class UserService {
       isTFAEnable: user.isTFAEnable as boolean,
       tfaValidated: user.tfaValidated as boolean,
     };
-    // console.log(userDto);
     return (userDto);
-    
   }
-
 
   async checkCredentials(credentialsDto: CredentialsDto): Promise<User | null> {
     const { email, token } = credentialsDto;
@@ -117,16 +114,14 @@ export class UserService {
     const { nick, imgUrl, isTFAEnable, tfaEmail, tfaValidated } = updateUserDto;
     if (nick && await this.checkDuplicateNick(nick))
       throw new ForbiddenException('Duplicated nickname');
-
     user.nick = nick ? nick : user?.nick;
     user.imgUrl = imgUrl ? imgUrl : user?.imgUrl;
-
-    user.isTFAEnable = isTFAEnable ? true : false;
+    user.isTFAEnable = isTFAEnable ? isTFAEnable : user.isTFAEnable;
     user.tfaEmail = tfaEmail ? tfaEmail : user?.tfaEmail;
-    user.tfaValidated  = tfaValidated ? true: false;
+    user.tfaValidated  = tfaValidated ? tfaValidated: user.tfaValidated;
     try {
       await user.save();
-      console.log('user', user);
+      // console.log('user', user);
       return user;
     } catch (error) {
       throw new InternalServerErrorException('Erro ao salvar os dados no db');
