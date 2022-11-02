@@ -137,20 +137,21 @@ export class AuthService {
    * @returns Jwt token access.
    */
   async signUpOrSignIn(code: string): Promise<JwtTokenAccess> {
-
     const data: IntraData = await this.checkIfIsSignInOrSignUp(code);
-
     const finalUser: User = await this.userService.findUserByEmail(data.email) as User;
-
     const payload: UserPayload = {
       email: finalUser.email,
-      token: finalUser.token
+      token: finalUser.token,
     };
 
+    if (!finalUser.isTFAEnable){
+      return ({
+        access_token: this.jwtService.sign(payload)
+      });
+    }
+    payload.tfaSecret = finalUser.tfaSecret;
     return ({
       access_token: this.jwtService.sign(payload)
     });
-
   }
-
 }

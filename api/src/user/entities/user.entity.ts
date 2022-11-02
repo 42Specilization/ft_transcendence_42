@@ -11,6 +11,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail } from 'class-validator';
 
 @Entity()
 @Unique(['email', 'nick'])
@@ -67,6 +68,15 @@ export class User extends BaseEntity {
   @ApiProperty()
   @Column({ nullable: true })
   tfaSecret?: string;
+
+  @ApiProperty()
+  @IsEmail()
+  @Column({ nullable: true })
+  tfaEmail?: string;
+
+  @ApiProperty()
+  @Column({ default: false })
+  isTFAEnable: boolean;
 
   async checkToken(token: string): Promise<boolean> {
     try {

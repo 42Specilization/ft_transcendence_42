@@ -92,15 +92,19 @@ export class UserService {
 
   async updateUser(updateUserDto: UpdateUserDto, email: string) : Promise<User> {
     const user = await this.findUserByEmail(email) as User;
-    const { nick, imgUrl } = updateUserDto;
+    const { nick, imgUrl, isTFAEnable, tfaEmail } = updateUserDto;
     if (nick && await this.checkDuplicateNick(nick))
       throw new ForbiddenException('Duplicated nickname');
 
     user.nick = nick ? nick : user?.nick;
     user.imgUrl = imgUrl ? imgUrl : user?.imgUrl;
+    
+    user.isTFAEnable = isTFAEnable ? true : false;
+    user.tfaEmail = tfaEmail ? tfaEmail : user?.tfaEmail;
+
     try {
       await user.save();
-      // console.log('user', user);
+      console.log('user', user);
       return user;
     } catch (error) {
       throw new InternalServerErrorException('Erro ao salvar os dados no db');

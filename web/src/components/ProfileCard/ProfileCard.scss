@@ -80,6 +80,70 @@
   }
 }
 
+
+.tfaSendMailModal__inputArea{
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.tfaSendMailModal__input {
+  font-family: 'Oxanium', cursive;
+  width: 300px;
+  height: 35px;
+  padding: 5px;
+  font-size: 15px;
+  border-radius: 5px;
+  outline: 0;
+  border: 3px solid black;
+  box-shadow: 3px 3px 4px 2px rgba(67, 66, 66, 0.8);
+}
+
+.tfaSendMailModal__button{
+  font-family: 'Oxanium', cursive;
+  width: 65px;
+  background-color: $primaryColor;
+  border-radius: 5px;
+  font-size: 16px;
+  &:hover {
+    background-color: $primaryColorHover;
+  }
+}
+
+.tfaVerifyModal__inputArea{
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 1em;
+}
+
+.tfaVerifyModal__input{
+  font-family: 'Oxanium', cursive;
+  width: 200px;
+  height: 35px;
+  padding: 5px;
+  font-size: 1em;
+  border-radius: 5px;
+  outline: 0;
+  border: 3px solid black;
+  box-shadow: 3px 3px 4px 2px rgba(67, 66, 66, 0.8);
+}
+
+.tfaVerifyModal__button {
+  font-family: 'Oxanium', cursive;
+  width: 65px;
+  background-color: $primaryColor;
+  border-radius: 5px;
+  font-size: 16px;
+  &:hover {
+    background-color: $primaryColorHover;
+  }
+}
+
+
+
+
+
 @media (max-width: 1201px){
   .profileCard {
     margin: 0;

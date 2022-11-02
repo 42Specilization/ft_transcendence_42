@@ -9,10 +9,15 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
+import * as nodemailer from 'nodemailer';
+import { smtpConfig } from '../config/smtp';
+
+
 
 @Controller('user')
 @ApiTags('user')
 export class UserController {
+
 
   constructor(private readonly userService: UserService) { }
 
@@ -24,6 +29,48 @@ export class UserController {
     return ({
       msg: 'success'
     });
+  }
+
+  @Patch('/turn-on-tfa')
+  @ApiBody({ type: UpdateUserDto })
+  @UseGuards(JwtAuthGuard)
+  async turnOnTfa(
+    @Body(ValidationPipe) updateUserDto: UpdateUserDto,
+    @GetUserFromJwt() userFromJwt : UserFromJwt,
+  ) {
+    return this.userService.updateUser(updateUserDto, userFromJwt.email);
+  }
+
+  @Patch('/validate-email')
+  // @UseGuards(JwtAuthGuard)
+  async validateEmailTFA(
+    @Body(ValidationPipe) updateUserDto: UpdateUserDto,
+    // @GetUserFromJwt() userFromJwt : UserFromJwt,
+  ) {
+    const sendedCode = '111111';
+    const transporter = nodemailer.createTransport({
+      host: smtpConfig.host,
+      port: smtpConfig.port,
+      secure: false,
+      auth: {
+        user: process.env['TFA_EMAIL_USER'],
+        pass: process.env['TFA_EMAIL_PASS'],
+      },
+      tls: {
+        rejectUnauthorized: false,
+      }
+    });
+    // console.log(transporter);
+    if (updateUserDto.tfaEmail){
+      const mailSent =  await transporter.sendMail({
+        text: `Your validation code is ${sendedCode}`,
+        subject: 'Verify Code from Transcendence',
+        from:process.env['TFA_EMAIL_FROM'],
+        to: [updateUserDto.tfaEmail]
+      });
+      mailSent;
+    }
+    return sendedCode;
   }
 
   @Patch('/updateNick/')

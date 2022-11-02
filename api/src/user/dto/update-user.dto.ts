@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class UpdateUserDto {
   @IsOptional()
@@ -10,4 +10,13 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString({ message: 'Inform an image url!' })
     imgUrl?: string;
+
+  @IsOptional()
+  @IsString({ message: 'Value need be true of false' })
+    isTFAEnable?: boolean;
+
+  @IsOptional()
+  @IsString({ message: 'Inform a valid email' })
+  @IsEmail({ message: 'Inform a valid email' })
+    tfaEmail?: string;
 }
