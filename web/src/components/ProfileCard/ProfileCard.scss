@@ -116,7 +116,29 @@
     background-color: $primaryColorHover;
   }
 }
+.tfaDesable__buttons{
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-around;
 
+  width: 100%;
+}
+
+
+.tfaDesable__button__confirm,
+.tfaDesable__button__cancel{
+  width: 30% ;
+  height: 25px;
+  font-family: 'Oxanium', cursive;
+  background-color: green;
+  font-size: 20px;
+  border-radius: 5px;
+}
+
+.tfaDesable__button__cancel{
+  background-color: rgb(207, 3, 3);
+}
 
 .tfaVerifyModal__inputArea{
   width: 80%;

@@ -1,11 +1,11 @@
 import './ValidateTfa.scss';
 import {  useState } from 'react';
-import { Modal } from '../../components/Modal/Modal';
+import { Modal } from '../Modal/Modal';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { TailSpin } from 'react-loader-spinner';
 
-export default function ValidateTfa() {
+export function ValidateTfa() {
   const navigate = useNavigate();
   const token = window.localStorage.getItem('token');
   const config = {

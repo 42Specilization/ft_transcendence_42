@@ -9,7 +9,7 @@ import Profile from './pages/Profile/Profile';
 import ProfileUpdateNick from './pages/ProfileUpdateNick/ProfileUpdateNick';
 import Game from './pages/Game/Game';
 import Historic from './pages/Historic/Historic';
-import ValidateTfa from './pages/ValidateTfa/ValidateTfa';
+import{ ValidateTfa } from './components/ValidateTfa/ValidateTfa';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function RequireAuth({ children }: any) {

@@ -116,9 +116,10 @@ export class UserService {
       throw new ForbiddenException('Duplicated nickname');
     user.nick = nick ? nick : user?.nick;
     user.imgUrl = imgUrl ? imgUrl : user?.imgUrl;
-    user.isTFAEnable = isTFAEnable ? isTFAEnable : user.isTFAEnable;
+    user.isTFAEnable = isTFAEnable !== undefined ? isTFAEnable : user.isTFAEnable;
     user.tfaEmail = tfaEmail ? tfaEmail : user?.tfaEmail;
-    user.tfaValidated  = tfaValidated ? tfaValidated: user.tfaValidated;
+    user.tfaValidated  = tfaValidated !== undefined ? tfaValidated: user.tfaValidated;
+    console.log ( isTFAEnable, tfaValidated);
     try {
       await user.save();
       // console.log('user', user);

@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import './ProfileCard.scss';
 import { UserImage } from '../UserImage/UserImage';
 import { IntraData } from '../../Interfaces/interfaces';
@@ -6,6 +6,7 @@ import { NotePencil } from 'phosphor-react';
 import { Modal } from '../Modal/Modal';
 import axios from 'axios';
 import  {TailSpin} from 'react-loader-spinner';
+import { Navigate, useNavigate } from 'react-router-dom';
 // import QRCode from 'react-qr-code';
 interface ProfileCardProps{
     email: string;
@@ -20,15 +21,18 @@ interface ProfileCardProps{
 */
 
 export function ProfileCard({ email, image_url, login, full_name, setIntraData }:ProfileCardProps) {
+  const navigate = useNavigate();
   function handleChangeNick() {
-    window.location.href = '/updateNick';
+    navigate('/updateNick');
   }
+
+  const [tfaEnable, setTfaEnable] = useState<boolean>(false);
   const [verifyCode, setVerifyCode] = useState<string>('');
   const [tfaEmail, setTfaEmail] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [isModalVerifyCodeVisible, setIsModalVerifyCodeVisible] = useState(false);
   const [isModalTurnOnVisible, setIsModalTurnOnVisible] = useState(false);
-
+  const [isModalTurnOffVisible, setIsModalTurnOffVisible] = useState(false);
   const emailInput = document.querySelector('.tfaSendMailModal__input') as HTMLInputElement;
   const token = window.localStorage.getItem('token');
   const config = {
@@ -68,8 +72,20 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
     if (updateTfa.status === 200){
       console.log(updateTfa);
       setIsModalVerifyCodeVisible(false);
+      window.location.reload();
     }
   }
+  async function checkTfa(){
+    const user = await api.get('/user/me', config);
+    if (user.data.isTFAEnable)
+      setTfaEnable(true);
+    else
+      setTfaEnable(false);
+  }
+
+  useEffect( ()=> {
+    checkTfa();
+  }, []);
 
   /**
   * It's a function that handles the TFA (Two Factor Authentication) of the user
@@ -96,9 +112,7 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
       }
     } catch (error) {
       setIsLoading(false);
-      console.log('ta no else');
       const typedMail = document.querySelector('.tfaSendMailModal__input') as HTMLInputElement;
-
       typedMail.value = '';
       const errorVefify = {
         styles: {
@@ -109,6 +123,7 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
       setVerifyMailStyle(errorVefify);
     }
   }
+
 
   /**
  * It takes the value of the input field, compares it to the verify code, and if it matches, it calls
@@ -124,6 +139,7 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
     if (typedCode.value.toString() === verifyCode.toString()){
       setVerifyCodeStyle(verifyCodeStyleDefault);
       turnOnTFA(body, config);
+
     }
     else {
       console.log(verifyCode.toString());
@@ -136,6 +152,24 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
       };
       setVerifyCodeStyle(errorVefify);
     }
+  }
+
+
+  async function handleTurnOff(){
+    const body = {
+      isTFAEnable: false,
+      tfaValidated: false,
+    };
+    setIsLoading(true);
+    const validateEmail = await api.patch('/user/turn-on-tfa', body, config);
+    setIsLoading(false);
+    console.log('validate', validateEmail);
+    if (validateEmail.status === 200){
+      setTfaEnable(false);
+      setIsModalTurnOffVisible(false);
+      return ;
+    }
+
   }
 
   return (
@@ -157,7 +191,22 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
       </div>
       <div className="profileCard__2fa">
         <strong>2FA Authentication</strong>
-        <button onClick={()=> setIsModalTurnOnVisible(true)} className='profileCard__2fa__button'  >Turn On</button>
+        {
+          !tfaEnable ?
+            <button onClick={()=> setIsModalTurnOnVisible(true)} className='profileCard__2fa__button'>Turn On</button>:
+            <button style={{backgroundColor:'red'}} onClick={()=>setIsModalTurnOffVisible(true)} className='profileCard__2fa__button'>Turn Off</button>
+        }
+        {
+          isModalTurnOffVisible ?
+            <Modal
+              onClose={() => setIsModalTurnOffVisible(false)}>
+              <h3> Are you sure you want to disable 2fa ?</h3>
+              <div className="tfaDesable__buttons">
+                <button className="tfaDesable__button__confirm" onClick={handleTurnOff}>Confirm</button>
+                <button className="tfaDesable__button__cancel" onClick={()=> setIsModalTurnOffVisible(false)}>Cancel</button>
+              </div>
+            </Modal> : null
+        }
         {
           isModalTurnOnVisible ?
             <Modal id='tfaSendMailModal' onClose={() => setIsModalTurnOnVisible(false)}>
