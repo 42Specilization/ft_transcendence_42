@@ -4,21 +4,6 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SocketIOAdapter } from './socket/socket-io-adapter';
-// import * as nodemailer from 'nodemailer';
-// import { smtpConfig } from './config/smtp';
-
-// const transporter = nodemailer.createTransport({
-//   host: smtpConfig.host,
-//   port: smtpConfig.port,
-//   secure: false,
-//   auth: {
-//     user: smtpConfig.user,
-//     pass: smtpConfig.pass,
-//   },
-//   tls: {
-//     rejectUnauthorized: false,
-//   }
-// });
 
 
 async function bootstrap() {
@@ -61,14 +46,5 @@ async function bootstrap() {
   await app.listen(port);
 
   logger.log(`Server running on port ${port}`);
-
-  // const mailSent =   transporter.sendMail({
-  //   text: 'Hello from transcendence',
-  //   subject: 'Test from nestapi',
-  //   from:'Transcendence API <ft.transcendence.42sp@gmail.com>',
-  //   to: ['gaa.silva53@gmail.com']
-  // });
-
-  // console.log(mailSent);
 }
 bootstrap();

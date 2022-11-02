@@ -42,12 +42,21 @@ export class UserController {
   }
 
   @Patch('/validate-email')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async validateEmailTFA(
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
     // @GetUserFromJwt() userFromJwt : UserFromJwt,
   ) {
-    const sendedCode = '111111';
+    function generateCode(){
+      let code = '';
+      const avaliableChar = '1234567890';
+      for (let i = 0; i < 6; i++){
+        code += avaliableChar.charAt(Math.floor(Math.random() * avaliableChar.length));
+      }
+      return code;
+    }
+
+    const sendedCode = generateCode();
     const transporter = nodemailer.createTransport({
       host: smtpConfig.host,
       port: smtpConfig.port,
