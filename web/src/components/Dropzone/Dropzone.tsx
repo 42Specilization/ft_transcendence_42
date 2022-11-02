@@ -11,11 +11,12 @@ interface DropzoneProps {
 
 export function Dropzone({ onFileUploaded, setIntraData }: DropzoneProps) {
   const onDrop = useCallback(
-    (acceptepFiles) => {
-      const localStore : string | null = window.localStorage.getItem('userData');
-      if (localStore){
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (acceptedFiles: any) => {
+      const localStore: string | null = window.localStorage.getItem('userData');
+      if (localStore) {
         const data: IntraData = JSON.parse(localStore);
-        const file = new File([acceptepFiles[0]], `${data.login}_avatar.jpg`);
+        const file = new File([acceptedFiles[0]], `${data.login}_avatar.jpg`);
         onFileUploaded(file);
         window.localStorage.removeItem('userData');
         getStoredData(setIntraData);

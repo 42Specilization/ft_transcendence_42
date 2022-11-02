@@ -53,6 +53,7 @@ export class Game {
   hasStarted: boolean;
   hasEnded: boolean;
   winner: Player;
+  watchers: string[];
 
   player1: Player = {
     paddle: {
@@ -82,7 +83,6 @@ export class Game {
 
 
 
-  // watchers: [];
   ball: Ball = {
     x: CANVAS_WIDTH / 2,
     y: CANVAS_HEIGHT / 2,

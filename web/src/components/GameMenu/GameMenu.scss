@@ -32,27 +32,13 @@
   }
 }
 
-.gameMenu__commands {
+.gameMenu__options {
   @include flexCenter(center, column);
-  padding: 15px;
   border-top: 5px dashed $primaryColor;
   width: 100%;
   height: 50%;
-  gap: 17px;
-
-  h2 {
-    font-weight: 400;
-    font-size: 2rem;
-  }
 }
 
-.gameMenu__commands__list {
-  list-style-type: none;
-
-  li {
-    margin-top: 20px;
-  }
-}
 
 @media (min-width: 900px) {
   .gameMenu {
@@ -71,15 +57,11 @@
     height: 100%;
   }
 
-  .gameMenu__commands {
-    flex-direction: column;
+  .gameMenu__options {
     border-top: none;
     border-left: 5px dashed $primaryColor;
     width: 50%;
     height: 100%;
-    h2 {
-      font-size: 2.3rem;
-    }
   }
 }
 

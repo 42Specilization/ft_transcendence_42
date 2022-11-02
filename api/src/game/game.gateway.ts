@@ -4,6 +4,7 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect,
 import { randomInt } from 'crypto';
 import { Socket, Namespace } from 'socket.io';
 import { WsCatchAllFilter } from 'src/socket/exceptions/ws-catch-all-filter';
+import { WsBadRequestException } from 'src/socket/exceptions/ws-exceptions';
 import { Game } from './game.class';
 
 interface IMove {
@@ -175,6 +176,32 @@ export class GameGateway implements
     } else {
       this.io.to(game.id.toString()).emit('update-ball', game);
     }
+  }
+
+  @SubscribeMessage('get-game-list')
+  async getGameList(@ConnectedSocket() user: Socket) {
+
+    this.logger.debug(`User with id: ${user.id} get game list!`);
+
+    user.emit('get-game-list',
+      this.queue.map(game => {
+        if (game.hasStarted && !game.hasEnded) {
+          return (game);
+        }
+        return;
+      }));
+  }
+
+  @SubscribeMessage('watch-game')
+  async watchGame(@MessageBody() index: number, @ConnectedSocket() user: Socket) {
+    const game = this.queue[index];
+    if (game.hasStarted && !game.hasEnded) {
+      throw new WsBadRequestException('Game not found!');
+    }
+    game.watchers.push(user.id);
+    user.join(game.id.toString());
+    this.io.to(game.id.toString()).emit('update-game', game);
+    this.logger.log(`User watching game of index:${index} and id:${game.id}`);
   }
 
 }

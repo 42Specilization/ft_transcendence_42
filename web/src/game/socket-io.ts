@@ -41,7 +41,6 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
     //handle socket errors
   });
 
-
   setInterval(() => {
     if (state.game?.hasStarted && !state.game.hasEnded) {
       socket.emit('update-ball', state.game?.index);
