@@ -66,8 +66,8 @@ export class User extends BaseEntity {
   updatedAt: Date;
 
   @ApiProperty()
-  @Column({ nullable: true })
-  tfaSecret?: string;
+  @Column({ default: false })
+  tfaValidated?: boolean;
 
   @ApiProperty()
   @IsEmail()

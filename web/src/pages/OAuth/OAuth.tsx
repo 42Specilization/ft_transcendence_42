@@ -35,6 +35,7 @@ export default function OAuth() {
   async function handleLogin() {
     await login();
     await getInfos();
+
   }
 
   useEffect(() => {

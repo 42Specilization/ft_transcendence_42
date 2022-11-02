@@ -7,6 +7,7 @@ import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { CredentialsDto } from './dto/credentials.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserDto } from './dto/user.dto';
 
 
 @Injectable()
@@ -68,6 +69,7 @@ export class UserService {
   async updateToken(email: string, token: AccessTokenResponse) {
     const user = await this.findUserByEmail(email) as User;
     user.token = token.access_token;
+    user.tfaValidated = false;
     try {
       user.save();
     } catch {
@@ -78,6 +80,26 @@ export class UserService {
   async getUsers(): Promise<User[]> {
     return (await this.usersRepository.find());
   }
+
+  async getUser(email: string): Promise<UserDto> {
+    const user = await this.findUserByEmail(email) as User;
+    const userDto ={
+      email:user.email,
+      first_name: user.first_name,
+      image_url: user.imgUrl,
+      login: user.nick,
+      usual_full_name: user.usual_full_name,
+      matches: user.matches,
+      wins: user.wins,
+      lose: user.lose,
+      isTFAEnable: user.isTFAEnable as boolean,
+      tfaValidated: user.tfaValidated as boolean,
+    };
+    // console.log(userDto);
+    return (userDto);
+    
+  }
+
 
   async checkCredentials(credentialsDto: CredentialsDto): Promise<User | null> {
     const { email, token } = credentialsDto;
@@ -92,30 +114,19 @@ export class UserService {
 
   async updateUser(updateUserDto: UpdateUserDto, email: string) : Promise<User> {
     const user = await this.findUserByEmail(email) as User;
-    const { nick, imgUrl, isTFAEnable, tfaEmail } = updateUserDto;
+    const { nick, imgUrl, isTFAEnable, tfaEmail, tfaValidated } = updateUserDto;
     if (nick && await this.checkDuplicateNick(nick))
       throw new ForbiddenException('Duplicated nickname');
 
     user.nick = nick ? nick : user?.nick;
     user.imgUrl = imgUrl ? imgUrl : user?.imgUrl;
-    
+
     user.isTFAEnable = isTFAEnable ? true : false;
     user.tfaEmail = tfaEmail ? tfaEmail : user?.tfaEmail;
-
+    user.tfaValidated  = tfaValidated ? true: false;
     try {
       await user.save();
       console.log('user', user);
-      return user;
-    } catch (error) {
-      throw new InternalServerErrorException('Erro ao salvar os dados no db');
-    }
-  }
-
-  async setTFASecret(secret: string, email: string) {
-    const user = await this.findUserByEmail(email) as User;
-    user.tfaSecret = secret ? secret : user?.tfaSecret;
-    try {
-      await user.save();
       return user;
     } catch (error) {
       throw new InternalServerErrorException('Erro ao salvar os dados no db');

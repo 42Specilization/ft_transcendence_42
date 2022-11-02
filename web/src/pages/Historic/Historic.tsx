@@ -14,7 +14,9 @@ export default function Historic() {
     usual_full_name: 'ft_transcendence',
     matches: '0',
     wins: '0',
-    lose: '0'
+    lose: '0',
+    isTFAEnable: false,
+    tfaValidated: false,
   };
 
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);

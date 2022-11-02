@@ -6,13 +6,11 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { jwtConstants } from './constants/constants';
-import { TfaService } from './tfa/tfa.service';
 import { ConfigModule } from '@nestjs/config';
-import { TfaController } from './tfa/tfa.controller';
 
 @Module({
-  controllers: [AuthController,  TfaController],
-  providers: [AuthService, JwtStrategy, TfaService],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy],
   imports: [
     UserModule,
     ConfigModule,

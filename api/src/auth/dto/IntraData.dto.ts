@@ -12,4 +12,6 @@ export class IntraData {
   image_url: string;
   @ApiProperty()
   login: string;
+  @ApiProperty()
+  isTFAEnable: boolean;
 }

@@ -9,11 +9,24 @@ import Profile from './pages/Profile/Profile';
 import ProfileUpdateNick from './pages/ProfileUpdateNick/ProfileUpdateNick';
 import Game from './pages/Game/Game';
 import Historic from './pages/Historic/Historic';
+import ValidateTfa from './pages/ValidateTfa/ValidateTfa';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function RequireAuth({ children }: any) {
   const token = window.localStorage.getItem('token');
+  const tfaValidate = window.localStorage.getItem('tfaValidate');
+  console.log('Tfavalidate', tfaValidate);
+  if (tfaValidate == 'false'){
+    console.log('entou no if');
+    return (
+      <div>
+        <ValidateTfa/>
+      </div>
+    );
+  }
+
   return (token ? children : <Navigate to='/signin' replace />);
+
 }
 export default function AppRouter() {
 
@@ -49,6 +62,7 @@ export default function AppRouter() {
               <Historic />
             </RequireAuth>
           } />
+          <Route path='/validate-tfa' element={<ValidateTfa />} />
           <Route path='/oauth' element={<OAuth />} />
           <Route path='/signin' element={<SignIn />} />
           <Route path='*' element={<NotFound />} />

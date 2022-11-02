@@ -79,8 +79,9 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
   async function handleTFA() {
     setTfaEmail(emailInput.value);
     const body = {
-      isTFAEnable: 'true',
-      tfaEmail: tfaEmail
+      isTFAEnable: true,
+      tfaEmail: tfaEmail,
+      tfaValidated: true,
     };
     try {
       setVerifyMailStyle(verifyMailStyleDefault);
@@ -115,8 +116,9 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
  */
   async function handleValidateCode(){
     const body = {
-      isTFAEnable: 'true',
-      tfaEmail: tfaEmail
+      isTFAEnable: true,
+      tfaEmail: tfaEmail,
+      tfaValidated: true,
     };
     const typedCode = document.querySelector('.tfaVerifyModal__input') as HTMLInputElement;
     if (typedCode.value.toString() === verifyCode.toString()){

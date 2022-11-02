@@ -54,6 +54,8 @@ export class AuthService {
       matches: user.matches,
       wins: user.wins,
       lose: user.lose,
+      isTFAEnable: user.isTFAEnable,
+      tfaValidated: user.tfaValidated,
     };
     return (intraData);
   }
@@ -85,6 +87,8 @@ export class AuthService {
           matches: response.data.matches,
           wins: response.data.wins,
           lose: response.data.lose,
+          isTFAEnable: response.data.isTFAEnable,
+          tfaValidated: response.data.tfaValidated,
         });
       }).catch(err => {
         if (err.code == 'ERR_BAD_REQUEST')
@@ -123,7 +127,6 @@ export class AuthService {
       await this.userService.updateToken(data.email, token);
       console.log('token atualizado!');
     }
-
     return (data);
 
   }
@@ -142,6 +145,7 @@ export class AuthService {
     const payload: UserPayload = {
       email: finalUser.email,
       token: finalUser.token,
+      tfaEmail: finalUser.tfaEmail as string,
     };
 
     if (!finalUser.isTFAEnable){
@@ -149,7 +153,6 @@ export class AuthService {
         access_token: this.jwtService.sign(payload)
       });
     }
-    payload.tfaSecret = finalUser.tfaSecret;
     return ({
       access_token: this.jwtService.sign(payload)
     });

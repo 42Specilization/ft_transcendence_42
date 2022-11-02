@@ -11,6 +11,7 @@ import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import * as nodemailer from 'nodemailer';
 import { smtpConfig } from '../config/smtp';
+import { UserDto } from './dto/user.dto';
 
 
 
@@ -45,7 +46,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async validateEmailTFA(
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
-    // @GetUserFromJwt() userFromJwt : UserFromJwt,
+    @GetUserFromJwt() userFromJwt : UserFromJwt,
   ) {
     function generateCode(){
       let code = '';
@@ -55,7 +56,7 @@ export class UserController {
       }
       return code;
     }
-
+    updateUserDto;
     const sendedCode = generateCode();
     const transporter = nodemailer.createTransport({
       host: smtpConfig.host,
@@ -70,12 +71,12 @@ export class UserController {
       }
     });
     // console.log(transporter);
-    if (updateUserDto.tfaEmail){
+    if (userFromJwt.tfaEmail){
       const mailSent =  await transporter.sendMail({
         text: `Your validation code is ${sendedCode}`,
         subject: 'Verify Code from Transcendence',
         from:process.env['TFA_EMAIL_FROM'],
-        to: [updateUserDto.tfaEmail]
+        to: [userFromJwt.tfaEmail]
       });
       mailSent;
     }
@@ -95,6 +96,14 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async getUsers(): Promise<User[]> {
     return (await this.userService.getUsers());
+  }
+
+  @Get('me')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  async getUser( @GetUserFromJwt() userFromJwt : UserFromJwt): Promise<UserDto> {
+    userFromJwt;
+    return (await this.userService.getUser('gsilva-v@student.42sp.org.br'));
   }
 
   @Post('/updateImage')
@@ -122,7 +131,7 @@ export class UserController {
   ) {
     const updateUserDto: UpdateUserDto = {imgUrl: file.originalname};
     console.log(file);
-    this.userService.updateUser(updateUserDto,userFromJwt.email);
+    this.userService.updateUser(updateUserDto, userFromJwt.email);
     return { message: 'succes', path: file.path};
   }
 

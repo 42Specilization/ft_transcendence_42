@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { createContext, ReactNode, useContext } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { IntraData } from '../Interfaces/interfaces';
+import ValidateTfa from '../pages/ValidateTfa/ValidateTfa';
 
 interface UserType {
   login: () => Promise<unknown>;
@@ -38,6 +40,32 @@ function useAuth() {
         return;
       }
       window.localStorage.setItem('token', token.access_token);
+      window.localStorage.removeItem('tfaValidate');
+      window.localStorage.setItem('tfaValidate', 'desable');
+
+      async function validateTfa(){
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token.access_token}`,
+          },
+        };
+        console.log('config',config);
+        const body = {
+          tfaValidated: true,
+        };
+        const api = axios.create({
+          baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
+        });
+        const user  =   await api.get('/user/me', config);
+        // console.log('user',user.data.tfaValidated);
+        if ( user.data.isTFAEnable && user.data.tfaValidated== false){
+          window.localStorage.setItem('tfaValidate', 'false');
+        }
+
+      }
+      validateTfa();
+
+
       navigate('/');
 
     },
@@ -56,7 +84,7 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const auth = useAuth();
-
+ 
   return (
     <AuthContext.Provider value={auth}>
       {children}
