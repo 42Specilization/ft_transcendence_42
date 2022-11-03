@@ -35,8 +35,8 @@ export interface AppState {
   accessToken?: string | null;
   isPlayer: boolean;
   game?: Game;
-  player1: Player;
-  player2: Player;
+  player1: Player | undefined;
+  player2: Player | undefined;
 }
 
 const state = proxy<AppState>({
@@ -96,12 +96,14 @@ const actions = {
   updateGame(game?: Game) {
     state.game = game;
   },
-  endGame() {
-    state.socket?.disconnect();
+  disconnectSocket() {
+    if (state.socket?.connected) {
+      state.socket?.disconnect();
+    }
   },
-  destroyGame() {
-    this.endGame();
+  leaveGame() {
     state.game = undefined;
+    this.disconnectSocket();
   }
 };
 

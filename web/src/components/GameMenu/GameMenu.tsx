@@ -14,6 +14,7 @@ export function GameMenu() {
 
 
   const handleStartGame = () => {
+    actions.initializeSocket();
     actions.initializeGame();
   };
 
@@ -28,6 +29,7 @@ export function GameMenu() {
   };
 
   const handleWatchGame = () => {
+    actions.initializeSocket();
     setCommands(false);
     setWatch(true);
   };

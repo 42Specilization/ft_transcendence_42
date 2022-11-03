@@ -1,6 +1,6 @@
 @import '../../styles/variables.scss';
 
-.gameMenu__watchGame {
+.gameMenu__withFriend {
   @include flexCenter(center, column);
   padding: 15px;
   gap: 17px;
@@ -10,7 +10,7 @@
   }
 }
 
-.gameMenu__watchGame__list {
+.gameMenu__withFriend__list {
   list-style-type: none;
 
   li {
@@ -19,7 +19,7 @@
 }
 
 @media (min-width: 900px) {
-  .gameMenu__watchGame {
+  .gameMenu__withFriend {
     flex-direction: column;
     border-top: none;
     h2 {

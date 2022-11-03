@@ -53,7 +53,6 @@ export class Game {
   hasStarted: boolean;
   hasEnded: boolean;
   winner: Player;
-  watchers: string[];
 
   player1: Player = {
     paddle: {

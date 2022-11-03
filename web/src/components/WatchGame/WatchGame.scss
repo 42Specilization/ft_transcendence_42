@@ -1,10 +1,13 @@
 @import '../../styles/variables.scss';
 
 .gameMenu__watchGame {
-  @include flexCenter(center, column);
-  padding: 15px;
+  @include flexCenter(flex-start, column);
+  padding: 15px ;
   gap: 17px;
+  height: 100%;
+  width: 100%;
   h2 {
+    margin-top: 100px;
     font-weight: 400;
     font-size: 2rem;
   }
@@ -12,15 +15,24 @@
 
 .gameMenu__watchGame__list {
   list-style-type: none;
-
+  overflow-y: auto;
+  height: auto;
   li {
+    @include flexCenter(center);
     margin-top: 20px;
+    background-color: $secondaryColor;
+    border-radius: 5px;
+    padding: 10px;
+    width: 300px;
+    cursor: pointer;
   }
 }
 
 @media (min-width: 900px) {
   .gameMenu__watchGame {
-    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    // flex-direction: column;
     border-top: none;
     h2 {
       font-size: 2.3rem;

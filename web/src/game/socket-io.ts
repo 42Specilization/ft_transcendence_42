@@ -33,13 +33,17 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
 
   socket.on('end-game', (game: Game) => {
     actions.updateGame(game);
-    actions.endGame();
+    actions.disconnectSocket();
   });
 
   socket.on('connect_error', () => {
     console.log('some error ocurred!');
     //handle socket errors
   });
+
+  // socket.on('exception', (err) => {
+  //   console.log('err ', err);
+  // });
 
   setInterval(() => {
     if (state.game?.hasStarted && !state.game.hasEnded) {

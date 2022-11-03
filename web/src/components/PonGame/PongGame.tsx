@@ -12,9 +12,11 @@ export function PongGame() {
   let context: CanvasRenderingContext2D | undefined | null;
 
   const move = (direction: string) => {
-    if (!state.game) {
+    console.log('is player ', currentState.isPlayer);
+    if (!state.game || !currentState.isPlayer) {
       return;
     }
+    console.log('passou do move ');
     state.socket?.emit('move', {
       direction: direction, index: state.game?.index
     });
@@ -24,7 +26,6 @@ export function PongGame() {
     if (!context || !currentState.game) {
       return;
     }
-    context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight);
     const player1Rec: Rect = {
       x: currentState.game.player1.paddle.x,
       y: currentState.game.player1.paddle.y,
@@ -53,10 +54,10 @@ export function PongGame() {
       fontSize: '50'
     };
     const playerOneName: TextCanvas = {
-      x: 30,
+      x: 80,
       y: 30,
       color: 'WHITE',
-      msg: currentState.player1.name,
+      msg: currentState.player1?.name.substring(0, 10),
       fontSize: '25'
     };
     const scorePlayer2: TextCanvas = {
@@ -66,24 +67,23 @@ export function PongGame() {
       msg: currentState.game.player2.score,
       fontSize: '50'
     };
-    const name = currentState.player1.name;
-    const delta = name.length < 7 ? 45 : 55;
     const playerTwoName: TextCanvas = {
-      x: context.canvas.width - (name.substring(0, 10).length * 10) - delta,
+      x: context.canvas.width - 100,
       y: 30,
       color: 'WHITE',
-      msg: name.substring(0, 10),
+      msg: currentState.player2?.name.substring(0, 10),
       fontSize: '25'
     };
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     drawText(context, scorePlayer1);
     drawText(context, playerOneName);
     drawText(context, scorePlayer2);
     drawText(context, playerTwoName);
+    drawNet(context);
 
+    drawCircle(context, ball);
     drawFillRect(context, player1Rec);
     drawFillRect(context, player2Rec);
-    drawNet(context);
-    drawCircle(context, ball);
   };
 
   useEffect(() => {
@@ -95,23 +95,25 @@ export function PongGame() {
       }
 
       let winner: string;
-      if (currentState.game.player1.name === currentState.me?.name) {
+      console.log('state socket ', currentState.socket);
+      if (currentState.player1?.id === currentState.socket?.id) {
         winner = 'You Win!';
-      } else if (currentState.game.player2.name === currentState.me?.name) {
+      } else if (currentState.player2?.id === currentState.socket?.id) {
         winner = 'You Lose!';
       } else {
-        winner = `${currentState.me?.name} is the Winner`;
+        winner = `${currentState.game?.winner.name} is the Winner`;
       }
 
       const endMessage: TextCanvas = {
-        x: 1.4 * context.canvas.width / 4,
+        x: 2 * context.canvas.width / 4,
         y: context.canvas.height / 2,
         color: 'WHITE',
-        msg: winner
+        msg: winner,
+        fontSize: '50'
       };
       const quitHelp: TextCanvas = {
-        x: 1.6 * context.canvas.width / 4,
-        y: 1.4 * context.canvas.height / 2,
+        x: 2 * context.canvas.width / 4,
+        y: 1.5 * context.canvas.height / 2,
         color: 'white',
         msg: 'Press ESC to leave',
         fontSize: '25'
@@ -126,14 +128,14 @@ export function PongGame() {
 
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyboard, true);
+    document.addEventListener('keydown', handleKeyboard);
   }, []);
 
   function handleKeyboard(event: KeyboardEvent) {
-    if (currentState.game?.hasEnded) {
-      document.removeEventListener('keydown', handleKeyboard);
-      return;
-    }
+    // if (currentState.game?.hasEnded) {
+    //   document.removeEventListener('keydown', handleKeyboard);
+    //   return;
+    // }
     switch (event.key) {
       case 'ArrowUp':
       case 'w':
@@ -147,17 +149,13 @@ export function PongGame() {
         move('down');
         break;
 
+      case 'q':
       case 'Escape':
-        actions.destroyGame();
+        window.location.reload();
         break;
 
       default:
         break;
-    }
-    if (event.key === 'ArrowUp' || event.key === 'w') {
-      move('up');
-    } else if (event.key === 'ArrowDown' || event.key === 's') {
-      move('down');
     }
   }
 

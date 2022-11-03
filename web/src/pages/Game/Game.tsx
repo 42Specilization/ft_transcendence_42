@@ -3,7 +3,7 @@ import { useSnapshot } from 'valtio';
 import { GameMenu } from '../../components/GameMenu/GameMenu';
 import { PongGame } from '../../components/PonGame/PongGame';
 import { WaitingRoom } from '../../components/WaitingRoom/WaitingRoom';
-import { actions, state } from '../../game/gameState';
+import { state } from '../../game/gameState';
 import './Game.scss';
 
 export default function Game() {
@@ -11,13 +11,13 @@ export default function Game() {
   const currentState = useSnapshot(state);
 
   useEffect(() => {
-    actions.initializeSocket();
-  }, []);
+    console.log('game is', currentState.game);
+  }, [currentState.game?.hasStarted]);
 
   return (
     <div className='game'>
       {
-        currentState.game?.waiting ? <WaitingRoom /> : <GameMenu /> && currentState.game?.hasStarted ? <PongGame /> : <GameMenu />
+        currentState.game?.waiting ? <WaitingRoom /> : (currentState.game?.hasStarted ? <PongGame /> : <GameMenu />)
       }
     </div>
   );
