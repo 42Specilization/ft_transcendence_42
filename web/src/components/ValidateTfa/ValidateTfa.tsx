@@ -2,11 +2,9 @@ import './ValidateTfa.scss';
 import {  useState } from 'react';
 import { Modal } from '../Modal/Modal';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { TailSpin } from 'react-loader-spinner';
 
 export function ValidateTfa() {
-  const navigate = useNavigate();
   const token = window.localStorage.getItem('token');
   const config = {
     headers: {
@@ -35,7 +33,7 @@ export function ValidateTfa() {
   async function turnOnTFA(body:any, config :any){
     const updateTfa = await api.patch('/user/turn-on-tfa', body,config);
     if (updateTfa.status === 200){
-      console.log(updateTfa);
+      // console.log(updateTfa);
       setIsModalVerifyCodeVisible(false);
     }
   }
@@ -50,10 +48,11 @@ export function ValidateTfa() {
     setIsLoading(true);
     const validateEmail = await api.patch('/user/validate-email', body, config);
     setIsLoading(false);
+    // Deixar esse print para ver os codigos enviados
     console.log(validateEmail);
+    setVerifyCode(validateEmail.data);
     setIsModalVerifyCodeVisible(true);
     setIsModalRequestMailVisible(false);
-    setVerifyCode(validateEmail.data);
   }
 
   async function handleValidateCode(){
@@ -64,13 +63,12 @@ export function ValidateTfa() {
       tfaValidated: true,
     };
     const typedCode = document.querySelector('.tfaVerifyModal__input') as HTMLInputElement;
-    console.log(typedCode.value.toString(), verifyCode);
+    // console.log(typedCode.value.toString(), verifyCode);
     if (typedCode.value.toString() === verifyCode.toString()){
       setVerifyCodeStyle(verifyCodeStyleDefault);
       typedCode.value = '';
       turnOnTFA(body, config);
-      window.localStorage.setItem('tfaValidate', 'true');
-      navigate('/');
+      window.location.reload();
     }
     else {
       typedCode.value = '';

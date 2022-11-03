@@ -40,37 +40,10 @@ function useAuth() {
         return;
       }
       window.localStorage.setItem('token', token.access_token);
-      window.localStorage.removeItem('tfaValidate');
-      window.localStorage.setItem('tfaValidate', 'desable');
-
-      async function validateTfa(){
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token.access_token}`,
-          },
-        };
-        console.log('config',config);
-        const body = {
-          tfaValidated: true,
-        };
-        const api = axios.create({
-          baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
-        });
-        const user  =   await api.get('/user/me', config);
-        // console.log('user',user.data.tfaValidated);
-        if ( user.data.isTFAEnable && user.data.tfaValidated== false){
-          window.localStorage.setItem('tfaValidate', 'false');
-        }
-
-      }
-      validateTfa();
-
-
       navigate('/');
 
     },
     logout() {
-
       window.localStorage.removeItem('token');
       window.localStorage.removeItem('userData');
       navigate('/signin');
@@ -84,7 +57,7 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const auth = useAuth();
- 
+
   return (
     <AuthContext.Provider value={auth}>
       {children}

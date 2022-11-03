@@ -10,12 +10,37 @@ import ProfileUpdateNick from './pages/ProfileUpdateNick/ProfileUpdateNick';
 import Game from './pages/Game/Game';
 import Historic from './pages/Historic/Historic';
 import{ ValidateTfa } from './components/ValidateTfa/ValidateTfa';
+import axios from 'axios';
+import { useState } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function RequireAuth({ children }: any) {
   const token = window.localStorage.getItem('token');
-  const tfaValidate = window.localStorage.getItem('tfaValidate');
-  if (tfaValidate == 'false'){
+  const [isTfaValid, setIsTfaValid] = useState(false);
+  async function validateTFA(){
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const api = axios.create({
+      baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
+    });
+
+    const user =  await api.get('/user/me', config);
+    // console.log('user', user);
+    if (user.data.isTFAEnable !== undefined && user.data.isTFAEnable === false){
+      setIsTfaValid(true);
+      return ;
+    }
+    if(user.data.isTFAEnable &&  user.data.tfaValidated !== true){
+      setIsTfaValid(false);
+      return ;
+    }
+    setIsTfaValid(true);
+  }
+  validateTFA();
+  if (isTfaValid === false){
     return (
       <div>
         <ValidateTfa/>

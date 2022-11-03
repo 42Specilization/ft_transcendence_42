@@ -33,7 +33,9 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
   const [isModalVerifyCodeVisible, setIsModalVerifyCodeVisible] = useState(false);
   const [isModalTurnOnVisible, setIsModalTurnOnVisible] = useState(false);
   const [isModalTurnOffVisible, setIsModalTurnOffVisible] = useState(false);
+
   const emailInput = document.querySelector('.tfaSendMailModal__input') as HTMLInputElement;
+
   const token = window.localStorage.getItem('token');
   const config = {
     headers: {
@@ -50,6 +52,7 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
       border: '3px solid black'
     },
   };
+  const [verifyCodeStyle, setVerifyCodeStyle] = useState(verifyCodeStyleDefault);
 
   const verifyMailStyleDefault = {
     styles: {
@@ -57,9 +60,8 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
       border: '3px solid black'
     },
   };
-
   const [verifyMailStyle, setVerifyMailStyle] = useState(verifyMailStyleDefault);
-  const [verifyCodeStyle, setVerifyCodeStyle] = useState(verifyCodeStyleDefault);
+
 
   /**
    * It turns on two factor authentication.
@@ -70,11 +72,12 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
   async function turnOnTFA(body:any, config :any){
     const updateTfa = await api.patch('/user/turn-on-tfa', body,config);
     if (updateTfa.status === 200){
-      console.log(updateTfa);
+      // console.log(updateTfa);
       setIsModalVerifyCodeVisible(false);
       window.location.reload();
     }
   }
+
   async function checkTfa(){
     const user = await api.get('/user/me', config);
     if (user.data.isTFAEnable)
@@ -139,10 +142,8 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
     if (typedCode.value.toString() === verifyCode.toString()){
       setVerifyCodeStyle(verifyCodeStyleDefault);
       turnOnTFA(body, config);
-
     }
     else {
-      console.log(verifyCode.toString());
       typedCode.value = '';
       const errorVefify = {
         styles: {
@@ -163,7 +164,7 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
     setIsLoading(true);
     const validateEmail = await api.patch('/user/turn-on-tfa', body, config);
     setIsLoading(false);
-    console.log('validate', validateEmail);
+    // console.log('validate', validateEmail);
     if (validateEmail.status === 200){
       setTfaEnable(false);
       setIsModalTurnOffVisible(false);

@@ -130,7 +130,7 @@ export class UserController {
     @GetUserFromJwt() userFromJwt : UserFromJwt
   ) {
     const updateUserDto: UpdateUserDto = {imgUrl: file.originalname};
-    console.log(file);
+    // console.log(file);
     this.userService.updateUser(updateUserDto, userFromJwt.email);
     return { message: 'succes', path: file.path};
   }

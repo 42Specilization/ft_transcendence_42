@@ -119,7 +119,6 @@ export class UserService {
     user.isTFAEnable = isTFAEnable !== undefined ? isTFAEnable : user.isTFAEnable;
     user.tfaEmail = tfaEmail ? tfaEmail : user?.tfaEmail;
     user.tfaValidated  = tfaValidated !== undefined ? tfaValidated: user.tfaValidated;
-    console.log ( isTFAEnable, tfaValidated);
     try {
       await user.save();
       // console.log('user', user);
