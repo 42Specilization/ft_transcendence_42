@@ -17,6 +17,12 @@ import { useState } from 'react';
 function RequireAuth({ children }: any) {
   const token = window.localStorage.getItem('token');
   const [isTfaValid, setIsTfaValid] = useState(false);
+  /**
+ * It checks if the user has TFA enabled, if not, it sets the isTfaValid state to true. If the user has
+ * TFA enabled, it checks if the user has validated TFA, if not, it sets the isTfaValid state to false.
+ * If the user has TFA enabled and has validated TFA, it sets the isTfaValid state to true
+ * @returns a boolean value.
+ */
   async function validateTFA(){
     const config = {
       headers: {
@@ -28,7 +34,6 @@ function RequireAuth({ children }: any) {
     });
 
     const user =  await api.get('/user/me', config);
-    // console.log('user', user);
     if (user.data.isTFAEnable !== undefined && user.data.isTFAEnable === false){
       setIsTfaValid(true);
       return ;
@@ -82,6 +87,11 @@ export default function AppRouter() {
           <Route path='/historic' element={
             <RequireAuth>
               <Historic />
+            </RequireAuth>
+          } />
+          <Route path='/apagardepois' element={
+            <RequireAuth>
+              <ValidateTfa />
             </RequireAuth>
           } />
           <Route path='/oauth' element={<OAuth />} />

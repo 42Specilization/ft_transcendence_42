@@ -63,8 +63,9 @@ export function ValidateTfa() {
       tfaValidated: true,
     };
     const typedCode = document.querySelector('.tfaVerifyModal__input') as HTMLInputElement;
-    // console.log(typedCode.value.toString(), verifyCode);
-    if (typedCode.value.toString() === verifyCode.toString()){
+    console.log(typedCode.value.toString());
+
+    if ( typedCode.value.length === 6 && typedCode.value.toString() === verifyCode.toString()){
       setVerifyCodeStyle(verifyCodeStyleDefault);
       typedCode.value = '';
       turnOnTFA(body, config);
@@ -99,7 +100,7 @@ export function ValidateTfa() {
             </div>
             {
               isLoading ?
-                <div className='tfaLoading'>
+                <div className='tfaRequestModal__loading'>
                   <strong>Wait a moment...</strong>
                   <TailSpin
                     width='30'
@@ -121,12 +122,30 @@ export function ValidateTfa() {
                 className='tfaVerifyModal__input' type="text"
                 placeholder={verifyCodeStyle.styles.placeholder}
               />
-
               <button
                 className='tfaVerifyModal__button'
                 onClick={handleValidateCode}>
                 Validate
               </button>
+              <button
+                className='tfaVerifyModal__buttonRecovery'
+                onClick={sendEmail}>
+                  Dont receive? Click to request again
+              </button>
+              {
+                isLoading ?
+                  <div className="tfaVerify_recovery">
+                    <div className='tfaVerify__loading'>
+                      <strong>Wait a moment...</strong>
+                      <TailSpin
+                        width='30'
+                        height='30'
+                        color='purple'
+                        ariaLabel='loading'
+                      />
+                    </div>
+                  </div> : null
+              }
             </div>
           </Modal> : null
       }

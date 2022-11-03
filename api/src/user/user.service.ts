@@ -123,6 +123,7 @@ export class UserService {
       await user.save();
       // console.log('user', user);
       return user;
+      
     } catch (error) {
       throw new InternalServerErrorException('Erro ao salvar os dados no db');
     }
