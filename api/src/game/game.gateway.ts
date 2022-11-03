@@ -166,12 +166,17 @@ export class GameGateway implements
     if (!this.isPlayer(game, user)) {
       return;
     }
-    this.logger.debug(`Move to ${direction} on Socket id: ${user.id} Game index:${move.index} Game id:${game.id}`);
 
     let position = game.player1.paddle;
     if (user.id === game.player2.id) {
       position = game.player2.paddle;
     }
+
+    if (game.isPaddleCollision(position, direction)) {
+      return;
+    }
+
+    this.logger.debug(`Move to ${direction} on Socket id: ${user.id} Game index:${move.index} Game id:${game.id}`);
     switch (direction) {
       case 'up':
         position.y -= 5;

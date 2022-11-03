@@ -2,7 +2,7 @@
 import { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import { Ball, Canvas, drawCircle, drawFillRect, drawNet, drawText, Rect, TextCanvas } from '../../components/Canvas/Canvas';
-import { actions, state } from '../../game/gameState';
+import { state } from '../../game/gameState';
 import './PongGame.scss';
 
 export function PongGame() {
@@ -12,11 +12,10 @@ export function PongGame() {
   let context: CanvasRenderingContext2D | undefined | null;
 
   const move = (direction: string) => {
-    console.log('is player ', currentState.isPlayer);
     if (!state.game || !currentState.isPlayer) {
       return;
     }
-    console.log('passou do move ');
+
     state.socket?.emit('move', {
       direction: direction, index: state.game?.index
     });

@@ -53,6 +53,11 @@ export class Game {
   hasStarted: boolean;
   hasEnded: boolean;
   winner: Player;
+  paddleIncrement = 5;
+  ballSpeed = 5;
+  ballVelocityY = 5;
+  ballVelocityX = 5;
+
 
   player1: Player = {
     paddle: {
@@ -87,8 +92,8 @@ export class Game {
     y: CANVAS_HEIGHT / 2,
     radius: 10,
     speed: 5,
-    velocityX: 5,
-    velocityY: 5,
+    velocityX: this.ballVelocityX,
+    velocityY: this.ballVelocityY,
     color: '#7C1CED'
   };
 
@@ -112,7 +117,17 @@ export class Game {
     return (ballSides);
   }
 
-  isCollision(paddle: Paddle, ball: Ball) {
+  isPaddleCollision(paddle: Paddle, direction: string): boolean {
+    const player = this.paddleSides(paddle);
+    if (direction === 'up' && player.top - this.paddleIncrement < 0) {
+      return (true);
+    } else if (direction === 'down' && player.bottom + this.paddleIncrement > CANVAS_HEIGHT) {
+      return (true);
+    }
+    return (false);
+  }
+
+  isBallCollision(paddle: Paddle, ball: Ball) {
     const player = this.paddleSides(paddle);
     const ballSides = this.ballSides(ball);
 
@@ -123,7 +138,7 @@ export class Game {
   resetBall() {
     this.ball.x = CANVAS_WIDTH / 2;
     this.ball.y = CANVAS_HEIGHT / 2;
-    this.ball.speed = 5;
+    this.ball.speed = this.ballSpeed;
     this.ball.velocityX = -this.ball.velocityX;
   }
 
@@ -155,7 +170,7 @@ export class Game {
 
     const player = (this.ball.x < CANVAS_WIDTH / 2) ? this.player1 : this.player2;
 
-    if (this.isCollision(player.paddle, this.ball)) {
+    if (this.isBallCollision(player.paddle, this.ball)) {
       // where the ball hit the player
       let collidePoint = (this.ball.y - (player.paddle.y + player.paddle.h / 2));
       collidePoint = collidePoint / (player.paddle.h / 2);

@@ -7,6 +7,7 @@ import { createSocket, CreateSocketOptions, socketIOUrl } from './socket-io';
 
 interface Me {
   name: string;
+  id: string;
 }
 
 export interface Player {
@@ -65,7 +66,8 @@ const state = proxy<AppState>({
     }
     const data: IntraData = JSON.parse(localStore);
     const myData = {
-      name: data.login
+      name: data.login,
+      id: this.socket?.id
     };
     return (myData);
   }
