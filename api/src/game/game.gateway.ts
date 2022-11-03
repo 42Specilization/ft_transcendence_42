@@ -79,14 +79,15 @@ export class GameGateway implements
       if (this.queue[i].player1.id === user.id || this.queue[i].player2.id === user.id) {
         //delete who left
         if (this.queue[i].player1.id === user.id) {
-          this.queue[i].player1.id = '';
+          this.queue[i].player1.quit = true;
         } else if (this.queue[i].player2.id === user.id) {
-          this.queue[i].player2.id = '';
+          this.queue[i].player2.quit = true;
         }
         // announce the winner who left before the end-game will be the loser.
         this.queue[i].checkWinner();
         user.leave(this.queue[i].id.toString());
         this.io.to(this.queue[i].id.toString()).emit('end-game', this.queue[i]);
+        this.io.to(this.queue[i].id.toString()).emit('specs', this.queue[i]);
         //if both players left the game instance will be destroyed
         // if (this.queue[i].player1.id === '' && this.queue[i].player2.id === '') {
         delete this.queue[i];
@@ -176,7 +177,6 @@ export class GameGateway implements
       return;
     }
 
-    this.logger.debug(`Move to ${direction} on Socket id: ${user.id} Game index:${move.index} Game id:${game.id}`);
     switch (direction) {
       case 'up':
         position.y -= 5;
@@ -190,13 +190,18 @@ export class GameGateway implements
   }
 
   @SubscribeMessage('update-ball')
-  async update(@MessageBody() index: number) {
+  async update(@MessageBody() index: number, @ConnectedSocket() user: Socket) {
     const game = this.queue[index];
+    if (!this.isPlayer(game, user)) {
+      return;
+    }
     game.update();
     if (game.checkWinner()) {
       this.io.to(game.id.toString()).emit('end-game', game);
+      this.io.to(game.id.toString()).emit('specs', game);
     } else {
       this.io.to(game.id.toString()).emit('update-ball', game);
+      this.io.to(game.id.toString()).emit('specs', game);
     }
   }
 
@@ -225,7 +230,7 @@ export class GameGateway implements
       throw new WsBadRequestException('Game not available!');
     }
     user.join(game.id.toString());
-    this.io.to(game.id.toString()).emit('update-game', game);
+    this.io.to(game.id.toString()).emit('specs', game);
     this.logger.log(`User watching game of index:${index} and id:${game.id}`);
   }
 

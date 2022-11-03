@@ -34,6 +34,9 @@ export function GameMenu() {
     setWatch(true);
   };
 
+  const handleQuit = () => {
+    window.location.href = '/';
+  };
 
   return (
     <div className='gameMenu'>
@@ -61,6 +64,12 @@ export function GameMenu() {
           onClick={handleCommands}
         >
           Commands
+        </button>
+        <button
+          className='gameMenu__buttons__button'
+          onClick={handleQuit}
+        >
+          Quit
         </button>
       </div>
       <div className='gameMenu__options'>

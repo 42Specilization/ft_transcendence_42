@@ -93,28 +93,18 @@ export function PongGame() {
         return;
       }
 
-      let winner: string;
-      console.log('state socket ', currentState.socket);
-      if (currentState.player1?.id === currentState.socket?.id) {
-        winner = 'You Win!';
-      } else if (currentState.player2?.id === currentState.socket?.id) {
-        winner = 'You Lose!';
-      } else {
-        winner = `${currentState.game?.winner.name} is the Winner`;
-      }
-
       const endMessage: TextCanvas = {
         x: 2 * context.canvas.width / 4,
         y: context.canvas.height / 2,
         color: 'WHITE',
-        msg: winner,
+        msg: currentState.game.msgEndGame,
         fontSize: '50'
       };
       const quitHelp: TextCanvas = {
         x: 2 * context.canvas.width / 4,
         y: 1.5 * context.canvas.height / 2,
         color: 'white',
-        msg: 'Press ESC to leave',
+        msg: 'Press Q to leave',
         fontSize: '25'
       };
       drawText(context, endMessage);

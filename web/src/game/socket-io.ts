@@ -36,8 +36,15 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
     actions.disconnectSocket();
   });
 
+  socket.on('specs', (game: Game) => {
+    if (!state.isPlayer) {
+      actions.updateGame(game);
+    }
+  });
+
   socket.on('connect_error', () => {
     console.log('some error ocurred!');
+    window.location.reload();
     //handle socket errors
   });
 
@@ -46,7 +53,7 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
   // });
 
   setInterval(() => {
-    if (state.game?.hasStarted && !state.game.hasEnded) {
+    if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer) {
       socket.emit('update-ball', state.game?.index);
       socket.on('update-ball', (game: Game) => {
         actions.updateGame(game);

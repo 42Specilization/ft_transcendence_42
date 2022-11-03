@@ -28,6 +28,7 @@ export interface Game {
   hasStarted: boolean;
   hasEnded: boolean;
   winner: Player;
+  msgEndGame: string;
 }
 
 export interface AppState {
