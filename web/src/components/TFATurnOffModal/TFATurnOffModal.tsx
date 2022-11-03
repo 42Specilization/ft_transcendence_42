@@ -23,8 +23,10 @@ export function TFATurnOffModal({
     const body = {
       isTFAEnable: false,
       tfaValidated: false,
+      tfaEmail: null,
+      tfaCode: null,
     };
-    const validateEmail = await api.patch('/user/turn-on-tfa', body, config);
+    const validateEmail = await api.patch('/user/turn-off-tfa', body, config);
     // console.log('validate', validateEmail);
     if (validateEmail.status === 200){
       setTfaEnable(false);

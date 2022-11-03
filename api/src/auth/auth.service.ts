@@ -8,6 +8,7 @@ import { JwtTokenAccess } from './dto/JwtTokenAccess.dto';
 import { IntraData } from './dto/IntraData.dto';
 import { UserFromJwt } from './dto/UserFromJwt.dto';
 import { UserPayload } from './dto/UserPayload.dto';
+import { UpdateUserDto } from 'src/user/dto/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -124,7 +125,11 @@ export class AuthService {
       });
       console.log('user Criado!');
     } else {
+      const updateUserDto: UpdateUserDto = {
+        tfaCode: undefined,
+      };
       await this.userService.updateToken(data.email, token);
+      await this.userService.updateUser(updateUserDto, user.email);
       console.log('token atualizado!');
     }
     return (data);

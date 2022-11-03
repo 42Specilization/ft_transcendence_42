@@ -65,11 +65,11 @@ export function TFAButton(){
       />
       <TFAValidateCodeModal
         config={config}
+        setTfaEnable={setTfaEnable}
         setIsModalVerifyCodeVisible={setIsModalVerifyCodeVisible}
         api={api}
         tfaEmail={tfaEmail}
         isModalVerifyCodeVisible={isModalVerifyCodeVisible}
-        verifyCode={verifyCode}
         emailInput={emailInput}
       />
     </div>

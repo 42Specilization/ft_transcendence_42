@@ -81,7 +81,7 @@ export class UserService {
     return (await this.usersRepository.find());
   }
 
-  async getUser(email: string): Promise<UserDto> {
+  async getUserDTO(email: string): Promise<UserDto> {
     const user = await this.findUserByEmail(email) as User;
     const userDto ={
       email:user.email,
@@ -98,6 +98,11 @@ export class UserService {
     return (userDto);
   }
 
+  async getUser(email: string): Promise<User> {
+    const user = await this.findUserByEmail(email) as User;
+    return (user);
+  }
+
   async checkCredentials(credentialsDto: CredentialsDto): Promise<User | null> {
     const { email, token } = credentialsDto;
 
@@ -111,7 +116,7 @@ export class UserService {
 
   async updateUser(updateUserDto: UpdateUserDto, email: string) : Promise<User> {
     const user = await this.findUserByEmail(email) as User;
-    const { nick, imgUrl, isTFAEnable, tfaEmail, tfaValidated } = updateUserDto;
+    const { nick, imgUrl, isTFAEnable, tfaEmail, tfaValidated ,tfaCode} = updateUserDto;
     if (nick && await this.checkDuplicateNick(nick))
       throw new ForbiddenException('Duplicated nickname');
     user.nick = nick ? nick : user?.nick;
@@ -119,11 +124,13 @@ export class UserService {
     user.isTFAEnable = isTFAEnable !== undefined ? isTFAEnable : user.isTFAEnable;
     user.tfaEmail = tfaEmail ? tfaEmail : user?.tfaEmail;
     user.tfaValidated  = tfaValidated !== undefined ? tfaValidated: user.tfaValidated;
+    user.tfaCode = tfaCode ? bcrypt.hashSync(tfaCode, 8) : user.tfaCode;
+    if (tfaCode == null){
+      user.tfaCode = '';
+    }
     try {
       await user.save();
-      // console.log('user', user);
       return user;
-      
     } catch (error) {
       throw new InternalServerErrorException('Erro ao salvar os dados no db');
     }

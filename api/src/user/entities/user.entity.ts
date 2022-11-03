@@ -75,6 +75,10 @@ export class User extends BaseEntity {
   tfaEmail?: string;
 
   @ApiProperty()
+  @Column({ nullable: true })
+  tfaCode?: string;
+
+  @ApiProperty()
   @Column({ default: false })
   isTFAEnable: boolean;
 

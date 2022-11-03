@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Post, UseGuards, UseInterceptors, UploadedFile, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Post, UseGuards, UseInterceptors, UploadedFile, ValidationPipe, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
@@ -12,14 +12,12 @@ import { UserService } from './user.service';
 import * as nodemailer from 'nodemailer';
 import { smtpConfig } from '../config/smtp';
 import { UserDto } from './dto/user.dto';
-
+import * as bcrypt from 'bcrypt';
 
 
 @Controller('user')
 @ApiTags('user')
 export class UserController {
-
-
   constructor(private readonly userService: UserService) { }
 
   @Post()
@@ -42,6 +40,39 @@ export class UserController {
     return this.userService.updateUser(updateUserDto, userFromJwt.email);
   }
 
+  @Patch('/turn-off-tfa')
+  @ApiBody({ type: UpdateUserDto })
+  @UseGuards(JwtAuthGuard)
+  async turnOffTfa(
+    @Body(ValidationPipe) updateUserDto: UpdateUserDto,
+    @GetUserFromJwt() userFromJwt : UserFromJwt,
+  ) {
+    console.log('updateUser cancelando', updateUserDto);
+    this.userService.updateUser(updateUserDto, userFromJwt.email);
+
+    return { message: 'turned off' };
+  }
+
+  @Patch('/validate-code')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: UpdateUserDto })
+  async validateTFACode(
+    @Body(ValidationPipe) updateUserDto: UpdateUserDto,
+    @GetUserFromJwt() userFromJwt : UserFromJwt,
+  ) {
+    console.log(updateUserDto);
+    updateUserDto;
+    userFromJwt;
+    const user = await this.userService.getUser(userFromJwt.email);
+    if (!bcrypt.compareSync(updateUserDto.tfaCode as string, user.tfaCode as string)){
+      throw new UnauthorizedException('Invalid Code');
+    }
+    return ({
+      msg: 'success'
+    });
+
+  }
+
   @Patch('/validate-email')
   @UseGuards(JwtAuthGuard)
   async validateEmailTFA(
@@ -56,8 +87,14 @@ export class UserController {
       }
       return code;
     }
-    updateUserDto;
+
     const sendedCode = generateCode();
+    updateUserDto.tfaCode = sendedCode;
+    console.log('updateUser', updateUserDto);
+    const user = await this.userService.updateUser(updateUserDto, userFromJwt.email);
+    console.log('user', user);
+    console.log('print do codigo enviado do tfa', sendedCode);
+
     const transporter = nodemailer.createTransport({
       host: smtpConfig.host,
       port: smtpConfig.port,
@@ -70,17 +107,17 @@ export class UserController {
         rejectUnauthorized: false,
       }
     });
-    // console.log(transporter);
-    if (userFromJwt.tfaEmail){
+    if (user.tfaEmail) {
       const mailSent =  await transporter.sendMail({
         text: `Your validation code is ${sendedCode}`,
         subject: 'Verify Code from Transcendence',
         from:process.env['TFA_EMAIL_FROM'],
-        to: [userFromJwt.tfaEmail]
+        to: [user.tfaEmail as string]
       });
       mailSent;
+    } else {
+      throw new InternalServerErrorException('Error: Mail can\'t be empty');
     }
-    return sendedCode;
   }
 
   @Patch('/updateNick/')
@@ -89,7 +126,8 @@ export class UserController {
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
     @GetUserFromJwt() userFromJwt : UserFromJwt,
   ) {
-    return this.userService.updateUser(updateUserDto, userFromJwt.email);
+    await this.userService.updateUser(updateUserDto, userFromJwt.email);
+    return { message: 'succes' };
   }
 
   @Get()
@@ -102,8 +140,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
   async getUser( @GetUserFromJwt() userFromJwt : UserFromJwt): Promise<UserDto> {
-    userFromJwt;
-    return (await this.userService.getUser('gsilva-v@student.42sp.org.br'));
+    return (await this.userService.getUserDTO(userFromJwt.email));
   }
 
   @Post('/updateImage')
@@ -125,13 +162,12 @@ export class UserController {
       },
     }),
   }))
-  getFile(
+  async getFile(
     @UploadedFile() file: Express.Multer.File,
     @GetUserFromJwt() userFromJwt : UserFromJwt
   ) {
     const updateUserDto: UpdateUserDto = {imgUrl: file.originalname};
-    // console.log(file);
-    this.userService.updateUser(updateUserDto, userFromJwt.email);
+    await this.userService.updateUser(updateUserDto, userFromJwt.email);
     return { message: 'succes', path: file.path};
   }
 

@@ -21,13 +21,11 @@ export function ValidateTfa() {
       border: '3px solid black'
     },
   };
-
   const [verifyCode, setVerifyCode] = useState<string>('');
   const [isModalVerifyCodeVisible, setIsModalVerifyCodeVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalRequestMailVisible, setIsModalRequestMailVisible] = useState(true);
   const [verifyCodeStyle, setVerifyCodeStyle] = useState(verifyCodeStyleDefault);
-
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function turnOnTFA(body:any, config :any){
@@ -57,21 +55,23 @@ export function ValidateTfa() {
 
   async function handleValidateCode(){
     const user = await api.get('/user/me', config);
-    const body = {
-      isTFAEnable: true,
-      tfaEmail: user.data.tfaEmail,
-      tfaValidated: true,
-    };
     const typedCode = document.querySelector('.tfaVerifyModal__input') as HTMLInputElement;
-    console.log(typedCode.value.toString());
-
-    if ( typedCode.value.length === 6 && typedCode.value.toString() === verifyCode.toString()){
-      setVerifyCodeStyle(verifyCodeStyleDefault);
-      typedCode.value = '';
-      turnOnTFA(body, config);
-      window.location.reload();
-    }
-    else {
+    const body = {
+      tfaCode: typedCode.value,
+    };
+    console.log('typedCode', typedCode.value.toString());
+    try{
+      console.log('entou no try');
+      console.log('config', config);
+      console.log('body', body);
+      const validateCode = await api.patch('/user/validate-code', body, config);
+      console.log('chegou aqui', validateCode);
+      if (validateCode.status === 200){
+        setVerifyCodeStyle(verifyCodeStyleDefault);
+        turnOnTFA(body, config);
+        window.location.reload();
+      }
+    } catch (err) {
       typedCode.value = '';
       const errorVefify = {
         styles: {

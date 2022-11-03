@@ -10,7 +10,7 @@ interface TFAValidateCodeModalProps{
   tfaEmail:string
   api: AxiosInstance;
   emailInput: HTMLInputElement;
-  verifyCode: string;
+  setTfaEnable: (arg0: boolean) => void;
 }
 
 export function TFAValidateCodeModal({
@@ -19,7 +19,8 @@ export function TFAValidateCodeModal({
   tfaEmail,
   setIsModalVerifyCodeVisible,
   isModalVerifyCodeVisible,
-  verifyCode,
+  setTfaEnable,
+
 
 } : TFAValidateCodeModalProps){
 
@@ -31,29 +32,43 @@ export function TFAValidateCodeModal({
   };
   const [verifyCodeStyle, setVerifyCodeStyle] = useState(verifyCodeStyleDefault);
 
-
   async function turnOnTFA(body:any, config :any){
     const updateTfa = await api.patch('/user/turn-on-tfa', body,config);
     if (updateTfa.status === 200){
-      // console.log(updateTfa);
       setIsModalVerifyCodeVisible(false);
       window.location.reload();
     }
   }
 
+  async function handleCancel(){
+    const body = {
+      isTFAEnable: false,
+      tfaValidated: false,
+      tfaEmail: null,
+      tfaCode: null,
+    };
+    const validateEmail = await api.patch('/user/turn-off-tfa', body, config);
+    setIsModalVerifyCodeVisible(false);
+    if (validateEmail.status === 200){
+      setTfaEnable(false);
+    }
+  }
 
   async function handleValidateCode(){
-    const body = {
-      isTFAEnable: true,
-      tfaEmail: tfaEmail,
-      tfaValidated: true,
-    };
     const typedCode = document.querySelector('.tfaValidateCode__input') as HTMLInputElement;
-    if (typedCode.value.toString() === verifyCode.toString()){
-      setVerifyCodeStyle(verifyCodeStyleDefault);
-      turnOnTFA(body, config);
-    }
-    else {
+    const body = {
+      tfaCode: typedCode.value,
+      tfaValidated: false,
+    };
+    try{
+      const validateCode = await api.patch('/user/validate-code', body, config);
+      console.log(validateCode);
+      if (validateCode.status === 200){
+        body.tfaValidated = true;
+        setVerifyCodeStyle(verifyCodeStyleDefault);
+        turnOnTFA(body, config);
+      }
+    } catch (err) {
       typedCode.value = '';
       const errorVefify = {
         styles: {
@@ -63,6 +78,7 @@ export function TFAValidateCodeModal({
       };
       setVerifyCodeStyle(errorVefify);
     }
+
   }
 
 
@@ -80,7 +96,7 @@ export function TFAValidateCodeModal({
               />
               <div className='tfaValidateCode__buttons'>
                 <button className='tfaValidateCode__buttons__validate' onClick={handleValidateCode}>Validate</button>
-                <button className='tfaValidateCode__buttons__cancel' onClick={() => setIsModalVerifyCodeVisible(false)}>Cancel</button>
+                <button className='tfaValidateCode__buttons__cancel' onClick={handleCancel}>Cancel</button>
               </div>
             </div>
           </Modal> : null

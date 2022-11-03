@@ -37,12 +37,15 @@ export function TFATurnOnModal({
   const [verifyMailStyle, setVerifyMailStyle] = useState(verifyMailStyleDefault);
   const [isLoading, setIsLoading] = useState(false);
 
+
+
+
   async function handleTFA() {
     setTfaEmail(emailInput.value);
     const body = {
       isTFAEnable: true,
       tfaEmail: tfaEmail,
-      tfaValidated: true,
+      tfaValidated: false,
     };
     try {
       setVerifyMailStyle(verifyMailStyleDefault);
@@ -57,7 +60,8 @@ export function TFATurnOnModal({
       }
     } catch (error) {
       setIsLoading(false);
-      const typedMail = document.querySelector('.tfaTurnON__input') as HTMLInputElement;
+      console.log('caiu no catch');
+      const typedMail = document.querySelector('.tfaTurnOn__input') as HTMLInputElement;
       typedMail.value = '';
       const errorVefify = {
         styles: {

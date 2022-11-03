@@ -20,7 +20,11 @@ export class UpdateUserDto {
     tfaValidated?: boolean;
 
   @IsOptional()
-  @IsString({ message: 'Inform a valid email' })
-  @IsEmail({ message: 'Inform a valid email' })
+  @IsEmail({message: 'Inform a valid email'})
     tfaEmail?: string;
+
+  @IsOptional()
+  @IsString({ message: 'Inform a valid code' })
+    tfaCode?: string;
+
 }
