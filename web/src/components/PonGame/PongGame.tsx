@@ -83,11 +83,7 @@ export function PongGame() {
     drawCircle(context, ball);
     drawFillRect(context, player1Rec);
     drawFillRect(context, player2Rec);
-  };
 
-  useEffect(() => {
-    context = canvasRef.current?.getContext('2d');
-    drawGame();
     if (currentState.game?.hasEnded) {
       if (!context) {
         return;
@@ -111,6 +107,11 @@ export function PongGame() {
       drawText(context, quitHelp);
       return;
     }
+  };
+
+  useEffect(() => {
+    context = canvasRef.current?.getContext('2d');
+    drawGame();
   }, [currentState]);
 
 
