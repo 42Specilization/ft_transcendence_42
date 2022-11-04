@@ -11,6 +11,7 @@ export function ValidateTfa() {
       Authorization: `Bearer ${token}`,
     },
   };
+
   const api = axios.create({
     baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
   });
@@ -21,17 +22,15 @@ export function ValidateTfa() {
       border: '3px solid black'
     },
   };
-  const [verifyCode, setVerifyCode] = useState<string>('');
+  const [verifyCodeStyle, setVerifyCodeStyle] = useState(verifyCodeStyleDefault);
   const [isModalVerifyCodeVisible, setIsModalVerifyCodeVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalRequestMailVisible, setIsModalRequestMailVisible] = useState(true);
-  const [verifyCodeStyle, setVerifyCodeStyle] = useState(verifyCodeStyleDefault);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function turnOnTFA(body:any, config :any){
     const updateTfa = await api.patch('/user/turn-on-tfa', body,config);
     if (updateTfa.status === 200){
-      // console.log(updateTfa);
       setIsModalVerifyCodeVisible(false);
     }
   }
@@ -44,11 +43,8 @@ export function ValidateTfa() {
       tfaValidated: true,
     };
     setIsLoading(true);
-    const validateEmail = await api.patch('/user/validate-email', body, config);
+    await api.patch('/user/validate-email', body, config);
     setIsLoading(false);
-    // Deixar esse print para ver os codigos enviados
-    console.log(validateEmail);
-    setVerifyCode(validateEmail.data);
     setIsModalVerifyCodeVisible(true);
     setIsModalRequestMailVisible(false);
   }

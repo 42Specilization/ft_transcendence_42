@@ -1,13 +1,15 @@
+import { ReactNode } from 'react';
 import './Modal.scss';
 
 interface ModalProps {
-  children: any;
+  children: ReactNode;
   onClose?: () => void;
   id?: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export function Modal({ id = 'modal' ,children, onClose = () => {} }:ModalProps) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleOutsideClick = (e: any)=> {
     if (e.target.id == id) onClose();
   };

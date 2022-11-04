@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { createContext, ReactNode, useContext } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { IntraData } from '../Interfaces/interfaces';
-import ValidateTfa from '../pages/ValidateTfa/ValidateTfa';
 
 interface UserType {
   login: () => Promise<unknown>;
