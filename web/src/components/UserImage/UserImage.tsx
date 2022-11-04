@@ -27,8 +27,7 @@ export function UserImage({ image_url, login, setIntraData }: UserImageProps) {
     const api = axios.create({
       baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
     });
-    await api.post('/user/updateImage', data, config);
-  }
+    await api.post('/user/updateImage', data, config);  }
 
   useEffect(() => {
     if (selectedFile) handleSubmit();

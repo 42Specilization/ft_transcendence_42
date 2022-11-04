@@ -42,7 +42,6 @@ function useAuth() {
 
     },
     logout() {
-
       window.localStorage.removeItem('token');
       window.localStorage.removeItem('userData');
       navigate('/signin');

@@ -1,8 +1,12 @@
-import React, { Dispatch, SetStateAction } from 'react';
 import './ProfileCard.scss';
+import { Dispatch, SetStateAction, useInsertionEffect, useState} from 'react';
 import { UserImage } from '../UserImage/UserImage';
 import { IntraData } from '../../Interfaces/interfaces';
 import { NotePencil } from 'phosphor-react';
+import { TFAButton } from '../TFAButton/TFAButton';
+import { ChangeNick } from '../ChangeNick/ChangeNick';
+import { getStoredData } from '../../pages/Home/Home';
+
 interface ProfileCardProps{
     email: string;
     image_url: string;
@@ -12,9 +16,11 @@ interface ProfileCardProps{
 }
 
 export function ProfileCard({ email, image_url, login, full_name, setIntraData }:ProfileCardProps) {
-  function handleClick() {
-    window.location.href = '/updateNick';
-  }
+  const [isModalChangeNickVisible, setIsModalChangeNickVisible] = useState(false);
+  useInsertionEffect(() =>{
+    window.localStorage.removeItem('userData');
+    getStoredData(setIntraData);
+  }, []);
 
   return (
     <div className="profileCard">
@@ -30,9 +36,18 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
           <strong>{login}</strong>
         </div>
         <div className='profileCard__infos__button'>
-          <NotePencil size={32} onClick={handleClick}/>
+          <NotePencil size={32} onClick={() => setIsModalChangeNickVisible(true)}/>
         </div>
+        {
+          isModalChangeNickVisible ?
+            <ChangeNick
+              setIntraData={setIntraData}
+              setIsModalChangeNickVisible={setIsModalChangeNickVisible}
+            />
+            : null
+        }
       </div>
+      <TFAButton />
     </div >
   );
 }

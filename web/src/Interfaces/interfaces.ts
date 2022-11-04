@@ -7,6 +7,8 @@ export interface IntraData {
   matches: string;
   wins: string;
   lose: string;
+  isTFAEnable: boolean;
+  tfaValidated: boolean;
 }
 
 export interface ErrResponse {

@@ -15,7 +15,10 @@ export default function Profile() {
     usual_full_name: 'ft_transcendence',
     matches: '0',
     wins: '0',
-    lose: '0'
+    lose: '0',
+    isTFAEnable: false,
+    tfaValidated: false,
+
   };
 
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
@@ -52,7 +55,7 @@ export default function Profile() {
         </div>
         <div className='profile__stats__ratio'>
           <a>Ratio W/L:</a>
-          <a>{Number(intraData.wins)  / (Number(intraData.lose) > 0 ? Number(intraData.lose) : 1)}</a>
+          <a>{Number(intraData.wins) / (Number(intraData.lose) > 0 ? Number(intraData.lose) : 1)}</a>
         </div>
       </div>
       <NavBar name={intraData.login} imgUrl={intraData.image_url} />

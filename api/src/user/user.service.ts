@@ -7,6 +7,8 @@ import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { CredentialsDto } from './dto/credentials.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserDto } from './dto/user.dto';
+import * as fs from 'fs';
 
 
 @Injectable()
@@ -68,6 +70,7 @@ export class UserService {
   async updateToken(email: string, token: AccessTokenResponse) {
     const user = await this.findUserByEmail(email) as User;
     user.token = token.access_token;
+    user.tfaValidated = false;
     try {
       user.save();
     } catch {
@@ -77,6 +80,28 @@ export class UserService {
 
   async getUsers(): Promise<User[]> {
     return (await this.usersRepository.find());
+  }
+
+  async getUserDTO(email: string): Promise<UserDto> {
+    const user = await this.findUserByEmail(email) as User;
+    const userDto ={
+      email:user.email,
+      first_name: user.first_name,
+      image_url: user.imgUrl,
+      login: user.nick,
+      usual_full_name: user.usual_full_name,
+      matches: user.matches,
+      wins: user.wins,
+      lose: user.lose,
+      isTFAEnable: user.isTFAEnable as boolean,
+      tfaValidated: user.tfaValidated as boolean,
+    };
+    return (userDto);
+  }
+
+  async getUser(email: string): Promise<User> {
+    const user = await this.findUserByEmail(email) as User;
+    return (user);
   }
 
   async checkCredentials(credentialsDto: CredentialsDto): Promise<User | null> {
@@ -92,18 +117,35 @@ export class UserService {
 
   async updateUser(updateUserDto: UpdateUserDto, email: string) : Promise<User> {
     const user = await this.findUserByEmail(email) as User;
-    const { nick, imgUrl } = updateUserDto;
+    const { nick, imgUrl, isTFAEnable, tfaEmail, tfaValidated ,tfaCode} = updateUserDto;
     if (nick && await this.checkDuplicateNick(nick))
       throw new ForbiddenException('Duplicated nickname');
 
     user.nick = nick ? nick : user?.nick;
     user.imgUrl = imgUrl ? imgUrl : user?.imgUrl;
+    user.isTFAEnable = isTFAEnable !== undefined ? isTFAEnable : user.isTFAEnable;
+    user.tfaEmail = tfaEmail ? tfaEmail : user?.tfaEmail;
+    user.tfaValidated  = tfaValidated !== undefined ? tfaValidated: user.tfaValidated;
+    user.tfaCode = tfaCode ? bcrypt.hashSync(tfaCode, 8) : user.tfaCode;
+    if (nick) {
+      fs.rename(`../web/public/${user.imgUrl}`, `../web/public/${nick}_avatar.jpg`, function(err){
+        if (err) throw err;
+        console.log('user avatar renamed');
+      });
+      user.imgUrl = `${nick}_avatar.jpg`;
+    }
+
+    if (tfaCode == null){
+      user.tfaCode = '';
+    }
+
+
     try {
       await user.save();
-      console.log('user', user);
       return user;
     } catch (error) {
       throw new InternalServerErrorException('Erro ao salvar os dados no db');
     }
   }
+
 }

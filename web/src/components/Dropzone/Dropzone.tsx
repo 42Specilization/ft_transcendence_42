@@ -1,5 +1,5 @@
 import { NotePencil } from 'phosphor-react';
-import React, { Dispatch, SetStateAction, useCallback } from 'react';
+import { Dispatch, SetStateAction, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { IntraData } from '../../Interfaces/interfaces';
 import { getStoredData } from '../../pages/Home/Home';
@@ -11,7 +11,8 @@ interface DropzoneProps {
 
 export function Dropzone({ onFileUploaded, setIntraData }: DropzoneProps) {
   const onDrop = useCallback(
-    (acceptepFiles) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (acceptepFiles: any) => {
       const localStore : string | null = window.localStorage.getItem('userData');
       if (localStore){
         const data: IntraData = JSON.parse(localStore);
