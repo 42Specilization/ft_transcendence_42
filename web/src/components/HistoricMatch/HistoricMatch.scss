@@ -63,7 +63,6 @@
 
 .historicMatch__player {
   justify-items: center;
-
 }
 
 .historicMatch__player img{
@@ -76,7 +75,11 @@
 }
 
 .historicMatch__player__nick{
-  @include flexCenter(initial, row, center);
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden !important;
   text-align: center;
   background-color: $backgroundColor;
   border-radius: 10px;

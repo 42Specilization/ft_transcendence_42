@@ -1,10 +1,11 @@
 import './ProfileCard.scss';
-import { Dispatch, SetStateAction, useState} from 'react';
+import { Dispatch, SetStateAction, useInsertionEffect, useState} from 'react';
 import { UserImage } from '../UserImage/UserImage';
 import { IntraData } from '../../Interfaces/interfaces';
 import { NotePencil } from 'phosphor-react';
 import { TFAButton } from '../TFAButton/TFAButton';
 import { ChangeNick } from '../ChangeNick/ChangeNick';
+import { getStoredData } from '../../pages/Home/Home';
 
 interface ProfileCardProps{
     email: string;
@@ -16,6 +17,11 @@ interface ProfileCardProps{
 
 export function ProfileCard({ email, image_url, login, full_name, setIntraData }:ProfileCardProps) {
   const [isModalChangeNickVisible, setIsModalChangeNickVisible] = useState(false);
+  useInsertionEffect(() =>{
+    window.localStorage.removeItem('userData');
+    getStoredData(setIntraData);
+  }, []);
+
   return (
     <div className="profileCard">
       <UserImage
