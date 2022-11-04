@@ -6,7 +6,6 @@ import OAuth from './pages/OAuth/OAuth';
 import { AuthProvider } from './auth/auth';
 import './main.css';
 import Profile from './pages/Profile/Profile';
-import ProfileUpdateNick from './pages/ProfileUpdateNick/ProfileUpdateNick';
 import Game from './pages/Game/Game';
 import Historic from './pages/Historic/Historic';
 import{ ValidateTfa } from './components/ValidateTfa/ValidateTfa';
@@ -78,20 +77,9 @@ export default function AppRouter() {
             </RequireAuth>
           } />
 
-          <Route path='/updateNick' element={
-            <RequireAuth>
-              <ProfileUpdateNick />
-            </RequireAuth>
-          } />
-
           <Route path='/historic' element={
             <RequireAuth>
               <Historic />
-            </RequireAuth>
-          } />
-          <Route path='/apagardepois' element={
-            <RequireAuth>
-              <ValidateTfa />
             </RequireAuth>
           } />
           <Route path='/oauth' element={<OAuth />} />

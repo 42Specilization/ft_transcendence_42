@@ -54,18 +54,12 @@ export function ValidateTfa() {
   }
 
   async function handleValidateCode(){
-    const user = await api.get('/user/me', config);
     const typedCode = document.querySelector('.tfaVerifyModal__input') as HTMLInputElement;
     const body = {
       tfaCode: typedCode.value,
     };
-    console.log('typedCode', typedCode.value.toString());
     try{
-      console.log('entou no try');
-      console.log('config', config);
-      console.log('body', body);
       const validateCode = await api.patch('/user/validate-code', body, config);
-      console.log('chegou aqui', validateCode);
       if (validateCode.status === 200){
         setVerifyCodeStyle(verifyCodeStyleDefault);
         turnOnTFA(body, config);

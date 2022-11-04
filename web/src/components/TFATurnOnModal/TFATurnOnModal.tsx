@@ -12,7 +12,6 @@ interface TFATurnOnModalProps{
   tfaEmail:string
   api: AxiosInstance;
   emailInput: HTMLInputElement;
-  setVerifyCode: (arg0: string) => void;
   setIsModalVerifyCodeVisible: (arg0: boolean) => void;
 }
 
@@ -24,7 +23,6 @@ export function TFATurnOnModal({
   setTfaEmail,
   tfaEmail,
   emailInput,
-  setVerifyCode,
   setIsModalVerifyCodeVisible,
 } : TFATurnOnModalProps){
 
@@ -36,9 +34,6 @@ export function TFATurnOnModal({
   };
   const [verifyMailStyle, setVerifyMailStyle] = useState(verifyMailStyleDefault);
   const [isLoading, setIsLoading] = useState(false);
-
-
-
 
   async function handleTFA() {
     setTfaEmail(emailInput.value);
@@ -54,7 +49,6 @@ export function TFATurnOnModal({
       setIsLoading(false);
       console.log('validate', validateEmail);
       if (validateEmail.status === 200){
-        setVerifyCode(validateEmail.data);
         setIsModalVerifyCodeVisible(true);
         setIsModalTurnOnVisible(false);
       }

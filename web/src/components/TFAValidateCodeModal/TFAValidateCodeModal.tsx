@@ -1,7 +1,7 @@
+import './TFAValidateCodeModal.scss';
 import { AxiosInstance } from 'axios';
 import { useState } from 'react';
 import { Modal } from '../Modal/Modal';
-import './TFAValidateCodeModal.scss';
 interface TFAValidateCodeModalProps{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config: any;

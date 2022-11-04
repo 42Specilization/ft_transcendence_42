@@ -1,12 +1,11 @@
-import { Dispatch, SetStateAction} from 'react';
 import './ProfileCard.scss';
+import { Dispatch, SetStateAction, useState} from 'react';
 import { UserImage } from '../UserImage/UserImage';
 import { IntraData } from '../../Interfaces/interfaces';
 import { NotePencil } from 'phosphor-react';
-import { Modal } from '../Modal/Modal';
-import { useNavigate } from 'react-router-dom';
 import { TFAButton } from '../TFAButton/TFAButton';
-// import QRCode from 'react-qr-code';
+import { ChangeNick } from '../ChangeNick/ChangeNick';
+
 interface ProfileCardProps{
     email: string;
     image_url: string;
@@ -16,11 +15,7 @@ interface ProfileCardProps{
 }
 
 export function ProfileCard({ email, image_url, login, full_name, setIntraData }:ProfileCardProps) {
-  const navigate = useNavigate();
-  function handleChangeNick() {
-    navigate('/updateNick');
-  }
-
+  const [isModalChangeNickVisible, setIsModalChangeNickVisible] = useState(false);
   return (
     <div className="profileCard">
       <UserImage
@@ -35,8 +30,16 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
           <strong>{login}</strong>
         </div>
         <div className='profileCard__infos__button'>
-          <NotePencil size={32} onClick={handleChangeNick}/>
+          <NotePencil size={32} onClick={() => setIsModalChangeNickVisible(true)}/>
         </div>
+        {
+          isModalChangeNickVisible ?
+            <ChangeNick
+              setIntraData={setIntraData}
+              setIsModalChangeNickVisible={setIsModalChangeNickVisible}
+            />
+            : null
+        }
       </div>
       <TFAButton />
     </div >

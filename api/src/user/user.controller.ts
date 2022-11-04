@@ -14,7 +14,6 @@ import { smtpConfig } from '../config/smtp';
 import { UserDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 
-
 @Controller('user')
 @ApiTags('user')
 export class UserController {
@@ -30,6 +29,7 @@ export class UserController {
     });
   }
 
+  /* A patch method that is used to turn on the two factor authentication. */
   @Patch('/turn-on-tfa')
   @ApiBody({ type: UpdateUserDto })
   @UseGuards(JwtAuthGuard)
@@ -37,9 +37,11 @@ export class UserController {
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
     @GetUserFromJwt() userFromJwt : UserFromJwt,
   ) {
-    return this.userService.updateUser(updateUserDto, userFromJwt.email);
+    await this.userService.updateUser(updateUserDto, userFromJwt.email);
+    return { message: 'turned on' };
   }
 
+  /* A patch method that is used to turn off the two factor authentication. */
   @Patch('/turn-off-tfa')
   @ApiBody({ type: UpdateUserDto })
   @UseGuards(JwtAuthGuard)
@@ -47,12 +49,11 @@ export class UserController {
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
     @GetUserFromJwt() userFromJwt : UserFromJwt,
   ) {
-    console.log('updateUser cancelando', updateUserDto);
     this.userService.updateUser(updateUserDto, userFromJwt.email);
-
     return { message: 'turned off' };
   }
 
+  /* This method is used to validate the code that the user has sent. */
   @Patch('/validate-code')
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: UpdateUserDto })
@@ -60,9 +61,6 @@ export class UserController {
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
     @GetUserFromJwt() userFromJwt : UserFromJwt,
   ) {
-    console.log(updateUserDto);
-    updateUserDto;
-    userFromJwt;
     const user = await this.userService.getUser(userFromJwt.email);
     if (!bcrypt.compareSync(updateUserDto.tfaCode as string, user.tfaCode as string)){
       throw new UnauthorizedException('Invalid Code');
@@ -70,18 +68,19 @@ export class UserController {
     return ({
       msg: 'success'
     });
-
   }
 
+  /* Sending a email to the user with a code to validate the email. */
   @Patch('/validate-email')
   @UseGuards(JwtAuthGuard)
   async validateEmailTFA(
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
     @GetUserFromJwt() userFromJwt : UserFromJwt,
   ) {
+
     function generateCode(){
       let code = '';
-      const avaliableChar = '1234567890';
+      const avaliableChar = '1234567890abcdefghijklmnopqrstuvwxyz';
       for (let i = 0; i < 6; i++){
         code += avaliableChar.charAt(Math.floor(Math.random() * avaliableChar.length));
       }
@@ -90,11 +89,8 @@ export class UserController {
 
     const sendedCode = generateCode();
     updateUserDto.tfaCode = sendedCode;
-    console.log('updateUser', updateUserDto);
     const user = await this.userService.updateUser(updateUserDto, userFromJwt.email);
-    console.log('user', user);
     console.log('print do codigo enviado do tfa', sendedCode);
-
     const transporter = nodemailer.createTransport({
       host: smtpConfig.host,
       port: smtpConfig.port,
@@ -108,18 +104,18 @@ export class UserController {
       }
     });
     if (user.tfaEmail) {
-      const mailSent =  await transporter.sendMail({
+      await transporter.sendMail({
         text: `Your validation code is ${sendedCode}`,
         subject: 'Verify Code from Transcendence',
         from:process.env['TFA_EMAIL_FROM'],
         to: [user.tfaEmail as string]
       });
-      mailSent;
     } else {
       throw new InternalServerErrorException('Error: Mail can\'t be empty');
     }
   }
 
+  /* A method that is used to update the user's nickname. */
   @Patch('/updateNick/')
   @UseGuards(JwtAuthGuard)
   async updateNick(
@@ -136,6 +132,7 @@ export class UserController {
     return (await this.userService.getUsers());
   }
 
+  /* This method is used to get the user's information. */
   @Get('me')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
@@ -143,6 +140,7 @@ export class UserController {
     return (await this.userService.getUserDTO(userFromJwt.email));
   }
 
+  /* This method is used to update the user's image. */
   @Post('/updateImage')
   @ApiConsumes('multipart/form-data')
   @UseGuards(JwtAuthGuard)

@@ -6,7 +6,6 @@ import { TFAValidateCodeModal } from '../TFAValidateCodeModal/TFAValidateCodeMod
 import './TFAButton.scss';
 
 export function TFAButton(){
-  const [verifyCode, setVerifyCode] = useState<string>('');
   const [tfaEmail, setTfaEmail] = useState<string>('');
   const [isModalVerifyCodeVisible, setIsModalVerifyCodeVisible] = useState(false);
   const [isModalTurnOnVisible, setIsModalTurnOnVisible] = useState(false);
@@ -60,7 +59,6 @@ export function TFAButton(){
         tfaEmail={tfaEmail}
         api={api}
         emailInput={emailInput}
-        setVerifyCode={setVerifyCode}
         setIsModalVerifyCodeVisible={setIsModalVerifyCodeVisible}
       />
       <TFAValidateCodeModal
