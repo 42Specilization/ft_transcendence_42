@@ -12,9 +12,7 @@
   }
   .modal__container {
     max-width: 420px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+    @include flexCenter(flex-start, row, center);
     .tfaRequestModal__requestArea{
       font-size: 20px;
       width: 100%;
@@ -70,11 +68,8 @@
   }
 
   .tfaRequestModal__requestArea{
-    display: flex;
-    flex-direction: column;
+    @include flexCenter(center, column, center);
     width: 80%;
-    justify-content: center;
-    align-items: center;
   }
 
   .tfaRequestModal__buttonRequest{
@@ -98,10 +93,7 @@
   .tfaVerifyModal__inputArea {
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
+    @include flexCenter(space-around, column, center);
     .tfaVerifyModal__input{
       font-family: 'Oxanium', cursive;
       font-size: 18px;

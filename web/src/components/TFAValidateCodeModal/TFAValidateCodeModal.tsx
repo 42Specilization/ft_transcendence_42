@@ -63,7 +63,6 @@ export function TFAValidateCodeModal({
     };
     try{
       const validateCode = await api.patch('/user/validate-code', body, config);
-      console.log(validateCode);
       if (validateCode.status === 200){
         body.tfaValidated = true;
         setVerifyCodeStyle(verifyCodeStyleDefault);

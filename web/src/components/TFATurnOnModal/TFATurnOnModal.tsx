@@ -47,14 +47,12 @@ export function TFATurnOnModal({
       setIsLoading(true);
       const validateEmail = await api.patch('/user/validate-email', body, config);
       setIsLoading(false);
-      console.log('validate', validateEmail);
       if (validateEmail.status === 200){
         setIsModalVerifyCodeVisible(true);
         setIsModalTurnOnVisible(false);
       }
     } catch (error) {
       setIsLoading(false);
-      console.log('caiu no catch');
       const typedMail = document.querySelector('.tfaTurnOn__input') as HTMLInputElement;
       typedMail.value = '';
       const errorVefify = {

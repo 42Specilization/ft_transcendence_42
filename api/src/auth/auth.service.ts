@@ -153,11 +153,6 @@ export class AuthService {
       tfaEmail: finalUser.tfaEmail as string,
     };
 
-    if (!finalUser.isTFAEnable){
-      return ({
-        access_token: this.jwtService.sign(payload)
-      });
-    }
     return ({
       access_token: this.jwtService.sign(payload)
     });

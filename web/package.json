@@ -16,7 +16,6 @@
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-loader-spinner": "^5.3.4",
-    "react-qr-code": "^2.0.8",
     "socket.io-client": "^4.5.3",
     "valtio": "^1.7.4",
     "yarn": "^1.22.19"
