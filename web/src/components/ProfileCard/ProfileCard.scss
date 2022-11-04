@@ -65,8 +65,13 @@
     margin-left: 25px;
   }
   .profileCard__infos__name {
+    display: inline-block;
+    white-space: nowrap;
     font-size: 1.5em;
     margin-top: 15px;
+    max-width: 250px;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
   }
 
   .profileCard__infos__email{
@@ -74,6 +79,11 @@
   }
   .profileCard__infos__nick{
     font-size: 1.5em;
+  }
+  .tfaButton{
+    .tfaButton__button{
+      font-family: 'Oxanium', cursive;
+    }
   }
 }
 
@@ -89,18 +99,33 @@
     font-size: 2em;
     margin-top: 15px;
     max-width: 400px;
-    width: max-content;
-    overflow: hidden;
+    display: inline-block;
+    text-align: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden !important;
+
   }
 
   .profileCard__infos__email{
     font-size: 1.3em;
   }
+
   .profileCard__infos__nick{
     font-size: 2em;
   }
 
-  .profileCard__2fa{
-    font-size: 1.3em;
+  .tfaButton{
+    width: 100%;
+    justify-content: space-around;
+    strong{
+      font-size: 1.6em;
+      margin-right: 5px;
+    }
+    .tfaButton__button{
+      margin-left: 5px;
+      font-family: 'Oxanium', cursive;
+      font-size: 1.3em;
+    }
   }
 }

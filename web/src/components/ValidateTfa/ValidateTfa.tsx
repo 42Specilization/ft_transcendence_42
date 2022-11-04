@@ -40,7 +40,7 @@ export function ValidateTfa() {
     const body = {
       isTFAEnable: true,
       tfaEmail: user.data.tfaEmail,
-      tfaValidated: true,
+      tfaValidated: false,
     };
     setIsLoading(true);
     await api.patch('/user/validate-email', body, config);
@@ -53,10 +53,12 @@ export function ValidateTfa() {
     const typedCode = document.querySelector('.tfaVerifyModal__input') as HTMLInputElement;
     const body = {
       tfaCode: typedCode.value,
+      tfaValidated: false,
     };
     try{
       const validateCode = await api.patch('/user/validate-code', body, config);
       if (validateCode.status === 200){
+        body.tfaValidated = true;
         setVerifyCodeStyle(verifyCodeStyleDefault);
         turnOnTFA(body, config);
         window.location.reload();
