@@ -1,7 +1,7 @@
 @import '../../styles/variables.scss';
 
 .gameMenu__withFriend {
-  @include flexCenter(center, column);
+  @include displayFlex(center, column);
   padding: 15px;
   gap: 17px;
   h2 {

@@ -1,7 +1,7 @@
 @import '../../styles/variables.scss';
 
 .changeNick {
-  @include flexCenter(space-between, column, center);
+  @include displayFlex(space-between, column, center);
   width: 100%;
   height: 80%;
 

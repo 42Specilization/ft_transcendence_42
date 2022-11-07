@@ -1,7 +1,7 @@
 @import '../../styles/variables.scss';
 
 .tfaTurnOff__buttons{
-  @include flexCenter(space-around, row,center);
+  @include displayFlex(space-around, row,center);
   width: 100%;
 }
 

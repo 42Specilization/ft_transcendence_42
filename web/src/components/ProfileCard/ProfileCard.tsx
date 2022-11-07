@@ -1,24 +1,32 @@
-import './ProfileCard.scss';
-import { Dispatch, SetStateAction, useInsertionEffect, useState} from 'react';
-import { UserImage } from '../UserImage/UserImage';
-import { IntraData } from '../../Interfaces/interfaces';
-import { NotePencil } from 'phosphor-react';
-import { TFAButton } from '../TFAButton/TFAButton';
-import { ChangeNick } from '../ChangeNick/ChangeNick';
-import { getStoredData } from '../../pages/Home/Home';
+/* eslint-disable quotes */
+import "./ProfileCard.scss";
+import { Dispatch, SetStateAction, useInsertionEffect, useState } from "react";
+import { UserImage } from "../UserImage/UserImage";
+import { IntraData } from "../../Interfaces/interfaces";
+import { NotePencil } from "phosphor-react";
+import { TFAButton } from "../TFAButton/TFAButton";
+import { ChangeNick } from "../ChangeNick/ChangeNick";
+import { getStoredData } from "../../routes";
 
-interface ProfileCardProps{
-    email: string;
-    image_url: string;
-    login: string;
-    full_name: string;
-    setIntraData: Dispatch<SetStateAction<IntraData>>;
+interface ProfileCardProps {
+  email: string;
+  image_url: string;
+  login: string;
+  full_name: string;
+  setIntraData: Dispatch<SetStateAction<IntraData>>;
 }
 
-export function ProfileCard({ email, image_url, login, full_name, setIntraData }:ProfileCardProps) {
-  const [isModalChangeNickVisible, setIsModalChangeNickVisible] = useState(false);
-  useInsertionEffect(() =>{
-    window.localStorage.removeItem('userData');
+export function ProfileCard({
+  email,
+  image_url,
+  login,
+  full_name,
+  setIntraData,
+}: ProfileCardProps) {
+  const [isModalChangeNickVisible, setIsModalChangeNickVisible] =
+    useState(false);
+  useInsertionEffect(() => {
+    window.localStorage.removeItem("userData");
     getStoredData(setIntraData);
   }, []);
 
@@ -29,25 +37,30 @@ export function ProfileCard({ email, image_url, login, full_name, setIntraData }
         login={login}
         setIntraData={setIntraData}
       ></UserImage>
-      <strong className="profileCard__infos__name">{full_name}</strong><br/>
-      <strong className="profileCard__infos__email">{email}</strong><br/>
+      <br />
+      <strong className="profileCard__infos__name">{full_name}</strong>
+      <br />
+      <strong>{email}</strong>
+      <br />
       <div className="profileCard__infos__nick">
         <div>
           <strong>{login}</strong>
         </div>
-        <div className='profileCard__infos__button'>
-          <NotePencil size={32} onClick={() => setIsModalChangeNickVisible(true)}/>
+        <div className="profileCard__infos__button">
+          <NotePencil
+            size={32}
+            onClick={() => setIsModalChangeNickVisible(true)}
+          />
         </div>
-        {
-          isModalChangeNickVisible ?
-            <ChangeNick
-              setIntraData={setIntraData}
-              setIsModalChangeNickVisible={setIsModalChangeNickVisible}
-            />
-            : null
-        }
+        {isModalChangeNickVisible ? (
+          <ChangeNick
+            setIntraData={setIntraData}
+            setIsModalChangeNickVisible={setIsModalChangeNickVisible}
+          />
+        ) : null}
       </div>
+      <br />
       <TFAButton />
-    </div >
+    </div>
   );
 }

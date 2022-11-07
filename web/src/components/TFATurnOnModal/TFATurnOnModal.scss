@@ -1,7 +1,7 @@
 @import '../../styles/variables.scss';
 
 .tfaTurnOn__inputArea{
-  @include flexCenter(space-between, row);
+  @include displayFlex(space-between, row);
   width: 80%;
 }
 
@@ -31,6 +31,6 @@
 }
 
 .tfaTurnOn__loading {
-  @include flexCenter(space-between, row);
+  @include displayFlex(space-between, row);
   width: 50%;
 }

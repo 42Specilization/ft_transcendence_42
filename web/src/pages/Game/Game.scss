@@ -1,7 +1,7 @@
 @import '../../styles/variables.scss';
 
 .game {
-  @include flexCenter(center);
+  @include displayFlex(center);
   width: 100%;
   height: 100vh;
   background-image: url('/canvas-background.png');

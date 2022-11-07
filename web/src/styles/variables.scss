@@ -3,12 +3,36 @@ $secondaryColor: #2A2634;
 
 $primaryColorHover: #7C1CED;
 
-$backgroundColor: rgba(139, 92, 246, 0.31);
+$backgroundColor: rgba(140, 95, 250, 0.30);
 
-@mixin flexCenter($justify_content, $flex_direction: row, $align-items: center) {
+$heightWithoutNavBar: calc(100vh - 100px);
+
+@mixin displayFlex($justify_content: center, $flex_direction: row, $align-items: center) {
   display: flex;
-
   justify-content: $justify_content;
   flex-direction: $flex_direction;
   align-items: $align-items;
+ }
+
+@mixin scrollBar($marginTop: 20px, $marginBottom: 20px) {
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 10px;
+    border-radius: 20px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  &::-webkit-scrollbar-track {
+    margin-top: $marginTop;
+    margin-bottom: $marginBottom;
+  }
+}
+
+.body {
+  @include displayFlex(unset, column);
+  width: 100%;
+  height: calc(100vh - 100px);
+  overflow: hidden;
 }

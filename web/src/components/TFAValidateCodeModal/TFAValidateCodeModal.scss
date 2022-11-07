@@ -12,7 +12,7 @@
 
 .tfaValidateCode__inputArea{
   width: 80%;
-  @include flexCenter(space-between, column,center);
+  @include displayFlex(space-between, column,center);
   font-size: 1em;
 }
 
@@ -29,7 +29,7 @@
 }
 
 .tfaValidateCode__buttons {
-  @include flexCenter(space-around, row,center);
+  @include displayFlex(space-around, row,center);
   font-family: 'Oxanium', cursive;
   width:70%;
   height: 30px;

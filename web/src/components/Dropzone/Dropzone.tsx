@@ -2,7 +2,7 @@ import { NotePencil } from 'phosphor-react';
 import { Dispatch, SetStateAction, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { IntraData } from '../../Interfaces/interfaces';
-import { getStoredData } from '../../pages/Home/Home';
+import { getStoredData } from '../../routes';
 
 interface DropzoneProps {
   onFileUploaded: (file: File) => void;
@@ -38,8 +38,7 @@ export function Dropzone({ onFileUploaded, setIntraData }: DropzoneProps) {
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()} accept="image/*" />
-      <NotePencil size={120} className='dropzone__button'>
-      </NotePencil>
+      <NotePencil size={120} className="dropzone__button"></NotePencil>
     </div>
   );
 }

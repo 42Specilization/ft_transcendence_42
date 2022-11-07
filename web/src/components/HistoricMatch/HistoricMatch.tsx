@@ -1,4 +1,5 @@
-import './HistoricMatch.scss';
+/* eslint-disable quotes */
+import "./HistoricMatch.scss";
 
 interface HistoricMatchProps {
   nick: string;
@@ -7,21 +8,20 @@ interface HistoricMatchProps {
   image_url: string;
 }
 
-export function HistoricMatch({nick, date, result, image_url} :HistoricMatchProps){
+export function HistoricMatch({
+  nick,
+  date,
+  result,
+  image_url,
+}: HistoricMatchProps) {
   return (
-    <div className='historicMatch'>
-      <div className='historicMatch__player'>
-        <div className='historicMatch__player__icon'>
-          <img src={image_url} alt="user image" />
-        </div>
-        <div className='historicMatch__player__nick'>
-          {nick}
-        </div>
+    <div className="historicMatch">
+      <div className="historicMatch__player">
+        <img src={image_url} alt="user image" />
+        <div className="historicMatch__player__nick">{nick}</div>
       </div>
-      <div className='historicMatch__datas'>
-        <div className='historicMatch__date'>{date}</div>
-        <div className='historicMatch__result'>{result}</div>
-      </div>
+      <p>{date}</p>
+      <p>{result}</p>
     </div>
   );
 }

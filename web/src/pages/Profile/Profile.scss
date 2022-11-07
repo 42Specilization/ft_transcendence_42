@@ -1,87 +1,49 @@
 @import '../../styles/variables.scss';
 
 .profile {
-  @include flexCenter(center, column);
-  font-family: 'Oxanium', cursive;
-  background-color: rgba(139, 92, 246, 0.31);
+  @include displayFlex(space-around, column);
+  display: grid;
+  width: 80%;
+  height: 90%;
+  padding: 50px 0 50px 0px;
   border-radius: 0 0 50px 50px;
-  top: 0;
-  left:50%;
-  position: absolute;
-
-}
-
-.profile .navBar {
-  top: 0;
-  left: 0;
+  background-color: $backgroundColor;
+  @include scrollBar(20px, 50px);
 }
 
 .profile__stats {
-  @include flexCenter(unset, column, center);
-  background-color: rgba(139, 92, 246, 0.4);
-  border-radius: 30px;
-  color: white;
-  position: relative;
-  top: 40px;
+  @include displayFlex(space-around, column);
   width: 350px;
-}
-
-.profile .profileCard{
-  position: relative;
-  top : 40px;
-  justify-content: center;
-  margin-left: 0;
+  height: 280px;
+  border-radius: 30px;
+  background-color: $backgroundColor;
 }
 
 .profile__stats__title {
-  @include flexCenter(center, row, start);
-  margin-top: 20px;
+  @include displayFlex();
   font-size: 3em;
+  margin: 5px 0px 20px 0px;
 }
 
-.profile__stats__wins,
-.profile__stats__lose,
-.profile__stats__ratio,
-.profile__stats__matches {
-  @include flexCenter(space-between, row);
-  font-size: 1.3em;
+.profile__stats__infos {
+  @include displayFlex(space-between);
   width: 80%;
+  font-size: 2em;
   margin-bottom: 8px
 }
 
-@media (max-width: 1199px){
-  .profile {
-    max-width: 350px;
-    height: 740px;
-    margin-left: -175px;
-  }
-
-  .profile__stats {
-    height: 260px;
-    margin-top: 20px;
-  }
-}
-
 @media (min-width:1199px){
-  .profile {
-    @include flexCenter(center, row, center);
-    width: 1100px;
-    height: 600px;
-    margin-left: -550px;
-  }
 
-  .profile .profileCard{
-    right: 5%;
+  .profile {
+    @include displayFlex(space-around);
+    padding: 20px 0 20px 0px;
   }
 
   .profile__stats {
-    display: flex;
-    height:350px;
-    margin-left: 100px;
-    font-size: 1.8em;
+    height: 350px;
   }
 
- .profile__stats__title {
-    font-size: 2em;
+  .profile__stats__title {
+     font-size: 4em;
   }
 }

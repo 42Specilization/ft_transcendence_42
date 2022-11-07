@@ -1,101 +1,46 @@
 @import '../../styles/variables.scss';
 
 .historic {
-  @include flexCenter(center, column);
+  @include displayFlex(center, column);
+  width:80%;
+  height: 90%;
+  padding: 20px 60px 50px 60px;
+  border-radius: 0px 0px 50px 50px;
   background-color: $backgroundColor;
-  color: white;
-  top: 0;
-  left: 50%;
-  align-items: center;
-  position: absolute;
-  font-family: 'Oxanium', cursive;
-  border-radius: 20px;
-  .navBar__historic{
-    @include flexCenter(center, column);
-    background: rgb(120, 27, 213);
-    border-radius: 10px;
-    height: 100%;
-    width: 100%;
-    text-align: center;
-  }
 }
 
-.historic .navBar {
-  top: 0;
-  left: 0;
+.historic__header{
+  @include displayFlex(center, column);
+  width: 100%;
+  font-size: 1.5em;
+  padding: 0px 100px 0px 100px;
 }
 
-@media (max-width: 1200px){
-  .historic{
-    margin-left: -150px;
-    min-width: 300px;
-    min-height: 450px;
-    height: 550px;
-  }
-
-  .historic__date__text,
-  .historic__nick__text,
-  .historic__result__text{
-    display: none;
-  }
-
-  .historic__title{
-    @include flexCenter(center, column, center);
-    position: absolute;
-    top: 120px;
-    left: 33%;
-    font-size: 1.9em;
-  }
+.historic__body{
+  width: 100%;
+  // overflow-x: hidden;
+  @include scrollBar();
 }
+
+.historic__columns {
+  display: none;
+}
+
 
 @media (min-width:1200px) {
 
-  .historic{
-    margin-left: -500px;
-    min-width: 1000px;
-    min-height: 700px;
-    .navBar__historic{
-      border-radius: 10px 10px 0 0;
-      max-width: 250px;
-    }
-  }
-
-  .historic__header{
-    @include flexCenter(center, column, center);
-    position: absolute;
-    font-size: 1.5em;
-    min-width: 800px;
-    padding: 10px;
-    height: 30px;
-    padding-bottom: 20px;
+  .historic {
+    padding: 20px 200px 50px 200px;
   }
 
   .historic__header__title{
-    @include flexCenter(center, column, center);
-    position: relative;
-    top: -210px;
-    right: 8%;
+    font-size: 3em;
   }
 
   .historic__columns{
-    @include flexCenter(space-around, row, center);
-    position: relative;
-    top: -170px;
+    @include displayFlex(space-between);
     width: 100%;
     font-size: 1.5em;
-    padding: 20px;
-    margin-bottom: 20px;
+    margin: 20px;
   }
-
-  .historic__title {
-    position: relative;
-    top: 50px;
-    font-size: 2em;
-    left: 35%;
-  }
-
-  .historic__date__text{
-    position: relative;
-  }
-
 }

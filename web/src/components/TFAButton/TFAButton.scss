@@ -1,19 +1,23 @@
 @import '../../styles/variables.scss';
 
 .tfaButton{
-  margin-top: 15px;
-  @include flexCenter(space-between, row, end);
+  @include displayFlex(space-around);
   width: 100%;
   font-size: 1.1em;
 }
 
 .tfaButton__button{
-  background-color: $primaryColor;
-  color: white;
   font-size: 15px;
   padding: 5px;
   border-radius: 5px;
+  background-color: $primaryColor;
   &:hover {
     background-color: $primaryColorHover;
+  }
+}
+
+@media (min-width:1200px) {
+  .tfaButton__button{
+    font-size: 0.6em;
   }
 }
