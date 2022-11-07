@@ -27,7 +27,7 @@ export interface TextCanvas {
   x: number;
   y: number;
   color: string;
-  msg: number | string;
+  msg?: number | string;
   fontSize?: string;
 }
 
@@ -50,6 +50,11 @@ export function drawText(context: CanvasRenderingContext2D, text: TextCanvas) {
   if (!text.fontSize) {
     text.fontSize = '75';
   }
+  if (!text.msg) {
+    text.msg = '';
+  }
+  context.textBaseline = 'middle';
+  context.textAlign = 'center';
   context.font = text.fontSize + 'px fantasy';
   context.fillText(text.msg.toString(), text.x, text.y);
 }
@@ -60,7 +65,7 @@ export function drawNet(context: CanvasRenderingContext2D) {
     y: 0,
     w: 10,
     h: 10,
-    color: 'black'
+    color: '#7C1CED'
   };
 
   for (let i = 0; i <= context.canvas.height; i += 15) {

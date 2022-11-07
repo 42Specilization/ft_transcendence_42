@@ -19,11 +19,10 @@ export async function getInfos() {
     return (data);
   }).catch(err => {
     const data = err.response.data as ErrResponse;
-    console.log('erro aq', err);
+    console.log('error on getInfos', err);
     if (data.statusCode == 401 && process.env.NODE_ENV == 'production')
       window.location.pathname = '/signin';
   }
-
   );
 }
 

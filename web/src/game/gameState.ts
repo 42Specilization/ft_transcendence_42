@@ -7,12 +7,13 @@ import { createSocket, CreateSocketOptions, socketIOUrl } from './socket-io';
 
 interface Me {
   name: string;
+  id: string;
 }
 
 export interface Player {
   paddle: Rect;
   score: number;
-  id: string;
+  socketId: string;
   name: string;
 }
 
@@ -21,12 +22,13 @@ export interface Game {
   player2: Player;
   watchers: [];
   ball: Ball;
-  id: number;
+  room: number;
   index: number;
   waiting: boolean;
   hasStarted: boolean;
   hasEnded: boolean;
   winner: Player;
+  msgEndGame: string;
 }
 
 export interface AppState {
@@ -35,15 +37,15 @@ export interface AppState {
   accessToken?: string | null;
   isPlayer: boolean;
   game?: Game;
-  player1: Player;
-  player2: Player;
+  player1: Player | undefined;
+  player2: Player | undefined;
 }
 
 const state = proxy<AppState>({
   get isPlayer() {
     if (this.socket && this.game) {
-      if (this.socket?.id === state.game?.player1.id
-        || this.socket?.id === state.game?.player2.id) {
+      if (this.socket?.id === state.game?.player1.socketId
+        || this.socket?.id === state.game?.player2.socketId) {
         return (true);
       } else {
         return (false);
@@ -65,7 +67,8 @@ const state = proxy<AppState>({
     }
     const data: IntraData = JSON.parse(localStore);
     const myData = {
-      name: data.login
+      name: data.login,
+      id: this.socket?.id
     };
     return (myData);
   }
@@ -96,12 +99,14 @@ const actions = {
   updateGame(game?: Game) {
     state.game = game;
   },
-  endGame() {
-    state.socket?.disconnect();
+  disconnectSocket() {
+    if (state.socket?.connected) {
+      state.socket?.disconnect();
+    }
   },
-  destroyGame() {
-    this.endGame();
+  leaveGame() {
     state.game = undefined;
+    this.disconnectSocket();
   }
 };
 

@@ -1,11 +1,37 @@
+import { useState } from 'react';
 import { actions } from '../../game/gameState';
+import { Commands } from '../Commands/Commands';
+import { WatchGame } from '../WatchGame/WatchGame';
+import { WithFriend } from '../WithFriend/WithFriend';
 import './GameMenu.scss';
 
+
+
 export function GameMenu() {
+
+  const [commands, setCommands] = useState<boolean>(true);
+  const [watch, setWatch] = useState<boolean>(false);
+
 
   const handleStartGame = () => {
     actions.initializeSocket();
     actions.initializeGame();
+  };
+
+  const handleCommands = () => {
+    setCommands(true);
+    setWatch(false);
+  };
+
+  const handleWithFriend = () => {
+    setCommands(false);
+    setWatch(false);
+  };
+
+  const handleWatchGame = () => {
+    actions.initializeSocket();
+    setCommands(false);
+    setWatch(true);
   };
 
   const handleQuit = () => {
@@ -23,13 +49,21 @@ export function GameMenu() {
         </button>
         <button
           className='gameMenu__buttons__button'
+          onClick={handleWithFriend}
         >
           Play with a friend
         </button>
         <button
           className='gameMenu__buttons__button'
+          onClick={handleWatchGame}
         >
           Watch a game
+        </button>
+        <button
+          className='gameMenu__buttons__button'
+          onClick={handleCommands}
+        >
+          Commands
         </button>
         <button
           className='gameMenu__buttons__button'
@@ -38,13 +72,8 @@ export function GameMenu() {
           Quit
         </button>
       </div>
-      <div className='gameMenu__commands'>
-        <h2>Commands</h2>
-        <ul className='gameMenu__commands__list'>
-          <li>[W] or [ArrowUp] - move to up.</li>
-          <li>[S] or [ArrowDown] - move to down.</li>
-          <li>[ESC] - Exit the game.</li>
-        </ul>
+      <div className='gameMenu__options'>
+        {commands === true ? <Commands /> : (watch === true ? <WatchGame /> : <WithFriend />)}
       </div>
     </div>
   );

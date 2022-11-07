@@ -2,7 +2,7 @@
 import { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import { Ball, Canvas, drawCircle, drawFillRect, drawNet, drawText, Rect, TextCanvas } from '../../components/Canvas/Canvas';
-import { actions, state } from '../../game/gameState';
+import { state } from '../../game/gameState';
 import './PongGame.scss';
 
 export function PongGame() {
@@ -12,13 +12,12 @@ export function PongGame() {
   let context: CanvasRenderingContext2D | undefined | null;
 
   const move = (direction: string) => {
-    if (!state.game) {
+    if (!state.game || !currentState.isPlayer) {
       return;
     }
-    console.log('move to ', direction);
 
     state.socket?.emit('move', {
-      direction: direction, index: state.game?.index
+      direction: direction, room: state.game?.room
     });
   };
 
@@ -26,7 +25,6 @@ export function PongGame() {
     if (!context || !currentState.game) {
       return;
     }
-    context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight);
     const player1Rec: Rect = {
       x: currentState.game.player1.paddle.x,
       y: currentState.game.player1.paddle.y,
@@ -55,10 +53,10 @@ export function PongGame() {
       fontSize: '50'
     };
     const playerOneName: TextCanvas = {
-      x: 15,
+      x: 80,
       y: 30,
       color: 'WHITE',
-      msg: currentState.player1.name,
+      msg: currentState.player1?.name.substring(0, 10),
       fontSize: '25'
     };
     const scorePlayer2: TextCanvas = {
@@ -69,71 +67,62 @@ export function PongGame() {
       fontSize: '50'
     };
     const playerTwoName: TextCanvas = {
-      x: context.canvas.width - 150,
+      x: context.canvas.width - 100,
       y: 30,
       color: 'WHITE',
-      msg: 'mavinici',
+      msg: currentState.player2?.name.substring(0, 10),
       fontSize: '25'
     };
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     drawText(context, scorePlayer1);
     drawText(context, playerOneName);
     drawText(context, scorePlayer2);
     drawText(context, playerTwoName);
+    drawNet(context);
 
+    drawCircle(context, ball);
     drawFillRect(context, player1Rec);
     drawFillRect(context, player2Rec);
-    drawNet(context);
-    drawCircle(context, ball);
-  };
 
-  useEffect(() => {
-    context = canvasRef.current?.getContext('2d');
-    drawGame();
     if (currentState.game?.hasEnded) {
       if (!context) {
         return;
       }
 
-      let winner: string;
-      if (currentState.game.player1.name === currentState.me?.name) {
-        winner = 'You Win!';
-      } else if (currentState.game.player2.name === currentState.me?.name) {
-        winner = 'You Lose!';
-      } else {
-        winner = `${currentState.me?.name} is the Winner`;
-      }
-
       const endMessage: TextCanvas = {
-        x: 1.4 * context.canvas.width / 4,
+        x: 2 * context.canvas.width / 4,
         y: context.canvas.height / 2,
         color: 'WHITE',
-        msg: winner
+        msg: currentState.game.msgEndGame,
+        fontSize: '50'
       };
       const quitHelp: TextCanvas = {
-        x: 1.6 * context.canvas.width / 4,
-        y: 1.4 * context.canvas.height / 2,
-        color: 'green',
-        msg: 'Press ESC to leave',
+        x: 2 * context.canvas.width / 4,
+        y: 1.5 * context.canvas.height / 2,
+        color: 'white',
+        msg: 'Press Q to leave',
         fontSize: '25'
       };
       drawText(context, endMessage);
       drawText(context, quitHelp);
       return;
     }
-  }, [currentState]);
-
-
-
+  };
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyboard, true);
+    context = canvasRef.current?.getContext('2d');
+    window.requestAnimationFrame(drawGame);
+  }, [currentState]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyboard);
   }, []);
 
   function handleKeyboard(event: KeyboardEvent) {
-    if (currentState.game?.hasEnded) {
-      document.removeEventListener('keydown', handleKeyboard);
-      return;
-    }
+    // if (currentState.game?.hasEnded) {
+    //   document.removeEventListener('keydown', handleKeyboard);
+    //   return;
+    // }
     switch (event.key) {
       case 'ArrowUp':
       case 'w':
@@ -147,17 +136,13 @@ export function PongGame() {
         move('down');
         break;
 
+      case 'q':
       case 'Escape':
-        actions.destroyGame();
+        window.location.reload();
         break;
 
       default:
         break;
-    }
-    if (event.key === 'ArrowUp' || event.key === 'w') {
-      move('up');
-    } else if (event.key === 'ArrowDown' || event.key === 's') {
-      move('down');
     }
   }
 

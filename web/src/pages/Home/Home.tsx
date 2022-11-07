@@ -16,6 +16,7 @@ export async function getStoredData(setIntraData: Dispatch<SetStateAction<IntraD
   setIntraData(data);
 }
 
+
 export default function Home() {
   const defaultIntra: IntraData = {
     email: 'ft_transcendence@gmail.com',
@@ -31,6 +32,7 @@ export default function Home() {
   
   };
 
+export default function Home() {
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
   useEffect(() => {
     getStoredData(setIntraData);

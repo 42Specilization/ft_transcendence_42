@@ -1,5 +1,5 @@
 import logoSmall from '../../assets/logo-small.png';
-import { Chats, List, SignOut} from 'phosphor-react';
+import { Chats, List, SignOut } from 'phosphor-react';
 import './NavBar.scss';
 import useAuth from '../../auth/auth';
 import { Link } from 'react-router-dom';
@@ -26,19 +26,19 @@ export function NavBar({ name, imgUrl }: NavBarProps) {
         </li>
         <li className='navBar__divider' />
         <div className='navBar__div__menu'>
-          <p  className='navBar__menus__list'><span><List size={22} /></span></p>
+          <p className='navBar__menus__list'><span><List size={22} /></span></p>
           <nav className='navBar__menu'>
-            <Link  to='/' className='navBar__achievements'>Achievements</Link>
-            <Link  to='/historic' className='navBar__historic'>Historic</Link>
-            <Link  to='/' className='navBar__ladderLevel'>Ladder level</Link>
+            <Link to='/' className='navBar__achievements'>Achievements</Link>
+            <Link to='/historic' className='navBar__historic'>Historic</Link>
+            <Link to='/game' className='navBar__ladderLevel'>Game</Link>
           </nav>
         </div>
         <li className='navBar__divider' />
         <li className='navBar__chats'>
           <Link to='/' className='navBar__chats__link'>
-            <Chats className='navBar__chats__icon'/>
+            <Chats className='navBar__chats__icon' />
             <p className="navBar__chats__text">
-            Chats
+              Chats
             </p>
           </Link>
         </li>
@@ -56,7 +56,7 @@ export function NavBar({ name, imgUrl }: NavBarProps) {
         </li>
 
         <li className='navBar__logout' onClick={handleLogOut}>
-          <SignOut size={22}/>
+          <SignOut size={22} />
           Log-out
         </li>
 

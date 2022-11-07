@@ -12,7 +12,6 @@ export interface CreateSocketOptions {
 }
 
 export function createSocket({ accessToken, socketIOUrl, actions, state }: CreateSocketOptions): Socket {
-  console.log('Creating socket with accessToken: ', accessToken);
 
   const socket = io(socketIOUrl, {
     auth: {
@@ -21,13 +20,12 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
     transports: ['websocket', 'polling']
   });
 
-  socket.on('connect', () => {
-    console.log('Connected with socked ID: ', socket.id);
-  });
+  // socket.on('connect', () => {
+  // });
 
   socket.on('start-game', (game: Game) => {
     actions.updateGame(game);
-    console.log('game initialized Game: ', game);
+    // window.requestAnimationFrame(updateBall);
   });
 
   socket.on('update-game', (game: Game) => {
@@ -36,23 +34,42 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
 
   socket.on('end-game', (game: Game) => {
     actions.updateGame(game);
-    actions.endGame();
+    actions.disconnectSocket();
+  });
+
+  socket.on('specs', (game: Game) => {
+    if (!state.isPlayer) {
+      actions.updateGame(game);
+    }
   });
 
   socket.on('connect_error', () => {
     console.log('some error ocurred!');
+    window.location.reload();
     //handle socket errors
   });
 
+  // socket.on('exception', (err) => {
+  //   console.log('err ', err);
+  // });
 
+  socket.on('update-ball', (game: Game) => {
+    actions.updateGame(game);
+  });
+
+  // function updateBall() {
+  //   if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.game.player1.socketId === state.me?.id) {
+  //     socket.emit('update-ball', state.game?.room);
+  //     window.requestAnimationFrame(updateBall);
+  //   }
+  // }
   setInterval(() => {
-    if (state.game?.hasStarted && !state.game.hasEnded) {
+    if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.game.player1.socketId === state.me?.id) {
       socket.emit('update-ball', state.game?.index);
-      socket.on('update-ball', (game: Game) => {
-        actions.updateGame(game);
-      });
     }
-  }, 1000 / 10);
+  }, 1000 / 50);
+
+
 
   return (socket);
 }

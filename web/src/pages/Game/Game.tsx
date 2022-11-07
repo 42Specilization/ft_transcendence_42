@@ -11,14 +11,13 @@ export default function Game() {
   const currentState = useSnapshot(state);
 
   useEffect(() => {
-    console.log('is a player ', currentState.isPlayer);
-  }, [currentState]);
-
+    console.log('game is', currentState.game);
+  }, [currentState.game?.hasStarted]);
 
   return (
     <div className='game'>
       {
-        currentState.game?.waiting ? <WaitingRoom /> : <GameMenu /> && currentState.game?.hasStarted ? <PongGame /> : <GameMenu />
+        currentState.game?.waiting ? <WaitingRoom /> : (currentState.game?.hasStarted ? <PongGame /> : <GameMenu />)
       }
     </div>
   );
