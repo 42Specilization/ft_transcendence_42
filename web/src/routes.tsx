@@ -107,10 +107,12 @@ export default function AppRouter() {
           <Route
             path="/"
             element={
-              <RequireAuth>
+              // <RequireAuth>
+              <>
                 <NavBar name={intraData.login} imgUrl={intraData.image_url} />
                 <Home />
-              </RequireAuth>
+              </>
+              // </RequireAuth>
             }
           />
 
