@@ -1,7 +1,5 @@
 @import '../../styles/variables.scss';
 
-$chatSize: 22;
-
 .navBar {
   @include flexCenter(space-between, column, center);
   font-family: 'Oxanium', cursive;
@@ -122,7 +120,6 @@ $chatSize: 22;
   border-radius: 25px;
   width: 100%;
   height: 30px;
-  padding: 5px;
   background-color: $primaryColor;
   &:hover{
     background-color: $primaryColorHover;
@@ -151,6 +148,24 @@ $chatSize: 22;
     color: $primaryColorHover;
   }
 }
+
+@media (max-width:700px) {
+
+  .navBar__user {
+    max-width: 200px;
+  }
+
+  .navBar__user__name {
+    padding-right: 5px;
+    padding-left: 5px;
+    display: inline-block;
+    text-align: center;
+    white-space: nowrap;
+    max-width: 60px;
+    overflow: hidden !important;
+   }
+}
+
 
 @media (min-width: 600px) and (max-width:850px) {
   .navBar {
@@ -249,8 +264,8 @@ $chatSize: 22;
 
   .navBar__user {
     font-size: 30px;
-    height: 60px;
-    padding: 10px;
+    height: 55px;
+    padding-right: 10px;
     border-radius: 30px;
   }
 

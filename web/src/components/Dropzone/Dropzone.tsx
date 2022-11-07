@@ -1,5 +1,5 @@
 import { NotePencil } from 'phosphor-react';
-import React, { Dispatch, SetStateAction, useCallback } from 'react';
+import { Dispatch, SetStateAction, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { IntraData } from '../../Interfaces/interfaces';
 import { getStoredData } from '../../pages/Home/Home';

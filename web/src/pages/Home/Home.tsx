@@ -16,20 +16,24 @@ export async function getStoredData(setIntraData: Dispatch<SetStateAction<IntraD
   setIntraData(data);
 }
 
-export const defaultIntra: IntraData = {
-  email: 'ft_transcendence@gmail.com',
-  first_name: 'ft',
-  image_url: 'nop',
-  login: 'PingPong',
-  usual_full_name: 'ft_transcendence',
-  matches: '0',
-  wins: '0',
-  lose: '0'
-};
+
+export default function Home() {
+  const defaultIntra: IntraData = {
+    email: 'ft_transcendence@gmail.com',
+    first_name: 'ft',
+    image_url: 'nop',
+    login: 'PingPong',
+    usual_full_name: 'ft_transcendence',
+    matches: '0',
+    wins: '0',
+    lose: '0',
+    isTFAEnable: false,
+    tfaValidated: false,
+  
+  };
 
 export default function Home() {
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
-
   useEffect(() => {
     getStoredData(setIntraData);
   }, []);

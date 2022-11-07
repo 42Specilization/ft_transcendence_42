@@ -8,6 +8,7 @@ import { JwtTokenAccess } from './dto/JwtTokenAccess.dto';
 import { IntraData } from './dto/IntraData.dto';
 import { UserFromJwt } from './dto/UserFromJwt.dto';
 import { UserPayload } from './dto/UserPayload.dto';
+import { UpdateUserDto } from 'src/user/dto/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -46,7 +47,6 @@ export class AuthService {
    * @returns User data.
    */
   async getUserInfos(data: UserFromJwt): Promise<IntraData> {
-
     const user = await this.userService.findUserByEmail(data.email) as User;
     const intraData = {
       email: user.email,
@@ -57,6 +57,8 @@ export class AuthService {
       matches: user.matches,
       wins: user.wins,
       lose: user.lose,
+      isTFAEnable: user.isTFAEnable,
+      tfaValidated: user.tfaValidated,
     };
     return (intraData);
   }
@@ -88,6 +90,8 @@ export class AuthService {
           matches: response.data.matches,
           wins: response.data.wins,
           lose: response.data.lose,
+          isTFAEnable: response.data.isTFAEnable,
+          tfaValidated: response.data.tfaValidated,
         });
       }).catch(err => {
         if (err.code == 'ERR_BAD_REQUEST')
@@ -124,10 +128,14 @@ export class AuthService {
 
       this.logger.log('user Criado!');
     } else {
+      const updateUserDto: UpdateUserDto = {
+        tfaCode: undefined,
+      };
       await this.userService.updateToken(data.email, token);
       this.logger.log('token atualizado!');
-    }
+      await this.userService.updateUser(updateUserDto, user.email);
 
+    }
     return (data);
 
   }
@@ -141,20 +149,16 @@ export class AuthService {
    * @returns Jwt token access.
    */
   async signUpOrSignIn(code: string): Promise<JwtTokenAccess> {
-
     const data: IntraData = await this.checkIfIsSignInOrSignUp(code);
-
     const finalUser: User = await this.userService.findUserByEmail(data.email) as User;
-
     const payload: UserPayload = {
       email: finalUser.email,
-      token: finalUser.token
+      token: finalUser.token,
+      tfaEmail: finalUser.tfaEmail as string,
     };
 
     return ({
       access_token: this.jwtService.sign(payload)
     });
-
   }
-
 }
