@@ -23,7 +23,7 @@ export interface Position {
 export interface Player {
   paddle: Paddle;
   score: number;
-  id: string;
+  socketId: string;
   name: string;
   quit: boolean;
 }
@@ -40,15 +40,15 @@ const CANVAS_HEIGHT = 600;
 
 export class Game {
 
-  constructor(id: number, index: number) {
-    this.id = id;
+  constructor(room: number, index: number) {
+    this.room = room;
     this.index = index;
     this.waiting = true;
     this.hasEnded = false;
     this.hasStarted = false;
   }
 
-  id: number;
+  room: number;
   index: number;
   waiting: boolean;
   hasStarted: boolean;
@@ -69,7 +69,7 @@ export class Game {
       h: 100,
       color: '#7C1CED'
     },
-    id: '',
+    socketId: '',
     score: 0,
     name: '',
     quit: false
@@ -83,7 +83,7 @@ export class Game {
       h: 100,
       color: '#7C1CED'
     },
-    id: '',
+    socketId: '',
     score: 0,
     name: '',
     quit: false
@@ -95,7 +95,7 @@ export class Game {
     x: CANVAS_WIDTH / 2,
     y: CANVAS_HEIGHT / 2,
     radius: 10,
-    speed: 5,
+    speed: this.ballSpeed,
     velocityX: this.ballVelocityX,
     velocityY: this.ballVelocityY,
     color: '#7C1CED'

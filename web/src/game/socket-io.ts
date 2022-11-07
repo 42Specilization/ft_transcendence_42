@@ -25,7 +25,7 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
 
   socket.on('start-game', (game: Game) => {
     actions.updateGame(game);
-    window.requestAnimationFrame(updateBall);
+    // window.requestAnimationFrame(updateBall);
   });
 
   socket.on('update-game', (game: Game) => {
@@ -57,17 +57,17 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
     actions.updateGame(game);
   });
 
-  function updateBall() {
-    if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.game.player1.id === state.me?.id) {
-      socket.emit('update-ball', state.game?.index);
-      window.requestAnimationFrame(updateBall);
-    }
-  }
-  // setInterval(() => {
-  //   if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.game.player1.id === state.me?.id) {
-  //     socket.emit('update-ball', state.game?.index);
+  // function updateBall() {
+  //   if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.game.player1.socketId === state.me?.id) {
+  //     socket.emit('update-ball', state.game?.room);
+  //     window.requestAnimationFrame(updateBall);
   //   }
-  // }, 1000 / 50);
+  // }
+  setInterval(() => {
+    if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.game.player1.socketId === state.me?.id) {
+      socket.emit('update-ball', state.game?.index);
+    }
+  }, 1000 / 50);
 
 
 

@@ -17,7 +17,7 @@ function LiveGame({ game }: LiveGamesProps) {
       return;
     }
     actions.updateGame(game);
-    currentState.socket?.emit('watch-game', game.index);
+    currentState.socket?.emit('watch-game', game.room);
   };
 
   return (
@@ -51,7 +51,7 @@ export function WatchGame() {
           gameList?.length > 0 ?
             gameList?.map(game => {
               return (
-                <LiveGame game={game} key={game.id} />
+                <LiveGame game={game} key={game.room} />
               );
             }) : <p>No game Available</p>}
       </ul>

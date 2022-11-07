@@ -17,7 +17,7 @@ export function PongGame() {
     }
 
     state.socket?.emit('move', {
-      direction: direction, index: state.game?.index
+      direction: direction, room: state.game?.room
     });
   };
 
@@ -111,11 +111,8 @@ export function PongGame() {
 
   useEffect(() => {
     context = canvasRef.current?.getContext('2d');
-    drawGame();
+    window.requestAnimationFrame(drawGame);
   }, [currentState]);
-
-
-
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyboard);

@@ -9,7 +9,7 @@ import { Game } from './game.class';
 
 interface IMove {
   direction: string;
-  index: number;
+  room: number;
 }
 
 /**
@@ -33,6 +33,16 @@ export class GameGateway implements
     this.logger.log('Game Websocket Gateway initialized.');
   }
 
+  getGameByRoom(room: number): Game | undefined {
+    for (let i = 0; this.queue[i]; i++) {
+      if (this.queue[i].room === room) {
+        return (this.queue[i]);
+      }
+    }
+
+    return (undefined);
+  }
+
   /**
    * This function checks if the queue array there is a game without a player,
    * if this is the case so the coming player will enter in this game.
@@ -42,7 +52,7 @@ export class GameGateway implements
   checkGameArray(): number {
     if (this.queue.length > 0) {
       for (let i = 0; i < this.queue.length; i++) {
-        if ((this.queue[i].player1.id === '' || this.queue[i].player2.id === '')
+        if ((this.queue[i].player1.socketId === '' || this.queue[i].player2.socketId === '')
           && !this.queue[i].hasEnded)
           return (i);
       }
@@ -76,23 +86,20 @@ export class GameGateway implements
   finishGame(user: Socket) {
     this.sendGameList();
     for (let i = 0; i < this.queue.length; i++) {
-      if (this.queue[i].player1.id === user.id || this.queue[i].player2.id === user.id) {
+      if (this.queue[i].player1.socketId === user.id || this.queue[i].player2.socketId === user.id) {
         //delete who left
-        if (this.queue[i].player1.id === user.id) {
+        if (this.queue[i].player1.socketId === user.id) {
           this.queue[i].player1.quit = true;
-        } else if (this.queue[i].player2.id === user.id) {
+        } else if (this.queue[i].player2.socketId === user.id) {
           this.queue[i].player2.quit = true;
         }
         // announce the winner who left before the end-game will be the loser.
         this.queue[i].checkWinner();
-        user.leave(this.queue[i].id.toString());
-        this.io.to(this.queue[i].id.toString()).emit('end-game', this.queue[i]);
-        this.io.to(this.queue[i].id.toString()).emit('specs', this.queue[i]);
-        //if both players left the game instance will be destroyed
-        // if (this.queue[i].player1.id === '' && this.queue[i].player2.id === '') {
+        user.leave(this.queue[i].room.toString());
+        this.io.to(this.queue[i].room.toString()).emit('end-game', this.queue[i]);
+        this.io.to(this.queue[i].room.toString()).emit('specs', this.queue[i]);
         delete this.queue[i];
         this.queue.splice(i, 1);
-        // }
         break;
       }
     }
@@ -112,7 +119,7 @@ export class GameGateway implements
     const sockets = this.io.sockets;
     //TODO: Save game instance on db to use on historic
     this.finishGame(user);
-
+    this.io.emit('status', users);
     this.logger.log(`Disconnected socket id: ${user.id}`);
     this.logger.debug(`Number of connected sockets: ${sockets.size}`);
   }
@@ -126,26 +133,26 @@ export class GameGateway implements
   @SubscribeMessage('join-game')
   async joinGame(@ConnectedSocket() user: Socket, @MessageBody() name: string) {
     const index = this.checkGameArray();
-    if (this.queue[index].player1.id === '') {
-      this.queue[index].player1.id = user.id;
+    if (this.queue[index].player1.socketId === '') {
+      this.queue[index].player1.socketId = user.id;
       this.queue[index].player1.name = name;
-      user.join(this.queue[index].id.toString());
-      this.io.to(this.queue[index].id.toString()).emit('update-game', this.queue[index]);
-      this.logger.debug(`Player one connected socket id: ${user.id} Game index:${index} Game id:${this.queue[index].id}`);
-    } else if (this.queue[index].player2.id === '') {
-      this.queue[index].player2.id = user.id;
+      user.join(this.queue[index].room.toString());
+      this.io.to(this.queue[index].room.toString()).emit('update-game', this.queue[index]);
+      this.logger.debug(`Player one connected socket id: ${user.id} Game index:${index} Game id:${this.queue[index].room}`);
+    } else if (this.queue[index].player2.socketId === '') {
+      this.queue[index].player2.socketId = user.id;
       this.queue[index].player2.name = name;
-      user.join(this.queue[index].id.toString());
-      this.logger.debug(`Player two connected socket id: ${user.id} Game index:${index} Game id:${this.queue[index].id}`);
+      user.join(this.queue[index].room.toString());
+      this.logger.debug(`Player two connected socket id: ${user.id} Game index:${index} Game id:${this.queue[index].room}`);
       this.queue[index].hasStarted = true;
       this.queue[index].waiting = false;
-      this.io.to(this.queue[index].id.toString()).emit('start-game', this.queue[index]);
+      this.io.to(this.queue[index].room.toString()).emit('start-game', this.queue[index]);
       this.sendGameList();
     }
   }
 
   isPlayer(game: Game, user: Socket): boolean {
-    if (game.player1.id === user.id || game.player2.id === user.id) {
+    if (game.player1.socketId === user.id || game.player2.socketId === user.id) {
       return (true);
     } else {
       return (false);
@@ -163,13 +170,16 @@ export class GameGateway implements
   async move(@MessageBody() move: IMove, @ConnectedSocket() user: Socket) {
 
     const direction = move.direction;
-    const game = this.queue[move.index];
+
+    const game = this.getGameByRoom(move.room);
+    if (!game) {
+      return;
+    }
     if (!this.isPlayer(game, user)) {
       return;
     }
-
     let position = game.player1.paddle;
-    if (user.id === game.player2.id) {
+    if (user.id === game.player2.socketId) {
       position = game.player2.paddle;
     }
 
@@ -180,28 +190,32 @@ export class GameGateway implements
     switch (direction) {
       case 'up':
         position.y -= 5;
-        this.io.to(game.id.toString()).emit('update-game', game);
+        this.io.to(game.room.toString()).emit('update-game', game);
         break;
       case 'down':
         position.y += 5;
-        this.io.to(game.id.toString()).emit('update-game', game);
+        this.io.to(game.room.toString()).emit('update-game', game);
         break;
     }
   }
 
+
   @SubscribeMessage('update-ball')
-  async update(@MessageBody() index: number, @ConnectedSocket() user: Socket) {
-    const game = this.queue[index];
+  async update(@MessageBody() room: number, @ConnectedSocket() user: Socket) {
+    const game = this.getGameByRoom(room);
+    if (!game) {
+      return;
+    }
     if (!this.isPlayer(game, user)) {
       return;
     }
     game.update();
     if (game.checkWinner()) {
-      this.io.to(game.id.toString()).emit('end-game', game);
-      this.io.to(game.id.toString()).emit('specs', game);
+      this.io.to(game.room.toString()).emit('end-game', game);
+      this.io.to(game.room.toString()).emit('specs', game);
     } else {
-      this.io.to(game.id.toString()).emit('update-ball', game);
-      this.io.to(game.id.toString()).emit('specs', game);
+      this.io.to(game.room.toString()).emit('update-ball', game);
+      this.io.to(game.room.toString()).emit('specs', game);
     }
   }
 
@@ -224,14 +238,17 @@ export class GameGateway implements
   }
 
   @SubscribeMessage('watch-game')
-  async watchGame(@MessageBody() index: number, @ConnectedSocket() user: Socket) {
-    const game = this.queue[index];
+  async watchGame(@MessageBody() room: number, @ConnectedSocket() user: Socket) {
+    const game = this.getGameByRoom(room);
+    if (!game) {
+      return;
+    }
     if (!game.hasStarted || game.hasEnded) {
       throw new WsBadRequestException('Game not available!');
     }
-    user.join(game.id.toString());
-    this.io.to(game.id.toString()).emit('specs', game);
-    this.logger.log(`User watching game of index:${index} and id:${game.id}`);
+    user.join(game.room.toString());
+    this.io.to(game.room.toString()).emit('specs', game);
+    this.logger.log(`User watching game of id:${game.room}`);
   }
 
 

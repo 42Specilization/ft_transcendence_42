@@ -13,7 +13,7 @@ interface Me {
 export interface Player {
   paddle: Rect;
   score: number;
-  id: string;
+  socketId: string;
   name: string;
 }
 
@@ -22,7 +22,7 @@ export interface Game {
   player2: Player;
   watchers: [];
   ball: Ball;
-  id: number;
+  room: number;
   index: number;
   waiting: boolean;
   hasStarted: boolean;
@@ -44,8 +44,8 @@ export interface AppState {
 const state = proxy<AppState>({
   get isPlayer() {
     if (this.socket && this.game) {
-      if (this.socket?.id === state.game?.player1.id
-        || this.socket?.id === state.game?.player2.id) {
+      if (this.socket?.id === state.game?.player1.socketId
+        || this.socket?.id === state.game?.player2.socketId) {
         return (true);
       } else {
         return (false);
