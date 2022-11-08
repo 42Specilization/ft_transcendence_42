@@ -1,7 +1,7 @@
 import './TFAValidateCodeModal.scss';
 import { AxiosInstance } from 'axios';
 import { useState } from 'react';
-import { Modal } from '../Modal/Modal';
+import { Modal } from '../../Modal/Modal';
 interface TFAValidateCodeModalProps{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config: any;
@@ -27,7 +27,7 @@ export function TFAValidateCodeModal({
   const verifyCodeStyleDefault = {
     styles: {
       placeholder: 'Insert Code...',
-      border: '3px solid black'
+      border: '3px solid white'
     },
   };
   const [verifyCodeStyle, setVerifyCodeStyle] = useState(verifyCodeStyleDefault);
@@ -86,8 +86,11 @@ export function TFAValidateCodeModal({
     <>
       {
         isModalVerifyCodeVisible ?
-          <Modal id='tfaValidateCode'>
-            <h3>Insert code received in: {tfaEmail}</h3>
+          <Modal
+            id='tfaValidateCode'
+            onClose={() => setIsModalVerifyCodeVisible(false)}
+          >
+            <p className='tfaValidateCode__title'>Insert code received in: {tfaEmail}</p>
             <div className='tfaValidateCode__inputArea' >
               <input
                 style={{border:verifyCodeStyle.styles.border}}

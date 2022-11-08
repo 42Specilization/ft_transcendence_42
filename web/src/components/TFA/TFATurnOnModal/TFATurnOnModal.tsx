@@ -1,8 +1,9 @@
 import { AxiosInstance } from 'axios';
 import { useState } from 'react';
 import { TailSpin } from 'react-loader-spinner';
-import { Modal } from '../Modal/Modal';
+import { Modal } from '../../Modal/Modal';
 import './TFATurnOnModal.scss';
+
 interface TFATurnOnModalProps{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config: any;
@@ -29,7 +30,7 @@ export function TFATurnOnModal({
   const verifyMailStyleDefault = {
     styles: {
       placeholder: 'Insert your email...',
-      border: '3px solid black'
+      border: '3px solid white'
     },
   };
   const [verifyMailStyle, setVerifyMailStyle] = useState(verifyMailStyleDefault);
@@ -70,7 +71,7 @@ export function TFATurnOnModal({
       {
         isModalTurnOnVisible ?
           <Modal id='tfaTurnOn' onClose={() => setIsModalTurnOnVisible(false)}>
-            <h3>Insert your email to receive 2fa code</h3>
+            <p className='tfaTurnOn__title'>Insert your email to receive 2fa code</p>
             <div className='tfaTurnOn__inputArea' >
               <input
                 style={{border:verifyMailStyle.styles.border}}
@@ -87,9 +88,9 @@ export function TFATurnOnModal({
                 <div className='tfaTurnOn__loading'>
                   <strong>Wait a moment</strong>
                   <TailSpin
-                    width='30'
-                    height='30'
-                    color='purple'
+                    width='25'
+                    height='25'
+                    color='white'
                     ariaLabel='loading'
                   />
                 </div> : null

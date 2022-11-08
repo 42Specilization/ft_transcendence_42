@@ -2,7 +2,7 @@ import { NotePencil } from 'phosphor-react';
 import { Dispatch, SetStateAction, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { IntraData } from '../../Interfaces/interfaces';
-import { getStoredData } from '../../routes';
+import { getStoredData } from '../../utils/utils';
 
 interface DropzoneProps {
   onFileUploaded: (file: File) => void;

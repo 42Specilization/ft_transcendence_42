@@ -4,27 +4,26 @@
   @include displayFlex(space-between, column, center);
   width: 100%;
   height: 80%;
-
 }
 
 .changeNick__input{
-  font-family: 'Oxanium', cursive;
   width: 90%;
-  text-align: center;
   height: 30px;
+  max-width: 400px;
+  text-align: center;
   border-radius: 5px;
   font-size: 18px;
 }
 
 .changeNick__button{
-  font-family: 'Oxanium', cursive;
-  background-color: $primaryColor;
+  background-color: $primaryColorHover;
   border-radius: 5px;
+  color: white;
   cursor: pointer;
   width: 30%;
   height: 30px;
   &:hover {
-    background-color: $primaryColorHover;
+    background-color: $primaryColor;
   }
 }
 
@@ -32,6 +31,7 @@
   .changeNick h3{
     font-size: 25px;
   }
+
   .changeNick__input{
     font-size: 12px;
   }

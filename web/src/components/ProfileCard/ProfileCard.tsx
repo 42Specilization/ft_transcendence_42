@@ -1,12 +1,12 @@
-/* eslint-disable quotes */
-import "./ProfileCard.scss";
-import { Dispatch, SetStateAction, useInsertionEffect, useState } from "react";
-import { UserImage } from "../UserImage/UserImage";
-import { IntraData } from "../../Interfaces/interfaces";
-import { NotePencil } from "phosphor-react";
-import { TFAButton } from "../TFAButton/TFAButton";
-import { ChangeNick } from "../ChangeNick/ChangeNick";
-import { getStoredData } from "../../routes";
+
+import './ProfileCard.scss';
+import { Dispatch, SetStateAction, useInsertionEffect, useState } from 'react';
+import { UserImage } from '../UserImage/UserImage';
+import { IntraData } from '../../Interfaces/interfaces';
+import { NotePencil } from 'phosphor-react';
+import { TFAButton } from '../TFA/TFAButton/TFAButton';
+import { ChangeNick } from '../ChangeNick/ChangeNick';
+import { getStoredData } from '../../utils/utils';
 
 interface ProfileCardProps {
   email: string;
@@ -26,7 +26,7 @@ export function ProfileCard({
   const [isModalChangeNickVisible, setIsModalChangeNickVisible] =
     useState(false);
   useInsertionEffect(() => {
-    window.localStorage.removeItem("userData");
+    window.localStorage.removeItem('userData');
     getStoredData(setIntraData);
   }, []);
 

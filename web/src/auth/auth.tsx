@@ -18,7 +18,7 @@ interface AccessTokenResponse {
 
 const AuthContext = createContext<UserType>(DEFAULT_VALUE);
 
-function useAuth() {
+export function useAuth() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 

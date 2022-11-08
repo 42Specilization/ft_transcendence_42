@@ -1,9 +1,9 @@
-import "./ChangeNick.scss";
-import axios from "axios";
-import { Dispatch, SetStateAction, useState } from "react";
-import { IntraData } from "../../Interfaces/interfaces";
-import { getStoredData } from "../../routes";
-import { Modal } from "../Modal/Modal";
+import './ChangeNick.scss';
+import axios from 'axios';
+import { Dispatch, SetStateAction, useState } from 'react';
+import { IntraData } from '../../Interfaces/interfaces';
+import { getStoredData } from '../../utils/utils';
+import { Modal } from '../Modal/Modal';
 interface ChangeNickProps {
   setIsModalChangeNickVisible: (arg0: boolean) => void;
   setIntraData: Dispatch<SetStateAction<IntraData>>;
@@ -13,11 +13,11 @@ export function ChangeNick({
   setIsModalChangeNickVisible,
   setIntraData,
 }: ChangeNickProps) {
-  const [nick, setNick] = useState<string>("");
+  const [nick, setNick] = useState<string>('');
   const changeNickStyleDefault = {
     styles: {
-      placeholder: "Insert your nick...",
-      border: "3px solid black",
+      placeholder: 'Insert your nick...',
+      border: '3px solid white',
     },
   };
   const [changeNickStyle, setChangeNickStyle] = useState(
@@ -25,7 +25,7 @@ export function ChangeNick({
   );
 
   async function handleChangeNick() {
-    const token = window.localStorage.getItem("token");
+    const token = window.localStorage.getItem('token');
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -41,29 +41,29 @@ export function ChangeNick({
       );
       if (result.status === 200) {
         setIsModalChangeNickVisible(false);
-        window.localStorage.removeItem("userData");
+        window.localStorage.removeItem('userData');
         getStoredData(setIntraData);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       const input = document.querySelector(
-        ".changeNick__input"
+        '.changeNick__input'
       ) as HTMLInputElement;
-      input.value = "";
+      input.value = '';
       if (e && e.response) {
         const errorVefify = {
           styles: {
-            placeholder: "",
-            border: "3px solid red",
+            placeholder: '',
+            border: '3px solid red',
           },
         };
         if (e.response.data.statusCode === 403) {
-          errorVefify.styles.placeholder = "Nick Unavaiable";
+          errorVefify.styles.placeholder = 'Nick Unavaiable';
         } else if (e.response.data.statusCode === 400) {
           errorVefify.styles.placeholder =
-            "Nick need to have between 3 and 15 caracters";
+            'Nick need to have between 3 and 15 caracters';
         } else {
-          errorVefify.styles.placeholder = "Invalid nick";
+          errorVefify.styles.placeholder = 'Invalid nick';
         }
         setChangeNickStyle(errorVefify);
       }

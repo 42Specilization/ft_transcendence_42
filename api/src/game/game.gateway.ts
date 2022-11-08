@@ -1,6 +1,5 @@
-/* eslint-disable quotes */
 /* eslint-disable indent */
-import { Logger, UseFilters } from "@nestjs/common";
+import { Logger, UseFilters } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -10,12 +9,12 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-} from "@nestjs/websockets";
-import { randomInt } from "crypto";
-import { Socket, Namespace } from "socket.io";
-import { WsCatchAllFilter } from "src/socket/exceptions/ws-catch-all-filter";
-import { WsBadRequestException } from "src/socket/exceptions/ws-exceptions";
-import { Game } from "./game.class";
+} from '@nestjs/websockets';
+import { randomInt } from 'crypto';
+import { Socket, Namespace } from 'socket.io';
+import { WsCatchAllFilter } from 'src/socket/exceptions/ws-catch-all-filter';
+import { WsBadRequestException } from 'src/socket/exceptions/ws-exceptions';
+import { Game } from './game.class';
 
 interface IMove {
   direction: string;
@@ -27,7 +26,7 @@ interface IMove {
  * The game socket has filters exceptions and authentication with jwt.
  */
 @UseFilters(new WsCatchAllFilter())
-@WebSocketGateway({ namespace: "game" })
+@WebSocketGateway({ namespace: 'game' })
 export class GameGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -41,7 +40,7 @@ export class GameGateway
    * Function called when the socket start
    */
   afterInit(): void {
-    this.logger.log("Game Websocket Gateway initialized.");
+    this.logger.log('Game Websocket Gateway initialized.');
   }
 
   getGameByRoom(room: number): Game | undefined {
@@ -64,8 +63,8 @@ export class GameGateway
     if (this.queue.length > 0) {
       for (let i = 0; i < this.queue.length; i++) {
         if (
-          (this.queue[i].player1.socketId === "" ||
-            this.queue[i].player2.socketId === "") &&
+          (this.queue[i].player1.socketId === '' ||
+            this.queue[i].player2.socketId === '') &&
           !this.queue[i].hasEnded
         )
           return i;
@@ -116,8 +115,8 @@ export class GameGateway
         user.leave(this.queue[i].room.toString());
         this.io
           .to(this.queue[i].room.toString())
-          .emit("end-game", this.queue[i]);
-        this.io.to(this.queue[i].room.toString()).emit("specs", this.queue[i]);
+          .emit('end-game', this.queue[i]);
+        this.io.to(this.queue[i].room.toString()).emit('specs', this.queue[i]);
         delete this.queue[i];
         this.queue.splice(i, 1);
         break;
@@ -125,7 +124,7 @@ export class GameGateway
     }
   }
 
-  @SubscribeMessage("left-game")
+  @SubscribeMessage('left-game')
   async leftGame(@ConnectedSocket() user: Socket) {
     this.finishGame(user);
   }
@@ -149,20 +148,20 @@ export class GameGateway
    * The user will enter a room with the gameId.
    * @param user Socket of the user player.
    */
-  @SubscribeMessage("join-game")
+  @SubscribeMessage('join-game')
   async joinGame(@ConnectedSocket() user: Socket, @MessageBody() name: string) {
     const index = this.checkGameArray();
-    if (this.queue[index].player1.socketId === "") {
+    if (this.queue[index].player1.socketId === '') {
       this.queue[index].player1.socketId = user.id;
       this.queue[index].player1.name = name;
       user.join(this.queue[index].room.toString());
       this.io
         .to(this.queue[index].room.toString())
-        .emit("update-game", this.queue[index]);
+        .emit('update-game', this.queue[index]);
       this.logger.debug(
         `Player one connected socket id: ${user.id} Game index:${index} Game id:${this.queue[index].room}`
       );
-    } else if (this.queue[index].player2.socketId === "") {
+    } else if (this.queue[index].player2.socketId === '') {
       this.queue[index].player2.socketId = user.id;
       this.queue[index].player2.name = name;
       user.join(this.queue[index].room.toString());
@@ -173,7 +172,7 @@ export class GameGateway
       this.queue[index].waiting = false;
       this.io
         .to(this.queue[index].room.toString())
-        .emit("start-game", this.queue[index]);
+        .emit('start-game', this.queue[index]);
       this.sendGameList();
     }
   }
@@ -196,7 +195,7 @@ export class GameGateway
    * @param move Move object with the direction and game index of the player.
    * @param client The player socket
    */
-  @SubscribeMessage("move")
+  @SubscribeMessage('move')
   async move(@MessageBody() move: IMove, @ConnectedSocket() user: Socket) {
     const direction = move.direction;
 
@@ -217,18 +216,18 @@ export class GameGateway
     }
 
     switch (direction) {
-      case "up":
+      case 'up':
         position.y -= 5;
-        this.io.to(game.room.toString()).emit("update-game", game);
+        this.io.to(game.room.toString()).emit('update-game', game);
         break;
-      case "down":
+      case 'down':
         position.y += 5;
-        this.io.to(game.room.toString()).emit("update-game", game);
+        this.io.to(game.room.toString()).emit('update-game', game);
         break;
     }
   }
 
-  @SubscribeMessage("update-ball")
+  @SubscribeMessage('update-ball')
   async update(@MessageBody() room: number, @ConnectedSocket() user: Socket) {
     const game = this.getGameByRoom(room);
     if (!game) {
@@ -239,17 +238,17 @@ export class GameGateway
     }
     game.update();
     if (game.checkWinner()) {
-      this.io.to(game.room.toString()).emit("end-game", game);
-      this.io.to(game.room.toString()).emit("specs", game);
+      this.io.to(game.room.toString()).emit('end-game', game);
+      this.io.to(game.room.toString()).emit('specs', game);
     } else {
-      this.io.to(game.room.toString()).emit("update-ball", game);
-      this.io.to(game.room.toString()).emit("specs", game);
+      this.io.to(game.room.toString()).emit('update-ball', game);
+      this.io.to(game.room.toString()).emit('specs', game);
     }
   }
 
   sendGameList() {
     this.io.emit(
-      "get-game-list",
+      'get-game-list',
       this.queue.map((game) => {
         if (game.hasStarted && !game.hasEnded) {
           return game;
@@ -259,14 +258,14 @@ export class GameGateway
     );
   }
 
-  @SubscribeMessage("get-game-list")
+  @SubscribeMessage('get-game-list')
   async getGameList(@ConnectedSocket() user: Socket) {
     this.logger.debug(`User with id: ${user.id} get game list!`);
 
     this.sendGameList();
   }
 
-  @SubscribeMessage("watch-game")
+  @SubscribeMessage('watch-game')
   async watchGame(
     @MessageBody() room: number,
     @ConnectedSocket() user: Socket
@@ -276,10 +275,10 @@ export class GameGateway
       return;
     }
     if (!game.hasStarted || game.hasEnded) {
-      throw new WsBadRequestException("Game not available!");
+      throw new WsBadRequestException('Game not available!');
     }
     user.join(game.room.toString());
-    this.io.to(game.room.toString()).emit("specs", game);
+    this.io.to(game.room.toString()).emit('specs', game);
     this.logger.log(`User watching game of id:${game.room}`);
   }
 }

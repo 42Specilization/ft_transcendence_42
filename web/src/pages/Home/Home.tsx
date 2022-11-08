@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+
 import "./Home.scss";
 
 export default function Home() {

@@ -1,10 +1,10 @@
-/* eslint-disable quotes */
+
 import "./Profile.scss";
 import { useEffect, useState } from "react";
 import { IntraData } from "../../Interfaces/interfaces";
 import React from "react";
 import { ProfileCard } from "../../components/ProfileCard/ProfileCard";
-import { defaultIntra, getStoredData } from "../../routes";
+import { defaultIntra, getStoredData } from "../../utils/utils";
 
 export default function Profile() {
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);

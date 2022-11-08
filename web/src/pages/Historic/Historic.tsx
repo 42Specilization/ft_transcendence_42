@@ -1,9 +1,9 @@
-/* eslint-disable quotes */
+
 import { useEffect, useState } from "react";
 import { HistoricMatch } from "../../components/HistoricMatch/HistoricMatch";
 import { NavBar } from "../../components/NavBar/NavBar";
 import { IntraData } from "../../Interfaces/interfaces";
-import { defaultIntra, getStoredData } from "../../routes";
+import { defaultIntra, getStoredData } from "../../utils/utils";
 import "./Historic.scss";
 
 export default function Historic() {

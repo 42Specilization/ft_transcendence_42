@@ -1,4 +1,4 @@
-@import '../../styles/variables.scss';
+@import '../../../styles/variables.scss';
 
 .tfaButton{
   @include displayFlex(space-around);
@@ -7,7 +7,7 @@
 }
 
 .tfaButton__button{
-  color: white;
+  color: rgb(255, 255, 255);
   font-size: 15px;
   padding: 5px;
   border-radius: 5px;

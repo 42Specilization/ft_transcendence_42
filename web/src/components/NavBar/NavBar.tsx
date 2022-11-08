@@ -1,18 +1,20 @@
-/* eslint-disable quotes */
-import logoSmall from "../../assets/logo-small.png";
-import { Chats, List, SignOut } from "phosphor-react";
-import "./NavBar.scss";
-import useAuth from "../../auth/auth";
-import { Link } from "react-router-dom";
-import React from "react";
 
-interface NavBarProps {
-  name: string;
-  imgUrl: string;
-}
+import logoSmall from '../../assets/logo-small.png';
+import { Chats, List, SignOut } from 'phosphor-react';
+import './NavBar.scss';
+import useAuth from '../../auth/auth';
+import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { IntraData } from '../../Interfaces/interfaces';
+import { defaultIntra, getStoredData } from '../../utils/utils';
 
-export function NavBar({ name, imgUrl }: NavBarProps) {
+export function NavBar() {
   const { logout } = useAuth();
+
+  const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
+  useEffect(() => {
+    getStoredData(setIntraData);
+  }, []);
 
   async function handleLogOut() {
     logout();
@@ -58,13 +60,12 @@ export function NavBar({ name, imgUrl }: NavBarProps) {
         </li>
         <li>
           <div className="navBar__user">
-            <div
-              className="navBar__user__icon"
-              style={{ backgroundImage: `url(${imgUrl})` }}
-            ></div>
-            <div className="navBar__user__name">
-              <Link to="/profile">{name}</Link>
-            </div>
+            <Link to="/profile">
+              <div
+                className="navBar__user__icon"
+                style={{ backgroundImage: `url(${intraData.image_url})` }}
+              />
+            </Link>
           </div>
         </li>
 

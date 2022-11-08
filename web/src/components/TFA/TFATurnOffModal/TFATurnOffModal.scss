@@ -1,17 +1,22 @@
-@import '../../styles/variables.scss';
+@import '../../../styles/variables.scss';
 
 .tfaTurnOff__buttons{
   @include displayFlex(space-around, row,center);
   width: 100%;
 }
 
+.tfaTurnOff__title{
+  font-size: 25px;
+  text-align: center;
+}
+
 .tfaTurnOff__button__confirm,
 .tfaTurnOff__button__cancel{
-  font-family: 'Oxanium', cursive;
   width: 30% ;
   height: 25px;
   background-color: green;
   font-size: 20px;
+  color: white;
   border-radius: 5px;
   &:hover {
     background-color: rgb(9, 90, 9);
