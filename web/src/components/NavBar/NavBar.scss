@@ -9,6 +9,7 @@
   border-bottom: 3px solid;
   border-color: $primaryColor;
   background-color: $secondaryColor;
+  color: white;
 }
 
 .navBar__list {
@@ -28,11 +29,13 @@
 .navBar__div__menu {
   @include displayFlex(center, column, revert);
   text-align: center;
+
 }
 
 .navBar__achievements,
 .navBar__historic,
 .navBar__game {
+  color: white;
   margin-top: 10px;
   &:hover {
     color: rgb(65, 62, 62);
@@ -91,17 +94,19 @@
 .navBar__chats {
   @include displayFlex(center, column);
   font-size: 30px;
-  .navBar__chats__link{
-    @include displayFlex(center, column, center);
-    &:hover{
-      color: gray;
-    }
-  }
   .navBar__chats__text{
     font-size: 10px;
   }
-}
+ }
 
+.navBar__chats__link{
+  @include displayFlex(center, column, center);
+  color: white;
+  &:hover{
+    color: gray;
+    filter: grayscale(0.6)
+  }
+}
 .navBar__user {
   @include displayFlex(center);
   font-size: 15px;

@@ -1,7 +1,7 @@
 * {
   margin: 0;
   padding: 0;
-  color: white;
+  /* color: white; //Esta atrapalhando as cores do hover na navBar*/
   border: none;
   box-sizing: border-box;
   background-color: transparent;

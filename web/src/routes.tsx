@@ -100,6 +100,7 @@ export default function AppRouter() {
     getStoredData(setIntraData);
   }, []);
 
+  console.log(intraData);
   return (
     <Router>
       <AuthProvider>
@@ -107,12 +108,10 @@ export default function AppRouter() {
           <Route
             path="/"
             element={
-              // <RequireAuth>
-              <>
+              <RequireAuth>
                 <NavBar name={intraData.login} imgUrl={intraData.image_url} />
                 <Home />
-              </>
-              // </RequireAuth>
+              </RequireAuth>
             }
           />
 
@@ -129,12 +128,10 @@ export default function AppRouter() {
           <Route
             path="/historic"
             element={
-              // <RequireAuth>
-              <>
+              <RequireAuth>
                 <NavBar name={intraData.login} imgUrl={intraData.image_url} />
                 <Historic />
-              </>
-              // </RequireAuth>
+              </RequireAuth>
             }
           />
           <Route

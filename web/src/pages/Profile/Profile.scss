@@ -8,6 +8,7 @@
   padding: 50px 0 50px 0px;
   border-radius: 0 0 50px 50px;
   background-color: $backgroundColor;
+  color: white;
   @include scrollBar(20px, 50px);
 }
 
