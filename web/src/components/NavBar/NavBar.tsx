@@ -1,12 +1,11 @@
-
-import logoSmall from '../../assets/logo-small.png';
-import { Chats, List, SignOut } from 'phosphor-react';
-import './NavBar.scss';
-import useAuth from '../../auth/auth';
-import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { IntraData } from '../../Interfaces/interfaces';
-import { defaultIntra, getStoredData } from '../../utils/utils';
+import logoSmall from "../../assets/logo-small.png";
+import { Chats, List, SignOut } from "phosphor-react";
+import "./NavBar.scss";
+import useAuth from "../../auth/auth";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { IntraData } from "../../Interfaces/interfaces";
+import { defaultIntra, getStoredData } from "../../utils/utils";
 
 export function NavBar() {
   const { logout } = useAuth();
@@ -53,7 +52,7 @@ export function NavBar() {
         </div>
         <li className="navBar__divider" />
         <li className="navBar__chats">
-          <Link to="/" className="navBar__chats__link">
+          <Link to="/chat" className="navBar__chats__link">
             <Chats className="navBar__chats__icon" />
             <p className="navBar__chats__text">Chats</p>
           </Link>

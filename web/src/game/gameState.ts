@@ -1,9 +1,9 @@
-import { Socket } from 'socket.io-client';
-import { proxy, ref } from 'valtio';
-import { Ball, Rect } from '../components/Canvas/Canvas';
-import { IntraData } from '../Interfaces/interfaces';
-import { getAccessToken } from '../utils/utils';
-import { createSocket, CreateSocketOptions, socketIOUrl } from './socket-io';
+import { Socket } from "socket.io-client";
+import { proxy, ref } from "valtio";
+import { Ball, Rect } from "../components/Canvas/Canvas";
+import { IntraData } from "../Interfaces/interfaces";
+import { getAccessToken } from "../utils/utils";
+import { createSocket, CreateSocketOptions, socketIOUrl } from "./socket-io";
 
 interface Me {
   name: string;
@@ -44,39 +44,41 @@ export interface AppState {
 const state = proxy<AppState>({
   get isPlayer() {
     if (this.socket && this.game) {
-      if (this.socket?.id === state.game?.player1.socketId
-        || this.socket?.id === state.game?.player2.socketId) {
-        return (true);
+      if (
+        this.socket?.id === state.game?.player1.socketId ||
+        this.socket?.id === state.game?.player2.socketId
+      ) {
+        return true;
       } else {
-        return (false);
+        return false;
       }
     } else {
-      return (false);
+      return false;
     }
   },
   get player1() {
-    return (this.game?.player1);
+    return this.game?.player1;
   },
   get player2() {
-    return (this.game?.player2);
+    return this.game?.player2;
   },
   get me() {
-    const localStore = window.localStorage.getItem('userData');
+    const localStore = window.localStorage.getItem("userData");
     if (!localStore) {
-      return (undefined);
+      return undefined;
     }
     const data: IntraData = JSON.parse(localStore);
     const myData = {
       name: data.login,
-      id: this.socket?.id
+      id: this.socket?.id,
     };
-    return (myData);
-  }
+    return myData;
+  },
 });
 
 const actions = {
   initializeGame: (): void => {
-    state.socket?.emit('join-game', state.me?.name);
+    state.socket?.emit("join-game", state.me?.name);
   },
   initializeSocket: (): void => {
     if (!state.socket) {
@@ -107,7 +109,7 @@ const actions = {
   leaveGame() {
     state.game = undefined;
     this.disconnectSocket();
-  }
+  },
 };
 
 export type AppActions = typeof actions;

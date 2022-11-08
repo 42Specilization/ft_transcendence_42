@@ -1,0 +1,57 @@
+@import '../../../styles/variables.scss';
+
+.chat__message {
+	@include displayFlex(left);
+	margin: 10px;
+	word-break: break-word;
+	p {
+		font-size: 20px;
+		max-width: 75%;
+		border-radius: 50px;
+		margin: 5px 0px 5px 20px;
+		padding: 15px 30px 15px 30px;
+		background-color: $secondaryColor;
+	}
+}
+
+.self {
+	justify-content: right;
+	flex-direction: row-reverse;
+	p {
+		margin: 5px 20px 5px 0px;
+		background-color: $primaryColor;
+	}
+}
+
+.chat__message__icon {
+	min-width: 45px;
+	min-height: 45px;
+	border: solid 2px;
+	border-radius: 50%;
+	background-repeat: none;
+	background-size: cover;
+	background-position: 50% 50%;
+}
+
+.chat__message__date {
+	text-align: center !important;
+	border-radius: 20px !important;
+}
+
+// import { Logger } f rom ;
+// import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, Subscribegessage, WebSocketGateuay, WebSocketServer } frmm
+// import { Server, Socket fron • socket.io•;
+// tewayC )
+// export class Appoateway implements OnGatewayInit, On6atevayConnection, OnGatewayDisconnect {
+// server: Server;
+// prtvate logger: Logger • nev Logger( • App6ateway• );
+// asubscribeuessage( 'msgroserver • )
+// handteMessage(ctient: Socket, payload: string): void {
+// this.server.emit( 'msgToCtient' , payload, client.id);
+// afterlnit(server: Server) {
+// this. togger. idg( • Init
+// hand1eConnection( client: Socket) {
+// this. togger. tog( 'Client connected:
+// hand1eDisconnect(cl ient: Socket) {l
+// this. logger. log( - Client disconnected: ${ctient.idF);
+// ü•testjs/websockets • ;

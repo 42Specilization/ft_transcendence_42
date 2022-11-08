@@ -1,19 +1,16 @@
-import './main.css';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from 'react-router-dom';
-import Home from './pages/Home/Home';
-import SignIn from './pages/SignIn/SignIn';
-import NotFound from './pages/NotFound/NotFound';
-import OAuth from './pages/OAuth/OAuth';
-import { AuthProvider } from './auth/auth';
-import Profile from './pages/Profile/Profile';
-import Game from './pages/Game/Game';
-import Historic from './pages/Historic/Historic';
-import { NavBar } from './components/NavBar/NavBar';
-import { RequireAuth } from './utils/utils';
+import "./main.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home/Home";
+import SignIn from "./pages/SignIn/SignIn";
+import NotFound from "./pages/NotFound/NotFound";
+import OAuth from "./pages/OAuth/OAuth";
+import { AuthProvider } from "./auth/auth";
+import Profile from "./pages/Profile/Profile";
+import Game from "./pages/Game/Game";
+import Historic from "./pages/Historic/Historic";
+import { NavBar } from "./components/NavBar/NavBar";
+import { RequireAuth } from "./utils/utils";
+import Chat from "./pages/Chat/Chat";
 
 export default function AppRouter() {
   return (
@@ -24,7 +21,7 @@ export default function AppRouter() {
             path="/"
             element={
               <RequireAuth>
-                <NavBar/>
+                <NavBar />
                 <Home />
               </RequireAuth>
             }
@@ -34,7 +31,7 @@ export default function AppRouter() {
             path="/profile"
             element={
               <RequireAuth>
-                <NavBar/>
+                <NavBar />
                 <Profile />
               </RequireAuth>
             }
@@ -44,7 +41,7 @@ export default function AppRouter() {
             path="/historic"
             element={
               <RequireAuth>
-                <NavBar/>
+                <NavBar />
                 <Historic />
               </RequireAuth>
             }
@@ -54,6 +51,15 @@ export default function AppRouter() {
             element={
               <RequireAuth>
                 <Game />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/chat"
+            element={
+              <RequireAuth>
+                <NavBar />
+                <Chat />
               </RequireAuth>
             }
           />

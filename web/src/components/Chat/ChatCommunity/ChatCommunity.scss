@@ -1,0 +1,42 @@
+@import '../../../styles/variables.scss';
+
+.chat__community {
+	@include displayFlex(center, column);
+	width: 30%;
+	height: calc(100% - 20px);
+	margin: 20px 10px 0px 0px;
+	border-radius: 50px;
+	background-color: $backgroundColor;
+}
+
+.chat__community__header {
+	@include displayFlex(space-between);
+	width: 100%;
+	height: 70px;
+	padding: 20px 50px 20px 50px;
+	border-radius: 50px 50px 0px 0px;
+}
+
+.chat__community__header__icon {
+	@include displayFlex(center);
+	padding: 4px;
+	border-radius: 50%;
+	background-color: $backgroundColor;
+	&:hover  {
+		cursor: pointer;
+		background-color: $primaryColorHover;
+	}
+}
+
+.chat__community__body {
+	width: 100%;
+	height: calc(100% - 100px);
+	padding: 0px 10px 0px 10px;
+	overflow-y: auto;
+	@include scrollBar();
+}
+
+.chat__community__footer {
+	width: 100%;
+	height: 30px;
+}
