@@ -3,6 +3,7 @@
   padding: 0;
   /* color: white; //Esta atrapalhando as cores do hover na navBar*/
   border: none;
+  outline: none;
   box-sizing: border-box;
   background-color: transparent;
   font-family: 'Oxanium', cursive;

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Post, UseGuards, UseInterceptors, UploadedFile, ValidationPipe, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Post, UseGuards, UseInterceptors, UploadedFile, ValidationPipe, UnauthorizedException, InternalServerErrorException, BadRequestException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
@@ -13,6 +13,7 @@ import * as nodemailer from 'nodemailer';
 import { smtpConfig } from '../config/smtp';
 import { UserDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
+import { FriendRequestDto } from './dto/friend-request.dto';
 
 @Controller('user')
 @ApiTags('user')
@@ -35,7 +36,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async turnOnTfa(
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
-    @GetUserFromJwt() userFromJwt : UserFromJwt,
+    @GetUserFromJwt() userFromJwt: UserFromJwt,
   ) {
     await this.userService.updateUser(updateUserDto, userFromJwt.email);
     return { message: 'turned on' };
@@ -47,7 +48,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async turnOffTfa(
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
-    @GetUserFromJwt() userFromJwt : UserFromJwt,
+    @GetUserFromJwt() userFromJwt: UserFromJwt,
   ) {
     this.userService.updateUser(updateUserDto, userFromJwt.email);
     return { message: 'turned off' };
@@ -59,10 +60,10 @@ export class UserController {
   @ApiBody({ type: UpdateUserDto })
   async validateTFACode(
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
-    @GetUserFromJwt() userFromJwt : UserFromJwt,
+    @GetUserFromJwt() userFromJwt: UserFromJwt,
   ) {
     const user = await this.userService.getUser(userFromJwt.email);
-    if (!bcrypt.compareSync(updateUserDto.tfaCode as string, user.tfaCode as string)){
+    if (!bcrypt.compareSync(updateUserDto.tfaCode as string, user.tfaCode as string)) {
       throw new UnauthorizedException('Invalid Code');
     }
     return ({
@@ -75,13 +76,13 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async validateEmailTFA(
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
-    @GetUserFromJwt() userFromJwt : UserFromJwt,
+    @GetUserFromJwt() userFromJwt: UserFromJwt,
   ) {
 
-    function generateCode(){
+    function generateCode() {
       let code = '';
       const avaliableChar = '1234567890abcdefghijklmnopqrstuvwxyz';
-      for (let i = 0; i < 6; i++){
+      for (let i = 0; i < 6; i++) {
         code += avaliableChar.charAt(Math.floor(Math.random() * avaliableChar.length));
       }
       return code;
@@ -107,7 +108,7 @@ export class UserController {
       await transporter.sendMail({
         text: `Your validation code is ${sendedCode}`,
         subject: 'Verify Code from Transcendence',
-        from:process.env['TFA_EMAIL_FROM'],
+        from: process.env['TFA_EMAIL_FROM'],
         to: [user.tfaEmail as string]
       });
     } else {
@@ -123,7 +124,7 @@ export class UserController {
     @GetUserFromJwt() userFromJwt: UserFromJwt,
   ) {
     await this.userService.updateUser(updateUserDto, userFromJwt.email);
-    return { message: 'succes' };
+    return { message: 'success' };
   }
 
   @Get()
@@ -136,7 +137,7 @@ export class UserController {
   @Get('me')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
-  async getUser( @GetUserFromJwt() userFromJwt : UserFromJwt): Promise<UserDto> {
+  async getUser(@GetUserFromJwt() userFromJwt: UserFromJwt): Promise<UserDto> {
     return (await this.userService.getUserDTO(userFromJwt.email));
   }
 
@@ -167,7 +168,36 @@ export class UserController {
     const updateUserDto: UpdateUserDto = { imgUrl: file.originalname };
     this.userService.updateUser(updateUserDto, userFromJwt.email);
     return { message: 'succes', path: file.path };
-
   }
+
+  @Patch('/sendFriendRequest')
+  @UseGuards(JwtAuthGuard)
+  async sendFriendRequest(
+    @Body(ValidationPipe) nick: FriendRequestDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    console.log('userFromJwt', userFromJwt);
+    console.log('nick', nick);
+    const user = await this.userService.findUserByEmail(userFromJwt.email);
+    if (user && user.nick === nick.nick) {
+      throw new BadRequestException('You cant add yourself');
+    }
+    const userRequested = await this.userService.findUserByNick(nick.nick as string);
+    if (!userRequested)
+      throw new InternalServerErrorException('User not found in data base');
+    return { message: 'success' };
+  }
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

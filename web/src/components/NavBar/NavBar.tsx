@@ -16,6 +16,7 @@ export function NavBar() {
   const [notificationVisible, setNotificationVisible] = useState(false);
 
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
+
   useEffect(() => {
     getStoredData(setIntraData);
   }, []);

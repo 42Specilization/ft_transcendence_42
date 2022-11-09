@@ -4,7 +4,7 @@
 .user__card {
 	@include displayFlex(left);
 	padding: 10px;
-	margin: 10px;
+	margin-bottom: 10px;
 	border-radius: 50px;
 	background-color: $backgroundColor;
 	overflow: hidden;

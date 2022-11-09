@@ -61,7 +61,7 @@ export function ChangeNick({
           errorVefify.styles.placeholder = 'Nick Unavaiable';
         } else if (e.response.data.statusCode === 400) {
           errorVefify.styles.placeholder =
-            'Nick need to have between 3 and 15 caracters';
+            'Need have min: 3, max: 15, forbidden: ","';
         } else {
           errorVefify.styles.placeholder = 'Invalid nick';
         }
