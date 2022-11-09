@@ -16,9 +16,6 @@ export function RequireAuth({ children }: any) {
 
   /**
    * It checks if the user has TFA enabled, if not, it sets the isTfaValid state to true. If the user has
-   useEffect(() => {
-    getStoredData(setIntraData);
-  }, []);
    * TFA enabled, it checks if the user has validated TFA, if not, it sets the isTfaValid state to false.
    * If the user has TFA enabled and has validated TFA, it sets the isTfaValid state to true
    * @returns a boolean value.
@@ -33,19 +30,24 @@ export function RequireAuth({ children }: any) {
       baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
     });
 
-    const user = await api.get('/user/me', config);
-    if (
-      user.data.isTFAEnable !== undefined &&
+    try {
+      const user = await api.get('/user/me', config);
+      if (
+        user.data.isTFAEnable !== undefined &&
       user.data.isTFAEnable === false
-    ) {
+      ) {
+        setIsTfaValid(true);
+        return;
+      }
+      if (user.data.isTFAEnable && user.data.tfaValidated !== true) {
+        setIsTfaValid(false);
+        return;
+      }
       setIsTfaValid(true);
-      return;
+    } catch (error) {
+      setIsTfaValid(true);
+      return ;
     }
-    if (user.data.isTFAEnable && user.data.tfaValidated !== true) {
-      setIsTfaValid(false);
-      return;
-    }
-    setIsTfaValid(true);
   }
 
   validateTFA();
@@ -61,6 +63,23 @@ export function RequireAuth({ children }: any) {
   return token ? children : <Navigate to="/signin" replace />;
 }
 
+/**
+ * If the token is null, then render the children, otherwise redirect to the home page.
+ * @param {any}  - any
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function ValidadeSignin({children}: any) {
+  const token =  window.localStorage.getItem('token');
+  return token === null ? children : <Navigate to="/" replace />;
+}
+
+
+/**
+ * It gets the data from the local storage, if it doesn't exist, it gets it from the API, and if it
+ * doesn't exist, it returns
+ * @param setIntraData - Dispatch<SetStateAction<IntraData>>
+ * @returns the data that is being parsed from the local storage.
+ */
 export async function getStoredData(
   setIntraData: Dispatch<SetStateAction<IntraData>>
 ) {

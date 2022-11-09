@@ -1,16 +1,16 @@
-import "./main.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home/Home";
-import SignIn from "./pages/SignIn/SignIn";
-import NotFound from "./pages/NotFound/NotFound";
-import OAuth from "./pages/OAuth/OAuth";
-import { AuthProvider } from "./auth/auth";
-import Profile from "./pages/Profile/Profile";
-import Game from "./pages/Game/Game";
-import Historic from "./pages/Historic/Historic";
-import { NavBar } from "./components/NavBar/NavBar";
-import { RequireAuth } from "./utils/utils";
-import Chat from "./pages/Chat/Chat";
+import './main.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home/Home';
+import SignIn from './pages/SignIn/SignIn';
+import NotFound from './pages/NotFound/NotFound';
+import OAuth from './pages/OAuth/OAuth';
+import { AuthProvider } from './auth/auth';
+import Profile from './pages/Profile/Profile';
+import Game from './pages/Game/Game';
+import Historic from './pages/Historic/Historic';
+import { NavBar } from './components/NavBar/NavBar';
+import { RequireAuth, ValidadeSignin } from './utils/utils';
+import Chat from './pages/Chat/Chat';
 
 export default function AppRouter() {
   return (
@@ -65,7 +65,13 @@ export default function AppRouter() {
           />
 
           <Route path="/oauth" element={<OAuth />} />
-          <Route path="/signin" element={<SignIn />} />
+          <Route
+            path="/signin"
+            element={
+              <ValidadeSignin >
+                <SignIn />
+              </ValidadeSignin>
+            } />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
