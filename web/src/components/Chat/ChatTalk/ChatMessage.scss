@@ -37,21 +37,3 @@
 	text-align: center !important;
 	border-radius: 20px !important;
 }
-
-// import { Logger } f rom ;
-// import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, Subscribegessage, WebSocketGateuay, WebSocketServer } frmm
-// import { Server, Socket fron • socket.io•;
-// tewayC )
-// export class Appoateway implements OnGatewayInit, On6atevayConnection, OnGatewayDisconnect {
-// server: Server;
-// prtvate logger: Logger • nev Logger( • App6ateway• );
-// asubscribeuessage( 'msgroserver • )
-// handteMessage(ctient: Socket, payload: string): void {
-// this.server.emit( 'msgToCtient' , payload, client.id);
-// afterlnit(server: Server) {
-// this. togger. idg( • Init
-// hand1eConnection( client: Socket) {
-// this. togger. tog( 'Client connected:
-// hand1eDisconnect(cl ient: Socket) {l
-// this. logger. log( - Client disconnected: ${ctient.idF);
-// ü•testjs/websockets • ;

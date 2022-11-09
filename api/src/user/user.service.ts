@@ -4,47 +4,47 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-} from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { AccessTokenResponse } from "src/auth/dto/AccessTokenResponse.dto";
-import { Repository } from "typeorm";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { User } from "./entities/user.entity";
-import * as bcrypt from "bcrypt";
-import { CredentialsDto } from "./dto/credentials.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
-import { UserDto } from "./dto/user.dto";
-import * as fs from "fs";
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AccessTokenResponse } from 'src/auth/dto/AccessTokenResponse.dto';
+import { Repository } from 'typeorm';
+import { CreateUserDto } from './dto/create-user.dto';
+import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
+import { CredentialsDto } from './dto/credentials.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { FriendDto, UserDto } from './dto/user.dto';
+import * as fs from 'fs';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>
-  ) {}
+  ) { }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const { email, imgUrl, first_name, usual_full_name, nick, token } =
       createUserDto;
     const user = new User();
     user.email = email;
-    user.imgUrl = !imgUrl ? "userDefault.png" : imgUrl;
+    user.imgUrl = !imgUrl ? 'userDefault.png' : imgUrl;
     user.first_name = first_name;
     user.usual_full_name = usual_full_name;
     user.nick = nick;
     user.token = await bcrypt.hash(token, 10);
-    user.matches = "0";
-    user.wins = "0";
-    user.lose = "0";
+    user.matches = '0';
+    user.wins = '0';
+    user.lose = '0';
     try {
       await this.usersRepository.save(user);
-      user.token = "";
+      user.token = '';
       return user;
     } catch (error) {
-      if (error.code.toString() === "23505") {
-        throw new ConflictException("E-mail address already in use!");
+      if (error.code.toString() === '23505') {
+        throw new ConflictException('E-mail address already in use!');
       } else {
         throw new InternalServerErrorException(
-          "createUser: Error to create a user!"
+          'createUser: Error to create a user!'
         );
       }
     }
@@ -60,7 +60,7 @@ export class UserService {
         id,
       },
     });
-    if (!user) throw new NotFoundException("Usuário não encontrado");
+    if (!user) throw new NotFoundException('Usuário não encontrado');
     return user;
   }
 
@@ -82,7 +82,7 @@ export class UserService {
       user.save();
     } catch {
       throw new InternalServerErrorException(
-        "UpdateToken: Error to update token!"
+        'UpdateToken: Error to update token!'
       );
     }
   }
@@ -93,7 +93,7 @@ export class UserService {
 
   async getUserDTO(email: string): Promise<UserDto> {
     const user = (await this.findUserByEmail(email)) as User;
-    const userDto = {
+    const userDto: UserDto = {
       email: user.email,
       first_name: user.first_name,
       image_url: user.imgUrl,
@@ -104,7 +104,21 @@ export class UserService {
       lose: user.lose,
       isTFAEnable: user.isTFAEnable as boolean,
       tfaValidated: user.tfaValidated as boolean,
+      friends: [],
     };
+    const friendsIds: string[] = user.friends ? user.friends.split(',') : [];
+    for (let i = 0; i < friendsIds.length; i++) {
+      const friend: User = (await this.findUserById(friendsIds[i])) as User;
+      const friendDto: FriendDto = {
+        online: false,
+        login: friend.nick,
+        email: friend.email,
+        image_url: friend.imgUrl,
+      };
+      userDto.friends.push(friendDto);
+    }
+    userDto.friends.sort((a, b) => a.login < b.login ? -1 : 1);
+
     return userDto;
   }
 
@@ -129,7 +143,7 @@ export class UserService {
     const { nick, imgUrl, isTFAEnable, tfaEmail, tfaValidated, tfaCode } =
       updateUserDto;
     if (nick && (await this.checkDuplicateNick(nick)))
-      throw new ForbiddenException("Duplicated nickname");
+      throw new ForbiddenException('Duplicated nickname');
 
     user.nick = nick ? nick : user?.nick;
     user.imgUrl = imgUrl ? imgUrl : user?.imgUrl;
@@ -151,14 +165,14 @@ export class UserService {
     }
 
     if (tfaCode == null) {
-      user.tfaCode = "";
+      user.tfaCode = '';
     }
 
     try {
       await user.save();
       return user;
     } catch (error) {
-      throw new InternalServerErrorException("Erro ao salvar os dados no db");
+      throw new InternalServerErrorException('Erro ao salvar os dados no db');
     }
   }
 }

@@ -33,9 +33,15 @@
 
 }
 
-.navBar__achievements,
-.navBar__historic,
-.navBar__game {
+
+.navBar__chats__link,
+.navBar__community__link,
+.navBar__game__link{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 12px;
+  font-size: 20px;
   color: white;
   margin-top: 10px;
   &:hover {
@@ -43,18 +49,18 @@
   }
 }
 
-.navBar__game {
+.navBar__game__link {
   margin-bottom: 10px;
 }
 
 .navBar__menu {
   @include displayFlex(space-between, column, center);
   position: absolute;
-  top:-200px;
+  top:-250px;
   border-radius: 8px;
-  width: 100px;
+  width: 130px;
   height: auto;
-  transform: translateX(-28%);
+  transform: translateX(-35%);
   background-color: $primaryColor;
   transition: all 0.5s;
   z-index: 1;
@@ -93,21 +99,43 @@
   }
 }
 
-.navBar__chats {
-  @include displayFlex(center, column);
-  font-size: 30px;
-  .navBar__chats__text{
-    font-size: 10px;
-  }
- }
 
-.navBar__chats__link{
+.navBar__chats__link,
+.navBar__community__link{
   @include displayFlex(center, column, center);
   color: white;
-  &:hover{
-    color: gray;
-    filter: grayscale(0.6)
+  .navBar__chats__icon {
+    font-size: 32px;
   }
+}
+
+.navBar__notify__icon{
+  &:hover {
+    color: gray;
+  }
+}
+
+
+.navBar__notifications {
+  background-color: $primaryColor;
+  position: absolute;
+  top:100px;
+  transform: translateX(-40%);
+  width: 25%;
+  max-width: 420px;
+  height: 300px;
+  border-radius : 0px 0px 20px 20px;
+  @include displayFlex(center, column);
+  transition: all 0.5s;
+  z-index: 2;
+}
+
+.navBar__notification__body{
+  width: 95%;
+  height: 100%;
+  margin-bottom: 10px;
+  overflow: hidden;
+  @include scrollBar()
 }
 
 .navBar__user {
@@ -253,15 +281,10 @@
     font-size: 20px;
   }
 
-  .navBar__achievements,
-  .navBar__historic,
-  .navBar__game{
-    margin: 12px;
-    font-size: 20px;
-  }
+
 
   .navBar__div__menu{
-    @include displayFlex(center, row, center);
+    @include displayFlex(space-around, row, center);
     justify-items: center;
     width: 35%;
     height: 100%;

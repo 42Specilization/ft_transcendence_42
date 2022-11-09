@@ -1,4 +1,4 @@
-@import '../../styles/variables.scss';
+@import '../../../styles/variables.scss';
 
 .historicMatch {
   @include displayFlex(space-between);
@@ -6,31 +6,33 @@
   font-size: 10px;
   max-height: 120px;
   border-radius: 20px;
-  padding-right: 20px;
   margin-bottom: 10px;
   color: white;
   background-color: $backgroundColor;
-  p {
-    font-size: 2em;
-  }
 }
 
 .historicMatch__player {
   @include displayFlex(space-around);
+  width: 33%;
+}
+.historicMatch__infos {
+  @include displayFlex();
+  font-size: 2em;
+  width: 33%;
 }
 
-.historicMatch__player img{
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 3px solid $primaryColor;
-    background-color: $backgroundColor;
-    margin-right: 10px;
+.historicMatch__player img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid $primaryColor;
+  background-color: $backgroundColor;
+  margin-right: 10px;
 }
 
 .historicMatch__player__nick {
-  font-size: 2em;
   max-width: 150px;
+  font-size: 2em;
   border-radius: 20px;
 	overflow-x: hidden;
 	white-space: nowrap;
@@ -40,14 +42,6 @@
 }
 
 @media (min-width:1400px) {
-  .historicMatch {
-    width: 100%;
-    font-size: 2em;
-    p {
-      font-size: 30px;
-    }
-  }
-
   .historicMatch__player img {
     width: 70px;
     height: 70px;

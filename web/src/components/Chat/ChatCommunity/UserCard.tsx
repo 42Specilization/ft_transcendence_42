@@ -1,10 +1,11 @@
 /* eslint-disable quotes */
 import "./UserCard.scss";
-import { IntraData } from "../../../Interfaces/interfaces";
+import { FriendData } from "../../../Interfaces/interfaces";
+import { Dispatch, SetStateAction } from "react";
 
 interface UserCardProps {
-  friend: IntraData;
-  setActiveFriend: (arg0: IntraData | null) => void;
+  friend: FriendData;
+  setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
 }
 
 export function UserCard({ friend, setActiveFriend }: UserCardProps) {

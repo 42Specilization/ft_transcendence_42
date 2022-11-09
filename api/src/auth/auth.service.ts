@@ -5,7 +5,7 @@ import { User } from '../user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { AccessTokenResponse } from './dto/AccessTokenResponse.dto';
 import { JwtTokenAccess } from './dto/JwtTokenAccess.dto';
-import { IntraData } from './dto/IntraData.dto';
+import { FriendData, IntraData } from './dto/IntraData.dto';
 import { UserFromJwt } from './dto/UserFromJwt.dto';
 import { UserPayload } from './dto/UserPayload.dto';
 import { UpdateUserDto } from 'src/user/dto/update-user.dto';
@@ -48,7 +48,7 @@ export class AuthService {
    */
   async getUserInfos(data: UserFromJwt): Promise<IntraData> {
     const user = await this.userService.findUserByEmail(data.email) as User;
-    const intraData = {
+    const intraData: IntraData = {
       email: user.email,
       first_name: user.first_name,
       image_url: user.imgUrl,
@@ -59,7 +59,21 @@ export class AuthService {
       lose: user.lose,
       isTFAEnable: user.isTFAEnable,
       tfaValidated: user.tfaValidated,
+      friends: [],
     };
+    const friendsIds: string[] = user.friends ? user.friends.split(',') : [];
+    for (let i = 0; i < friendsIds.length; i++) {
+      const friend: User = (await this.userService.findUserById(friendsIds[i])) as User;
+      const friendData: FriendData = {
+        online: false,
+        login: friend.nick,
+        email: friend.email,
+        image_url: friend.imgUrl,
+      };
+      intraData.friends.push(friendData);
+    }
+    intraData.friends.sort((a, b) => a.login < b.login ? -1 : 1);
+
     return (intraData);
   }
 
@@ -92,6 +106,7 @@ export class AuthService {
           lose: response.data.lose,
           isTFAEnable: response.data.isTFAEnable,
           tfaValidated: response.data.tfaValidated,
+          friends: response.data.friends,
         });
       }).catch(err => {
         if (err.code == 'ERR_BAD_REQUEST')
@@ -120,10 +135,15 @@ export class AuthService {
 
     if (!user) {
       await this.userService.createUser({
-        email: data.email, imgUrl: data.image_url,
-        first_name: data.first_name, usual_full_name: data.usual_full_name,
-        nick: data.login, token: token.access_token,
-        matches: '0', wins: '0', lose: '0',
+        email: data.email,
+        imgUrl: data.image_url,
+        first_name: data.first_name,
+        usual_full_name: data.usual_full_name,
+        nick: data.login,
+        token: token.access_token,
+        matches: '0',
+        wins: '0',
+        lose: '0',
       });
 
       this.logger.log('user Criado!');

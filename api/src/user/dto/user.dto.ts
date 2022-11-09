@@ -1,3 +1,10 @@
+export class FriendDto {
+  online: boolean;
+  login: string;
+  email: string;
+  image_url: string;
+}
+
 export class UserDto {
   email: string;
   first_name: string;
@@ -9,4 +16,5 @@ export class UserDto {
   lose: string;
   isTFAEnable: boolean;
   tfaValidated: boolean;
+  friends: FriendDto[];
 }

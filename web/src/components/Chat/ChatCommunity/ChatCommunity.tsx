@@ -1,12 +1,13 @@
 /* eslint-disable quotes */
 import "./ChatCommunity.scss";
 import { MagnifyingGlass, UserPlus, UsersThree } from "phosphor-react";
-import { IntraData } from "../../../Interfaces/interfaces";
+import { FriendData } from "../../../Interfaces/interfaces";
 import { UserCard } from "./UserCard";
+import { Dispatch, SetStateAction } from "react";
 
 interface ChatCommunityProps {
-  friends: Array<IntraData>;
-  setActiveFriend: (arg0: IntraData | null) => void;
+  friends: FriendData[];
+  setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
 }
 
 export function ChatCommunity({

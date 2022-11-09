@@ -1,11 +1,11 @@
-@import '../../styles/variables.scss';
+@import '../../../styles/variables.scss';
 
 .userImage__image {
   @include displayFlex(center);
 
   img {
-    width: 250px;
-    height: 250px;
+    width: 225px;
+    height: 225px;
     padding: 10px;
     border-radius: 50%;
     background-color: $primaryColor;

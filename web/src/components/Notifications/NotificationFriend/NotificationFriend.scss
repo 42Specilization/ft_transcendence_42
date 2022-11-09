@@ -1,0 +1,30 @@
+@import '../../../styles/variables.scss';
+
+.notificationFriend{
+  @include displayFlex(space-around, column);
+  margin-top: 10px;
+  width: 95%;
+  background-color: $primaryColorHover;
+  height: 70px;
+  border-radius: 10px;
+  text-align: center;
+  strong  {
+    font-size: 18px;
+  }
+}
+
+.notificationFriend__buttons{
+  @include displayFlex();
+  text-align: center;
+  width: 60%;
+}
+
+.notificationFriend__buttons__accept,
+.notificationFriend__buttons__reject{
+  @include displayFlex(space-around);
+  text-align: center;
+  width: 75px;
+  font-size: 15px;
+  margin-left: 10px;
+  margin-right: 10px;
+}

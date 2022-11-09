@@ -1,0 +1,32 @@
+@import '../../../styles/variables.scss';
+
+.notificationChallenge{
+  @include displayFlex(space-around, column);
+  margin-top: 10px;
+  width: 95%;
+  background-color: $primaryColorHover;
+  height: 70px;
+  border-radius: 10px;
+  text-align: center;
+  strong  {
+    font-size: 18px;
+  }
+}
+.notificationChallenge__buttons{
+  @include displayFlex();
+  text-align: center;
+}
+
+.notificationChallenge__buttons__accept,
+.notificationChallenge__buttons__reject{
+  @include displayFlex(space-around, row, end);
+  text-align: center;
+  width: 80px;
+  font-size: 15px;
+  margin-left: 10px;
+  margin-right: 10px;
+  :hover {
+    cursor: pointer;
+    color: gray;
+  }
+}

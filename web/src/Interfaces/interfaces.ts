@@ -1,3 +1,10 @@
+export interface FriendData {
+  online: boolean;
+  login: string;
+  email: string;
+  image_url: string;
+}
+
 export interface IntraData {
   first_name: string;
   email: string;
@@ -9,6 +16,7 @@ export interface IntraData {
   lose: string;
   isTFAEnable: boolean;
   tfaValidated: boolean;
+  friends: FriendData[];
 }
 
 export interface ErrResponse {

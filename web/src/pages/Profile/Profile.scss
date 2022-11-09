@@ -1,50 +1,52 @@
 @import '../../styles/variables.scss';
 
-.profile {
-  @include displayFlex(space-around, column);
-  display: grid;
-  width: 80%;
-  height: 90%;
-  padding: 50px 0 50px 0px;
-  border-radius: 0 0 50px 50px;
-  background-color: $backgroundColor;
-  color: white;
-  @include scrollBar(20px, 50px);
-}
+$ProfileHeaderHeight: 35px;
 
-.profile__stats {
-  @include displayFlex(space-around, column);
-  width: 350px;
-  height: 280px;
-  border-radius: 30px;
-  background-color: $backgroundColor;
-}
-
-.profile__stats__title {
+.profile__header {
   @include displayFlex();
-  font-size: 3em;
-  margin: 5px 0px 20px 0px;
+  width: 80%;
+  height: $ProfileHeaderHeight;
+  color: white;
+  background-color: $backgroundColor;
 }
 
-.profile__stats__infos {
+.profile__header__list {
   @include displayFlex(space-between);
   width: 80%;
-  font-size: 2em;
-  margin-bottom: 8px
 }
 
-@media (min-width:1199px){
+.profile__header__list__item {
+  @include displayFlex();
+  width: 30%;
+  height: $ProfileHeaderHeight;
+  border-radius: 0px 0px 20px 20px;
+  background-color: $backgroundColor;
+  
+  button {
+    @include truncText();
+    font-size: 1.5em;
+    color: white;
+    &:hover {
+      cursor: pointer;
+      color: rgb(74, 71, 71);
+   }
+ }
+}
 
-  .profile {
-    @include displayFlex(space-around);
-    padding: 20px 0 20px 0px;
-  }
+.profile__header__list__item__selected {
+  background-color: transparent;
 
-  .profile__stats {
-    height: 350px;
-  }
+  button {
+    &:hover {
+      cursor: default;
+      color: white;
+   }
+ }
+}
 
-  .profile__stats__title {
-     font-size: 4em;
-  }
+.profile__body {
+  @include displayFlex(center, column);
+  width: 80%;
+  height: calc(90% - $ProfileHeaderHeight);
+  overflow: hidden;
 }

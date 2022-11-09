@@ -82,6 +82,10 @@ export class User extends BaseEntity {
   @Column({ default: false })
   isTFAEnable: boolean;
 
+  @ApiProperty()
+  @Column({ nullable: true })
+  friends: string;
+
   async checkToken(token: string): Promise<boolean> {
     try {
       return (await bcrypt.compare(token, this.token));

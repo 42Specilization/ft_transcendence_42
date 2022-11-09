@@ -15,7 +15,7 @@ $heightWithoutNavBar: calc(100vh - 100px);
  }
 
 @mixin scrollBar($marginTop: 20px, $marginBottom: 20px) {
-  overflow-y: auto;
+  overflow-y: scroll;
   &::-webkit-scrollbar {
     width: 10px;
     border-radius: 20px;
@@ -28,6 +28,12 @@ $heightWithoutNavBar: calc(100vh - 100px);
     margin-top: $marginTop;
     margin-bottom: $marginBottom;
   }
+}
+
+@mixin truncText() {
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .body {

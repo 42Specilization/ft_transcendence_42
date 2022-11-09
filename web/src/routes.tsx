@@ -7,7 +7,6 @@ import OAuth from './pages/OAuth/OAuth';
 import { AuthProvider } from './auth/auth';
 import Profile from './pages/Profile/Profile';
 import Game from './pages/Game/Game';
-import Historic from './pages/Historic/Historic';
 import { NavBar } from './components/NavBar/NavBar';
 import { RequireAuth, ValidadeSignin } from './utils/utils';
 import Chat from './pages/Chat/Chat';
@@ -26,23 +25,12 @@ export default function AppRouter() {
               </RequireAuth>
             }
           />
-
           <Route
             path="/profile"
             element={
               <RequireAuth>
                 <NavBar />
                 <Profile />
-              </RequireAuth>
-            }
-          />
-
-          <Route
-            path="/historic"
-            element={
-              <RequireAuth>
-                <NavBar />
-                <Historic />
               </RequireAuth>
             }
           />
@@ -56,6 +44,15 @@ export default function AppRouter() {
           />
           <Route
             path="/chat"
+            element={
+              <RequireAuth>
+                <NavBar />
+                <Chat />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/community"
             element={
               <RequireAuth>
                 <NavBar />

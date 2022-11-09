@@ -1,5 +1,4 @@
-
-import "./HistoricMatch.scss";
+import './HistoricMatch.scss';
 
 interface HistoricMatchProps {
   nick: string;
@@ -8,7 +7,7 @@ interface HistoricMatchProps {
   image_url: string;
 }
 
-export function HistoricMatch({
+export default function HistoricMatch({
   nick,
   date,
   result,
@@ -20,8 +19,8 @@ export function HistoricMatch({
         <img src={image_url} alt="user image" />
         <div className="historicMatch__player__nick">{nick}</div>
       </div>
-      <p>{date}</p>
-      <p>{result}</p>
-    </div>
+      <p className="historicMatch__infos">{date}</p>
+      <p className="historicMatch__infos">{result}</p>
+    </div >
   );
 }

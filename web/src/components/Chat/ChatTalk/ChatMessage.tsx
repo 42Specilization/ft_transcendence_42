@@ -1,7 +1,5 @@
 /* eslint-disable quotes */
 import "./ChatMessage.scss";
-// import Tippy from "@tippyjs/react";
-import "tippy.js/dist/tippy.css";
 import { ChatMsg } from "./ChatTalk";
 import { IntraData } from "../../../Interfaces/interfaces";
 import { ReactElement } from "react";

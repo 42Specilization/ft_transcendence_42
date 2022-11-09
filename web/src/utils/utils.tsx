@@ -34,7 +34,7 @@ export function RequireAuth({ children }: any) {
       const user = await api.get('/user/me', config);
       if (
         user.data.isTFAEnable !== undefined &&
-      user.data.isTFAEnable === false
+        user.data.isTFAEnable === false
       ) {
         setIsTfaValid(true);
         return;
@@ -46,7 +46,7 @@ export function RequireAuth({ children }: any) {
       setIsTfaValid(true);
     } catch (error) {
       setIsTfaValid(true);
-      return ;
+      return;
     }
   }
 
@@ -68,8 +68,8 @@ export function RequireAuth({ children }: any) {
  * @param {any}  - any
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function ValidadeSignin({children}: any) {
-  const token =  window.localStorage.getItem('token');
+export function ValidadeSignin({ children }: any) {
+  const token = window.localStorage.getItem('token');
   return token === null ? children : <Navigate to="/" replace />;
 }
 
@@ -104,4 +104,5 @@ export const defaultIntra: IntraData = {
   lose: '0',
   isTFAEnable: false,
   tfaValidated: false,
+  friends: [],
 };

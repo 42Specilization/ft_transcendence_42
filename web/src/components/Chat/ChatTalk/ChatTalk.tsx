@@ -1,6 +1,6 @@
 /* eslint-disable quotes */
 import "./ChatTalk.scss";
-import { IntraData } from "../../../Interfaces/interfaces";
+import { FriendData, IntraData } from "../../../Interfaces/interfaces";
 import { useEffect, useRef, useState } from "react";
 import { defaultIntra, getStoredData } from "../../../utils/utils";
 import { PaperPlaneRight } from "phosphor-react";
@@ -10,7 +10,7 @@ import { actionsChat, stateChat } from "../../../chat/chatState";
 import { useSnapshot } from "valtio";
 
 interface ChatTalkProps {
-  activeFriend: IntraData | null;
+  activeFriend: FriendData | null;
 }
 
 export interface ChatMsg {

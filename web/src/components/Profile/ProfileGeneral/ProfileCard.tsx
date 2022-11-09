@@ -1,12 +1,12 @@
 
 import './ProfileCard.scss';
-import { Dispatch, SetStateAction, useInsertionEffect, useState } from 'react';
-import { UserImage } from '../UserImage/UserImage';
-import { IntraData } from '../../Interfaces/interfaces';
+import UserImage from './UserImage';
+import { IntraData } from '../../../Interfaces/interfaces';
 import { NotePencil } from 'phosphor-react';
-import { TFAButton } from '../TFA/TFAButton/TFAButton';
-import { ChangeNick } from '../ChangeNick/ChangeNick';
-import { getStoredData } from '../../utils/utils';
+import { TFAButton } from '../../TFA/TFAButton/TFAButton';
+import { ChangeNick } from '../../ChangeNick/ChangeNick';
+import { getStoredData } from '../../../utils/utils';
+import { Dispatch, SetStateAction, useInsertionEffect, useState } from 'react';
 
 interface ProfileCardProps {
   email: string;
@@ -16,7 +16,7 @@ interface ProfileCardProps {
   setIntraData: Dispatch<SetStateAction<IntraData>>;
 }
 
-export function ProfileCard({
+export default function ProfileCard({
   email,
   image_url,
   login,
@@ -37,15 +37,10 @@ export function ProfileCard({
         login={login}
         setIntraData={setIntraData}
       ></UserImage>
-      <br />
-      <strong className="profileCard__infos__name">{full_name}</strong>
-      <br />
-      <strong>{email}</strong>
-      <br />
+      <strong className="profileCard__infos">{full_name}</strong>
+      <strong className="profileCard__infos">{email}</strong>
       <div className="profileCard__infos__nick">
-        <div>
-          <strong>{login}</strong>
-        </div>
+        <strong>{login}</strong>
         <div className="profileCard__infos__button">
           <NotePencil
             size={32}
@@ -59,8 +54,7 @@ export function ProfileCard({
           />
         ) : null}
       </div>
-      <br />
       <TFAButton />
-    </div>
+    </div >
   );
 }

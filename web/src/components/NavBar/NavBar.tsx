@@ -1,14 +1,19 @@
-import logoSmall from "../../assets/logo-small.png";
-import { Chats, List, SignOut } from "phosphor-react";
-import "./NavBar.scss";
-import useAuth from "../../auth/auth";
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { IntraData } from "../../Interfaces/interfaces";
-import { defaultIntra, getStoredData } from "../../utils/utils";
+import logoSmall from '../../assets/logo-small.png';
+import { Bell, Chats, CheckCircle, GameController, List, SignOut, TelegramLogo, UsersThree, XCircle } from 'phosphor-react';
+import './NavBar.scss';
+import useAuth from '../../auth/auth';
+import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { IntraData } from '../../Interfaces/interfaces';
+import { defaultIntra, getStoredData } from '../../utils/utils';
+import { NotificationFriend } from '../Notifications/NotificationFriend/NotificationFriend';
+import { NotificationChallenge } from '../Notifications/NotificationChallenge/NotificationChallenge';
+import { NotificationMessage } from '../Notifications/NotificationMessage/NotificationMessage';
 
 export function NavBar() {
   const { logout } = useAuth();
+
+  const [notificationVisible, setNotificationVisible] = useState(false);
 
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
   useEffect(() => {
@@ -39,23 +44,51 @@ export function NavBar() {
             </span>
           </p>
           <nav className="navBar__menu">
-            <Link to="/" className="navBar__achievements">
-              Achievements
-            </Link>
-            <Link to="/historic" className="navBar__historic">
-              Historic
-            </Link>
-            <Link to="/game" className="navBar__game">
+            <Link to="/game" className="navBar__game__link">
+              <GameController size={32} />
               Game
             </Link>
+            <Link to="/chat" className="navBar__chats__link">
+              <Chats className="navBar__chats__icon" />
+              <p className="navBar__chats__text">Chats</p>
+            </Link>
+            <Link to="/community" className="navBar__community__link">
+              <UsersThree size={32} />
+              <p className="navBar__community__text">Community</p>
+            </Link>
+
           </nav>
         </div>
         <li className="navBar__divider" />
-        <li className="navBar__chats">
-          <Link to="/chat" className="navBar__chats__link">
-            <Chats className="navBar__chats__icon" />
-            <p className="navBar__chats__text">Chats</p>
-          </Link>
+        <li className='navBar__notify'>
+          <Bell className='navBar__notify__icon' size={40} onClick={() => setNotificationVisible(!notificationVisible)} />
+          {
+            notificationVisible ?
+              <div className='navBar__notifications'>
+                <div className="navBar__notification__body">
+                  <NotificationFriend />
+                  <NotificationFriend />
+                  <NotificationFriend />
+                  <NotificationFriend />
+                  <NotificationFriend />
+
+                  <NotificationChallenge />
+                  <NotificationChallenge />
+                  <NotificationChallenge />
+                  <NotificationChallenge />
+                  <NotificationChallenge />
+                  <NotificationChallenge />
+                  <NotificationChallenge />
+                  <NotificationChallenge />
+
+                  <NotificationMessage />
+                  <NotificationMessage />
+                  <NotificationMessage />
+                  <NotificationMessage />
+
+                </div>
+              </div> : null
+          }
         </li>
         <li>
           <div className="navBar__user">
