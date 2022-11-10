@@ -1,36 +1,32 @@
 import logoSmall from '../../assets/logo-small.png';
-import { Bell, Chats, CheckCircle, GameController, List, SignOut, TelegramLogo, UsersThree, XCircle } from 'phosphor-react';
+import { Chats,  GameController, List, SignOut, UsersThree } from 'phosphor-react';
 import './NavBar.scss';
 import useAuth from '../../auth/auth';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { IntraData } from '../../Interfaces/interfaces';
 import { defaultIntra, getStoredData } from '../../utils/utils';
-import { NotificationFriend } from '../Notifications/NotificationFriend/NotificationFriend';
-import { NotificationChallenge } from '../Notifications/NotificationChallenge/NotificationChallenge';
-import { NotificationMessage } from '../Notifications/NotificationMessage/NotificationMessage';
+
 import { Notifications } from '../Notifications/Notifications';
 
 export function NavBar() {
   const { logout } = useAuth();
-
 
   const [menuVisible, setMenuVisible] = useState(false);
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
 
   useEffect(() => {
     getStoredData(setIntraData);
+    setMenuVisible(false);
   }, []);
 
   async function handleLogOut() {
     logout();
   }
 
-  function handleMenuClick(){
-    setMenuVisible(!menuVisible);
-  }
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleOutsideClick (e: any, id : string)  {
+    console.log('comparando', e.target.id, id);
     if (e.target.id == id) {
       setMenuVisible(false);
     }
@@ -52,14 +48,13 @@ export function NavBar() {
         <li className="navBar__divider" />
         <div 
           className="navBar__div__menu"
-          onClick={handleMenuClick}
+          onClick={() => setMenuVisible(!menuVisible)}
         >
           <p className="navBar__menus__list">
             <span>
               <List size={22} />
             </span>
           </p>
-
           {
             menuVisible ?
               <>
@@ -73,15 +68,24 @@ export function NavBar() {
           }
           <nav className="navBar__menu"
             style={{top: (menuVisible? '100px' : '-1000px')}}>
-            <Link to="/game" className="navBar__game__link">
+            <Link
+              to="/game"
+              className="navBar__game__link"
+            >
               <GameController size={32} />
               Game
             </Link>
-            <Link to="/chat" className="navBar__chats__link">
+            <Link 
+              to="/chat" 
+              className="navBar__chats__link" 
+            >
               <Chats className="navBar__chats__icon" />
               <p className="navBar__chats__text">Chats</p>
             </Link>
-            <Link to="/community" className="navBar__community__link">
+            <Link 
+              to="/community"
+              className="navBar__community__link"  
+            >
               <UsersThree size={32} />
               <p className="navBar__community__text">Community</p>
             </Link>
@@ -89,9 +93,7 @@ export function NavBar() {
           </nav>
         </div>
         <li className="navBar__divider" />
-        {/* <li className='navBar__notify' > */}
         <Notifications />
-        {/* </li> */}
         <li>
           <div className="navBar__user">
             <Link to="/profile">

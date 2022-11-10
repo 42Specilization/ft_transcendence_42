@@ -9,6 +9,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "./user/entities/user.entity";
 import { GameModule } from "./game/game.module";
 import { ChatMoule } from "./chat/chat.module";
+import { CommunityModule } from "./community/community.module";
 // import { APP_GUARD } from '@nestjs/core';
 // import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
@@ -30,6 +31,7 @@ import { ChatMoule } from "./chat/chat.module";
     UserModule,
     GameModule,
     ChatMoule,
+    CommunityModule,
   ],
 
   controllers: [AppController],

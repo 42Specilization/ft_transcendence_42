@@ -4,27 +4,22 @@ import { useState } from 'react';
 import { NotificationChallenge } from './NotificationChallenge/NotificationChallenge';
 import { NotificationFriend } from './NotificationFriend/NotificationFriend';
 import { NotificationMessage } from './NotificationMessage/NotificationMessage';
-import e from 'express';
 
 export function Notifications(){
   const [notificationVisible, setNotificationVisible] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleOutsideClick (e: any, id : string)  {
     console.log('aqui');
     if (e.target.id == id) {
       setNotificationVisible(false);
     }
   }
-  
-  function handleClick(){
-    setNotificationVisible(!notificationVisible);
-  }
-
 
   return (
     <div
       className='notifications__div__menu'
-      onClick={handleClick}
+      onClick={() =>  setNotificationVisible(!notificationVisible)}
     > 
       <Bell className='notify__icon' size={40} />
       <nav
