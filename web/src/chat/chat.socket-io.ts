@@ -1,5 +1,5 @@
-import { io, Socket } from "socket.io-client";
-import { AppActionsChat, AppStateChat } from "./chatState";
+import { io, Socket } from 'socket.io-client';
+import { AppActionsChat, AppStateChat } from './chatState';
 
 export const socketChatIOUrl = `http://${import.meta.env.VITE_API_HOST}:${
   import.meta.env.VITE_API_PORT
@@ -15,17 +15,17 @@ export interface CreateSocketChatOptions {
 export function createSocketChat({
   accessToken,
   socketChatIOUrl,
-  actionsChat,
+  // actionsChat,
   stateChat,
 }: CreateSocketChatOptions): Socket {
   const socket = io(socketChatIOUrl, {
     auth: {
       token: accessToken,
     },
-    transports: ["websocket", "polling"],
+    transports: ['websocket', 'polling'],
   });
 
-  socket.on("connect", () => console.log("user connected", stateChat.me?.name));
+  socket.on('connect', () => console.log('user connected', stateChat.me?.name));
 
   return socket;
 }

@@ -1,9 +1,9 @@
-import { Socket } from "socket.io-client";
-import { proxy, ref } from "valtio";
-import { Ball, Rect } from "../components/Canvas/Canvas";
-import { IntraData } from "../Interfaces/interfaces";
-import { getAccessToken } from "../utils/utils";
-import { createSocket, CreateSocketOptions, socketIOUrl } from "./socket-io";
+import { Socket } from 'socket.io-client';
+import { proxy, ref } from 'valtio';
+import { Ball, Rect } from '../components/Canvas/Canvas';
+import { IntraData } from '../Interfaces/interfaces';
+import { getAccessToken } from '../utils/utils';
+import { createSocket, CreateSocketOptions, socketIOUrl } from './socket-io';
 
 interface Me {
   name: string;
@@ -63,7 +63,7 @@ const state = proxy<AppState>({
     return this.game?.player2;
   },
   get me() {
-    const localStore = window.localStorage.getItem("userData");
+    const localStore = window.localStorage.getItem('userData');
     if (!localStore) {
       return undefined;
     }
@@ -78,7 +78,7 @@ const state = proxy<AppState>({
 
 const actions = {
   initializeGame: (): void => {
-    state.socket?.emit("join-game", state.me?.name);
+    state.socket?.emit('join-game', state.me?.name);
   },
   initializeSocket: (): void => {
     if (!state.socket) {

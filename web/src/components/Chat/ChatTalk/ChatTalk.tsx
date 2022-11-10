@@ -1,13 +1,12 @@
-/* eslint-disable quotes */
-import "./ChatTalk.scss";
-import { FriendData, IntraData } from "../../../Interfaces/interfaces";
-import { useEffect, useRef, useState } from "react";
-import { defaultIntra, getStoredData } from "../../../utils/utils";
-import { PaperPlaneRight } from "phosphor-react";
-import { ChatMessage } from "./ChatMessage";
-import * as uuid from "uuid";
-import { actionsChat, stateChat } from "../../../chat/chatState";
-import { useSnapshot } from "valtio";
+import './ChatTalk.scss';
+import { FriendData, IntraData } from '../../../Interfaces/interfaces';
+import { useEffect, useRef, useState } from 'react';
+import { defaultIntra, getStoredData } from '../../../utils/utils';
+import { PaperPlaneRight } from 'phosphor-react';
+import { ChatMessage } from './ChatMessage';
+import * as uuid from 'uuid';
+import { actionsChat, stateChat } from '../../../chat/chatState';
+import { useSnapshot } from 'valtio';
 
 interface ChatTalkProps {
   activeFriend: FriendData | null;
@@ -32,7 +31,7 @@ export function ChatTalk({ activeFriend }: ChatTalkProps) {
     actionsChat.startChatMessage([]);
   }, []);
 
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
 
   /**
    * The function takes an event as an argument, and then calls the preventDefault() method on the
@@ -55,9 +54,9 @@ export function ChatTalk({ activeFriend }: ChatTalkProps) {
         msg: message,
         date: new Date(Date.now()),
       };
-      currentStateChat.socket?.emit("msgToServer", newMessage);
+      currentStateChat.socket?.emit('msgToServer', newMessage);
     }
-    setMessage("");
+    setMessage('');
   }
 
   /**
@@ -71,7 +70,7 @@ export function ChatTalk({ activeFriend }: ChatTalkProps) {
 
   useEffect(() => {
     if (currentStateChat.socket) {
-      currentStateChat.socket.on("msgToClient", (message: ChatMsg) => {
+      currentStateChat.socket.on('msgToClient', (message: ChatMsg) => {
         receivedMessage(message);
       });
     }
@@ -89,32 +88,32 @@ export function ChatTalk({ activeFriend }: ChatTalkProps) {
   }, [currentStateChat.chatMsg]);
 
   return (
-    <div className="chat__talk">
+    <div className='chat__talk'>
       {activeFriend ? (
         <>
-          <div className="chat__talk__header">
-            <div className="chat__talk__header__user">
+          <div className='chat__talk__header'>
+            <div className='chat__talk__header__user'>
               <div
-                className="chat__talk__header__user__icon"
+                className='chat__talk__header__user__icon'
                 style={{ backgroundImage: `url(${activeFriend.image_url})` }}
               />
-              <div className="chat__talk__header__user__name">
+              <div className='chat__talk__header__user__name'>
                 {activeFriend.login}
               </div>
             </div>
           </div>
-          <div className="chat__talk__body" ref={refBody}>
+          <div className='chat__talk__body' ref={refBody}>
             {currentStateChat.chatMsg?.map((msg) => (
               <ChatMessage key={msg.id} user={intraData} message={msg} />
             ))}
           </div>
-          <form className="chat__talk__footer" onSubmit={handleKeyEnter}>
+          <form className='chat__talk__footer' onSubmit={handleKeyEnter}>
             <input
-              className="chat__talk__footer__input"
+              className='chat__talk__footer__input'
               value={message}
               onChange={(msg) => setMessage(msg.target.value)}
             />
-            <button className="chat__talk__footer__button" type="submit">
+            <button className='chat__talk__footer__button' type='submit'>
               <PaperPlaneRight size={30} />
             </button>
           </form>

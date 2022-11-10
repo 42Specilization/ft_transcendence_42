@@ -1,10 +1,7 @@
-/* eslint-disable quotes */
-import "./ChatCommunity.scss";
-import { MagnifyingGlass, UserPlus, UsersThree } from "phosphor-react";
-import { FriendData } from "../../../Interfaces/interfaces";
-import { UserCard } from "./UserCard";
-import { Dispatch, SetStateAction, useState } from "react";
-import ChatFriends from "./ChatFriends";
+import './ChatCommunity.scss';
+import { FriendData } from '../../../Interfaces/interfaces';
+import { Dispatch, SetStateAction, useState } from 'react';
+import ChatFriends from './ChatFriends';
 
 interface ChatCommunityProps {
   friends: FriendData[];
@@ -19,12 +16,7 @@ export function ChatCommunity({
   const [tableSelected, setTableSelected] = useState('Friends');
 
   return (
-    <div className="chat__community">
-      {/* <div className="chat__community__header">
-        <UsersThree className="chat__community__header__icon" size={40} />
-        <UserPlus className="chat__community__header__icon" size={40} />
-        <MagnifyingGlass className="chat__community__header__icon" size={40} />
-      </div> */}
+    <div className='chat__community'>
       <nav className='chat__community__header'>
         <ul className='chat__community__header__list'>
           <li className={`chat__community__header__list__item ${tableSelected === 'Friends' ? 'chat__community__header__list__item__selected' : ''}`}>
@@ -44,7 +36,7 @@ export function ChatCommunity({
           </li>
         </ul>
       </nav>
-      <div className="chat__community__body">
+      <div className='chat__community__body'>
         {(() => {
           if (tableSelected === 'Friends')
             return <ChatFriends friends={friends} setActiveFriend={setActiveFriend} />;
@@ -54,7 +46,7 @@ export function ChatCommunity({
             return <></>;
         })()}
       </div>
-      <div className="chat__community__footer" />
+      <div className='chat__community__footer' />
     </div>
   );
 }

@@ -9,7 +9,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "./user/entities/user.entity";
 import { GameModule } from "./game/game.module";
 import { ChatMoule } from "./chat/chat.module";
-import { CommunityModule } from "./community/community.module";
+import { Notification } from "./notification/entities/notification.entity";
+import { NotificationModule } from "./notification/notification.module";
 // import { APP_GUARD } from '@nestjs/core';
 // import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
@@ -22,7 +23,7 @@ import { CommunityModule } from "./community/community.module";
       username: "pguser",
       password: "pgpassword",
       database: "postgres",
-      entities: [User],
+      entities: [User, Notification],
       synchronize: true,
       logging: false,
     }),
@@ -31,7 +32,7 @@ import { CommunityModule } from "./community/community.module";
     UserModule,
     GameModule,
     ChatMoule,
-    CommunityModule,
+    NotificationModule,
   ],
 
   controllers: [AppController],

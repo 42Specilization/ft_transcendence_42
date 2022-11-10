@@ -53,6 +53,7 @@ export class UserService {
   async findUserByNick(nick: string): Promise<User | null> {
     return await this.usersRepository.findOneBy({ nick });
   }
+  
   async findUserByEmail(email: string): Promise<User | null> {
     return await this.usersRepository.findOneBy({ email });
   }

@@ -42,6 +42,7 @@ export function ChangeNick({
         getStoredData(setIntraData);
         setPlaceHolder('');
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       if (e && e.response) {
         if (e.response.data.statusCode === 403) {

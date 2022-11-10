@@ -1,5 +1,3 @@
-/* eslint-disable quotes */
-
 import './Profile.scss';
 import { useEffect, useState } from 'react';
 import { IntraData } from '../../Interfaces/interfaces';

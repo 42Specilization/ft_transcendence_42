@@ -1,12 +1,12 @@
-import { Socket } from "socket.io-client";
-import { proxy, ref } from "valtio";
-import { IntraData } from "../Interfaces/interfaces";
-import { getAccessToken } from "../utils/utils";
+import { Socket } from 'socket.io-client';
+import { proxy, ref } from 'valtio';
+import { IntraData } from '../Interfaces/interfaces';
+import { getAccessToken } from '../utils/utils';
 import {
   createSocketChat,
   CreateSocketChatOptions,
   socketChatIOUrl,
-} from "./chat.socket-io";
+} from './chat.socket-io';
 
 interface Me {
   name: string;
@@ -29,7 +29,7 @@ export interface AppStateChat {
 
 const stateChat = proxy<AppStateChat>({
   get me() {
-    const localStore = window.localStorage.getItem("userData");
+    const localStore = window.localStorage.getItem('userData');
     if (!localStore) {
       return undefined;
     }

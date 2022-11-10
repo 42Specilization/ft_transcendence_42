@@ -14,6 +14,8 @@ import { smtpConfig } from '../config/smtp';
 import { UserDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { FriendRequestDto } from './dto/friend-request.dto';
+import axios from 'axios';
+import { GetFriendDto } from './dto/get-friend.dto';
 
 @Controller('user')
 @ApiTags('user')
@@ -140,6 +142,15 @@ export class UserController {
   async getUser(@GetUserFromJwt() userFromJwt: UserFromJwt): Promise<UserDto> {
     return (await this.userService.getUserDTO(userFromJwt.email));
   }
+  
+  @Patch('friend')
+  @HttpCode(HttpStatus.OK)
+  // @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: GetFriendDto })
+  async getfriend(@Body() getFriendDto: GetFriendDto): Promise<User> {
+    // console.log('getFriend', getFriendDto);
+    return (await this.userService.getUser(getFriendDto.email));
+  }
 
   /* This method is used to update the user's image. */
   @Post('/updateImage')
@@ -185,6 +196,24 @@ export class UserController {
     const userRequested = await this.userService.findUserByNick(nick.nick as string);
     if (!userRequested)
       throw new InternalServerErrorException('User not found in data base');
+
+
+    const notifyRequestBody = {
+      // destination_id: userRequested.id,
+      destination_id: user?.id,
+      type: 'friend',
+      // send_id: user?.id,
+      send_id: userRequested.id,
+    };
+
+    
+    try {
+      const dbConnect = await axios.post(`http://${process.env['HOST']}:${process.env['PORT']}/notification/createNotify`, notifyRequestBody); 
+      console.log(dbConnect);
+    } catch (err){
+      console.log (err);
+    }
+
     return { message: 'success' };
   }
 
