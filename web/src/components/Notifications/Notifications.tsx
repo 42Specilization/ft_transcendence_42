@@ -7,9 +7,9 @@ import { NotificationMessage } from './NotificationMessage/NotificationMessage';
 import axios from 'axios';
 
 interface Notification {
-  destination_id :string;
+  destination_nick :string;
   id:string;
-  send_id:string;
+  sender_nick:string;
   type:string;
 }
 
@@ -38,9 +38,9 @@ export function Notifications(){
       baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
     });
     try{
-      await api.patch('/notification/userNotifications', data,config)
+      await api.patch('/notification/userNotifications', data ,config)
         .then((result) => {
-          console.log(result.data);
+          console.log('result', result.data);
           setNotifications(result.data);
           return result.data;
         });
@@ -98,7 +98,7 @@ export function Notifications(){
               notifications ? 
                 (notifications as Notification[]).map((obj) => {
                   if(obj.type === 'friend'){
-                    return < NotificationFriend key={obj.id} nick={obj.send_id}/> ;
+                    return < NotificationFriend key={obj.id} nick={obj.sender_nick}/> ;
                   }
                   if(obj.type === 'challenge'){
                     return < NotificationChallenge key={obj.id}/> ;

@@ -36,17 +36,16 @@ export class NotificationController {
     @GetUserFromJwt() userFromJwt: UserFromJwt
   ){
     try {
-      // console.log(getUserNotificationDto);
+      console.log(getUserNotificationDto);
       const friend =  await axios.patch(`http://${process.env['HOST']}:${process.env['PORT']}/user/friend`, {email: getUserNotificationDto.user_email}); 
-      // console.log('friend', friend.data);
-      const notifications = await this.notificationService.findNotificationByDestinationId(friend.data.id);
+      userFromJwt;
+      const notifications = await this.notificationService.findNotificationByDestinationId(friend.data.nick);
       if (notifications) {
-        
-        for (const notify of notifications) {
-          const requester =  await axios.patch(`http://${process.env['HOST']}:${process.env['PORT']}/user/friend`, {email: userFromJwt.email}); 
-          notify.destination_id = friend.data.nick;
-          notify.send_id = requester.data.nick;
-        }
+        //         for (const notify of notifications) {
+        //   const requester =  await axios.patch(`http://${process.env['HOST']}:${process.env['PORT']}/user/friend`, {email: userFromJwt.email}); 
+        //   notify.destination_nick = friend.data.nick;
+        //   notify.sender_nick = requester.data.nick;
+        // }
       }
       return notifications;
     } catch (err){

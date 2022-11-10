@@ -10,6 +10,7 @@ export function NotificationFriend({nick}: NotificationFriendProps) {
    * Enviando o nick do usuario, o nick de quem pediu e a resposta dependendo do botao apertado
    * 
    */
+  console.log('nick', nick);
   return (
     <div className='notificationFriend'>
       <strong>{nick} send you a friend request</strong>

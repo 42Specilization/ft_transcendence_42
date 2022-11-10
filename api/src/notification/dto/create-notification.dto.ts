@@ -5,9 +5,9 @@ import { BaseEntity, Column } from 'typeorm';
 export class CreateNotificationDto extends BaseEntity {
 
   @ApiProperty()
-  @IsNotEmpty({ message: 'Inform a destination_id' })
+  @IsNotEmpty({ message: 'Inform a destination_nick' })
   @Column({ nullable: false, type: 'varchar'})
-    destination_id: string;
+    destination_nick: string;
   
   
   @ApiProperty()
@@ -18,5 +18,5 @@ export class CreateNotificationDto extends BaseEntity {
   @ApiProperty()
   @IsNotEmpty({ message: 'Inform a requester' })
   @Column({ nullable: false, type: 'varchar'})
-    send_id: string;
+    sender_nick: string;
 }

@@ -17,7 +17,7 @@ export class Notification extends BaseEntity {
 
   @ApiProperty()
   @Column({ nullable: false, type: 'varchar'})
-    destination_id: string;
+    destination_nick: string;
     
     
   @ApiProperty()
@@ -26,5 +26,5 @@ export class Notification extends BaseEntity {
   
   @ApiProperty()
   @Column({ nullable: false, type: 'varchar'})
-    send_id: string;
+    sender_nick: string;
 }

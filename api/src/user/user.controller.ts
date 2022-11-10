@@ -148,8 +148,9 @@ export class UserController {
   // @UseGuards(JwtAuthGuard)
   @ApiBody({ type: GetFriendDto })
   async getfriend(@Body() getFriendDto: GetFriendDto): Promise<User> {
-    // console.log('getFriend', getFriendDto);
-    return (await this.userService.getUser(getFriendDto.email));
+    console.log('getFriend', getFriendDto);
+    const userValidate = await this.userService.getUser(getFriendDto.email);
+    return ( userValidate);
   }
 
   /* This method is used to update the user's image. */
