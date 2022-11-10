@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { TFATurnOffModal } from '../TFATurnOffModal/TFATurnOffModal';
 import { TFATurnOnModal } from '../TFATurnOnModal/TFATurnOnModal';
 import { TFAValidateCodeModal } from '../TFAValidateCodeModal/TFAValidateCodeModal';
+import { ToggleLeft, ToggleRight } from 'phosphor-react';
 import './TFAButton.scss';
 
 export function TFAButton(){
@@ -39,11 +40,16 @@ export function TFAButton(){
   return (
     <div className="tfaButton">
       <strong>2FA Authentication</strong>
-      {
-        !tfaEnable ?
-          <button onClick={()=> setIsModalTurnOnVisible(true)} className='tfaButton__button'>Turn On</button>:
-          <button style={{backgroundColor:'red'}} onClick={()=>setIsModalTurnOffVisible(true)} className='tfaButton__button'>Turn Off</button>
-      }
+      <button className='tfaButton__button'
+              style={{backgroundColor: tfaEnable ? 'green' : 'red'}}
+              onClick={()=> {
+                if (tfaEnable)
+                  setIsModalTurnOffVisible(true);
+                else
+                  setIsModalTurnOnVisible(true);
+                }}>
+        {tfaEnable ? <ToggleRight size={50}/> : <ToggleLeft size={50}/>}
+      </button>
       <TFATurnOffModal
         setTfaEnable={setTfaEnable}
         isModalTurnOffVisible={isModalTurnOffVisible}

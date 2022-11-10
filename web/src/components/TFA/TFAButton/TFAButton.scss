@@ -7,10 +7,11 @@
 }
 
 .tfaButton__button{
-  color: rgb(255, 255, 255);
+  @include displayFlex();
+  height: 32px;
+  color:white;
   font-size: 15px;
-  padding: 5px;
-  border-radius: 5px;
+  border-radius: 20px;
   background-color: $primaryColor;
   &:hover {
     background-color: $primaryColorHover;

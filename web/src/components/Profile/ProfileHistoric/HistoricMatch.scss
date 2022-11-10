@@ -12,7 +12,7 @@
 }
 
 .historicMatch__player {
-  @include displayFlex(space-around);
+  @include displayFlex();
   width: 33%;
 }
 .historicMatch__infos {
@@ -41,7 +41,7 @@
   background-color: $backgroundColor;
 }
 
-@media (min-width:1400px) {
+@media (min-width:1200px) {
   .historicMatch__player img {
     width: 70px;
     height: 70px;
@@ -49,7 +49,7 @@
   }
 
   .historicMatch__player__nick {
-    font-size: 1.2em;
+    font-size: 2.4em;
     max-width: 250px;
   }
 }

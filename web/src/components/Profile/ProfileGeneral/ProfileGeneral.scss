@@ -1,50 +1,52 @@
 @import '../../../styles/variables.scss';
 
 .profile__general {
-    @include displayFlex(space-around, column);
-    display: grid;
-    width: 100%;
-    height: 100%;
-    padding: 50px 0 50px 0px;
-    border-radius: 0 0 50px 50px;
-    background-color: $backgroundColor;
-    color: white;
-    @include scrollBar(20px, 50px);
-  }
-  
+  @include displayFlex(space-around, column);
+  display: grid;
+  width: 100%;
+  height: 100%;
+  padding: 50px 0 50px 0px;
+  border-radius: 0 0 50px 50px;
+  background-color: $backgroundColor;
+  color: white;
+  @include scrollBar(20px, 50px);
+}
+
 .profile__general__stats {
-@include displayFlex(space-around, column);
-width: 350px;
-height: 280px;
-border-radius: 30px;
-background-color: $backgroundColor;
+  @include displayFlex(space-around, column);
+  width: 350px;
+  height: 280px;
+  border-radius: 30px;
+  margin-top: 50px;
+  background-color: $backgroundColor;
 }
 
 .profile__general__stats__title {
-@include displayFlex();
-font-size: 3em;
-margin: 5px 0px 20px 0px;
+  @include displayFlex();
+  font-size: 3em;
+  margin: 5px 0px 20px 0px;
 }
 
 .profile__general__stats__infos {
-@include displayFlex(space-between);
-width: 80%;
-font-size: 2em;
-margin-bottom: 8px
+  @include displayFlex(space-between);
+  width: 80%;
+  font-size: 2em;
+  margin-bottom: 8px
 }
 
 @media (min-width:1199px) {
 
   .profile__general {
-      @include displayFlex(space-around);
-      padding: 20px 0 20px 0px;
+    @include displayFlex(space-around);
+    padding: 20px 0 20px 0px;
   }
 
   .profile__general__stats {
-      height: 350px;
+    margin-top: 0px;
+    height: 350px;
   }
 
   .profile__general__stats__title {
-      font-size: 4em;
+    font-size: 4em;
   }
 }

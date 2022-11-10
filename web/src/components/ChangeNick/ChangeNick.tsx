@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import { IntraData } from '../../Interfaces/interfaces';
 import { getStoredData } from '../../utils/utils';
 import { Modal } from '../Modal/Modal';
+import { PaperPlaneRight } from 'phosphor-react';
 interface ChangeNickProps {
   setIsModalChangeNickVisible: (arg0: boolean) => void;
   setIntraData: Dispatch<SetStateAction<IntraData>>;
@@ -14,15 +15,12 @@ export function ChangeNick({
   setIntraData,
 }: ChangeNickProps) {
   const [nick, setNick] = useState<string>('');
-  const changeNickStyleDefault = {
-    styles: {
-      placeholder: 'Insert your nick...',
-      border: '3px solid white',
-    },
-  };
-  const [changeNickStyle, setChangeNickStyle] = useState(
-    changeNickStyleDefault
-  );
+  const [placeHolder, setPlaceHolder] = useState('');
+
+  function handleKeyEnter(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    handleChangeNick();
+  }
 
   async function handleChangeNick() {
     const token = window.localStorage.getItem('token');
@@ -31,7 +29,6 @@ export function ChangeNick({
         Authorization: `Bearer ${token}`,
       },
     };
-    setChangeNickStyle(changeNickStyleDefault);
 
     try {
       const result = await axios.patch(
@@ -43,48 +40,48 @@ export function ChangeNick({
         setIsModalChangeNickVisible(false);
         window.localStorage.removeItem('userData');
         getStoredData(setIntraData);
+        setPlaceHolder('');
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
-      const input = document.querySelector(
-        '.changeNick__input'
-      ) as HTMLInputElement;
-      input.value = '';
       if (e && e.response) {
-        const errorVefify = {
-          styles: {
-            placeholder: '',
-            border: '3px solid red',
-          },
-        };
         if (e.response.data.statusCode === 403) {
-          errorVefify.styles.placeholder = 'Nick Unavaiable';
+          setPlaceHolder('Nick Unavaiable!');
         } else if (e.response.data.statusCode === 400) {
-          errorVefify.styles.placeholder =
-            'Need have min: 3, max: 15, forbidden: ","';
+          setPlaceHolder('Need have min: 3, max: 15, forbidden: ","');
         } else {
-          errorVefify.styles.placeholder = 'Invalid nick';
+          setPlaceHolder('Invalid nick!');
         }
-        setChangeNickStyle(errorVefify);
       }
     }
+    setNick('');
   }
 
   return (
-    <Modal onClose={() => setIsModalChangeNickVisible(false)}>
-      <div className="changeNick">
-        <h3>Insert the new nick</h3>
+    <Modal onClose={() => {
+      setIsModalChangeNickVisible(false);
+      setPlaceHolder('');
+      setNick('');
+    }}
+    id={'modal__changeNick'}
+  >
+    <form className="change__nick__modal" onSubmit={handleKeyEnter}>
+    <div className="change__nick__modal__textdiv">
+      <h3>Insert the new nick</h3>
         <input
-          style={{ border: changeNickStyle.styles.border }}
-          className="changeNick__input"
-          placeholder={changeNickStyle.styles.placeholder}
-          type="text"
-          onChange={(e) => setNick(e.target.value)}
-        />
-        <button className="changeNick__button" onClick={handleChangeNick}>
-          Change
-        </button>
-      </div>
-    </Modal>
+          className="change__nick__modal__input"
+          value={nick}
+          placeholder={placeHolder}
+          style={{ border: placeHolder !== '' ? '3px solid red' : 'none' }}
+          onChange={(msg) => {
+            setNick(msg.target.value);
+            setPlaceHolder('');
+          }}
+          />
+        </div>
+      <button className="change__nick__modal__button" type="submit">
+        <PaperPlaneRight size={30} />
+      </button>
+    </form>
+  </Modal>
   );
 }

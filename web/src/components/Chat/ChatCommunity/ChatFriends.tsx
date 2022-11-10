@@ -71,18 +71,20 @@ export default function ChatFriends({
             }}
             id={'modal__chatFriends'}
           >
-            <p>Insert user nick: </p>
             <form className="chat__friends__modal" onSubmit={handleKeyEnter}>
-              <input
-                className="chat__friends__modal__input"
-                value={nick}
-                placeholder={placeHolder}
-                style={{ border: placeHolder !== '' ? '3px solid red' : 'none' }}
-                onChange={(msg) => {
-                  setNick(msg.target.value);
-                  setPlaceHolder('');
-                }}
-              />
+            <div className="chat__friends__modal__textdiv">
+              <h3>Insert user nick</h3>
+                <input
+                  className="chat__friends__modal__input"
+                  value={nick}
+                  placeholder={placeHolder}
+                  style={{ border: placeHolder !== '' ? '3px solid red' : 'none' }}
+                  onChange={(msg) => {
+                    setNick(msg.target.value);
+                    setPlaceHolder('');
+                  }}
+                  />
+                </div>
               <button className="chat__friends__modal__button" type="submit">
                 <PaperPlaneRight size={30} />
               </button>
