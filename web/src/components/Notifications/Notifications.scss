@@ -1,0 +1,46 @@
+@import '../../styles/variables.scss';
+.notify__icon{
+  &:hover {
+    color: gray;
+  }
+}
+
+.notifications__overlay{
+  background-color: transparent;
+  position: fixed;
+  top: 0;
+  right: 0px;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index:01;
+}
+
+.notifications__menu {
+  transition: all 0.8s;
+  z-index: 1;
+}
+
+.notifications {
+  background-color: $primaryColor;
+  position: absolute;
+  top:inherit;
+  transform: translateX(-40%);
+  width: 25%;
+  max-width: 420px;
+  height: 350px;
+  border-radius : 0 0 20px 20px;
+  @include displayFlex(center, column);
+  z-index:1;
+}
+
+.notification__body{
+  transition: all 5s;
+  width: 95%;
+  height: 100%;
+  margin-bottom: 10px;
+  overflow: hidden;
+  z-index: 4;
+  @include scrollBar()
+}

@@ -63,25 +63,25 @@ export function ChangeNick({
       setNick('');
     }}
     id={'modal__changeNick'}
-  >
-    <form className="change__nick__modal" onSubmit={handleKeyEnter}>
-    <div className="change__nick__modal__textdiv">
-      <h3>Insert the new nick</h3>
-        <input
-          className="change__nick__modal__input"
-          value={nick}
-          placeholder={placeHolder}
-          style={{ border: placeHolder !== '' ? '3px solid red' : 'none' }}
-          onChange={(msg) => {
-            setNick(msg.target.value);
-            setPlaceHolder('');
-          }}
+    >
+      <form className="change__nick__modal" onSubmit={handleKeyEnter}>
+        <div className="change__nick__modal__textdiv">
+          <h3>Insert the new nick</h3>
+          <input
+            className="change__nick__modal__input"
+            value={nick}
+            placeholder={placeHolder}
+            style={{ border: placeHolder !== '' ? '3px solid red' : 'none' }}
+            onChange={(msg) => {
+              setNick(msg.target.value);
+              setPlaceHolder('');
+            }}
           />
         </div>
-      <button className="change__nick__modal__button" type="submit">
-        <PaperPlaneRight size={30} />
-      </button>
-    </form>
-  </Modal>
+        <button className="change__nick__modal__button" type="submit">
+          <PaperPlaneRight size={30} />
+        </button>
+      </form>
+    </Modal>
   );
 }

@@ -11,6 +11,7 @@
   background-color: $secondaryColor;
   color: white;
   color-scheme: dark;
+  z-index: 2;
 }
 
 .navBar__list {
@@ -33,7 +34,6 @@
 
 }
 
-
 .navBar__chats__link,
 .navBar__community__link,
 .navBar__game__link{
@@ -44,6 +44,7 @@
   font-size: 20px;
   color: white;
   margin-top: 10px;
+  z-index:1;
   &:hover {
     color: rgb(65, 62, 62);
   }
@@ -56,33 +57,22 @@
 .navBar__menu {
   @include displayFlex(space-between, column, center);
   position: absolute;
-  top:-250px;
-  border-radius: 8px;
+  border-radius: 0 0 8px 8px;
   width: 130px;
   height: auto;
-  transform: translateX(-35%);
+  transform: translateX(-30%);
   background-color: $primaryColor;
-  transition: all 0.5s;
-  z-index: 1;
+  transition: all 0.6s;
+  z-index: 11;
 }
 
-.navBar__menu:hover {
-  top: 55px;
-}
 
 .navBar__menus__list {
   padding: 5px 10px;
   border-radius: 8px;
-  z-index: 2;
   :hover{
     color: gray;
   }
-}
-
-.navBar__menus__list:hover ~ .navBar__menu {
-  top: 55px;
-  z-index: 1;
-  opacity: 1;
 }
 
 .navBar__logo {
@@ -109,35 +99,6 @@
   }
 }
 
-.navBar__notify__icon{
-  &:hover {
-    color: gray;
-  }
-}
-
-
-.navBar__notifications {
-  background-color: $primaryColor;
-  position: absolute;
-  top:100px;
-  transform: translateX(-40%);
-  width: 25%;
-  max-width: 420px;
-  height: 300px;
-  border-radius : 0px 0px 20px 20px;
-  @include displayFlex(center, column);
-  transition: all 0.5s;
-  z-index: 2;
-}
-
-.navBar__notification__body{
-  width: 95%;
-  height: 100%;
-  margin-bottom: 10px;
-  overflow: hidden;
-  @include scrollBar()
-}
-
 .navBar__user {
   @include displayFlex(center);
   font-size: 15px;
@@ -148,6 +109,16 @@
   &:hover{
     background-color: $primaryColorHover;
   }
+}
+
+.navBar__menu__overlay{
+  background-color: transparent;
+  position: absolute;
+  top: 0px;
+  width: 100vw;
+  height: 100vh ;
+  left: 0;
+  z-index: 1;
 }
 
 .navBar__user__icon {
@@ -209,6 +180,7 @@
   .navBar__logout {
     font-size: 15px;
   }
+
 }
 
 @media (min-width: 850px) and (max-width:1200px) {
@@ -244,6 +216,11 @@
     min-width: 100%;
     height: 100px;
   }
+
+  .navBar__menu__overlay{
+    display: none;
+  }
+
 
   .navBar__list {
     max-width: 100%;

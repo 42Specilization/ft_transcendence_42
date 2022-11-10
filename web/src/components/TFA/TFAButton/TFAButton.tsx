@@ -41,13 +41,13 @@ export function TFAButton(){
     <div className="tfaButton">
       <strong>2FA Authentication</strong>
       <button className='tfaButton__button'
-              style={{backgroundColor: tfaEnable ? 'green' : 'red'}}
-              onClick={()=> {
-                if (tfaEnable)
-                  setIsModalTurnOffVisible(true);
-                else
-                  setIsModalTurnOnVisible(true);
-                }}>
+        style={{backgroundColor: tfaEnable ? 'green' : 'red'}}
+        onClick={()=> {
+          if (tfaEnable)
+            setIsModalTurnOffVisible(true);
+          else
+            setIsModalTurnOnVisible(true);
+        }}>
         {tfaEnable ? <ToggleRight size={50}/> : <ToggleLeft size={50}/>}
       </button>
       <TFATurnOffModal

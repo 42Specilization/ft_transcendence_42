@@ -9,12 +9,13 @@ import { defaultIntra, getStoredData } from '../../utils/utils';
 import { NotificationFriend } from '../Notifications/NotificationFriend/NotificationFriend';
 import { NotificationChallenge } from '../Notifications/NotificationChallenge/NotificationChallenge';
 import { NotificationMessage } from '../Notifications/NotificationMessage/NotificationMessage';
+import { Notifications } from '../Notifications/Notifications';
 
 export function NavBar() {
   const { logout } = useAuth();
 
-  const [notificationVisible, setNotificationVisible] = useState(false);
 
+  const [menuVisible, setMenuVisible] = useState(false);
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
 
   useEffect(() => {
@@ -25,9 +26,20 @@ export function NavBar() {
     logout();
   }
 
+  function handleMenuClick(){
+    setMenuVisible(!menuVisible);
+  }
+
+  function handleOutsideClick (e: any, id : string)  {
+    if (e.target.id == id) {
+      setMenuVisible(false);
+    }
+  }
+
+
   return (
     <div className="navBar">
-      <ul className="navBar__list ">
+      <ul className="navBar__list">
         <li className="navBar__logo">
           <Link to="/">
             <img
@@ -38,13 +50,29 @@ export function NavBar() {
           </Link>
         </li>
         <li className="navBar__divider" />
-        <div className="navBar__div__menu">
+        <div 
+          className="navBar__div__menu"
+          onClick={handleMenuClick}
+        >
           <p className="navBar__menus__list">
             <span>
               <List size={22} />
             </span>
           </p>
-          <nav className="navBar__menu">
+
+          {
+            menuVisible ?
+              <>
+                <div
+                  id='navBar__menu__overlay'
+                  className='navBar__menu__overlay'
+                  onClick={(e)=> handleOutsideClick(e, 'navBar__menu__overlay')}>
+                </div>
+              </> 
+              : null
+          }
+          <nav className="navBar__menu"
+            style={{top: (menuVisible? '100px' : '-1000px')}}>
             <Link to="/game" className="navBar__game__link">
               <GameController size={32} />
               Game
@@ -61,36 +89,9 @@ export function NavBar() {
           </nav>
         </div>
         <li className="navBar__divider" />
-        <li className='navBar__notify'>
-          <Bell className='navBar__notify__icon' size={40} onClick={() => setNotificationVisible(!notificationVisible)} />
-          {
-            notificationVisible ?
-              <div className='navBar__notifications'>
-                <div className="navBar__notification__body">
-                  <NotificationFriend />
-                  <NotificationFriend />
-                  <NotificationFriend />
-                  <NotificationFriend />
-                  <NotificationFriend />
-
-                  <NotificationChallenge />
-                  <NotificationChallenge />
-                  <NotificationChallenge />
-                  <NotificationChallenge />
-                  <NotificationChallenge />
-                  <NotificationChallenge />
-                  <NotificationChallenge />
-                  <NotificationChallenge />
-
-                  <NotificationMessage />
-                  <NotificationMessage />
-                  <NotificationMessage />
-                  <NotificationMessage />
-
-                </div>
-              </div> : null
-          }
-        </li>
+        {/* <li className='navBar__notify' > */}
+        <Notifications />
+        {/* </li> */}
         <li>
           <div className="navBar__user">
             <Link to="/profile">

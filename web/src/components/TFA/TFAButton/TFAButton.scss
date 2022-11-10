@@ -14,7 +14,8 @@
   border-radius: 20px;
   background-color: $primaryColor;
   &:hover {
-    background-color: $primaryColorHover;
+    // background-color: $primaryColorHover;
+    filter: grayscale(0.7)
   }
 }
 
