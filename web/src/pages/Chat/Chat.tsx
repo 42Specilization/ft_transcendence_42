@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { ChatCommunity } from '../../components/Chat/ChatCommunity/ChatCommunity';
 import { ChatTalk } from '../../components/Chat/ChatTalk/ChatTalk';
 import { FriendData, IntraData } from '../../Interfaces/interfaces';

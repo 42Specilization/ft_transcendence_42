@@ -12,7 +12,7 @@ import {
 
 import { Socket, Namespace } from 'socket.io';
 import { WsCatchAllFilter } from 'src/socket/exceptions/ws-catch-all-filter';
-import { MapStatus } from './status.class';
+import { MapStatus, UserOnline } from './status.class';
 
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({ namespace: 'status' })
@@ -43,28 +43,52 @@ export class StatusGateway
   }
 
   @SubscribeMessage('iAmOnline')
-  newUserOnline(client: Socket, email: string) {
-    this.usersOnline.set(client.id, email);
-    this.logger.debug(`keys: ${this.usersOnline.keyOf(email)}, values: |${this.usersOnline.valueOf(client.id)}|`);
-    if (this.usersOnline.keyOf(email).length > 1) {
-      client.emit('friendsOnline', Array.from(this.usersOnline.getValues()));
+  newUserOnline(client: Socket, login: string) {
+    const newUser: UserOnline = {
+      status: 'online',
+      login: login,
+    };
+    this.usersOnline.set(client.id, newUser);
+    this.logger.debug(`keys: ${this.usersOnline.keyOf(newUser.login)}, values: |${this.usersOnline.valueOf(client.id)}|`);
+    client.emit('friendsOnline', Array.from(this.usersOnline.getValues()));
+    if (this.usersOnline.keyOf(newUser.login).length > 1) {
       return;
     }
-    client.broadcast.emit('newUserOnline', email);
-    client.emit('friendsOnline', Array.from(this.usersOnline.getValues()));
+    client.broadcast.emit('updateUserStatus', newUser);
     this.server.emit('change');
 
-    this.logger.debug(`iAmOnline => Client: ${client.id}, email: |${email}|`);
+    this.logger.debug(`iAmOnline => Client: ${client.id}, email: |${newUser.login}|`);
   }
 
 
   newUserOffline(client: Socket) {
-    const email = this.usersOnline.valueOf(client.id);
-    if (this.usersOnline.keyOf(email).length == 1)
-      this.server.emit('newUserOffline', this.usersOnline.valueOf(client.id));
+    const user: UserOnline = this.usersOnline.valueOf(client.id);
+    user.status = 'offline';
+    this.usersOnline.set(client.id, user);
+    if (this.usersOnline.keyOf(user.login).length == 1)
+      this.server.emit('updateUserStatus', this.usersOnline.valueOf(client.id));
     this.usersOnline.delete(client.id);
     this.server.emit('change');
 
-    this.logger.debug(`iAmOffine => Client: ${client.id}, email: |${email}|`);
+    this.logger.debug(`iAmOffine => Client: ${client.id}, email: |${user.login}|`);
   }
+
+
+  @SubscribeMessage('changeLogin')
+  handleChangeLogin(client: Socket, newLogin: string) {
+    const oldUser = this.usersOnline.valueOf(client.id);
+    const newUser = {
+      status: oldUser.status,
+      login: newLogin,
+    };
+    this.usersOnline.updateValue(client.id, oldUser, newUser);
+    client.emit('updateYourself', newUser);
+    client.broadcast.emit('updateUser', oldUser, newUser);
+
+    this.server.emit('change');
+  }
+
+
+
+
 }

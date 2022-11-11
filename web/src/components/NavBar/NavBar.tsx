@@ -1,9 +1,9 @@
 import logoSmall from '../../assets/logo-small.png';
-import { Chats, GameController, List, SignOut, UsersThree } from 'phosphor-react';
+import { Chats, GameController, List, SignOut } from 'phosphor-react';
 import './NavBar.scss';
 import useAuth from '../../auth/auth';
 import { Link } from 'react-router-dom';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IntraData } from '../../Interfaces/interfaces';
 import { defaultIntra, getStoredData } from '../../utils/utils';
 import { Notifications } from '../Notifications/Notifications';
@@ -32,9 +32,12 @@ export function NavBar({ Children }: NavBarProps) {
 
   useEffect(() => {
     if (currentStateStatus.socket) {
+
       currentStateStatus.socket.on('change', () => {
+        console.log('alguma coisa atualizou');
         getStoredData(setIntraData);
       });
+
     }
   }, [currentStateStatus.socket]);
 
@@ -124,7 +127,7 @@ export function NavBar({ Children }: NavBarProps) {
           </li>
         </ul >
       </div >
-      <Children intraData={intraData} setIntraData={setIntraData} />
+      <Children intraData={intraData} setIntraData={setIntraData} currentStateStatus={currentStateStatus} />
     </>
 
   );

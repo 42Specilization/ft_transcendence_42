@@ -7,11 +7,12 @@ import {
   createSocketStatus,
   CreateSocketStatusOptions,
   socketStatusIOUrl,
+  UserOnline,
 } from './status.socket-io';
 
 interface Me {
   id: string;
-  name: string;
+  login: string;
   email: string;
 }
 
@@ -30,7 +31,7 @@ const stateStatus = proxy<AppStateStatus>({
     const data: IntraData = JSON.parse(localStore);
     const myData: Me = {
       id: this.socket ? this.socket.id : '',
-      name: data.login,
+      login: data.login,
       email: data.email,
     };
     return myData;
@@ -53,7 +54,7 @@ const actionsStatus = {
 
     if (!stateStatus.socket.connected) {
       stateStatus.socket.connect();
-      stateStatus.socket.emit('iAmOnline', stateStatus.me?.email);
+      stateStatus.socket.emit('iAmOnline', stateStatus.me?.login);
       return;
     }
   },
@@ -64,7 +65,7 @@ const actionsStatus = {
     }
   },
 
-  async updateUsersOnline(usersEmail: string[]) {
+  async updateFriendsOnline(friends: UserOnline[]) {
     let localStore = window.localStorage.getItem('userData');
     if (!localStore) {
       await getInfos();
@@ -74,15 +75,16 @@ const actionsStatus = {
     const data: IntraData = JSON.parse(localStore);
 
     data.friends = data.friends.map(friend => {
-      if (usersEmail.indexOf(friend.email) >= 0)
-        friend.online = true;
+      if (friends.map(e => e.login).indexOf(friend.login) >= 0)
+        friend.status = 'online';
       return friend;
+      //PENSAR NO STATUS DE JOGANDO
     });
 
     window.localStorage.setItem('userData', JSON.stringify(data));
   },
 
-  async updateFriendStatus(userEmail: string, status: boolean) {
+  async updateUserStatus(user: UserOnline) {
     let localStore = window.localStorage.getItem('userData');
     if (!localStore) {
       await getInfos();
@@ -92,15 +94,43 @@ const actionsStatus = {
     const data: IntraData = JSON.parse(localStore);
 
     data.friends = data.friends.map(friend => {
-      if (userEmail === friend.email)
-        friend.online = status;
+      if (user.login === friend.login)
+        friend.status = user.status;
       return friend;
     });
 
     window.localStorage.setItem('userData', JSON.stringify(data));
   },
 
+  async updateUser(oldUser: UserOnline, newUser: UserOnline) {
+    let localStore = window.localStorage.getItem('userData');
+    if (!localStore) {
+      await getInfos();
+      localStore = window.localStorage.getItem('userData');
+      if (!localStore) return;
+    }
+    const data: IntraData = JSON.parse(localStore);
 
+    data.friends = data.friends.map(friend => {
+      if (oldUser.login === friend.login)
+        friend.login = newUser.login;
+      return friend;
+    });
+
+    window.localStorage.setItem('userData', JSON.stringify(data));
+  },
+
+  async updateYourSelf(user: UserOnline) {
+    let localStore = window.localStorage.getItem('userData');
+    if (!localStore) {
+      await getInfos();
+      localStore = window.localStorage.getItem('userData');
+      if (!localStore) return;
+    }
+    const data: IntraData = JSON.parse(localStore);
+    data.login = user.login;
+    window.localStorage.setItem('userData', JSON.stringify(data));
+  },
 
 };
 

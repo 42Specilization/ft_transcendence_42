@@ -12,6 +12,11 @@ export interface CreateSocketStatusOptions {
   actionsStatus: AppActionsStatus;
 }
 
+export interface UserOnline {
+  status: string;
+  login: string;
+}
+
 export function createSocketStatus({
   accessToken,
   socketStatusIOUrl,
@@ -26,25 +31,30 @@ export function createSocketStatus({
   });
 
   socket.on('connect', () => {
-    console.log('user connected', stateStatus.me?.name);
+    console.log('user connected', stateStatus.me?.login);
 
   });
 
-  socket.on('newUserOnline', async (email: string) => {
-    actionsStatus.updateFriendStatus(email, true);
-    console.log('new friend online:', email);
+  socket.on('updateUserStatus', async (user: UserOnline) => {
+    actionsStatus.updateUserStatus(user);
+    console.log('new friend online:', user);
   });
 
-  socket.on('newUserOffline', async (email: string) => {
-    actionsStatus.updateFriendStatus(email, false);
-    console.log('new friend offline:', email);
+
+  socket.on('friendsOnline', async (friends: UserOnline[]) => {
+    actionsStatus.updateFriendsOnline(friends);
+    console.log('friends online:', friends);
   });
 
-  socket.on('friendsOnline', async (emails: string[]) => {
-    actionsStatus.updateUsersOnline(emails);
-    console.log('friends online:', emails);
+  socket.on('updateYourself', async (user: UserOnline) => {
+    actionsStatus.updateYourSelf(user);
+    console.log('update yourself:', user);
   });
 
+  socket.on('updateUser', async (oldUser: UserOnline, newUser: UserOnline) => {
+    actionsStatus.updateUser(oldUser, newUser);
+    console.log('update user:', newUser);
+  });
   return socket;
 
 }

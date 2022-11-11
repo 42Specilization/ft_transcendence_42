@@ -9,9 +9,11 @@ import ProfileAchiviements from '../../components/Profile/ProfileAchiviements/Pr
 interface ProfileProps {
   intraData: IntraData;
   setIntraData: Dispatch<SetStateAction<IntraData>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  currentStateStatus: any;
 }
 
-export default function Profile({ intraData, setIntraData }: ProfileProps) {
+export default function Profile({ intraData, setIntraData, currentStateStatus }: ProfileProps) {
 
   const [tableSelected, setTableSelected] = useState('General');
 
@@ -39,7 +41,7 @@ export default function Profile({ intraData, setIntraData }: ProfileProps) {
       <div className='profile__body'>
         {(() => {
           if (tableSelected === 'General')
-            return <ProfileGeneral intraData={intraData} setIntraData={setIntraData} />;
+            return <ProfileGeneral currentStateStatus={currentStateStatus} intraData={intraData} setIntraData={setIntraData} />;
           else if (tableSelected === 'Historic')
             return <ProfileHistoric intraData={intraData} />;
           else

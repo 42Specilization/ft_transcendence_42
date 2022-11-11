@@ -65,9 +65,8 @@ export class AuthService {
     for (let i = 0; i < friendsIds.length; i++) {
       const friend: User = (await this.userService.findUserById(friendsIds[i])) as User;
       const friendData: FriendData = {
-        online: false,
+        status: 'offline',
         login: friend.nick,
-        email: friend.email,
         image_url: friend.imgUrl,
       };
       intraData.friends.push(friendData);

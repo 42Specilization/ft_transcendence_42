@@ -14,7 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { CredentialsDto } from './dto/credentials.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FriendDto, UserDto } from './dto/user.dto';
-import * as fs from 'fs';
+// import * as fs from 'fs';
 
 @Injectable()
 export class UserService {
@@ -53,7 +53,7 @@ export class UserService {
   async findUserByNick(nick: string): Promise<User | null> {
     return await this.usersRepository.findOneBy({ nick });
   }
-  
+
   async findUserByEmail(email: string): Promise<User | null> {
     return await this.usersRepository.findOneBy({ email });
   }
@@ -157,16 +157,16 @@ export class UserService {
     user.tfaValidated =
       tfaValidated !== undefined ? tfaValidated : user.tfaValidated;
     user.tfaCode = tfaCode ? bcrypt.hashSync(tfaCode, 8) : user.tfaCode;
-    if (nick) {
-      fs.rename(
-        `../web/public/${user.imgUrl}`,
-        `../web/public/${nick}_avatar.jpg`,
-        function (err) {
-          if (err) throw err;
-        }
-      );
-      user.imgUrl = `${nick}_avatar.jpg`;
-    }
+    // if (nick) {
+    //   fs.rename(
+    //     `../web/public/${user.imgUrl}`,
+    //     `../web/public/${nick}_avatar.jpg`,
+    //     function (err) {
+    //       if (err) throw err;
+    //     }
+    //   );
+    //   user.imgUrl = `${nick}_avatar.jpg`;
+    // }
 
     if (tfaCode == null) {
       user.tfaCode = '';

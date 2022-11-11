@@ -1,52 +1,45 @@
-export interface IntraData {
-  first_name: string;
-  email: string;
-  usual_full_name: string;
-  image_url: string;
+
+export interface UserOnline {
+  status: string;
   login: string;
-  matches: string;
-  wins: string;
-  lose: string;
-  isTFAEnable: boolean;
-  tfaValidated: boolean;
 }
 
 export class MapStatus {
 
-  private keyMap: Map<string, string>;
+  private keyMap: Map<string, UserOnline>;
   private valueMap: Map<string, string[]>;
 
   constructor() {
-    this.keyMap = new Map<string, string>();
+    this.keyMap = new Map<string, UserOnline>();
     this.valueMap = new Map<string, string[]>();
   }
 
-  set(key: string, value: string): void {
+  set(key: string, value: UserOnline): void {
     this.keyMap.set(key, value);
-    if (this.valueMap.has(value)) {
-      this.valueMap.get(value)?.push(key);
+    if (this.valueMap.has(value.login)) {
+      this.valueMap.get(value.login)?.push(key);
     } else {
-      this.valueMap.set(value, [key]);
+      this.valueMap.set(value.login, [key]);
     }
   }
 
   delete(key: string): void {
     const value = this.keyMap.get(key);
     if (value) {
-      const values = this.valueMap.get(value);
+      const values = this.valueMap.get(value.login);
       if (values && values.length > 1) {
-        this.valueMap.set(value, values.filter(k => k !== key));
+        this.valueMap.set(value.login, values.filter(k => k !== key));
       } else {
-        this.valueMap.delete(value);
+        this.valueMap.delete(value.login);
       }
     }
     this.keyMap.delete(key);
   }
 
-  valueOf(key: string): string {
+  valueOf(key: string): UserOnline {
     const value = this.keyMap.get(key);
     if (value) return value;
-    return '';
+    return { status: '', login: '' };
   }
 
   keyOf(value: string): string[] {
@@ -55,7 +48,7 @@ export class MapStatus {
     return [];
   }
 
-  getValues(): IterableIterator<string> {
+  getValues(): IterableIterator<UserOnline> {
     return this.keyMap.values();
   }
 
@@ -65,5 +58,14 @@ export class MapStatus {
 
   hasValue(value: string): boolean {
     return this.valueMap.has(value);
+  }
+
+  updateValue(key: string, oldValue: UserOnline, newValue: UserOnline): void {
+    this.keyMap.set(key, newValue);
+    const result = this.valueMap.get(oldValue.login);
+    if (result) {
+      this.valueMap.set(newValue.login, result);
+    }
+    this.valueMap.delete(oldValue.login);
   }
 }

@@ -8,11 +8,16 @@ import { PaperPlaneRight } from 'phosphor-react';
 interface ChangeNickProps {
   setIsModalChangeNickVisible: (arg0: boolean) => void;
   setIntraData: Dispatch<SetStateAction<IntraData>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  currentStateStatus: any;
+  login: string;
 }
 
 export function ChangeNick({
   setIsModalChangeNickVisible,
   setIntraData,
+  login,
+  currentStateStatus,
 }: ChangeNickProps) {
   const [nick, setNick] = useState<string>('');
   const [placeHolder, setPlaceHolder] = useState('');
@@ -36,10 +41,12 @@ export function ChangeNick({
         { nick: nick },
         config
       );
+
       if (result.status === 200) {
         setIsModalChangeNickVisible(false);
-        window.localStorage.removeItem('userData');
-        getStoredData(setIntraData);
+        // window.localStorage.removeItem('userData');
+        // getStoredData(setIntraData);
+        currentStateStatus.socket.emit('changeLogin', nick);
         setPlaceHolder('');
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
