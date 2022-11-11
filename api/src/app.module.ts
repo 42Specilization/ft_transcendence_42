@@ -11,6 +11,7 @@ import { GameModule } from "./game/game.module";
 import { ChatMoule } from "./chat/chat.module";
 import { Notification } from "./notification/entities/notification.entity";
 import { NotificationModule } from "./notification/notification.module";
+import { StatusModule } from "./status/status.module";
 // import { APP_GUARD } from '@nestjs/core';
 // import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
@@ -32,6 +33,7 @@ import { NotificationModule } from "./notification/notification.module";
     UserModule,
     GameModule,
     ChatMoule,
+    StatusModule,
     NotificationModule,
   ],
 
@@ -44,4 +46,4 @@ import { NotificationModule } from "./notification/notification.module";
     // }
   ],
 })
-export class AppModule {}
+export class AppModule { }

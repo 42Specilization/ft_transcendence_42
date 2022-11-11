@@ -1,15 +1,4 @@
-export interface IntraData {
-  first_name: string;
-  email: string;
-  usual_full_name: string;
-  image_url: string;
-  login: string;
-  matches: string;
-  wins: string;
-  lose: string;
-  isTFAEnable: boolean;
-  tfaValidated: boolean;
-}
+import { IntraData } from 'src/auth/dto/IntraData.dto';
 
 export interface ChatMsg {
   id: number;

@@ -142,7 +142,7 @@ export class UserController {
   async getUser(@GetUserFromJwt() userFromJwt: UserFromJwt): Promise<UserDto> {
     return (await this.userService.getUserDTO(userFromJwt.email));
   }
-  
+
   @Patch('friend')
   @HttpCode(HttpStatus.OK)
   // @UseGuards(JwtAuthGuard)
@@ -150,7 +150,7 @@ export class UserController {
   async getfriend(@Body() getFriendDto: GetFriendDto): Promise<User> {
     console.log('getFriend', getFriendDto);
     const userValidate = await this.userService.getUser(getFriendDto.email);
-    return ( userValidate);
+    return (userValidate);
   }
 
   /* This method is used to update the user's image. */
@@ -207,12 +207,12 @@ export class UserController {
       send_id: userRequested.id,
     };
 
-    
+
     try {
-      const dbConnect = await axios.post(`http://${process.env['HOST']}:${process.env['PORT']}/notification/createNotify`, notifyRequestBody); 
+      const dbConnect = await axios.post(`http://${process.env['HOST']}:${process.env['PORT']}/notification/createNotify`, notifyRequestBody);
       console.log(dbConnect);
-    } catch (err){
-      console.log (err);
+    } catch (err) {
+      console.log(err);
     }
 
     return { message: 'success' };

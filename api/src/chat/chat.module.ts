@@ -1,6 +1,5 @@
-/* eslint-disable quotes */
-import { Module } from "@nestjs/common";
-import { ChatGateway } from "./chat.gateway";
+import { Module } from '@nestjs/common';
+import { ChatGateway } from './chat.gateway';
 
 @Module({
   imports: [],

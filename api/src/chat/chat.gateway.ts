@@ -22,7 +22,7 @@ implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
   private logger: Logger = new Logger(ChatGateway.name);
 
   afterInit() {
-    this.logger.log("Game Websocket Gateway initialized.");
+    this.logger.log("Chat Websocket Gateway initialized.");
   }
 
   handleConnection(client: Socket) {

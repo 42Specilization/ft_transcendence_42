@@ -11,6 +11,7 @@ import { NavBar } from './components/NavBar/NavBar';
 import { RequireAuth, ValidadeSignin } from './utils/utils';
 import Chat from './pages/Chat/Chat';
 
+
 export default function AppRouter() {
   return (
     <Router>
@@ -20,8 +21,7 @@ export default function AppRouter() {
             path="/"
             element={
               <RequireAuth>
-                <NavBar />
-                <Home />
+                <NavBar Children={Home} />
               </RequireAuth>
             }
           />
@@ -29,8 +29,7 @@ export default function AppRouter() {
             path="/profile"
             element={
               <RequireAuth>
-                <NavBar />
-                <Profile />
+                <NavBar Children={Profile} />
               </RequireAuth>
             }
           />
@@ -46,17 +45,7 @@ export default function AppRouter() {
             path="/chat"
             element={
               <RequireAuth>
-                <NavBar />
-                <Chat />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/community"
-            element={
-              <RequireAuth>
-                <NavBar />
-                <Chat />
+                <NavBar Children={Chat} />
               </RequireAuth>
             }
           />
@@ -72,6 +61,6 @@ export default function AppRouter() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
-    </Router>
+    </Router >
   );
 }

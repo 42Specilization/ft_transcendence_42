@@ -15,6 +15,9 @@
 }
 
 .user__card__icon {
+	@include displayFlex(flex-end, row, flex-end);
+	width:45px;
+	height:45px;
 	min-width: 45px;
 	min-height: 45px;
 	border: solid 2px;
@@ -31,3 +34,13 @@
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
+
+
+.user__card__status {
+	position: relative;
+	transform: translate(15%,15%);
+	width: 35%;
+	height: 35%;
+	border: 2px solid;
+	border-radius: 50%;;
+  }
