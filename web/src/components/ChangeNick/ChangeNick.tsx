@@ -42,7 +42,7 @@ export function ChangeNick({
         getStoredData(setIntraData);
         setPlaceHolder('');
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       if (e && e.response) {
         if (e.response.data.statusCode === 403) {
@@ -63,7 +63,7 @@ export function ChangeNick({
       setPlaceHolder('');
       setNick('');
     }}
-    id={'modal__changeNick'}
+      id={'modal__changeNick'}
     >
       <form className="change__nick__modal" onSubmit={handleKeyEnter}>
         <div className="change__nick__modal__textdiv">

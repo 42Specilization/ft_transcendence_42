@@ -4,6 +4,7 @@ import { IntraData } from '../../../Interfaces/interfaces';
 import { ReactElement } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import ReactTooltip from 'react-tooltip';
+
 interface ChatMessageProps {
   user: IntraData;
   message: ChatMsg;

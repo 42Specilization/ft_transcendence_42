@@ -1,20 +1,17 @@
 import './Profile.scss';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { IntraData } from '../../Interfaces/interfaces';
 import React from 'react';
-import { defaultIntra, getStoredData } from '../../utils/utils';
 import ProfileGeneral from '../../components/Profile/ProfileGeneral/ProfileGeneral';
 import ProfileHistoric from '../../components/Profile/ProfileHistoric/ProfileHistoric';
 import ProfileAchiviements from '../../components/Profile/ProfileAchiviements/ProfileAchiviements';
 
+interface ProfileProps {
+  intraData: IntraData;
+  setIntraData: Dispatch<SetStateAction<IntraData>>;
+}
 
-export default function Profile() {
-  const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
-
-  useEffect(() => {
-    window.localStorage.removeItem('userData');
-    getStoredData(setIntraData);
-  }, []);
+export default function Profile({ intraData, setIntraData }: ProfileProps) {
 
   const [tableSelected, setTableSelected] = useState('General');
 

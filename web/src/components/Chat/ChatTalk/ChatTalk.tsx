@@ -1,7 +1,6 @@
 import './ChatTalk.scss';
 import { FriendData, IntraData } from '../../../Interfaces/interfaces';
-import { useEffect, useRef, useState } from 'react';
-import { defaultIntra, getStoredData } from '../../../utils/utils';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { PaperPlaneRight } from 'phosphor-react';
 import { ChatMessage } from './ChatMessage';
 import * as uuid from 'uuid';
@@ -9,6 +8,8 @@ import { actionsChat, stateChat } from '../../../chat/chatState';
 import { useSnapshot } from 'valtio';
 
 interface ChatTalkProps {
+  intraData: IntraData;
+  setIntraData: Dispatch<SetStateAction<IntraData>>;
   activeFriend: FriendData | null;
 }
 
@@ -19,12 +20,8 @@ export interface ChatMsg {
   date: Date;
 }
 
-export function ChatTalk({ activeFriend }: ChatTalkProps) {
+export function ChatTalk({ intraData, setIntraData, activeFriend }: ChatTalkProps) {
   const currentStateChat = useSnapshot(stateChat);
-  const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
-  useEffect(() => {
-    getStoredData(setIntraData);
-  }, []);
 
   useEffect(() => {
     actionsChat.initializeSocketChat();

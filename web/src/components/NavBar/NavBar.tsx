@@ -18,7 +18,7 @@ interface NavBarProps {
 export function NavBar({ Children }: NavBarProps) {
   const { logout } = useAuth();
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
-  // const currentStateStatus = useSnapshot(stateStatus);
+  const currentStateStatus = useSnapshot(stateStatus);
   const [menuVisible, setMenuVisible] = useState(false);
 
   useEffect(() => {
@@ -30,22 +30,13 @@ export function NavBar({ Children }: NavBarProps) {
     actionsStatus.initializeSocketStatus();
   }, []);
 
-  // console.log(intraData);
-  // useEffect(() => {
-  //   // getStoredData(setIntraData);
-  //   if (currentStateStatus.socket) {
-  //     currentStateStatus.socket.on('friendsOnline', (usersOnline: string[]) => {
-  //       setIntraData({
-  //         ...intraData, friends: intraData.friends.map(obj => {
-  //           if (usersOnline.indexOf(obj.email) >= 0) {
-  //             obj.online = true;
-  //           }
-  //           return obj;
-  //         })
-  //       });
-  //     });
-  //   }
-  // }, [currentStateStatus.socket]);
+  useEffect(() => {
+    if (currentStateStatus.socket) {
+      currentStateStatus.socket.on('change', () => {
+        getStoredData(setIntraData);
+      });
+    }
+  }, [currentStateStatus.socket]);
 
 
   async function handleLogOut() {
@@ -133,7 +124,7 @@ export function NavBar({ Children }: NavBarProps) {
           </li>
         </ul >
       </div >
-      <Children />
+      <Children intraData={intraData} setIntraData={setIntraData} />
     </>
 
   );

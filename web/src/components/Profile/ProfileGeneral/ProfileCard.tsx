@@ -5,8 +5,7 @@ import { IntraData } from '../../../Interfaces/interfaces';
 import { NotePencil } from 'phosphor-react';
 import { TFAButton } from '../../TFA/TFAButton/TFAButton';
 import { ChangeNick } from '../../ChangeNick/ChangeNick';
-import { getStoredData } from '../../../utils/utils';
-import { Dispatch, SetStateAction, useInsertionEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 interface ProfileCardProps {
   email: string;
@@ -23,12 +22,7 @@ export default function ProfileCard({
   full_name,
   setIntraData,
 }: ProfileCardProps) {
-  const [isModalChangeNickVisible, setIsModalChangeNickVisible] =
-    useState(false);
-  useInsertionEffect(() => {
-    window.localStorage.removeItem('userData');
-    getStoredData(setIntraData);
-  }, []);
+  const [isModalChangeNickVisible, setIsModalChangeNickVisible] = useState(false);
 
   return (
     <div className="profileCard">
