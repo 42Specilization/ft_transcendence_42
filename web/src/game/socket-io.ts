@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client';
-import { AppActions, AppState, Game } from './gameState';
+import { Ball } from '../components/Canvas/Canvas';
+import { AppActions, AppState, Game, Player, Score } from './gameState';
 
 export const socketIOUrl =
   `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/${import.meta.env.VITE_GAME_NAMESPACE}`;
@@ -24,12 +25,30 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
   // });
 
   socket.on('start-game', (game: Game) => {
-    actions.updateGame(game);
-    // window.requestAnimationFrame(updateBall);
+    actions.updateGame(game as Game);
+    actions.setIsPlayer();
+    console.log('game on start ', state.game);
+    window.requestAnimationFrame(updateBallEmit);
   });
 
+
   socket.on('update-game', (game: Game) => {
-    actions.updateGame(game);
+    actions.updateGame(game as Game);
+    console.log('game on update ', state.game);
+
+  });
+
+
+  socket.on('update-player', (player1: Player, player2: Player) => {
+    actions.updatePlayer(player1, player2);
+  });
+
+  socket.on('update-ball', (ball: Ball) => {
+    actions.updateBall(ball);
+  });
+
+  socket.on('update-score', (score: Score) => {
+    actions.updateScore(score);
   });
 
   socket.on('end-game', (game: Game) => {
@@ -49,25 +68,32 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
     //handle socket errors
   });
 
+  function updateBallEmit() {
+    if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.player1?.socketId === state.me?.id) {
+      state.socket?.emit('update-ball', state.game?.room);
+      window.requestAnimationFrame(updateBallEmit);
+    }
+  }
+
   // socket.on('exception', (err) => {
   //   console.log('err ', err);
   // });
 
-  socket.on('update-ball', (game: Game) => {
-    actions.updateGame(game);
-  });
+  // socket.on('update-ball', (ball: Ball) => {
+  //   actions.updateBall(ball);
+  // });
 
   // function updateBall() {
-  //   if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.game.player1.socketId === state.me?.id) {
+  //   if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.player1?.socketId === state.me?.id) {
   //     socket.emit('update-ball', state.game?.room);
   //     window.requestAnimationFrame(updateBall);
   //   }
   // }
-  setInterval(() => {
-    if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.game.player1.socketId === state.me?.id) {
-      socket.emit('update-ball', state.game?.index);
-    }
-  }, 1000 / 50);
+  // setInterval(() => {
+  //   if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.game.player1.socketId === state.me?.id) {
+  //     socket.emit('update-ball', state.game?.index);
+  //   }
+  // }, 1000 / 50);
 
 
 

@@ -29,8 +29,7 @@ interface IMove {
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({ namespace: "game" })
 export class GameGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(GameGateway.name);
 
   @WebSocketServer() io: Namespace;
@@ -173,7 +172,17 @@ export class GameGateway
       this.queue[index].waiting = false;
       this.io
         .to(this.queue[index].room.toString())
+        .emit("update-player", this.queue[index].player1, this.queue[index].player2);
+      this.io
+        .to(this.queue[index].room.toString())
+        .emit("update-ball", this.queue[index].ball);
+      this.io
+        .to(this.queue[index].room.toString())
+        .emit("update-score", this.queue[index].score);
+      this.io
+        .to(this.queue[index].room.toString())
         .emit("start-game", this.queue[index]);
+
       this.sendGameList();
     }
   }
@@ -207,23 +216,23 @@ export class GameGateway
     if (!this.isPlayer(game, user)) {
       return;
     }
-    let position = game.player1.paddle;
+    let player = game.player1;
     if (user.id === game.player2.socketId) {
-      position = game.player2.paddle;
+      player = game.player2;
     }
 
-    if (game.isPaddleCollision(position, direction)) {
+    if (game.isPaddleCollision(player.paddle, direction)) {
       return;
     }
 
     switch (direction) {
       case "up":
-        position.y -= 5;
-        this.io.to(game.room.toString()).emit("update-game", game);
+        player.paddle.y -= 5;
+        this.io.to(game.room.toString()).emit("update-player", game.player1, game.player2);
         break;
       case "down":
-        position.y += 5;
-        this.io.to(game.room.toString()).emit("update-game", game);
+        player.paddle.y += 5;
+        this.io.to(game.room.toString()).emit("update-player", game.player1, game.player2);
         break;
     }
   }
@@ -234,15 +243,17 @@ export class GameGateway
     if (!game) {
       return;
     }
-    if (!this.isPlayer(game, user)) {
+    if (!this.isPlayer(game, user) || game.player1.socketId !== user.id) {
       return;
     }
-    game.update();
+    if (game.update()) {
+      this.io.to(game.room.toString()).emit('update-score', game.score);
+    }
     if (game.checkWinner()) {
       this.io.to(game.room.toString()).emit("end-game", game);
       this.io.to(game.room.toString()).emit("specs", game);
     } else {
-      this.io.to(game.room.toString()).emit("update-ball", game);
+      this.io.to(game.room.toString()).emit("update-ball", game.ball);
       this.io.to(game.room.toString()).emit("specs", game);
     }
   }

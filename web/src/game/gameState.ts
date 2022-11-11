@@ -10,6 +10,11 @@ interface Me {
   id: string;
 }
 
+export interface Score {
+  player1: number;
+  player2: number;
+}
+
 export interface Player {
   paddle: Rect;
   score: number;
@@ -18,12 +23,11 @@ export interface Player {
 }
 
 export interface Game {
-  player1: Player;
-  player2: Player;
-  watchers: [];
-  ball: Ball;
+  // player1: Player;
+  // player2: Player;
+  // watchers: [];
+  // ball: Ball;
   room: number;
-  index: number;
   waiting: boolean;
   hasStarted: boolean;
   hasEnded: boolean;
@@ -35,31 +39,15 @@ export interface AppState {
   socket?: Socket;
   me: Me | undefined;
   accessToken?: string | null;
-  isPlayer: boolean;
+  isPlayer?: boolean;
   game?: Game;
-  player1: Player | undefined;
-  player2: Player | undefined;
+  ball?: Ball;
+  player1?: Player;
+  player2?: Player;
+  score?: Score;
 }
 
 const state = proxy<AppState>({
-  get isPlayer() {
-    if (this.socket && this.game) {
-      if (this.socket?.id === state.game?.player1.socketId
-        || this.socket?.id === state.game?.player2.socketId) {
-        return (true);
-      } else {
-        return (false);
-      }
-    } else {
-      return (false);
-    }
-  },
-  get player1() {
-    return (this.game?.player1);
-  },
-  get player2() {
-    return (this.game?.player2);
-  },
   get me() {
     const localStore = window.localStorage.getItem('userData');
     if (!localStore) {
@@ -99,6 +87,26 @@ const actions = {
   updateGame(game?: Game) {
     state.game = game;
   },
+  updateBall(ball: Ball) {
+    if (!state.ball) {
+      state.ball = ball;
+    } else {
+      state.ball.x = ball.x;
+      state.ball.y = ball.y;
+    }
+  },
+  updatePlayer(player1: Player, player2: Player) {
+    if (!state.player1 || !state.player2) {
+      state.player1 = player1;
+      state.player2 = player2;
+    } else {
+      state.player1.paddle = player1.paddle;
+      state.player2.paddle = player2.paddle;
+    }
+  },
+  updateScore(score: Score) {
+    state.score = score;
+  },
   disconnectSocket() {
     if (state.socket?.connected) {
       state.socket?.disconnect();
@@ -107,7 +115,19 @@ const actions = {
   leaveGame() {
     state.game = undefined;
     this.disconnectSocket();
-  }
+  },
+  setIsPlayer() {
+    if (state.socket && state.game) {
+      if (state.socket?.id === state.player1?.socketId
+        || state.socket?.id === state.player2?.socketId) {
+        state.isPlayer = true;
+      } else {
+        state.isPlayer = false;
+      }
+    } else {
+      state.isPlayer = false;
+    }
+  },
 };
 
 export type AppActions = typeof actions;
