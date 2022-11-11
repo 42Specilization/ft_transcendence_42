@@ -11,13 +11,6 @@ export interface IntraData {
   tfaValidated: boolean;
 }
 
-export interface StatusMsg {
-  id: number;
-  user: IntraData;
-  msg: string;
-  date: Date;
-}
-
 export class MapStatus {
 
   private keyMap: Map<string, string>;

@@ -18,12 +18,16 @@ interface NavBarProps {
 export function NavBar({ Children }: NavBarProps) {
   const { logout } = useAuth();
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
-  const currentStateStatus = useSnapshot(stateStatus);
+  // const currentStateStatus = useSnapshot(stateStatus);
   const [menuVisible, setMenuVisible] = useState(false);
 
   useEffect(() => {
     getStoredData(setIntraData);
     setMenuVisible(false);
+  }, []);
+
+  useEffect(() => {
+    actionsStatus.initializeSocketStatus();
   }, []);
 
   // console.log(intraData);
@@ -43,9 +47,6 @@ export function NavBar({ Children }: NavBarProps) {
   //   }
   // }, [currentStateStatus.socket]);
 
-  useEffect(() => {
-    actionsStatus.initializeSocketStatus();
-  }, []);
 
   async function handleLogOut() {
     logout();

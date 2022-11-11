@@ -1,6 +1,7 @@
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
 import { IntraData } from '../Interfaces/interfaces';
+import { getInfos } from '../pages/OAuth/OAuth';
 import { getAccessToken } from '../utils/utils';
 import {
   createSocketStatus,
@@ -62,6 +63,44 @@ const actionsStatus = {
       stateStatus.socket?.disconnect();
     }
   },
+
+  async updateUsersOnline(usersEmail: string[]) {
+    let localStore = window.localStorage.getItem('userData');
+    if (!localStore) {
+      await getInfos();
+      localStore = window.localStorage.getItem('userData');
+      if (!localStore) return;
+    }
+    const data: IntraData = JSON.parse(localStore);
+
+    data.friends = data.friends.map(friend => {
+      if (usersEmail.indexOf(friend.email) >= 0)
+        friend.online = true;
+      return friend;
+    });
+
+    window.localStorage.setItem('userData', JSON.stringify(data));
+  },
+
+  async updateFriendStatus(userEmail: string, status: boolean) {
+    let localStore = window.localStorage.getItem('userData');
+    if (!localStore) {
+      await getInfos();
+      localStore = window.localStorage.getItem('userData');
+      if (!localStore) return;
+    }
+    const data: IntraData = JSON.parse(localStore);
+
+    data.friends = data.friends.map(friend => {
+      if (userEmail === friend.email)
+        friend.online = status;
+      return friend;
+    });
+
+    window.localStorage.setItem('userData', JSON.stringify(data));
+  },
+
+
 
 };
 

@@ -46,6 +46,10 @@ export class StatusGateway
   newUserOnline(client: Socket, email: string) {
     this.usersOnline.set(client.id, email);
     this.logger.debug(`keys: ${this.usersOnline.keyOf(email)}, values: |${this.usersOnline.valueOf(client.id)}|`);
+    if (this.usersOnline.keyOf(email).length > 1) {
+      client.emit("friendsOnline", Array.from(this.usersOnline.getValues()));
+      return;
+    }
     client.broadcast.emit("newUserOnline", email);
     client.emit("friendsOnline", Array.from(this.usersOnline.getValues()));
     this.logger.debug(`iAmOnline => Client: ${client.id}, email: |${email}|`);
