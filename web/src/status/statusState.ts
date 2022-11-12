@@ -7,13 +7,19 @@ import {
   createSocketStatus,
   CreateSocketStatusOptions,
   socketStatusIOUrl,
-  UserOnline,
 } from './status.socket-io';
 
 interface Me {
   id: string;
   login: string;
   email: string;
+  image_url: string;
+}
+
+export interface UserOnline {
+  status: string;
+  login: string;
+  image_url: string;
 }
 
 export interface AppStateStatus {
@@ -33,10 +39,22 @@ const stateStatus = proxy<AppStateStatus>({
       id: this.socket ? this.socket.id : '',
       login: data.login,
       email: data.email,
+      image_url: data.image_url,
     };
     return myData;
   },
 });
+
+async function getUserData(): Promise<IntraData | null> {
+  let localStore = window.localStorage.getItem('userData');
+  if (!localStore) {
+    await getInfos();
+    localStore = window.localStorage.getItem('userData');
+    if (!localStore)
+      return null;
+  }
+  return JSON.parse(localStore);
+}
 
 const actionsStatus = {
   initializeSocketStatus: (): void => {
@@ -54,7 +72,10 @@ const actionsStatus = {
 
     if (!stateStatus.socket.connected) {
       stateStatus.socket.connect();
-      stateStatus.socket.emit('iAmOnline', stateStatus.me?.login);
+      stateStatus.socket.emit('iAmOnline', {
+        login: stateStatus.me?.login,
+        image_url: stateStatus.me?.image_url
+      });
       return;
     }
   },
@@ -65,7 +86,7 @@ const actionsStatus = {
     }
   },
 
-  async updateFriendsOnline(friends: UserOnline[]) {
+  async updateFriends(loggedUsers: UserOnline[]) {
     let localStore = window.localStorage.getItem('userData');
     if (!localStore) {
       await getInfos();
@@ -75,7 +96,7 @@ const actionsStatus = {
     const data: IntraData = JSON.parse(localStore);
 
     data.friends = data.friends.map(friend => {
-      if (friends.map(e => e.login).indexOf(friend.login) >= 0)
+      if (loggedUsers.map(e => e.login).indexOf(friend.login) >= 0)
         friend.status = 'online';
       return friend;
       //PENSAR NO STATUS DE JOGANDO

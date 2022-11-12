@@ -1,20 +1,29 @@
 
-export interface UserOnline {
+export interface UserData {
   status: string;
   login: string;
+  image_url: string;
 }
 
-export class MapStatus {
+export function newUserData(status: string, login: string, image_url: string): UserData {
+  return {
+    status: status,
+    login: login,
+    image_url: image_url,
+  };
+}
 
-  private keyMap: Map<string, UserOnline>;
+export class MapUserData {
+
+  private keyMap: Map<string, UserData>;
   private valueMap: Map<string, string[]>;
 
   constructor() {
-    this.keyMap = new Map<string, UserOnline>();
+    this.keyMap = new Map<string, UserData>();
     this.valueMap = new Map<string, string[]>();
   }
 
-  set(key: string, value: UserOnline): void {
+  set(key: string, value: UserData): void {
     this.keyMap.set(key, value);
     if (this.valueMap.has(value.login)) {
       this.valueMap.get(value.login)?.push(key);
@@ -36,10 +45,10 @@ export class MapStatus {
     this.keyMap.delete(key);
   }
 
-  valueOf(key: string): UserOnline {
+  valueOf(key: string): UserData {
     const value = this.keyMap.get(key);
     if (value) return value;
-    return { status: '', login: '' };
+    return newUserData('', '', '');
   }
 
   keyOf(value: string): string[] {
@@ -48,8 +57,8 @@ export class MapStatus {
     return [];
   }
 
-  getValues(): IterableIterator<UserOnline> {
-    return this.keyMap.values();
+  getValues(): UserData[] {
+    return Array.from(this.keyMap.values());
   }
 
   hasKey(key: string): boolean {
@@ -60,12 +69,21 @@ export class MapStatus {
     return this.valueMap.has(value);
   }
 
-  updateValue(key: string, oldValue: UserOnline, newValue: UserOnline): void {
-    this.keyMap.set(key, newValue);
+  updateValue(oldValue: UserData, newValue: UserData): void {
     const result = this.valueMap.get(oldValue.login);
     if (result) {
+      result.forEach(key => this.keyMap.set(key, newValue));
+      this.valueMap.delete(oldValue.login);
       this.valueMap.set(newValue.login, result);
     }
-    this.valueMap.delete(oldValue.login);
+  }
+
+  debug(): void {
+    console.log('+-----------------------------------------------------');
+    console.log('| chaves in keyMap:', Array.from(this.keyMap.keys()));
+    console.log('| valores in keyMap:', Array.from(this.keyMap.values()));
+    console.log('\n| chaves in valueMap:', Array.from(this.valueMap.keys()));
+    console.log('| valores in valueMap:', Array.from(this.valueMap.values()));
+    console.log('+-----------------------------------------------------');
   }
 }

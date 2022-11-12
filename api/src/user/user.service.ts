@@ -114,7 +114,7 @@ export class UserService {
     for (let i = 0; i < friendsIds.length; i++) {
       const friend: User = (await this.findUserById(friendsIds[i])) as User;
       const friendDto: FriendDto = {
-        online: false,
+        status: 'offline',
         login: friend.nick,
         email: friend.email,
         image_url: friend.imgUrl,

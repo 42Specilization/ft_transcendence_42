@@ -21,12 +21,12 @@ export interface ChatMsg {
 }
 
 export function ChatTalk({ intraData, setIntraData, activeFriend }: ChatTalkProps) {
-  const currentStateChat = useSnapshot(stateChat);
+  // const currentStateChat = useSnapshot(stateChat);
 
-  useEffect(() => {
-    actionsChat.initializeSocketChat();
-    actionsChat.startChatMessage([]);
-  }, []);
+  // useEffect(() => {
+  //   actionsChat.initializeSocketChat();
+  //   actionsChat.startChatMessage([]);
+  // }, []);
 
   const [message, setMessage] = useState('');
 
@@ -44,15 +44,15 @@ export function ChatTalk({ intraData, setIntraData, activeFriend }: ChatTalkProp
    * It sends a message to the server if the message is not empty
    */
   function submitMessage() {
-    if (message.trim()) {
-      const newMessage: ChatMsg = {
-        id: uuid.v4(),
-        user: intraData,
-        msg: message,
-        date: new Date(Date.now()),
-      };
-      currentStateChat.socket?.emit('msgToServer', newMessage);
-    }
+    // if (message.trim()) {
+    //   const newMessage: ChatMsg = {
+    //     id: uuid.v4(),
+    //     user: intraData,
+    //     msg: message,
+    //     date: new Date(Date.now()),
+    //   };
+    //   // currentStateChat.socket?.emit('msgToServer', newMessage);
+    // }
     setMessage('');
   }
 
@@ -61,28 +61,28 @@ export function ChatTalk({ intraData, setIntraData, activeFriend }: ChatTalkProp
    * updates the chat message.
    * @param {ChatMsg} message - ChatMsg - The message that was received.
    */
-  function receivedMessage(message: ChatMsg) {
-    actionsChat.updateChatMessage(message);
-  }
+  // function receivedMessage(message: ChatMsg) {
+  //   actionsChat.updateChatMessage(message);
+  // }
 
-  useEffect(() => {
-    if (currentStateChat.socket) {
-      currentStateChat.socket.on('msgToClient', (message: ChatMsg) => {
-        receivedMessage(message);
-      });
-    }
-  }, [currentStateChat.socket]);
+  // useEffect(() => {
+  //   if (currentStateChat.socket) {
+  //     currentStateChat.socket.on('msgToClient', (message: ChatMsg) => {
+  //       receivedMessage(message);
+  //     });
+  //   }
+  // }, [currentStateChat.socket]);
 
-  const refBody: React.RefObject<HTMLDivElement> = useRef(null);
-  useEffect(() => {
-    if (
-      refBody.current &&
-      refBody.current.scrollHeight > refBody.current.offsetHeight
-    ) {
-      refBody.current.scrollTop =
-        refBody.current.scrollHeight - refBody.current.offsetHeight;
-    }
-  }, [currentStateChat.chatMsg]);
+  // const refBody: React.RefObject<HTMLDivElement> = useRef(null);
+  // useEffect(() => {
+  //   if (
+  //     refBody.current &&
+  //     refBody.current.scrollHeight > refBody.current.offsetHeight
+  //   ) {
+  //     refBody.current.scrollTop =
+  //       refBody.current.scrollHeight - refBody.current.offsetHeight;
+  //   }
+  // }, [currentStateChat.chatMsg]);
 
   return (
     <div className='chat__talk'>
@@ -99,11 +99,11 @@ export function ChatTalk({ intraData, setIntraData, activeFriend }: ChatTalkProp
               </div>
             </div>
           </div>
-          <div className='chat__talk__body' ref={refBody}>
+          {/* <div className='chat__talk__body' ref={refBody}>
             {currentStateChat.chatMsg?.map((msg) => (
               <ChatMessage key={msg.id} user={intraData} message={msg} />
             ))}
-          </div>
+          </div> */}
           <form className='chat__talk__footer' onSubmit={handleKeyEnter}>
             <input
               className='chat__talk__footer__input'
@@ -115,7 +115,8 @@ export function ChatTalk({ intraData, setIntraData, activeFriend }: ChatTalkProp
             </button>
           </form>
         </>
-      ) : null}
-    </div>
+      ) : null
+      }
+    </div >
   );
 }

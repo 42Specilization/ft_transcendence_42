@@ -43,6 +43,8 @@ export function NavBar({ Children }: NavBarProps) {
 
 
   async function handleLogOut() {
+    actionsStatus.disconnectSocketStatus();
+    window.localStorage.removeItem('userData');
     logout();
   }
 

@@ -12,7 +12,7 @@ import {
 
 import { Socket, Namespace } from 'socket.io';
 import { WsCatchAllFilter } from 'src/socket/exceptions/ws-catch-all-filter';
-import { MapStatus, UserOnline } from './status.class';
+import { MapUserData, newUserData, UserData } from './status.class';
 
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({ namespace: 'status' })
@@ -21,7 +21,7 @@ export class StatusGateway
   @WebSocketServer() server: Namespace;
   private logger: Logger = new Logger(StatusGateway.name);
 
-  usersOnline: MapStatus = new MapStatus();
+  mapUserData: MapUserData = new MapUserData();
 
   afterInit() {
     this.logger.log('Status Websocket Gateway initialized.');
@@ -32,6 +32,7 @@ export class StatusGateway
 
     this.logger.log(`WS client with id: ${client.id} connected of StatusSocket!`);
     this.logger.debug(`Number of connected StatusSockets: ${sockets.size}`);
+    this.mapUserData.debug();
   }
 
   handleDisconnect(client: Socket) {
@@ -40,35 +41,36 @@ export class StatusGateway
     this.newUserOffline(client);
     this.logger.log(`Disconnected of StatusSocket the socket id: ${client.id}`);
     this.logger.debug(`Number of connected StatusSockets: ${sockets.size}`);
+    this.mapUserData.debug();
   }
 
   @SubscribeMessage('iAmOnline')
-  newUserOnline(client: Socket, login: string) {
-    const newUser: UserOnline = {
-      status: 'online',
-      login: login,
-    };
-    this.usersOnline.set(client.id, newUser);
-    this.logger.debug(`keys: ${this.usersOnline.keyOf(newUser.login)}, values: |${this.usersOnline.valueOf(client.id)}|`);
-    client.emit('friendsOnline', Array.from(this.usersOnline.getValues()));
-    if (this.usersOnline.keyOf(newUser.login).length > 1) {
-      return;
+  newUserOnline(client: Socket, { login, image_url }: { login: string, image_url: string }) {
+    const newUser: UserData = newUserData('online', login, image_url);
+    this.mapUserData.set(client.id, newUser);
+    client.emit('loggedUsers', Array.from(this.mapUserData.getValues()));
+
+    if (this.mapUserData.keyOf(newUser.login).length == 1) {
+      client.broadcast.emit('updateUser', newUser);
+      this.server.emit('change');
+    } else {
+      client.emit('change');
     }
-    client.broadcast.emit('updateUserStatus', newUser);
-    this.server.emit('change');
 
     this.logger.debug(`iAmOnline => Client: ${client.id}, email: |${newUser.login}|`);
+    this.mapUserData.debug();
   }
 
 
   newUserOffline(client: Socket) {
-    const user: UserOnline = this.usersOnline.valueOf(client.id);
+    const user: UserData = this.mapUserData.valueOf(client.id);
     user.status = 'offline';
-    this.usersOnline.set(client.id, user);
-    if (this.usersOnline.keyOf(user.login).length == 1)
-      this.server.emit('updateUserStatus', this.usersOnline.valueOf(client.id));
-    this.usersOnline.delete(client.id);
-    this.server.emit('change');
+
+    if (this.mapUserData.keyOf(user.login).length == 1) {
+      this.server.emit('updateUser', this.mapUserData.valueOf(client.id));
+      this.server.emit('change');
+    }
+    this.mapUserData.delete(client.id);
 
     this.logger.debug(`iAmOffine => Client: ${client.id}, email: |${user.login}|`);
   }
@@ -76,19 +78,24 @@ export class StatusGateway
 
   @SubscribeMessage('changeLogin')
   handleChangeLogin(client: Socket, newLogin: string) {
-    const oldUser = this.usersOnline.valueOf(client.id);
-    const newUser = {
-      status: oldUser.status,
-      login: newLogin,
-    };
-    this.usersOnline.updateValue(client.id, oldUser, newUser);
-    client.emit('updateYourself', newUser);
-    client.broadcast.emit('updateUser', oldUser, newUser);
+    const oldUser = this.mapUserData.valueOf(client.id);
+    const newUser: UserData = newUserData(
+      oldUser.status,
+      newLogin,
+      oldUser.image_url
+    );
+
+    this.mapUserData.debug();
+
+    this.mapUserData.updateValue(oldUser, newUser);
+    this.mapUserData.keyOf(newLogin).forEach(socketId =>
+      this.server.to(socketId).emit('updateYourself', newUser)
+    );
+    client.broadcast.emit('updateUserLogin', oldUser, newUser);
+
+    this.mapUserData.debug();
 
     this.server.emit('change');
   }
-
-
-
 
 }

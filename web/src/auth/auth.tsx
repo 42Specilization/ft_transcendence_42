@@ -38,8 +38,8 @@ export function useAuth() {
         return;
       }
       window.localStorage.setItem('token', token.access_token);
+      window.localStorage.removeItem('userData');
       navigate('/');
-
     },
     logout() {
       window.localStorage.removeItem('token');

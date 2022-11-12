@@ -8,7 +8,7 @@ import { UserModule } from "./user/user.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "./user/entities/user.entity";
 import { GameModule } from "./game/game.module";
-import { ChatMoule } from "./chat/chat.module";
+// import { ChatModule } from "./chat/chat.module";
 import { Notification } from "./notification/entities/notification.entity";
 import { NotificationModule } from "./notification/notification.module";
 import { StatusModule } from "./status/status.module";
@@ -32,7 +32,7 @@ import { StatusModule } from "./status/status.module";
     ConfigModule.forRoot(),
     UserModule,
     GameModule,
-    ChatMoule,
+    // ChatModule,
     StatusModule,
     NotificationModule,
   ],
