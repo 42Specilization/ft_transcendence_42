@@ -1,6 +1,6 @@
 import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
-import axios from 'axios';
+// import axios from 'axios';
 import { GetUserFromJwt } from 'src/auth/decorators/get-user.decorator';
 import { UserFromJwt } from 'src/auth/dto/UserFromJwt.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -11,14 +11,14 @@ import { NotificationService } from './notification.service';
 @Controller('notification')
 @ApiTags('notification')
 export class NotificationController {
-  constructor(private readonly notificationService: NotificationService) { console.log(this.notificationService);}
+  constructor(private readonly notificationService: NotificationService) { console.log(this.notificationService); }
 
   // Colocar auth nessas rotas
   // Nao coloquei pra conseguir desenvolver sem o front
   @Post('/createNotify')
   @ApiBody({ type: CreateNotificationDto })
   @HttpCode(HttpStatus.CREATED)
-  async createNotification(@Body() createNotificationDto: CreateNotificationDto): Promise<{ msg: string }>{
+  async createNotification(@Body() createNotificationDto: CreateNotificationDto): Promise<{ msg: string }> {
     const response = await this.notificationService.createNotification(createNotificationDto);
     if (response) {
       return ({
@@ -27,19 +27,21 @@ export class NotificationController {
     }
     throw new BadRequestException('Failed creating notification');
   }
-  
+
   @ApiBody({ type: GetUserNotificationsDto })
   @UseGuards(JwtAuthGuard)
   @Patch('/userNotifications')
   async getUserNotification(
     @Body() getUserNotificationDto: GetUserNotificationsDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
-  ){
+  ) {
     try {
-      console.log(getUserNotificationDto);
-      const friend =  await axios.patch(`http://${process.env['HOST']}:${process.env['PORT']}/user/friend`, {email: getUserNotificationDto.user_email}); 
+      // console.log(getUserNotificationDto);
+      // const friend = 
+      // await axios.patch(`http://${process.env['HOST']}:${process.env['PORT']}/user/friend`,
+      //   { email: getUserNotificationDto.user_email });
       userFromJwt;
-      const notifications = await this.notificationService.findNotificationByDestinationId(friend.data.nick);
+      const notifications = await this.notificationService.findNotificationByDestinationNick(getUserNotificationDto.user_login);
       if (notifications) {
         //         for (const notify of notifications) {
         //   const requester =  await axios.patch(`http://${process.env['HOST']}:${process.env['PORT']}/user/friend`, {email: userFromJwt.email}); 
@@ -47,10 +49,17 @@ export class NotificationController {
         //   notify.sender_nick = requester.data.nick;
         // }
       }
+      console.log('GetUsernotification', getUserNotificationDto.user_login);
       return notifications;
-    } catch (err){
-      console.log (err);
+    } catch (err) {
+      console.log(err);
     }
-    return ;
+    return;
   }
+
+
+
+
+
+
 }

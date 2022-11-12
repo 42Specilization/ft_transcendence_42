@@ -49,10 +49,11 @@ export class StatusGateway
     const newUser: UserData = newUserData('online', login, image_url);
     this.mapUserData.set(client.id, newUser);
     client.emit('loggedUsers', Array.from(this.mapUserData.getValues()));
-
+    client.emit('getUserNotification', login);
     if (this.mapUserData.keyOf(newUser.login).length == 1) {
       client.broadcast.emit('updateUser', newUser);
       this.server.emit('change');
+      this.server.emit('changeAny');
     } else {
       client.emit('change');
     }
@@ -60,8 +61,8 @@ export class StatusGateway
     this.logger.debug(`iAmOnline => Client: ${client.id}, email: |${newUser.login}|`);
     this.mapUserData.debug();
   }
-
-
+  
+  
   newUserOffline(client: Socket) {
     const user: UserData = this.mapUserData.valueOf(client.id);
     user.status = 'offline';
@@ -71,11 +72,11 @@ export class StatusGateway
       this.server.emit('change');
     }
     this.mapUserData.delete(client.id);
-
+    
     this.logger.debug(`iAmOffine => Client: ${client.id}, email: |${user.login}|`);
   }
-
-
+  
+  
   @SubscribeMessage('changeLogin')
   handleChangeLogin(client: Socket, newLogin: string) {
     const oldUser = this.mapUserData.valueOf(client.id);
@@ -84,18 +85,18 @@ export class StatusGateway
       newLogin,
       oldUser.image_url
     );
-
+    
     this.mapUserData.debug();
-
+    
     this.mapUserData.updateValue(oldUser, newUser);
     this.mapUserData.keyOf(newLogin).forEach(socketId =>
       this.server.to(socketId).emit('updateYourself', newUser)
-    );
-    client.broadcast.emit('updateUserLogin', oldUser, newUser);
-
-    this.mapUserData.debug();
-
-    this.server.emit('change');
+      );
+      client.broadcast.emit('updateUserLogin', oldUser, newUser);
+      
+      this.mapUserData.debug();
+      
+      this.server.emit('change');
+    }
+    
   }
-
-}

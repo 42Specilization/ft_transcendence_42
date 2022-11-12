@@ -111,7 +111,7 @@ export function NavBar({ Children }: NavBarProps) {
             </nav>
           </div>
           <li className="navBar__divider" />
-          <Notifications email={intraData.email} />
+          <Notifications currentStateStatus={currentStateStatus} login={intraData.login} />
           <li>
             <div className="navBar__user">
               <Link to="/profile">

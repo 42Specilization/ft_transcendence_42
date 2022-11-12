@@ -16,11 +16,14 @@ import * as bcrypt from 'bcrypt';
 import { FriendRequestDto } from './dto/friend-request.dto';
 import axios from 'axios';
 import { GetFriendDto } from './dto/get-friend.dto';
+import { NotificationService } from 'src/notification/notification.service';
 
 @Controller('user')
 @ApiTags('user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(
+    private readonly userService: UserService,
+    private readonly notificationService: NotificationService) { }
 
   @Post()
   @ApiBody({ type: CreateUserDto })
@@ -125,7 +128,9 @@ export class UserController {
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt,
   ) {
+    const user = await this.userService.getUserDTO(userFromJwt.email);
     await this.userService.updateUser(updateUserDto, userFromJwt.email);
+    await this.notificationService.updateNotificationLogin(user.login, updateUserDto.nick as string);
     return { message: 'success' };
   }
 
