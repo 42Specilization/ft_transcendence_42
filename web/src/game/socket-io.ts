@@ -41,6 +41,7 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
 
   socket.on('update-player', (player1: Player, player2: Player) => {
     actions.updatePlayer(player1, player2);
+    console.log('update player');
   });
 
   socket.on('update-ball', (ball: Ball) => {
@@ -71,6 +72,7 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
   function updateBallEmit() {
     if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.player1?.socketId === state.me?.id) {
       state.socket?.emit('update-ball', state.game?.room);
+      console.log('update ballllll');
       window.requestAnimationFrame(updateBallEmit);
     }
   }

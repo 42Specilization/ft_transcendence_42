@@ -22,7 +22,7 @@ function LiveGame({ game }: LiveGamesProps) {
 
   return (
     <li onClick={handleWatchLiveGame}>
-      {game.player1.name} vs {game.player2.name}
+      {game.player1Name} vs {game.player2Name}
     </li>
   );
 }
@@ -35,6 +35,7 @@ export function WatchGame() {
   function getList() {
     currentState.socket?.emit('get-game-list');
     currentState.socket?.on('get-game-list', (games: Game[]) => {
+      console.log('games list ', games);
       setGameList(games);
     });
   }

@@ -1,3 +1,5 @@
+import { GameDto } from './dto/Game.dto';
+
 export interface IPaddle {
   x: number;
   y: number;
@@ -218,6 +220,20 @@ export class Game {
       return (true);
     }
     return (false);
+  }
+
+  getGameDto(): GameDto {
+    const gameDto: GameDto = {
+      room: this.room,
+      waiting: this.waiting,
+      hasStarted: this.hasStarted,
+      hasEnded: this.hasEnded,
+      winner: this.winner,
+      msgEndGame: this.msgEndGame,
+      player1Name: this.player1.name,
+      player2Name: this.player2.name,
+    };
+    return (gameDto);
   }
 
 

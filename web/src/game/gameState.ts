@@ -23,16 +23,14 @@ export interface Player {
 }
 
 export interface Game {
-  // player1: Player;
-  // player2: Player;
-  // watchers: [];
-  // ball: Ball;
   room: number;
   waiting: boolean;
   hasStarted: boolean;
   hasEnded: boolean;
   winner: Player;
   msgEndGame: string;
+  player1Name: string;
+  player2Name: string;
 }
 
 export interface AppState {

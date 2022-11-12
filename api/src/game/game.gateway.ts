@@ -116,7 +116,7 @@ export class GameGateway
         this.io
           .to(this.queue[i].room.toString())
           .emit("end-game", this.queue[i]);
-        this.io.to(this.queue[i].room.toString()).emit("specs", this.queue[i]);
+        // this.io.to(this.queue[i].room.toString()).emit("specs", this.queue[i]);
         delete this.queue[i];
         this.queue.splice(i, 1);
         break;
@@ -142,6 +142,18 @@ export class GameGateway
     this.logger.debug(`Number of connected sockets: ${sockets.size}`);
   }
 
+  sendUpdatesEmits(game: Game) {
+    this.io
+      .to(game.room.toString())
+      .emit("update-player", game.player1, game.player2);
+    this.io
+      .to(game.room.toString())
+      .emit("update-ball", game.ball);
+    this.io
+      .to(game.room.toString())
+      .emit("update-score", game.score);
+  }
+
   /**
    * This function get the instance of the a game on queue array.
    * After that will verify which player is missing and add the socket id there.
@@ -157,7 +169,7 @@ export class GameGateway
       user.join(this.queue[index].room.toString());
       this.io
         .to(this.queue[index].room.toString())
-        .emit("update-game", this.queue[index]);
+        .emit("update-game", this.queue[index].getGameDto());
       this.logger.debug(
         `Player one connected socket id: ${user.id} Game index:${index} Game id:${this.queue[index].room}`
       );
@@ -170,15 +182,7 @@ export class GameGateway
       );
       this.queue[index].hasStarted = true;
       this.queue[index].waiting = false;
-      this.io
-        .to(this.queue[index].room.toString())
-        .emit("update-player", this.queue[index].player1, this.queue[index].player2);
-      this.io
-        .to(this.queue[index].room.toString())
-        .emit("update-ball", this.queue[index].ball);
-      this.io
-        .to(this.queue[index].room.toString())
-        .emit("update-score", this.queue[index].score);
+      this.sendUpdatesEmits(this.queue[index]);
       this.io
         .to(this.queue[index].room.toString())
         .emit("start-game", this.queue[index]);
@@ -251,10 +255,10 @@ export class GameGateway
     }
     if (game.checkWinner()) {
       this.io.to(game.room.toString()).emit("end-game", game);
-      this.io.to(game.room.toString()).emit("specs", game);
+      // this.io.to(game.room.toString()).emit("specs", game);
     } else {
       this.io.to(game.room.toString()).emit("update-ball", game.ball);
-      this.io.to(game.room.toString()).emit("specs", game);
+      // this.io.to(game.room.toString()).emit("specs", game);
     }
   }
 
@@ -263,7 +267,7 @@ export class GameGateway
       "get-game-list",
       this.queue.map((game) => {
         if (game.hasStarted && !game.hasEnded) {
-          return game;
+          return game.getGameDto();
         }
         return;
       })
@@ -290,7 +294,8 @@ export class GameGateway
       throw new WsBadRequestException("Game not available!");
     }
     user.join(game.room.toString());
-    this.io.to(game.room.toString()).emit("specs", game);
+    this.sendUpdatesEmits(game);
+    this.io.to(game.room.toString()).emit("update-game", game.getGameDto());
     this.logger.log(`User watching game of id:${game.room}`);
   }
 }
