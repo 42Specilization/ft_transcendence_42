@@ -16,7 +16,7 @@ interface Me {
   image_url: string;
 }
 
-export interface UserOnline {
+export interface UserData {
   status: string;
   login: string;
   image_url: string;
@@ -86,70 +86,58 @@ const actionsStatus = {
     }
   },
 
-  async updateFriends(loggedUsers: UserOnline[]) {
-    let localStore = window.localStorage.getItem('userData');
-    if (!localStore) {
-      await getInfos();
-      localStore = window.localStorage.getItem('userData');
-      if (!localStore) return;
-    }
-    const data: IntraData = JSON.parse(localStore);
+  async updateFriends(loggedUsers: UserData[]) {
+    const data: IntraData | null = await getUserData();
+    if (!data)
+      return;
 
     data.friends = data.friends.map(friend => {
-      if (loggedUsers.map(e => e.login).indexOf(friend.login) >= 0)
-        friend.status = 'online';
+      if (loggedUsers.map(e => e.login).indexOf(friend.login) >= 0) {
+        const updateFriend = loggedUsers.find(e => e.login === friend.login);
+        return typeof updateFriend !== 'undefined' ? updateFriend : friend;
+      }
       return friend;
-      //PENSAR NO STATUS DE JOGANDO
     });
 
     window.localStorage.setItem('userData', JSON.stringify(data));
   },
 
-  async updateUserStatus(user: UserOnline) {
-    let localStore = window.localStorage.getItem('userData');
-    if (!localStore) {
-      await getInfos();
-      localStore = window.localStorage.getItem('userData');
-      if (!localStore) return;
-    }
-    const data: IntraData = JSON.parse(localStore);
+  async updateUser(user: UserData) {
+    const data: IntraData | null = await getUserData();
+    if (!data)
+      return;
 
     data.friends = data.friends.map(friend => {
       if (user.login === friend.login)
-        friend.status = user.status;
+        return user;
       return friend;
     });
 
     window.localStorage.setItem('userData', JSON.stringify(data));
   },
 
-  async updateUser(oldUser: UserOnline, newUser: UserOnline) {
-    let localStore = window.localStorage.getItem('userData');
-    if (!localStore) {
-      await getInfos();
-      localStore = window.localStorage.getItem('userData');
-      if (!localStore) return;
-    }
-    const data: IntraData = JSON.parse(localStore);
+  async updateYourSelf(user: UserData) {
+    const data: IntraData | null = await getUserData();
+    if (!data)
+      return;
+
+    data.login = user.login;
+    data.image_url = user.image_url;
+
+    window.localStorage.setItem('userData', JSON.stringify(data));
+  },
+
+  async updateUserLogin(oldUser: UserData, newUser: UserData) {
+    const data: IntraData | null = await getUserData();
+    if (!data)
+      return;
 
     data.friends = data.friends.map(friend => {
       if (oldUser.login === friend.login)
-        friend.login = newUser.login;
+        return newUser;
       return friend;
     });
 
-    window.localStorage.setItem('userData', JSON.stringify(data));
-  },
-
-  async updateYourSelf(user: UserOnline) {
-    let localStore = window.localStorage.getItem('userData');
-    if (!localStore) {
-      await getInfos();
-      localStore = window.localStorage.getItem('userData');
-      if (!localStore) return;
-    }
-    const data: IntraData = JSON.parse(localStore);
-    data.login = user.login;
     window.localStorage.setItem('userData', JSON.stringify(data));
   },
 

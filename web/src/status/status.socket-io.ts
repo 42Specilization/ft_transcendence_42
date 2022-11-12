@@ -1,5 +1,5 @@
 import { io, Socket } from 'socket.io-client';
-import { AppActionsStatus, AppStateStatus, UserOnline } from './statusState';
+import { AppActionsStatus, AppStateStatus, UserData } from './statusState';
 
 export const socketStatusIOUrl =
   `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT
@@ -30,24 +30,24 @@ export function createSocketStatus({
 
   });
 
-  socket.on('loggedUsers', async (friends: UserOnline[]) => {
+  socket.on('loggedUsers', async (friends: UserData[]) => {
     actionsStatus.updateFriends(friends);
-    console.log('friends online:', friends);
+    console.log('logged users:', friends);
   });
 
-  socket.on('updateUser', async (user: UserOnline) => {
-    actionsStatus.updateUserStatus(user);
-    console.log('new friend online:', user);
+  socket.on('updateUser', async (user: UserData) => {
+    actionsStatus.updateUser(user);
+    console.log('user update:', user);
   });
 
-  socket.on('updateYourself', async (user: UserOnline) => {
+  socket.on('updateYourself', async (user: UserData) => {
     actionsStatus.updateYourSelf(user);
     console.log('update yourself:', user);
   });
 
-  socket.on('updateUserLogin', async (oldUser: UserOnline, newUser: UserOnline) => {
-    actionsStatus.updateUser(oldUser, newUser);
-    console.log('update user:', newUser);
+  socket.on('updateUserLogin', async (oldUser: UserData, newUser: UserData) => {
+    actionsStatus.updateUserLogin(oldUser, newUser);
+    console.log('update user login:', newUser);
   });
 
   return socket;
