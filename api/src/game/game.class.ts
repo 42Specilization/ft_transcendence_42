@@ -1,45 +1,5 @@
 import { GameDto } from './dto/Game.dto';
-
-export interface IPaddle {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  color: string;
-}
-
-interface IBall {
-  y: number;
-  x: number;
-  radius: number;
-  speed: number;
-  velocityX: number;
-  velocityY: number;
-  color: string;
-}
-export interface IPosition {
-  x: number;
-  y: number;
-}
-
-export interface IPlayer {
-  paddle: IPaddle;
-  socketId: string;
-  name: string;
-  quit: boolean;
-}
-
-interface IPaddleOrBallSides {
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
-}
-
-interface IScore {
-  player1: number;
-  player2: number;
-}
+import { IPlayer, IScore, IBall, IPaddle, IPaddleOrBallSides } from './interface/game.interfaces';
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
@@ -70,7 +30,6 @@ export class Game {
     player2: 0
   };
 
-
   player1: IPlayer = {
     paddle: {
       x: 10,
@@ -96,8 +55,6 @@ export class Game {
     name: '',
     quit: false
   };
-
-
 
   ball: IBall = {
     x: CANVAS_WIDTH / 2,
@@ -235,6 +192,5 @@ export class Game {
     };
     return (gameDto);
   }
-
 
 }

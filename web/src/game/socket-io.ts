@@ -25,23 +25,19 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
   // });
 
   socket.on('start-game', (game: Game) => {
-    actions.updateGame(game as Game);
+    actions.updateGame(game);
     actions.setIsPlayer();
-    console.log('game on start ', state.game);
     window.requestAnimationFrame(updateBallEmit);
   });
 
 
   socket.on('update-game', (game: Game) => {
-    actions.updateGame(game as Game);
-    console.log('game on update ', state.game);
+    actions.updateGame(game);
 
   });
 
-
   socket.on('update-player', (player1: Player, player2: Player) => {
     actions.updatePlayer(player1, player2);
-    console.log('update player');
   });
 
   socket.on('update-ball', (ball: Ball) => {
@@ -72,7 +68,6 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
   function updateBallEmit() {
     if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.player1?.socketId === state.me?.id) {
       state.socket?.emit('update-ball', state.game?.room);
-      console.log('update ballllll');
       window.requestAnimationFrame(updateBallEmit);
     }
   }
@@ -81,23 +76,6 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
   //   console.log('err ', err);
   // });
 
-  // socket.on('update-ball', (ball: Ball) => {
-  //   actions.updateBall(ball);
-  // });
-
-  // function updateBall() {
-  //   if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.player1?.socketId === state.me?.id) {
-  //     socket.emit('update-ball', state.game?.room);
-  //     window.requestAnimationFrame(updateBall);
-  //   }
-  // }
-  // setInterval(() => {
-  //   if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.game.player1.socketId === state.me?.id) {
-  //     socket.emit('update-ball', state.game?.index);
-  //   }
-  // }, 1000 / 50);
-
-
-
   return (socket);
+
 }

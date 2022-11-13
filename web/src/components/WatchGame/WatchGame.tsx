@@ -1,18 +1,14 @@
-/* eslint-disable indent */
 import './WatchGame.scss';
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
 import { actions, Game, state } from '../../game/gameState';
 
-interface LiveGamesProps {
-  game: Game;
-}
-
-function LiveGame({ game }: LiveGamesProps) {
+export function WatchGame() {
 
   const currentState = useSnapshot(state);
+  const [gameList, setGameList] = useState<Game[]>([]);
 
-  const handleWatchLiveGame = () => {
+  const handleWatchLiveGame = (game: Game) => {
     if (game.hasEnded) {
       return;
     }
@@ -20,22 +16,9 @@ function LiveGame({ game }: LiveGamesProps) {
     currentState.socket?.emit('watch-game', game.room);
   };
 
-  return (
-    <li onClick={handleWatchLiveGame}>
-      {game.player1Name} vs {game.player2Name}
-    </li>
-  );
-}
-
-export function WatchGame() {
-
-  const currentState = useSnapshot(state);
-  const [gameList, setGameList] = useState<Game[]>([]);
-
   function getList() {
     currentState.socket?.emit('get-game-list');
     currentState.socket?.on('get-game-list', (games: Game[]) => {
-      console.log('games list ', games);
       setGameList(games);
     });
   }
@@ -52,7 +35,9 @@ export function WatchGame() {
           gameList?.length > 0 ?
             gameList?.map(game => {
               return (
-                <LiveGame game={game} key={game.room} />
+                <li onClick={() => { handleWatchLiveGame(game); }} key={game.room}>
+                  {game.player1Name} vs {game.player2Name}
+                </li>
               );
             }) : <p>No game Available</p>}
       </ul>
