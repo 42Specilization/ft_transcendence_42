@@ -1,4 +1,4 @@
-import { IPlayer } from '../game.class';
+import { IPlayer } from '../interface/game.interfaces';
 
 export class GameDto {
   room: number;

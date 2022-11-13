@@ -14,7 +14,9 @@ import { randomInt } from 'crypto';
 import { Socket, Namespace } from 'socket.io';
 import { WsCatchAllFilter } from 'src/socket/exceptions/ws-catch-all-filter';
 import { WsBadRequestException } from 'src/socket/exceptions/ws-exceptions';
+import { CreateGameDto } from './dto/createGame.dto';
 import { Game } from './game.class';
+import { GameService } from './game.service';
 
 interface IMove {
   direction: string;
@@ -29,6 +31,9 @@ interface IMove {
 @WebSocketGateway({ namespace: 'game' })
 export class GameGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+
+  constructor(private readonly gameService: GameService) { }
+
   private readonly logger = new Logger(GameGateway.name);
 
   @WebSocketServer() io: Namespace;
@@ -264,27 +269,50 @@ export class GameGateway
   */
   finishGame(user: Socket) {
     this.sendGameList();
+    let game;
     for (let i = 0; i < this.queue.length; i++) {
+      game = this.queue[i];
       if (
-        this.queue[i].player1.socketId === user.id ||
-        this.queue[i].player2.socketId === user.id
+        game.player1.socketId === user.id ||
+        game.player2.socketId === user.id
       ) {
         //delete who left
-        if (this.queue[i].player1.socketId === user.id) {
-          this.queue[i].player1.quit = true;
-        } else if (this.queue[i].player2.socketId === user.id) {
-          this.queue[i].player2.quit = true;
+        if (!game.winner) {
+          if (game.player1.socketId === user.id) {
+            game.player1.quit = true;
+          } else if (game.player2.socketId === user.id) {
+            game.player2.quit = true;
+          }
+          game.checkWinner();
         }
-        // announce the winner who left before the end-game will be the loser.
-        this.queue[i].checkWinner();
-        user.leave(this.queue[i].room.toString());
+        const createGameDto: CreateGameDto = {
+          player1Name: game.player1.name,
+          player1Score: game.score.player1,
+          player2Name: game.player2.name,
+          player2Score: game.score.player2,
+          winner: game.winner.name,
+          reasonEndGame: this.getReasonEndGame(game)
+        };
+        this.gameService.createGame(createGameDto);
+        user.leave(game.room.toString());
         this.io
-          .to(this.queue[i].room.toString())
-          .emit('end-game', this.queue[i]);
+          .to(game.room.toString())
+          .emit('end-game', game);
         delete this.queue[i];
         this.queue.splice(i, 1);
         break;
       }
+    }
+  }
+
+
+  getReasonEndGame(game: Game): string {
+    if (game.player1.quit) {
+      return (`player ${game.player1.name} quit the game!`);
+    } else if (game.player2.quit) {
+      return (`player ${game.player2.name} quit the game!`);
+    } else {
+      return ('Enough score points!');
     }
   }
 

@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
 import { GameModule } from './game/game.module';
+import { GameEntity } from './game/entities/game.entity';
 // import { APP_GUARD } from '@nestjs/core';
 // import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
@@ -18,7 +19,7 @@ import { GameModule } from './game/game.module';
     username: 'pguser',
     password: 'pgpassword',
     database: 'postgres',
-    entities: [User],
+    entities: [User, GameEntity],
     synchronize: true,
     logging: false,
   }), AuthModule, ConfigModule.forRoot(), UserModule, GameModule],
