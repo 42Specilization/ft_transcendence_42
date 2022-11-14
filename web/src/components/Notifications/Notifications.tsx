@@ -49,26 +49,22 @@ export function Notifications({ notifications, setNotifications }: NotificationP
   return (
     <div className='notification__body'>
       {notifications.length > 0 ?
-          notifications.map((obj) =>
-            <div key={obj.id}
-            className={'notification__body__content'
-                  // + (obj.viewed ?
-                  // ' notification__body__content__view ':
-                  // ' notification__body__content__notView')
-            }>
-              {(() => {
-                if (obj.type === 'friend')
-                  return <NotificationFriend notify={obj} />;
-                if (obj.type === 'message')
-                  return <NotificationMessage notify={obj} />;
-                if (obj.type === 'challenge')
-                  return <NotificationChallenge notify={obj} />;
-              })()}
-            </div>
-          )
-          :
-          <p className='notify__content__empty'>empty</p>
-        }
+        notifications.map((obj) =>
+          <div key={obj.id}
+            className={'notification__body__content'}>
+            {(() => {
+              if (obj.type === 'friend')
+                return <NotificationFriend notify={obj} />;
+              if (obj.type === 'message')
+                return <NotificationMessage notify={obj} />;
+              if (obj.type === 'challenge')
+                return <NotificationChallenge notify={obj} />;
+            })()}
+          </div>
+        )
+        :
+        <p className='notify__content__empty'>empty</p>
+      }
     </div>
   );
 }

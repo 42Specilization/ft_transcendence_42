@@ -8,8 +8,9 @@ interface NotificationChallengeProps {
 
 export function NotificationChallenge({
   notify
-} : NotificationChallengeProps) {
+}: NotificationChallengeProps) {
   return (
+
     <div className='notificationChallenge'>
       <strong>User send you a challenge request</strong>
       <div className='notificationChallenge__buttons'>

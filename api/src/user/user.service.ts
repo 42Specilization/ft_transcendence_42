@@ -15,7 +15,7 @@ import { CredentialsDto } from './dto/credentials.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FriendDto, UserDto } from './dto/user.dto';
 // import * as fs from 'fs';
-
+import { Notify } from '../notification/entities/notify.entity';
 @Injectable()
 export class UserService {
   constructor(
@@ -55,7 +55,17 @@ export class UserService {
   }
 
   async findUserByEmail(email: string): Promise<User | null> {
-    return await this.usersRepository.findOneBy({ email });
+    return await this.usersRepository.findOne(
+      {
+        where: {
+          email,
+        },
+        relations: [
+          'notify',
+          'notify.user_source'
+        ]
+
+      });
   }
 
   async findUserById(id: string): Promise<User> {
@@ -92,7 +102,11 @@ export class UserService {
   }
 
   async getUsers(): Promise<User[]> {
-    return await this.usersRepository.find();
+    return await this.usersRepository.find({
+      relations: [
+        'notify',
+      ]
+    });
   }
 
   async getUserDTO(email: string): Promise<UserDto> {
@@ -128,6 +142,7 @@ export class UserService {
 
   async getUser(email: string): Promise<User> {
     const user = (await this.findUserByEmail(email)) as User;
+
     return user;
   }
 
@@ -179,4 +194,38 @@ export class UserService {
       throw new InternalServerErrorException('Erro ao salvar os dados no db');
     }
   }
+
+
+  async createNotification(email: string) {
+    const user = await this.findUserByEmail(email) as User;
+    const newNotify = new Notify();
+
+    newNotify.type = 'friend';
+    // newNotify.user_source = user;
+    user.notify.push(newNotify);
+    try {
+      user.save();
+      return;
+    } catch (err) {
+      throw new InternalServerErrorException('erro salvando notificacao');
+    }
+  }
+
+  async popNotification(email: string) {
+    const user = await this.findUserByEmail(email) as User;
+    // const newNotification = new Notification();
+
+    // newNotification.type = 'friend';
+    // newNotification.user_source = user;
+    user.notify.pop();
+    try {
+      user.save();
+      return;
+    } catch (err) {
+      throw new InternalServerErrorException('erro salvando notificacao');
+    }
+  }
+
+
+
 }

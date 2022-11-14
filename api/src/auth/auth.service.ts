@@ -5,11 +5,10 @@ import { User } from '../user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { AccessTokenResponse } from './dto/AccessTokenResponse.dto';
 import { JwtTokenAccess } from './dto/JwtTokenAccess.dto';
-import { FriendData, IntraData } from './dto/IntraData.dto';
 import { UserFromJwt } from './dto/UserFromJwt.dto';
 import { UserPayload } from './dto/UserPayload.dto';
 import { UpdateUserDto } from 'src/user/dto/update-user.dto';
-
+import { UserDto } from 'src/user/dto/user.dto';
 @Injectable()
 export class AuthService {
 
@@ -46,34 +45,34 @@ export class AuthService {
    * @param data Data get from jwt extract.
    * @returns User data.
    */
-  async getUserInfos(data: UserFromJwt): Promise<IntraData> {
-    const user = await this.userService.findUserByEmail(data.email) as User;
-    const intraData: IntraData = {
-      email: user.email,
-      first_name: user.first_name,
-      image_url: user.imgUrl,
-      login: user.nick,
-      usual_full_name: user.usual_full_name,
-      matches: user.matches,
-      wins: user.wins,
-      lose: user.lose,
-      isTFAEnable: user.isTFAEnable,
-      tfaValidated: user.tfaValidated,
-      friends: [],
-    };
-    const friendsIds: string[] = user.friends ? user.friends.split(',') : [];
-    for (let i = 0; i < friendsIds.length; i++) {
-      const friend: User = (await this.userService.findUserById(friendsIds[i])) as User;
-      const friendData: FriendData = {
-        status: 'offline',
-        login: friend.nick,
-        image_url: friend.imgUrl,
-      };
-      intraData.friends.push(friendData);
-    }
-    intraData.friends.sort((a, b) => a.login < b.login ? -1 : 1);
+  async getUserInfos(data: UserFromJwt): Promise<UserDto> {
+    const UserDto = await this.userService.getUserDTO(data.email);
+    // const UserDto: UserDto = {
+    //   email: user.email,
+    //   first_name: user.first_name,
+    //   image_url: user.imgUrl,
+    //   login: user.nick,
+    //   usual_full_name: user.usual_full_name,
+    //   matches: user.matches,
+    //   wins: user.wins,
+    //   lose: user.lose,
+    //   isTFAEnable: user.isTFAEnable,
+    //   tfaValidated: user.tfaValidated,
+    //   friends: [],
+    // };
+    // const friendsIds: string[] = user.friends ? user.friends.split(',') : [];
+    // for (let i = 0; i < friendsIds.length; i++) {
+    //   const friend: User = (await this.userService.findUserById(friendsIds[i])) as User;
+    //   const friendData: FriendData = {
+    //     status: 'offline',
+    //     login: friend.nick,
+    //     image_url: friend.imgUrl,
+    //   };
+    //   UserDto.friends.push(friendData);
+    // }
+    // UserDto.friends.sort((a, b) => a.login < b.login ? -1 : 1);
 
-    return (intraData);
+    return (UserDto);
   }
 
   /**
@@ -83,7 +82,7 @@ export class AuthService {
    * @param token Access token received from intra.
    * @returns The data about the user received from intra.
    */
-  async getDataFromIntra(token: string): Promise<IntraData> {
+  async getDataFromIntra(token: string): Promise<UserDto> {
 
     const config = {
       headers: {
@@ -126,10 +125,10 @@ export class AuthService {
    * @param code Code received from login with intra.
    * @returns Data received from intra.
    */
-  async checkIfIsSignInOrSignUp(code: string): Promise<IntraData> {
+  async checkIfIsSignInOrSignUp(code: string): Promise<UserDto> {
 
     const token: AccessTokenResponse = await this.getToken(code);
-    const data: IntraData = await this.getDataFromIntra(token.access_token);
+    const data: UserDto = await this.getDataFromIntra(token.access_token);
     const user: User | null = await this.userService.findUserByEmail(data.email);
 
     if (!user) {
@@ -168,7 +167,7 @@ export class AuthService {
    * @returns Jwt token access.
    */
   async signUpOrSignIn(code: string): Promise<JwtTokenAccess> {
-    const data: IntraData = await this.checkIfIsSignInOrSignUp(code);
+    const data: UserDto = await this.checkIfIsSignInOrSignUp(code);
     const finalUser: User = await this.userService.findUserByEmail(data.email) as User;
     const payload: UserPayload = {
       email: finalUser.email,

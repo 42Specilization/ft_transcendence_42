@@ -25,30 +25,24 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
 
       <div className='notificationFriend__backSide'
         onClick={() => setSide(prevSide => !prevSide)}
-        style={{ width: (side ? '0px' : 'calc(100% - 20px)') }}
+        style={{ width: (side ? '0px' : '100%') }}
       >
-        <div className='notificationFriend__backSide__column'>
-          <div className='notificationFriend__backSide__button'>
-            <p> Accept </p>
-            <CheckCircle size={22}/>
-          </div>
-          <div className='notificationFriend__backSide__button'>
-            <p> Reject </p>
-            <XCircle size={22} />
-          </div>
+        <div className='notificationFriend__backSide__button'>
+          <p> Accept </p>
+          <CheckCircle size={22} />
         </div>
-        <div className='notificationFriend__backSide__column'>
-          <div className='notificationFriend__backSide__button'>
-            <p> Block </p>
-            <Prohibit size={22}/>
-          </div>
-          <div className='notificationFriend__backSide__button'>
-            <p> Show Perfil </p>
-            <UserCircle size={22}/>
-          </div>
+        <div className='notificationFriend__backSide__button'>
+          <p> Reject </p>
+          <XCircle size={22} />
         </div>
-
-
+        <div className='notificationFriend__backSide__button'>
+          <p> Block </p>
+          <Prohibit size={22} />
+        </div>
+        <div className='notificationFriend__backSide__button'>
+          <p> Profile </p>
+          <UserCircle size={22} />
+        </div>
       </div >
     </>
   );

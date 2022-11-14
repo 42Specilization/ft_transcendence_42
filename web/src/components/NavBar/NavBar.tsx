@@ -3,7 +3,7 @@ import useAuth from '../../auth/auth';
 import logoSmall from '../../assets/logo-small.png';
 import { Bell, BellRinging, Chats, GameController, List, SignOut } from 'phosphor-react';
 import { Link } from 'react-router-dom';
-import { MouseEvent, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IntraData, NotificationData } from '../../Interfaces/interfaces';
 import { defaultIntra, getStoredData } from '../../utils/utils';
 import { Notifications } from '../Notifications/Notifications';
@@ -28,25 +28,25 @@ export function NavBar({ Children }: NavBarProps) {
       type: 'friend',
       target_nick: 'Matthos',
       source_nick: 'gsilva-v',
-    },{
+    }, {
       id: '2',
       viewed: false,
       type: 'friend',
       target_nick: 'Matthos',
       source_nick: 'gsilva-v',
-    },{
+    }, {
       id: '5',
       viewed: false,
       type: 'message',
       target_nick: 'Matthos',
       source_nick: 'gsilva-v',
-    },{
+    }, {
       id: '6',
       viewed: false,
       type: 'message',
       target_nick: 'Matthos',
       source_nick: 'gsilva-v',
-    },{
+    }, {
       id: '9',
       viewed: false,
       type: 'challenge',
@@ -59,9 +59,9 @@ export function NavBar({ Children }: NavBarProps) {
   useEffect(() => {
     setNewNotifys(0);
     notifications.forEach(e => {
-      if(!e.viewed)
+      if (!e.viewed)
         setNewNotifys((prevNewNotifys) => prevNewNotifys + 1);
-    })
+    });
   }, [notifications]);
 
   useEffect(() => {
@@ -111,7 +111,7 @@ export function NavBar({ Children }: NavBarProps) {
     if (event.target.id === 'navBar__notify__icon') {
       setNotifyVisible((prevNotifyVisible) => !prevNotifyVisible);
     }
-  }
+  };
 
   async function handleLogOut() {
     actionsStatus.disconnectSocketStatus();
@@ -136,7 +136,7 @@ export function NavBar({ Children }: NavBarProps) {
               <List id='navBar__menu__icon' size={40} className='navBar__icons' />
             </div>
             <nav ref={menuRef} className='navBar__menu'
-                  style={{ top: (menuVisible ? '97px' : '-165px') }}>
+              style={{ top: (menuVisible ? '97px' : '-165px') }}>
               <Link to='/game' className='navBar__icons'>
                 <GameController size={32} />
                 Game
@@ -154,23 +154,23 @@ export function NavBar({ Children }: NavBarProps) {
             <div id='navBar__notify__icon' className='navBar__notify__icon'>
               {newNotifys == 0 ?
                 <Bell id='navBar__notify__icon'
-                      className='navBar__icons' size={40} />
+                  className='navBar__icons' size={40} />
                 :
                 <>
                   <BellRinging id='navBar__notify__icon'
-                                className='navBar__icons' size={40} />
+                    className='navBar__icons' size={40} />
                   <div id='navBar__notify__icon'
-                       className='notify__icon__notEmpty'>
-                    {newNotifys < 99 ? newNotifys: 99}
+                    className='notify__icon__notEmpty'>
+                    {newNotifys < 99 ? newNotifys : 99}
                   </div>
                 </>
               }
             </div>
             <div ref={notifyRef} className='navBar__notify__body'
-                  style={{ top: (notifyVisible ? '97px' : '-300px') }}>
+              style={{ top: (notifyVisible ? '97px' : '-300px') }}>
               <Notifications
-              notifications={notifications}
-              setNotifications={setNotifications} />
+                notifications={notifications}
+                setNotifications={setNotifications} />
             </div>
           </li>
 

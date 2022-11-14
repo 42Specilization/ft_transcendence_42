@@ -6,12 +6,14 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  OneToMany
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail } from 'class-validator';
+import { Notify } from 'src/notification/entities/notify.entity';
 
 @Entity()
 @Unique(['email', 'nick'])
@@ -81,6 +83,10 @@ export class User extends BaseEntity {
   @ApiProperty()
   @Column({ default: false })
   isTFAEnable: boolean;
+
+  @ApiProperty()
+  @OneToMany(() => Notify, (notify) => notify.user_target, { cascade: ['insert'] })
+  notify: Notify[];
 
   @ApiProperty()
   @Column({ nullable: true })

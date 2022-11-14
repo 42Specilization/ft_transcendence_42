@@ -3,8 +3,8 @@
 .notificationFriend__frontSide {
   @include displayFlex(center, column);
   height: 70px;
-  position: relative;
   overflow: hidden;
+  position: absolute;
   transition: width 1s;
 }
 
@@ -19,29 +19,28 @@
 }
 
 .notificationFriend__backSide {
-  @include displayFlex(center);
-  background-color: $primaryColorHover;
+  @include displayFlex();
+  display: grid;
+  justify-items: center;
+  grid-template-columns: 1fr 1fr;
   height: 70px;
   border-radius: 10px;
-  position:absolute;
   overflow: hidden;
+  position:absolute;
   transition: width 1s;
-  &:hover {
-    cursor: pointer;
-    background-color: $primaryColor;
-  }
-}
-
-.notificationFriend__backSide__column {
-  @include displayFlex(space-around, column);
-  width: 270px;
-  height: 60px;
 }
 
 .notificationFriend__backSide__button {
-  @include displayFlex();
+  @include displayFlex(space-around);
   @include truncText();
-  p {
-    margin-right: 10px;
+  width: 110px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-radius: 20px;
+  background-color: rgba(65, 5, 93, 0.583);
+  &:hover {
+    cursor: pointer;
+    background-color: rgba(38, 4, 54, 0.687);
+    
   }
 }

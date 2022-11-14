@@ -1,8 +1,8 @@
-import { IntraData } from 'src/auth/dto/IntraData.dto';
+import { UserDto } from 'src/user/dto/user.dto';
 
 export interface ChatMsg {
   id: number;
-  user: IntraData;
+  user: UserDto;
   msg: string;
   date: Date;
 }
