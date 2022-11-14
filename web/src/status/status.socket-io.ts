@@ -27,7 +27,10 @@ export function createSocketStatus({
 
   socket.on('connect', () => {
     console.log('user connected', stateStatus.me?.login);
-
+    stateStatus.socket?.emit('iAmOnline', {
+      login: stateStatus.me?.login,
+      image_url: stateStatus.me?.image_url
+    });
   });
 
   socket.on('loggedUsers', (friends: UserData[]) => {

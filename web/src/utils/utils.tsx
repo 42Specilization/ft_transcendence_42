@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { ValidateTfa } from '../components/ValidateTfa/ValidateTfa';
-import { IntraData } from '../Interfaces/interfaces';
+import { ErrResponse, IntraData } from '../Interfaces/interfaces';
 import { getInfos } from '../pages/OAuth/OAuth';
 
 export function getAccessToken() {
@@ -93,6 +93,7 @@ export async function getStoredData(
   setIntraData(data);
 }
 
+
 export async function getUserInDb(): Promise<IntraData> {
   const token = window.localStorage.getItem('token');
   const config = {
@@ -111,8 +112,11 @@ export async function getUserInDb(): Promise<IntraData> {
   }
 }
 
+
 export async function getIntraData(setIntraData: Dispatch<SetStateAction<IntraData>>) {
   const data = await getUserInDb();
+  window.localStorage.removeItem('userData');
+  window.localStorage.setItem('userData', JSON.stringify(data));
   setIntraData(data);
 }
 

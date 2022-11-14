@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { createContext, ReactNode, useContext } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { getUserInDb } from '../utils/utils';
 
 interface UserType {
   login: () => Promise<unknown>;
@@ -38,7 +39,9 @@ export function useAuth() {
         return;
       }
       window.localStorage.setItem('token', token.access_token);
+      const data = await getUserInDb();
       window.localStorage.removeItem('userData');
+      window.localStorage.setItem('userData', JSON.stringify(data));
       navigate('/');
     },
 

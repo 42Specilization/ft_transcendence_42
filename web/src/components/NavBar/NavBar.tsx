@@ -26,6 +26,8 @@ export function NavBar({ Children }: NavBarProps) {
     actionsStatus.initializeSocketStatus(setIntraData);
   }, []);
 
+
+
   //changeNick
   //chanceImage
   //changeNewFriend

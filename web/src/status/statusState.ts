@@ -1,8 +1,9 @@
+import axios from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
 import { IntraData } from '../Interfaces/interfaces';
-import { getAccessToken, getUserInDb } from '../utils/utils';
+import { defaultIntra, getAccessToken, getUserInDb } from '../utils/utils';
 import {
   createSocketStatus,
   CreateSocketStatusOptions,
@@ -63,10 +64,6 @@ const actionsStatus = {
 
     if (!stateStatus.socket.connected) {
       stateStatus.socket.connect();
-      stateStatus.socket.emit('iAmOnline', {
-        login: stateStatus.me?.login,
-        image_url: stateStatus.me?.image_url
-      });
       stateStatus.setIntraData = ref(setIntraData);
       return;
     }

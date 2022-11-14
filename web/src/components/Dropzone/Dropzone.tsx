@@ -1,7 +1,9 @@
 import { NotePencil } from 'phosphor-react';
-import { Dispatch, SetStateAction, useCallback } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useSnapshot } from 'valtio';
 import { IntraData } from '../../Interfaces/interfaces';
+import { stateStatus } from '../../status/statusState';
 import { getStoredData } from '../../utils/utils';
 
 interface DropzoneProps {
@@ -9,7 +11,9 @@ interface DropzoneProps {
   setIntraData: Dispatch<SetStateAction<IntraData>>;
 }
 
+
 export function Dropzone({ onFileUploaded, setIntraData }: DropzoneProps) {
+  
   const onDrop = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (acceptedFiles: any) => {
@@ -18,8 +22,6 @@ export function Dropzone({ onFileUploaded, setIntraData }: DropzoneProps) {
         const data: IntraData = JSON.parse(localStore);
         const file = new File([acceptedFiles[0]], `${data.login}_avatar.jpg`);
         onFileUploaded(file);
-        window.localStorage.removeItem('userData');
-        getStoredData(setIntraData);
         window.location.reload();
       }
     },

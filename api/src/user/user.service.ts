@@ -15,7 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { CredentialsDto } from './dto/credentials.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
-// import * as fs from 'fs';
+import * as fs from 'fs';
 import { Notify } from '../notification/entities/notify.entity';
 @Injectable()
 export class UserService {
@@ -196,16 +196,18 @@ export class UserService {
     user.tfaValidated =
       tfaValidated !== undefined ? tfaValidated : user.tfaValidated;
     user.tfaCode = tfaCode ? bcrypt.hashSync(tfaCode, 8) : user.tfaCode;
-    // if (nick) {
-    //   fs.rename(
-    //     `../web/public/${user.imgUrl}`,
-    //     `../web/public/${nick}_avatar.jpg`,
-    //     function (err) {
-    //       if (err) throw err;
-    //     }
-    //   );
-    //   user.imgUrl = `${nick}_avatar.jpg`;
-    // }
+    if (nick) {
+      if (user.imgUrl !== 'userDefault.png' && !user.imgUrl.includes('https://cdn.intra.42.fr')) {
+        fs.rename(
+          `../web/public/${user.imgUrl}`,
+          `../web/public/${nick}_avatar.jpg`,
+          function (err) {
+            if (err) throw err;
+          }
+        );
+        user.imgUrl = `${nick}_avatar.jpg`;
+      }
+    }
 
     if (tfaCode == null) {
       user.tfaCode = '';

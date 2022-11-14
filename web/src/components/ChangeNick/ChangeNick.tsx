@@ -38,7 +38,7 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
 
       if (result.status === 200) {
         setIsModalChangeNickVisible(false);
-        currentStateStatus.socket?.emit('newNotify', nick);
+        currentStateStatus.socket?.emit('changeLogin', nick);
         setPlaceHolder('');
       }
     } catch (e: any) {
@@ -61,7 +61,7 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
       setPlaceHolder('');
       setNick('');
     }}
-    id={'modal__changeNick'}
+      id={'modal__changeNick'}
     >
       <form className="change__nick__modal" onSubmit={handleKeyEnter}>
         <div className="change__nick__modal__textdiv">

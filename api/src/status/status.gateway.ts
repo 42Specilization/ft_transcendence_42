@@ -81,7 +81,7 @@ export class StatusGateway
     const newUser: UserData = newUserData(
       oldUser.status,
       newLogin,
-      oldUser.image_url
+      `${newLogin}_avatar.jpg`
     );
 
     this.mapUserData.debug();
@@ -104,5 +104,24 @@ export class StatusGateway
       this.server.to(socketId).emit('updateNotify')
     );
   }
+
+  // @SubscribeMessage('changeImage')
+  // handleChangeImage(client: Socket) {
+  //   client;
+  //   const user = this.mapUserData.valueOf(client.id);
+  //   const newUser: UserData = newUserData(
+  //     user.status,
+  //     newLogin,
+  //     user.image_url = `${user.login}_avatar.jpg`
+  //   );
+
+  //   this.mapUserData.debug();
+
+  //   this.mapUserData.updateValue(oldUser, newUser);
+  //   this.mapUserData.keyOf(this.mapUserData.valueOf(client.id).login).forEach(socketId =>
+  //     this.server.to(socketId).emit('updateYourself', newUser)
+  //   );
+  //   client.broadcast.emit('updateUserLogin', oldUser, newUser);
+  // }
 
 }
