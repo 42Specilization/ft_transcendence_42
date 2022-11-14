@@ -1,4 +1,4 @@
-export class notifyDto {
+export class NotifyDto {
   id: string;
   type: string;
   user_source: string;

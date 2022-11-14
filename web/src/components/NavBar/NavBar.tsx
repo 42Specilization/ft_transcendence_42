@@ -5,7 +5,7 @@ import { Bell, BellRinging, Chats, GameController, List, SignOut } from 'phospho
 import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { IntraData, NotificationData } from '../../Interfaces/interfaces';
-import { defaultIntra, getStoredData } from '../../utils/utils';
+import { defaultIntra, getIntraData, getIntraDataNotify, getStoredData } from '../../utils/utils';
 import { Notifications } from '../Notifications/Notifications';
 import { useSnapshot } from 'valtio';
 import { actionsStatus, stateStatus } from '../../status/statusState';
@@ -21,66 +21,40 @@ export function NavBar({ Children }: NavBarProps) {
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
   const [menuVisible, setMenuVisible] = useState(false);
   const [notifyVisible, setNotifyVisible] = useState(false);
-  const [notifications, setNotifications] = useState<NotificationData[]>([
-    {
-      id: '1',
-      viewed: false,
-      type: 'friend',
-      target_nick: 'Matthos',
-      source_nick: 'gsilva-v',
-    }, {
-      id: '2',
-      viewed: false,
-      type: 'friend',
-      target_nick: 'Matthos',
-      source_nick: 'gsilva-v',
-    }, {
-      id: '5',
-      viewed: false,
-      type: 'message',
-      target_nick: 'Matthos',
-      source_nick: 'gsilva-v',
-    }, {
-      id: '6',
-      viewed: false,
-      type: 'message',
-      target_nick: 'Matthos',
-      source_nick: 'gsilva-v',
-    }, {
-      id: '9',
-      viewed: false,
-      type: 'challenge',
-      target_nick: 'Matthos',
-      source_nick: 'gsilva-v',
-    }
-  ]);
-  const [newNotifys, setNewNotifys] = useState(0);
+ 
+  // const currentStateNotification = useSnapshot();
 
   useEffect(() => {
-    setNewNotifys(0);
-    notifications.forEach(e => {
-      if (!e.viewed)
-        setNewNotifys((prevNewNotifys) => prevNewNotifys + 1);
-    });
-  }, [notifications]);
-
-  useEffect(() => {
-    getStoredData(setIntraData);
+    // getStoredData(setIntraData);
+    getIntraData(setIntraData);
     setMenuVisible(false);
   }, []);
 
   useEffect(() => {
     actionsStatus.initializeSocketStatus();
   }, []);
+  useEffect(() => {
+    if (currentStateStatus.socket) {
+      currentStateStatus.socket.on('changeNotify', () => {
+        console.log('change capiturado');
+        // getIntraData(setIntraData);
+        getIntraDataNotify(intraData, setIntraData);
+        // getStoredData(setIntraData);
+      });
+    }
+  }, [currentStateStatus.socket]);
 
   useEffect(() => {
     if (currentStateStatus.socket) {
       currentStateStatus.socket.on('change', () => {
         console.log('change capiturado');
+        // getIntraData(setIntraData);
+        // getIntraDataNotify(intraData, setIntraData);
         getStoredData(setIntraData);
       });
     }
   }, [currentStateStatus.socket]);
+
 
 
   const menuRef: React.RefObject<HTMLDivElement> = useRef(null);
@@ -152,7 +126,7 @@ export function NavBar({ Children }: NavBarProps) {
 
           <li className='navBar__notify' onClick={(e) => handleClickInside(e)}>
             <div id='navBar__notify__icon' className='navBar__notify__icon'>
-              {newNotifys == 0 ?
+              {intraData.notify.length == 0 ?
                 <Bell id='navBar__notify__icon'
                   className='navBar__icons' size={40} />
                 :
@@ -161,7 +135,7 @@ export function NavBar({ Children }: NavBarProps) {
                     className='navBar__icons' size={40} />
                   <div id='navBar__notify__icon'
                     className='notify__icon__notEmpty'>
-                    {newNotifys < 99 ? newNotifys : 99}
+                    {intraData.notify.length < 99 ? intraData.notify.length : 99}
                   </div>
                 </>
               }
@@ -169,8 +143,9 @@ export function NavBar({ Children }: NavBarProps) {
             <div ref={notifyRef} className='navBar__notify__body'
               style={{ top: (notifyVisible ? '97px' : '-300px') }}>
               <Notifications
-                notifications={notifications}
-                setNotifications={setNotifications} />
+                intraData={intraData}
+                setIntraData={setIntraData}
+              />
             </div>
           </li>
 

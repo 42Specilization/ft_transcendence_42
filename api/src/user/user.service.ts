@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
@@ -51,7 +52,16 @@ export class UserService {
   }
 
   async findUserByNick(nick: string): Promise<User | null> {
-    return await this.usersRepository.findOneBy({ nick });
+    return await this.usersRepository.findOne( {
+      where: {
+        nick,
+      },
+      relations: [
+        'notify',
+        'notify.user_source'
+      ]
+
+    });
   }
 
   async findUserByEmail(email: string): Promise<User | null> {
@@ -122,6 +132,15 @@ export class UserService {
       lose: user.lose,
       isTFAEnable: user.isTFAEnable as boolean,
       tfaValidated: user.tfaValidated as boolean,
+      notify: user.notify.map((notify) => {
+        return {
+
+          id: notify.id,
+          type: notify.type,
+          user_source: notify.user_source?.nick,
+          additional_info: notify.additional_info,
+        };
+      }),
       friends: [],
     };
     const friendsIds: string[] = user.friends ? user.friends.split(',') : [];
@@ -192,6 +211,31 @@ export class UserService {
       return user;
     } catch (error) {
       throw new InternalServerErrorException('Erro ao salvar os dados no db');
+    }
+  }
+
+
+  async sendFriendRequest(user_email: string, user_target:string){
+    const user = await this.findUserByEmail(user_email);
+    const friend = await this.findUserByNick(user_target);
+    if (!friend || !user)
+      throw new InternalServerErrorException('User not found in data base');
+    if (user && friend && user.nick === friend.nick) {
+      throw new BadRequestException('You cant add yourself');
+    }
+    
+    const notify = new Notify();
+    notify.type = 'friend';
+    notify.user_source = user;
+    if (friend.notify?.length === 0){
+      friend.notify = [];
+    }
+    friend.notify?.push(notify);
+
+    try {
+      friend.save();
+    } catch (err) {
+      console.log(err);
     }
   }
 

@@ -1,12 +1,12 @@
 import './NotificationFriend.scss';
 import { CheckCircle, Prohibit, UserCircle, XCircle } from 'phosphor-react';
 import { useState } from 'react';
-import { NotificationData } from '../../../Interfaces/interfaces';
+import { NotifyData } from '../../../Interfaces/interfaces';
 
 interface NotificationFriendProps {
-  notify: NotificationData;
+  notify: NotifyData;
 }
-export function NotificationFriend({ notify }: NotificationFriendProps) {
+export function NotificationFriend({  notify }: NotificationFriendProps) {
 
   const [side, setSide] = useState(true);
 
@@ -16,7 +16,7 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
         onClick={() => setSide(prevSide => !prevSide)}
         style={{ width: (side ? '100%' : '0px') }}>
         <strong className='notificationFriend__frontSide__nick'>
-          {notify.source_nick}
+          {notify.user_source}
         </strong>
         <strong className='notificationFriend__frontSide__text'>
           send you a friend request

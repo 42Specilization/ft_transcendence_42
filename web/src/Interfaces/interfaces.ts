@@ -6,6 +6,13 @@ export interface NotificationData {
   source_nick: string;
 }
 
+export interface NotifyData {
+  id: string;
+  type: string;
+  user_source: string;
+  addtions_info: string;
+}
+
 export interface FriendData {
   status: string;
   login: string;
@@ -24,6 +31,7 @@ export interface IntraData {
   isTFAEnable: boolean;
   tfaValidated: boolean;
   friends: FriendData[];
+  notify: NotifyData[]
 }
 
 export interface ErrResponse {

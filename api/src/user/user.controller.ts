@@ -1,4 +1,16 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Post, UseGuards, UseInterceptors, UploadedFile, ValidationPipe, UnauthorizedException, InternalServerErrorException, BadRequestException } from '@nestjs/common';
+import { Body,
+  Controller, 
+  Get,
+  HttpCode, 
+  HttpStatus, 
+  Patch,
+  Post,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  ValidationPipe,
+  UnauthorizedException,
+  InternalServerErrorException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
@@ -14,7 +26,7 @@ import { smtpConfig } from '../config/smtp';
 import { UserDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { FriendRequestDto } from './dto/friend-request.dto';
-import axios from 'axios';
+// import axios from 'axios';
 import { GetFriendDto } from './dto/get-friend.dto';
 // import { NotificationService } from 'src/notification/notification.service';
 
@@ -192,36 +204,11 @@ export class UserController {
   @Patch('/sendFriendRequest')
   @UseGuards(JwtAuthGuard)
   async sendFriendRequest(
-    @Body(ValidationPipe) nick: FriendRequestDto,
+    @Body(ValidationPipe) friendRequestDto: FriendRequestDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
   ): Promise<{ message: string }> {
-    console.log('userFromJwt', userFromJwt);
-    console.log('nick', nick);
-    const user = await this.userService.findUserByEmail(userFromJwt.email);
-    if (user && user.nick === nick.nick) {
-      throw new BadRequestException('You cant add yourself');
-    }
-    const userRequested = await this.userService.findUserByNick(nick.nick as string);
-    if (!userRequested)
-      throw new InternalServerErrorException('User not found in data base');
-
-
-    const notifyRequestBody = {
-      // destination_id: userRequested.id,
-      destination_id: user?.id,
-      type: 'friend',
-      // send_id: user?.id,
-      send_id: userRequested.id,
-    };
-
-
-    try {
-      const dbConnect = await axios.post(`http://${process.env['HOST']}:${process.env['PORT']}/notification/createNotify`, notifyRequestBody);
-      console.log(dbConnect);
-    } catch (err) {
-      console.log(err);
-    }
-
+    console.log(friendRequestDto);
+    await this.userService.sendFriendRequest(userFromJwt.email, friendRequestDto.nick);
     return { message: 'success' };
   }
 

@@ -6,16 +6,19 @@ import './Chat.scss';
 
 interface ChatProps {
   intraData: IntraData;
+  currentStateStatus: any;
   setIntraData: Dispatch<SetStateAction<IntraData>>;
 }
 
-export default function Chat({ intraData, setIntraData }: ChatProps) {
+export default function Chat({ intraData,currentStateStatus, setIntraData }: ChatProps) {
   const [activeFriend, setActiveFriend] = useState<FriendData | null>(null);
 
   return (
     <div className='body'>
       <div className='chat'>
-        <ChatCommunity friends={intraData.friends} setActiveFriend={setActiveFriend} />
+        <ChatCommunity 
+          currentStateStatus={currentStateStatus}
+          friends={intraData.friends} setActiveFriend={setActiveFriend} />
         <ChatTalk intraData={intraData} setIntraData={setIntraData} activeFriend={activeFriend} />
       </div>
     </div>

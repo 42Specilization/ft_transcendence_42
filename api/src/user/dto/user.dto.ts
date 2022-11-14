@@ -1,3 +1,5 @@
+import { NotifyDto } from 'src/notification/dto/notify-dto';
+
 export class FriendDto {
   status: string;
   login: string;
@@ -16,5 +18,6 @@ export class UserDto {
   lose: string;
   isTFAEnable: boolean;
   tfaValidated: boolean;
+  notify: NotifyDto[];
   friends: FriendDto[];
 }

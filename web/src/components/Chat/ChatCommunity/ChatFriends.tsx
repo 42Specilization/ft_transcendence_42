@@ -8,23 +8,25 @@ import { UserCard } from './UserCard';
 
 interface ChatFriendsProps {
   friends: FriendData[];
+  currentStateStatus: any;
   setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
 }
 
 export default function ChatFriends({
   friends,
   setActiveFriend,
+  currentStateStatus,
 }: ChatFriendsProps) {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
   const [placeHolder, setPlaceHolder] = useState('');
-  const [nick, setNick] = useState('');
+  const [user_target, setUserTarget] = useState('');
   function handleKeyEnter(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     sendFriendRequest();
   }
 
   async function sendFriendRequest() {
-    console.log(nick);
+    console.log(user_target);
     const token = window.localStorage.getItem('token');
     const config = {
       headers: {
@@ -34,16 +36,17 @@ export default function ChatFriends({
     try {
       await axios.patch(
         `http://${import.meta.env.VITE_API_HOST}:3000/user/sendFriendRequest`,
-        { nick: nick },
+        { nick: user_target },
         config
       );
       setIsAddFriendModalVisible(false);
       setPlaceHolder('');
+      currentStateStatus.socket.emit('changeNotify', user_target);
     } catch (err) {
       setPlaceHolder('Invalid nick!');
 
     }
-    setNick('');
+    setUserTarget('');
   }
 
   return (
@@ -65,7 +68,7 @@ export default function ChatFriends({
             onClose={() => {
               setIsAddFriendModalVisible(false);
               setPlaceHolder('');
-              setNick('');
+              setUserTarget('');
             }}
             id={'modal__chatFriends'}
           >
@@ -74,11 +77,11 @@ export default function ChatFriends({
                 <h3>Insert user nick</h3>
                 <input
                   className='chat__friends__modal__input'
-                  value={nick}
+                  value={user_target}
                   placeholder={placeHolder}
                   style={{ border: placeHolder !== '' ? '3px solid red' : 'none' }}
                   onChange={(msg) => {
-                    setNick(msg.target.value);
+                    setUserTarget(msg.target.value);
                     setPlaceHolder('');
                   }}
                 />

@@ -98,5 +98,13 @@ export class StatusGateway
       
       this.server.emit('change');
     }
+
+  @SubscribeMessage('changeNotify')
+  handleChangeNotify(client: Socket, login_target: string) {
+    client;
+    this.mapUserData.keyOf(login_target).forEach(socketId =>
+      this.server.to(socketId).emit('changeNotify')
+      );
+    }
     
   }

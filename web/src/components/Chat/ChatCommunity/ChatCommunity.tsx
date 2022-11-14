@@ -6,11 +6,13 @@ import ChatFriends from './ChatFriends';
 interface ChatCommunityProps {
   friends: FriendData[];
   setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
+  currentStateStatus: any;
 }
 
 export function ChatCommunity({
   friends,
   setActiveFriend,
+  currentStateStatus,
 }: ChatCommunityProps) {
 
   const [tableSelected, setTableSelected] = useState('Friends');
@@ -39,7 +41,9 @@ export function ChatCommunity({
       <div className='chat__community__body'>
         {(() => {
           if (tableSelected === 'Friends')
-            return <ChatFriends friends={friends} setActiveFriend={setActiveFriend} />;
+            return <ChatFriends
+              currentStateStatus={currentStateStatus}
+              friends={friends} setActiveFriend={setActiveFriend} />;
           else if (tableSelected === 'Directs')
             return <> </>;
           else

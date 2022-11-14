@@ -104,6 +104,7 @@ export class AuthService {
           lose: response.data.lose,
           isTFAEnable: response.data.isTFAEnable,
           tfaValidated: response.data.tfaValidated,
+          notify: [],
           friends: response.data.friends,
         });
       }).catch(err => {
