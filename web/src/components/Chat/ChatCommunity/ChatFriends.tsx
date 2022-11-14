@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { MagnifyingGlass, PaperPlaneRight, UserPlus} from 'phosphor-react';
+import { MagnifyingGlass, PaperPlaneRight, UserPlus } from 'phosphor-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { FriendData } from '../../../Interfaces/interfaces';
 import { Modal } from '../../Modal/Modal';
@@ -64,33 +64,33 @@ export default function ChatFriends({
         }
       </div>
       {isAddFriendModalVisible &&
-          <Modal
-            onClose={() => {
-              setIsAddFriendModalVisible(false);
-              setPlaceHolder('');
-              setUserTarget('');
-            }}
-            id={'modal__chatFriends'}
-          >
-            <form className='chat__friends__modal' onSubmit={handleKeyEnter}>
-              <div className='chat__friends__modal__textdiv'>
-                <h3>Insert user nick</h3>
-                <input
-                  className='chat__friends__modal__input'
-                  value={user_target}
-                  placeholder={placeHolder}
-                  style={{ border: placeHolder !== '' ? '3px solid red' : 'none' }}
-                  onChange={(msg) => {
-                    setUserTarget(msg.target.value);
-                    setPlaceHolder('');
-                  }}
-                />
-              </div>
-              <button className='chat__friends__modal__button' type='submit'>
-                <PaperPlaneRight size={30} />
-              </button>
-            </form>
-          </Modal>
+        <Modal
+          onClose={() => {
+            setIsAddFriendModalVisible(false);
+            setPlaceHolder('');
+            setUserTarget('');
+          }}
+          id={'modal__chatFriends'}
+        >
+          <form className='chat__friends__modal' onSubmit={handleKeyEnter}>
+            <div className='chat__friends__modal__textdiv'>
+              <h3>Insert user nick</h3>
+              <input
+                className='chat__friends__modal__input'
+                value={user_target}
+                placeholder={placeHolder}
+                style={{ border: placeHolder !== '' ? '3px solid red' : 'none' }}
+                onChange={(msg) => {
+                  setUserTarget(msg.target.value);
+                  setPlaceHolder('');
+                }}
+              />
+            </div>
+            <button className='chat__friends__modal__button' type='submit'>
+              <PaperPlaneRight size={30} />
+            </button>
+          </form>
+        </Modal>
       }
     </div >);
 }

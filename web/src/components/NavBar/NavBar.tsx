@@ -21,25 +21,21 @@ export function NavBar({ Children }: NavBarProps) {
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
   const [menuVisible, setMenuVisible] = useState(false);
   const [notifyVisible, setNotifyVisible] = useState(false);
- 
-  // const currentStateNotification = useSnapshot();
 
   useEffect(() => {
-    // getStoredData(setIntraData);
     getIntraData(setIntraData);
     setMenuVisible(false);
   }, []);
 
   useEffect(() => {
-    actionsStatus.initializeSocketStatus();
+    actionsStatus.initializeSocketStatus(setIntraData);
   }, []);
+
   useEffect(() => {
     if (currentStateStatus.socket) {
       currentStateStatus.socket.on('changeNotify', () => {
         console.log('change capiturado');
-        // getIntraData(setIntraData);
         getIntraDataNotify(intraData, setIntraData);
-        // getStoredData(setIntraData);
       });
     }
   }, [currentStateStatus.socket]);
@@ -48,13 +44,16 @@ export function NavBar({ Children }: NavBarProps) {
     if (currentStateStatus.socket) {
       currentStateStatus.socket.on('change', () => {
         console.log('change capiturado');
-        // getIntraData(setIntraData);
-        // getIntraDataNotify(intraData, setIntraData);
         getStoredData(setIntraData);
       });
     }
   }, [currentStateStatus.socket]);
 
+  //changeNick
+  //chanceImage
+  //changeNewFriend
+  //changeStatus
+  //ChangeNotify
 
 
   const menuRef: React.RefObject<HTMLDivElement> = useRef(null);

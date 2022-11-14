@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useState } from 'react';
 import { Modal } from '../Modal/Modal';
 import { PaperPlaneRight } from 'phosphor-react';
+import { useSnapshot } from 'valtio';
+import { stateStatus } from '../../status/statusState';
 
 interface ChangeNickProps {
   currentStateStatus: any;
@@ -11,7 +13,7 @@ interface ChangeNickProps {
 
 export function ChangeNick({
   setIsModalChangeNickVisible,
-  currentStateStatus,
+  // currentStateStatus,
 }: ChangeNickProps) {
   const [nick, setNick] = useState<string>('');
   const [placeHolder, setPlaceHolder] = useState('');
@@ -20,7 +22,7 @@ export function ChangeNick({
     event.preventDefault();
     handleChangeNick();
   }
-
+  const currentStateStatus = useSnapshot(stateStatus);
   async function handleChangeNick() {
     const token = window.localStorage.getItem('token');
     const config = {
@@ -38,7 +40,7 @@ export function ChangeNick({
 
       if (result.status === 200) {
         setIsModalChangeNickVisible(false);
-        currentStateStatus.socket.emit('changeLogin', nick);
+        currentStateStatus.socket?.emit('changeLogin', nick);
         setPlaceHolder('');
       }
     } catch (e: any) {

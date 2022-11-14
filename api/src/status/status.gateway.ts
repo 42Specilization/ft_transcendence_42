@@ -61,8 +61,8 @@ export class StatusGateway
     this.logger.debug(`iAmOnline => Client: ${client.id}, email: |${newUser.login}|`);
     this.mapUserData.debug();
   }
-  
-  
+
+
   newUserOffline(client: Socket) {
     const user: UserData = this.mapUserData.valueOf(client.id);
     user.status = 'offline';
@@ -72,11 +72,11 @@ export class StatusGateway
       this.server.emit('change');
     }
     this.mapUserData.delete(client.id);
-    
+
     this.logger.debug(`iAmOffine => Client: ${client.id}, email: |${user.login}|`);
   }
-  
-  
+
+
   @SubscribeMessage('changeLogin')
   handleChangeLogin(client: Socket, newLogin: string) {
     const oldUser = this.mapUserData.valueOf(client.id);
@@ -85,26 +85,26 @@ export class StatusGateway
       newLogin,
       oldUser.image_url
     );
-    
+
     this.mapUserData.debug();
-    
+
     this.mapUserData.updateValue(oldUser, newUser);
     this.mapUserData.keyOf(newLogin).forEach(socketId =>
       this.server.to(socketId).emit('updateYourself', newUser)
-      );
-      client.broadcast.emit('updateUserLogin', oldUser, newUser);
-      
-      this.mapUserData.debug();
-      
-      this.server.emit('change');
-    }
+    );
+    // client.broadcast.emit('updateUserLogin', oldUser, newUser);
+
+    this.mapUserData.debug();
+
+    // client.broadcast.emit('change');
+  }
 
   @SubscribeMessage('changeNotify')
   handleChangeNotify(client: Socket, login_target: string) {
     client;
     this.mapUserData.keyOf(login_target).forEach(socketId =>
       this.server.to(socketId).emit('changeNotify')
-      );
-    }
-    
+    );
   }
+
+}

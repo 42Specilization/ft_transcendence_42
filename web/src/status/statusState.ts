@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
 import { IntraData } from '../Interfaces/interfaces';
@@ -26,6 +27,7 @@ export interface AppStateStatus {
   socket?: Socket;
   me: Me | undefined;
   accessToken?: string | null;
+  setIntraData?: Dispatch<SetStateAction<IntraData>> | null;
 }
 
 const stateStatus = proxy<AppStateStatus>({
@@ -57,9 +59,9 @@ async function getUserData(): Promise<IntraData | null> {
 }
 
 const actionsStatus = {
-  initializeSocketStatus: (): void => {
-    if (!stateStatus.socket) {
 
+  initializeSocketStatus: (setIntraData: Dispatch<SetStateAction<IntraData>>): void => {
+    if (!stateStatus.socket) {
       const createSocketOptions: CreateSocketStatusOptions = {
         accessToken: getAccessToken(),
         socketStatusIOUrl: socketStatusIOUrl,
@@ -67,6 +69,7 @@ const actionsStatus = {
         stateStatus: stateStatus,
       };
       stateStatus.socket = ref(createSocketStatus(createSocketOptions));
+      stateStatus.setIntraData = ref(setIntraData);
       return;
     }
 
@@ -76,6 +79,7 @@ const actionsStatus = {
         login: stateStatus.me?.login,
         image_url: stateStatus.me?.image_url
       });
+      stateStatus.setIntraData = ref(setIntraData);
       return;
     }
   },
@@ -116,15 +120,12 @@ const actionsStatus = {
     window.localStorage.setItem('userData', JSON.stringify(data));
   },
 
-  async updateYourSelf(user: UserData) {
-    const data: IntraData | null = await getUserData();
-    if (!data)
-      return;
-
-    data.login = user.login;
-    data.image_url = user.image_url;
-
-    window.localStorage.setItem('userData', JSON.stringify(data));
+  updateYourSelf(user: UserData) {
+    if (stateStatus.setIntraData) {
+      stateStatus.setIntraData((prevIntraData) => {
+        return { ...prevIntraData, login: user.login, image_url: user.image_url };
+      });
+    }
   },
 
   async updateUserLogin(oldUser: UserData, newUser: UserData) {
