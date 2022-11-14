@@ -1,11 +1,5 @@
 import { NotifyDto } from 'src/notification/dto/notify-dto';
-
-export class FriendDto {
-  status: string;
-  login: string;
-  email: string;
-  image_url: string;
-}
+import { BlockedDto, FriendsDto } from 'src/relations/dto/relations-dto';
 
 export class UserDto {
   email: string;
@@ -19,5 +13,6 @@ export class UserDto {
   isTFAEnable: boolean;
   tfaValidated: boolean;
   notify: NotifyDto[];
-  friends: FriendDto[];
+  friends: FriendsDto[];
+  blockeds: BlockedDto[];
 }

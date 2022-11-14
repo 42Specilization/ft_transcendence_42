@@ -213,31 +213,4 @@ export class UserController {
   }
 
 
-  @Post('/test')
-  async createNotification(
-    @Body() getFriendDto: GetFriendDto
-  ) {
-
-    await this.userService.createNotification(getFriendDto.email);
-    return { message: 'success' };
-  }
-
-  @Post('/pop')
-  async popNotification(
-    @Body() getFriendDto: GetFriendDto
-  ) {
-
-    await this.userService.popNotification(getFriendDto.email);
-    return { message: 'success' };
-  }
-
-
-
-
-
-
-
-
-
-
 }

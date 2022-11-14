@@ -7,14 +7,12 @@ import { useSnapshot } from 'valtio';
 import { stateStatus } from '../../status/statusState';
 
 interface ChangeNickProps {
-  currentStateStatus: any;
   setIsModalChangeNickVisible: (arg0: boolean) => void;
 }
 
-export function ChangeNick({
-  setIsModalChangeNickVisible,
-  // currentStateStatus,
-}: ChangeNickProps) {
+export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
+
+  const currentStateStatus = useSnapshot(stateStatus);
   const [nick, setNick] = useState<string>('');
   const [placeHolder, setPlaceHolder] = useState('');
 
@@ -22,7 +20,7 @@ export function ChangeNick({
     event.preventDefault();
     handleChangeNick();
   }
-  const currentStateStatus = useSnapshot(stateStatus);
+
   async function handleChangeNick() {
     const token = window.localStorage.getItem('token');
     const config = {
@@ -40,7 +38,7 @@ export function ChangeNick({
 
       if (result.status === 200) {
         setIsModalChangeNickVisible(false);
-        currentStateStatus.socket?.emit('changeLogin', nick);
+        currentStateStatus.socket?.emit('newNotify', nick);
         setPlaceHolder('');
       }
     } catch (e: any) {
@@ -63,7 +61,7 @@ export function ChangeNick({
       setPlaceHolder('');
       setNick('');
     }}
-      id={'modal__changeNick'}
+    id={'modal__changeNick'}
     >
       <form className="change__nick__modal" onSubmit={handleKeyEnter}>
         <div className="change__nick__modal__textdiv">

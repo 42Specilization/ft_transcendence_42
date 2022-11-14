@@ -1,22 +1,23 @@
 import axios from 'axios';
 import { MagnifyingGlass, PaperPlaneRight, UserPlus } from 'phosphor-react';
 import { Dispatch, SetStateAction, useState } from 'react';
+import { useSnapshot } from 'valtio';
 import { FriendData } from '../../../Interfaces/interfaces';
+import { stateStatus } from '../../../status/statusState';
 import { Modal } from '../../Modal/Modal';
 import './ChatFriends.scss';
 import { UserCard } from './UserCard';
 
 interface ChatFriendsProps {
   friends: FriendData[];
-  currentStateStatus: any;
   setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
 }
 
 export default function ChatFriends({
   friends,
   setActiveFriend,
-  currentStateStatus,
 }: ChatFriendsProps) {
+  const currentStateStatus = useSnapshot(stateStatus);
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
   const [placeHolder, setPlaceHolder] = useState('');
   const [user_target, setUserTarget] = useState('');
@@ -41,7 +42,7 @@ export default function ChatFriends({
       );
       setIsAddFriendModalVisible(false);
       setPlaceHolder('');
-      currentStateStatus.socket.emit('changeNotify', user_target);
+      currentStateStatus.socket?.emit('newNotify', user_target);
     } catch (err) {
       setPlaceHolder('Invalid nick!');
 

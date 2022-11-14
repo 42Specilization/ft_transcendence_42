@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { ValidateTfa } from '../components/ValidateTfa/ValidateTfa';
-import { ErrResponse, IntraData } from '../Interfaces/interfaces';
+import { IntraData } from '../Interfaces/interfaces';
 import { getInfos } from '../pages/OAuth/OAuth';
 
 export function getAccessToken() {
@@ -93,32 +93,31 @@ export async function getStoredData(
   setIntraData(data);
 }
 
-export async function getIntraData(setIntraData: Dispatch<SetStateAction<IntraData>>){
-  console.log('getintradata');
+export async function getUserInDb(): Promise<IntraData> {
   const token = window.localStorage.getItem('token');
   const config = {
     headers: {
       Authorization: `Bearer ${token}`
     }
   };
-  let data: any;
-  await axios(`http://${import.meta.env.VITE_API_HOST}:3000/auth/me`, config)
-    .then(response => {
-      data = response.data as IntraData;
-      return (data);
-    }).catch(err => {
-      data = defaultIntra;
-      console.log('error on getIntraData', err);
-    }
 
-    );
-  // const intra: IntraData = JSON.parse(data);
+  try {
+    const response = await axios(`http://${import.meta.env.VITE_API_HOST}:3000/auth/me`, config);
+    const user: IntraData = response.data as IntraData;
+    return (user);
+  } catch (err) {
+    console.log('erro no utils getUserInDb', err);
+    return defaultIntra;
+  }
+}
+
+export async function getIntraData(setIntraData: Dispatch<SetStateAction<IntraData>>) {
+  const data = await getUserInDb();
   setIntraData(data);
-
 }
 
 
-export async function getIntraDataNotify(intraData: IntraData, setIntraData: Dispatch<SetStateAction<IntraData>>){
+export async function getIntraDataNotify(intraData: IntraData, setIntraData: Dispatch<SetStateAction<IntraData>>) {
   console.log('getintradataNotify');
   const token = window.localStorage.getItem('token');
   const config = {
@@ -138,7 +137,7 @@ export async function getIntraDataNotify(intraData: IntraData, setIntraData: Dis
 
     );
   console.log('antes', intraData);
-  setIntraData((prevIntraData: IntraData)=> {
+  setIntraData((prevIntraData: IntraData) => {
     return { ...prevIntraData, notify: data.notify };
   });
   console.log('depois', intraData);
@@ -157,5 +156,6 @@ export const defaultIntra: IntraData = {
   isTFAEnable: false,
   tfaValidated: false,
   friends: [],
+  blockeds: [],
   notify: [],
 };

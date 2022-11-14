@@ -1,5 +1,4 @@
 /* eslint-disable indent */
-
 import { Logger, UseFilters } from '@nestjs/common';
 import {
   OnGatewayConnection,
@@ -62,7 +61,6 @@ export class StatusGateway
     this.mapUserData.debug();
   }
 
-
   newUserOffline(client: Socket) {
     const user: UserData = this.mapUserData.valueOf(client.id);
     user.status = 'offline';
@@ -92,18 +90,18 @@ export class StatusGateway
     this.mapUserData.keyOf(newLogin).forEach(socketId =>
       this.server.to(socketId).emit('updateYourself', newUser)
     );
-    // client.broadcast.emit('updateUserLogin', oldUser, newUser);
+    client.broadcast.emit('updateUserLogin', oldUser, newUser);
 
     this.mapUserData.debug();
 
-    // client.broadcast.emit('change');
+    client.broadcast.emit('change');
   }
 
-  @SubscribeMessage('changeNotify')
-  handleChangeNotify(client: Socket, login_target: string) {
+  @SubscribeMessage('newNotify')
+  handleNewNotify(client: Socket, login_target: string) {
     client;
     this.mapUserData.keyOf(login_target).forEach(socketId =>
-      this.server.to(socketId).emit('changeNotify')
+      this.server.to(socketId).emit('updateNotify')
     );
   }
 

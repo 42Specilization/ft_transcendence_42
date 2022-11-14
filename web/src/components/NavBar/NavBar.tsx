@@ -4,11 +4,10 @@ import logoSmall from '../../assets/logo-small.png';
 import { Bell, BellRinging, Chats, GameController, List, SignOut } from 'phosphor-react';
 import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import { IntraData, NotificationData } from '../../Interfaces/interfaces';
-import { defaultIntra, getIntraData, getIntraDataNotify, getStoredData } from '../../utils/utils';
+import { IntraData } from '../../Interfaces/interfaces';
+import { defaultIntra, getIntraData } from '../../utils/utils';
 import { Notifications } from '../Notifications/Notifications';
-import { useSnapshot } from 'valtio';
-import { actionsStatus, stateStatus } from '../../status/statusState';
+import { actionsStatus } from '../../status/statusState';
 
 interface NavBarProps {
   Children: any;
@@ -17,7 +16,6 @@ interface NavBarProps {
 export function NavBar({ Children }: NavBarProps) {
   const { logout } = useAuth();
 
-  const currentStateStatus = useSnapshot(stateStatus);
   const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
   const [menuVisible, setMenuVisible] = useState(false);
   const [notifyVisible, setNotifyVisible] = useState(false);
@@ -25,29 +23,8 @@ export function NavBar({ Children }: NavBarProps) {
   useEffect(() => {
     getIntraData(setIntraData);
     setMenuVisible(false);
-  }, []);
-
-  useEffect(() => {
     actionsStatus.initializeSocketStatus(setIntraData);
   }, []);
-
-  useEffect(() => {
-    if (currentStateStatus.socket) {
-      currentStateStatus.socket.on('changeNotify', () => {
-        console.log('change capiturado');
-        getIntraDataNotify(intraData, setIntraData);
-      });
-    }
-  }, [currentStateStatus.socket]);
-
-  useEffect(() => {
-    if (currentStateStatus.socket) {
-      currentStateStatus.socket.on('change', () => {
-        console.log('change capiturado');
-        getStoredData(setIntraData);
-      });
-    }
-  }, [currentStateStatus.socket]);
 
   //changeNick
   //chanceImage
@@ -164,7 +141,7 @@ export function NavBar({ Children }: NavBarProps) {
 
         </ul >
       </div >
-      <Children intraData={intraData} setIntraData={setIntraData} currentStateStatus={currentStateStatus} />
+      <Children intraData={intraData} setIntraData={setIntraData} />
     </>
 
   );

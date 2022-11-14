@@ -11,10 +11,16 @@ export interface NotifyData {
   type: string;
   user_source: string;
   addtions_info: string;
+  date: Date;
 }
 
 export interface FriendData {
   status: string;
+  login: string;
+  image_url: string;
+}
+
+export interface BlockedData {
   login: string;
   image_url: string;
 }
@@ -30,8 +36,9 @@ export interface IntraData {
   lose: string;
   isTFAEnable: boolean;
   tfaValidated: boolean;
-  friends: FriendData[];
   notify: NotifyData[]
+  friends: FriendData[];
+  blockeds: BlockedData[];
 }
 
 export interface ErrResponse {

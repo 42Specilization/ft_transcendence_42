@@ -2,8 +2,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
 import { IntraData } from '../Interfaces/interfaces';
-import { getInfos } from '../pages/OAuth/OAuth';
-import { getAccessToken } from '../utils/utils';
+import { getAccessToken, getUserInDb } from '../utils/utils';
 import {
   createSocketStatus,
   CreateSocketStatusOptions,
@@ -47,17 +46,6 @@ const stateStatus = proxy<AppStateStatus>({
   },
 });
 
-async function getUserData(): Promise<IntraData | null> {
-  let localStore = window.localStorage.getItem('userData');
-  if (!localStore) {
-    await getInfos();
-    localStore = window.localStorage.getItem('userData');
-    if (!localStore)
-      return null;
-  }
-  return JSON.parse(localStore);
-}
-
 const actionsStatus = {
 
   initializeSocketStatus: (setIntraData: Dispatch<SetStateAction<IntraData>>): void => {
@@ -90,34 +78,37 @@ const actionsStatus = {
     }
   },
 
-  async updateFriends(loggedUsers: UserData[]) {
-    const data: IntraData | null = await getUserData();
-    if (!data)
-      return;
-
-    data.friends = data.friends.map(friend => {
-      if (loggedUsers.map(e => e.login).indexOf(friend.login) >= 0) {
-        const updateFriend = loggedUsers.find(e => e.login === friend.login);
-        return typeof updateFriend !== 'undefined' ? updateFriend : friend;
-      }
-      return friend;
-    });
-
-    window.localStorage.setItem('userData', JSON.stringify(data));
+  updateFriends(loggedUsers: UserData[]) {
+    console.log('aqui');
+    if (stateStatus.setIntraData) {
+      stateStatus.setIntraData((prevIntraData) => {
+        console.log('dentro do if', prevIntraData);
+        return {
+          ...prevIntraData, friends: prevIntraData.friends.map(friend => {
+            console.log('updateFriends', prevIntraData);
+            if (loggedUsers.map(e => e.login).indexOf(friend.login) >= 0) {
+              const updateFriend = loggedUsers.find(e => e.login === friend.login);
+              return typeof updateFriend !== 'undefined' ? updateFriend : friend;
+            }
+            return friend;
+          }),
+        };
+      });
+    }
   },
 
-  async updateUser(user: UserData) {
-    const data: IntraData | null = await getUserData();
-    if (!data)
-      return;
-
-    data.friends = data.friends.map(friend => {
-      if (user.login === friend.login)
-        return user;
-      return friend;
-    });
-
-    window.localStorage.setItem('userData', JSON.stringify(data));
+  updateUser(user: UserData) {
+    if (stateStatus.setIntraData) {
+      stateStatus.setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData, friends: prevIntraData.friends.map(friend => {
+            if (user.login === friend.login)
+              return user;
+            return friend;
+          }),
+        };
+      });
+    }
   },
 
   updateYourSelf(user: UserData) {
@@ -128,18 +119,27 @@ const actionsStatus = {
     }
   },
 
-  async updateUserLogin(oldUser: UserData, newUser: UserData) {
-    const data: IntraData | null = await getUserData();
-    if (!data)
-      return;
+  updateUserLogin(oldUser: UserData, newUser: UserData) {
+    if (stateStatus.setIntraData) {
+      stateStatus.setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData, friends: prevIntraData.friends.map(friend => {
+            if (oldUser.login === friend.login)
+              return newUser;
+            return friend;
+          }),
+        };
+      });
+    }
+  },
 
-    data.friends = data.friends.map(friend => {
-      if (oldUser.login === friend.login)
-        return newUser;
-      return friend;
-    });
-
-    window.localStorage.setItem('userData', JSON.stringify(data));
+  async updateNotify() {
+    if (stateStatus.setIntraData) {
+      const user = await getUserInDb();
+      stateStatus.setIntraData((prevIntraData) => {
+        return { ...prevIntraData, notify: user.notify };
+      });
+    }
   },
 
 };

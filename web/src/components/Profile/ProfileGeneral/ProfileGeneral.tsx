@@ -6,10 +6,10 @@ import { Dispatch, SetStateAction } from 'react';
 interface ProfileGeneralProps {
   intraData: IntraData;
   setIntraData: Dispatch<SetStateAction<IntraData>>;
-  currentStateStatus: any;
+
 }
 
-export default function ProfileGeneral({ intraData, setIntraData , currentStateStatus}: ProfileGeneralProps) {
+export default function ProfileGeneral({ intraData, setIntraData }: ProfileGeneralProps) {
   return (
     <div className='profile__general'>
       <ProfileCard
@@ -18,7 +18,6 @@ export default function ProfileGeneral({ intraData, setIntraData , currentStateS
         login={intraData.login}
         full_name={intraData.usual_full_name}
         setIntraData={setIntraData}
-        currentStateStatus={currentStateStatus}
       />
       <div className="profile__general__stats">
         <div className="profile__general__stats__title">

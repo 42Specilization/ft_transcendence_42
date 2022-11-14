@@ -105,7 +105,8 @@ export class AuthService {
           isTFAEnable: response.data.isTFAEnable,
           tfaValidated: response.data.tfaValidated,
           notify: [],
-          friends: response.data.friends,
+          friends: [],
+          blockeds: [],
         });
       }).catch(err => {
         if (err.code == 'ERR_BAD_REQUEST')

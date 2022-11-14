@@ -8,10 +8,9 @@ import ProfileAchiviements from '../../components/Profile/ProfileAchiviements/Pr
 interface ProfileProps {
   intraData: IntraData;
   setIntraData: Dispatch<SetStateAction<IntraData>>;
-  currentStateStatus: any;
 }
 
-export default function Profile({ intraData, setIntraData, currentStateStatus }: ProfileProps) {
+export default function Profile({ intraData, setIntraData }: ProfileProps) {
 
   const [tableSelected, setTableSelected] = useState('General');
 
@@ -21,21 +20,21 @@ export default function Profile({ intraData, setIntraData, currentStateStatus }:
         <ul className='profile__header__list'>
           <li className={`profile__header__list__item
           ${tableSelected === 'General' ?
-          'profile__header__list__item__selected' : ''}`}>
+              'profile__header__list__item__selected' : ''}`}>
             <button onClick={() => setTableSelected('General')}>
               General
             </button>
           </li>
           <li className={`profile__header__list__item
           ${tableSelected === 'Historic' ?
-          'profile__header__list__item__selected' : ''}`}>
+              'profile__header__list__item__selected' : ''}`}>
             <button onClick={() => setTableSelected('Historic')}>
               Historic
             </button>
           </li>
           <li className={`profile__header__list__item
           ${tableSelected === 'Achiviements' ?
-          'profile__header__list__item__selected' : ''}`}>
+              'profile__header__list__item__selected' : ''}`}>
             <button onClick={() => setTableSelected('Achiviements')}>
               Achiviements
             </button>
@@ -46,9 +45,8 @@ export default function Profile({ intraData, setIntraData, currentStateStatus }:
         {(() => {
           if (tableSelected === 'General')
             return <ProfileGeneral
-                      intraData={intraData}
-                      setIntraData={setIntraData}
-                      currentStateStatus={currentStateStatus}/>;
+              intraData={intraData}
+              setIntraData={setIntraData} />;
           if (tableSelected === 'Historic')
             return <ProfileHistoric intraData={intraData} />;
           if (tableSelected === 'Achiviements')

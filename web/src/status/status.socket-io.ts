@@ -30,24 +30,29 @@ export function createSocketStatus({
 
   });
 
-  socket.on('loggedUsers', async (friends: UserData[]) => {
+  socket.on('loggedUsers', (friends: UserData[]) => {
     actionsStatus.updateFriends(friends);
     console.log('logged users:', friends);
   });
 
-  socket.on('updateUser', async (user: UserData) => {
+  socket.on('updateUser', (user: UserData) => {
     actionsStatus.updateUser(user);
     console.log('user update:', user);
   });
 
-  socket.on('updateYourself', async (user: UserData) => {
+  socket.on('updateYourself', (user: UserData) => {
     actionsStatus.updateYourSelf(user);
     console.log('update yourself:', user);
   });
 
-  socket.on('updateUserLogin', async (oldUser: UserData, newUser: UserData) => {
+  socket.on('updateUserLogin', (oldUser: UserData, newUser: UserData) => {
     actionsStatus.updateUserLogin(oldUser, newUser);
     console.log('update user login:', newUser);
+  });
+
+  socket.on('updateNotify', async () => {
+    actionsStatus.updateNotify();
+    console.log('update notify:');
   });
 
   return socket;

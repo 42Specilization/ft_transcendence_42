@@ -3,4 +3,5 @@ export class NotifyDto {
   type: string;
   user_source: string;
   additional_info: string;
+  date: Date;
 }

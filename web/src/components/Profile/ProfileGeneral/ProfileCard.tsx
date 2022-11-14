@@ -13,7 +13,6 @@ interface ProfileCardProps {
   login: string;
   full_name: string;
   setIntraData: Dispatch<SetStateAction<IntraData>>;
-  currentStateStatus: any;
 }
 
 export default function ProfileCard({
@@ -22,7 +21,6 @@ export default function ProfileCard({
   login,
   full_name,
   setIntraData,
-  currentStateStatus,
 }: ProfileCardProps) {
   const [isModalChangeNickVisible, setIsModalChangeNickVisible] = useState(false);
 
@@ -45,7 +43,6 @@ export default function ProfileCard({
         </div>
         {isModalChangeNickVisible &&
           <ChangeNick
-            currentStateStatus={currentStateStatus}
             setIsModalChangeNickVisible={setIsModalChangeNickVisible}
           />
         }

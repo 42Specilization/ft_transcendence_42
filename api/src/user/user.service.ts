@@ -14,7 +14,7 @@ import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { CredentialsDto } from './dto/credentials.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { FriendDto, UserDto } from './dto/user.dto';
+import { UserDto } from './dto/user.dto';
 // import * as fs from 'fs';
 import { Notify } from '../notification/entities/notify.entity';
 @Injectable()
@@ -52,13 +52,15 @@ export class UserService {
   }
 
   async findUserByNick(nick: string): Promise<User | null> {
-    return await this.usersRepository.findOne( {
+    return await this.usersRepository.findOne({
       where: {
         nick,
       },
       relations: [
         'notify',
-        'notify.user_source'
+        'notify.user_source',
+        'relations',
+        'relations.passive_user',
       ]
 
     });
@@ -72,7 +74,9 @@ export class UserService {
         },
         relations: [
           'notify',
-          'notify.user_source'
+          'notify.user_source',
+          'relations',
+          'relations.passive_user',
         ]
 
       });
@@ -115,6 +119,7 @@ export class UserService {
     return await this.usersRepository.find({
       relations: [
         'notify',
+        'relations',
       ]
     });
   }
@@ -134,27 +139,27 @@ export class UserService {
       tfaValidated: user.tfaValidated as boolean,
       notify: user.notify.map((notify) => {
         return {
-
           id: notify.id,
           type: notify.type,
           user_source: notify.user_source?.nick,
           additional_info: notify.additional_info,
+          date: notify.date,
         };
       }),
-      friends: [],
+      friends: user.relations.filter((rel) => rel.type === 'friend').map((rel) => {
+        return {
+          status: rel.type,
+          login: rel.passive_user.nick,
+          image_url: rel.passive_user.imgUrl,
+        };
+      }),
+      blockeds: user.relations.filter((rel) => rel.type === 'blocked').map((rel) => {
+        return {
+          login: rel.passive_user.nick,
+          image_url: rel.passive_user.imgUrl,
+        };
+      }),
     };
-    const friendsIds: string[] = user.friends ? user.friends.split(',') : [];
-    for (let i = 0; i < friendsIds.length; i++) {
-      const friend: User = (await this.findUserById(friendsIds[i])) as User;
-      const friendDto: FriendDto = {
-        status: 'offline',
-        login: friend.nick,
-        email: friend.email,
-        image_url: friend.imgUrl,
-      };
-      userDto.friends.push(friendDto);
-    }
-    userDto.friends.sort((a, b) => a.login < b.login ? -1 : 1);
 
     return userDto;
   }
@@ -215,7 +220,7 @@ export class UserService {
   }
 
 
-  async sendFriendRequest(user_email: string, user_target:string){
+  async sendFriendRequest(user_email: string, user_target: string) {
     const user = await this.findUserByEmail(user_email);
     const friend = await this.findUserByNick(user_target);
     if (!friend || !user)
@@ -223,11 +228,12 @@ export class UserService {
     if (user && friend && user.nick === friend.nick) {
       throw new BadRequestException('You cant add yourself');
     }
-    
+
     const notify = new Notify();
     notify.type = 'friend';
     notify.user_source = user;
-    if (friend.notify?.length === 0){
+    notify.date = new Date(Date.now());
+    if (friend.notify?.length === 0) {
       friend.notify = [];
     }
     friend.notify?.push(notify);

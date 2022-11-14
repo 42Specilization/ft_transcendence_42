@@ -12,29 +12,22 @@ import { User } from 'src/user/entities/user.entity';
 
 @Entity()
 @Unique(['id'])
-export class Notify extends BaseEntity {
+export class Relations extends BaseEntity {
 
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ApiProperty()
-  @Column({ nullable: false })
-  date: Date;
-
-  @ApiProperty()
   @Column({ nullable: false, type: 'varchar' })
   type: string;
 
   @ApiProperty()
-  @ManyToOne(() => User, (user: User) => user.notify, { orphanedRowAction: 'delete' })
-  user_target: User;
-
+  @ManyToOne(() => User, (user: User) => user.relations, { orphanedRowAction: 'delete' })
+  active_user: User;
+  
   @ApiProperty()
   @ManyToOne(() => User, { cascade: true })
-  user_source: User;
+  passive_user: User;
 
-  @ApiProperty()
-  @Column({ nullable: true, type: 'varchar' })
-  additional_info: string;
 }
