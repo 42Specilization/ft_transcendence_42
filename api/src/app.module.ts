@@ -20,8 +20,8 @@ import { GameEntity } from './game/entities/game.entity';
     password: 'pgpassword',
     database: 'postgres',
     entities: [User, GameEntity],
-    synchronize: true,
     logging: false,
+    synchronize: true
   }), AuthModule, ConfigModule.forRoot(), UserModule, GameModule],
   controllers: [AppController],
   providers: [

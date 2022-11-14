@@ -3,13 +3,11 @@ export class CreateGameDto {
 
   winner: string;
 
-  player1Name: string;
+  looser: string;
 
-  player2Name: string;
+  winnerScore: number;
 
-  player1Score: number;
-
-  player2Score: number;
+  looserScore: number;
 
   reasonEndGame: string;
 

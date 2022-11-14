@@ -9,6 +9,7 @@ import { CredentialsDto } from './dto/credentials.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import * as fs from 'fs';
+import { GameEntity } from 'src/game/entities/game.entity';
 
 
 @Injectable()
@@ -42,8 +43,28 @@ export class UserService {
     }
   }
 
+  async saveNewGame(nick: string, game: GameEntity) {
+    const user = await this.findUserByNick(nick);
+    if (!user) {
+      return;
+    }
+    if (!user.games) {
+      user.games = [];
+    }
+    user.games.push(game);
+    try {
+      await this.usersRepository.save(user);
+    } catch {
+      throw new InternalServerErrorException('saveNewGame: Error to save a new game on db!');
+    }
+  }
+
   async findUserByEmail(email: string): Promise<User | null> {
     return (await this.usersRepository.findOneBy({ email }));
+  }
+
+  async findUserByNick(nick: string): Promise<User | null> {
+    return (await this.usersRepository.findOneBy({ nick }));
   }
 
   async findUserById(id: string): Promise<User> {
@@ -78,13 +99,15 @@ export class UserService {
   }
 
   async getUsers(): Promise<User[]> {
-    return (await this.usersRepository.find());
+    return (await this.usersRepository.find({
+      relations: ['games', 'games.looser', 'games.winner']
+    }));
   }
 
   async getUserDTO(email: string): Promise<UserDto> {
     const user = await this.findUserByEmail(email) as User;
-    const userDto ={
-      email:user.email,
+    const userDto = {
+      email: user.email,
       first_name: user.first_name,
       image_url: user.imgUrl,
       login: user.nick,
@@ -116,7 +139,7 @@ export class UserService {
 
   async updateUser(updateUserDto: UpdateUserDto, email: string): Promise<User> {
     const user = await this.findUserByEmail(email) as User;
-    const { nick, imgUrl, isTFAEnable, tfaEmail, tfaValidated ,tfaCode} = updateUserDto;
+    const { nick, imgUrl, isTFAEnable, tfaEmail, tfaValidated, tfaCode } = updateUserDto;
     if (nick && await this.checkDuplicateNick(nick))
       throw new ForbiddenException('Duplicated nickname');
 
@@ -124,17 +147,17 @@ export class UserService {
     user.imgUrl = imgUrl ? imgUrl : user?.imgUrl;
     user.isTFAEnable = isTFAEnable !== undefined ? isTFAEnable : user.isTFAEnable;
     user.tfaEmail = tfaEmail ? tfaEmail : user?.tfaEmail;
-    user.tfaValidated  = tfaValidated !== undefined ? tfaValidated: user.tfaValidated;
+    user.tfaValidated = tfaValidated !== undefined ? tfaValidated : user.tfaValidated;
     user.tfaCode = tfaCode ? bcrypt.hashSync(tfaCode, 8) : user.tfaCode;
     if (nick) {
-      fs.rename(`../web/public/${user.imgUrl}`, `../web/public/${nick}_avatar.jpg`, function(err){
+      fs.rename(`../web/public/${user.imgUrl}`, `../web/public/${nick}_avatar.jpg`, function (err) {
         if (err) throw err;
         console.log('user avatar renamed');
       });
       user.imgUrl = `${nick}_avatar.jpg`;
     }
 
-    if (tfaCode == null){
+    if (tfaCode == null) {
       user.tfaCode = '';
     }
 

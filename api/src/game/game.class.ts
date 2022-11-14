@@ -1,3 +1,4 @@
+import { CreateGameDto } from './dto/createGame.dto';
 import { GameDto } from './dto/Game.dto';
 import { IPlayer, IScore, IBall, IPaddle, IPaddleOrBallSides } from './interface/game.interfaces';
 
@@ -193,6 +194,43 @@ export class Game {
     return (gameDto);
   }
 
-}
+  getReasonEndGame(): string {
+    if (this.player1.quit) {
+      return (`player ${this.player1.name} quit the game!`);
+    } else if (this.player2.quit) {
+      return (`player ${this.player2.name} quit the game!`);
+    } else {
+      return ('Enough score points!');
+    }
+  }
 
-export { IPlayer };
+  getCreateGameDto(): CreateGameDto {
+
+    let winner: string;
+    let looser: string;
+    let looserScore = 0;
+    let winnerScore = 0;
+    if (this.player1.name === this.winner.name) {
+      winner = this.player1.name;
+      winnerScore = this.score.player1;
+      looser = this.player2.name;
+      looserScore = this.score.player2;
+    } else {
+      winner = this.player2.name;
+      winnerScore = this.score.player2;
+      looser = this.player1.name;
+      looserScore = this.score.player1;
+    }
+
+    const createGameDto: CreateGameDto = {
+      looser: looser,
+      winner: winner,
+      reasonEndGame: this.getReasonEndGame(),
+      looserScore: looserScore,
+      winnerScore: winnerScore
+    };
+
+    return (createGameDto);
+  }
+
+}

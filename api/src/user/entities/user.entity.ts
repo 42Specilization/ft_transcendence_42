@@ -6,12 +6,15 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail } from 'class-validator';
+import { GameEntity } from 'src/game/entities/game.entity';
 
 @Entity()
 @Unique(['email', 'nick'])
@@ -81,6 +84,11 @@ export class User extends BaseEntity {
   @ApiProperty()
   @Column({ default: false })
   isTFAEnable: boolean;
+
+  @ApiProperty()
+  @ManyToMany(() => GameEntity, { cascade: true })
+  @JoinTable()
+  games: GameEntity[];
 
   async checkToken(token: string): Promise<boolean> {
     try {

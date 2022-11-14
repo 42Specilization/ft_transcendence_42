@@ -14,7 +14,6 @@ import { randomInt } from 'crypto';
 import { Socket, Namespace } from 'socket.io';
 import { WsCatchAllFilter } from 'src/socket/exceptions/ws-catch-all-filter';
 import { WsBadRequestException } from 'src/socket/exceptions/ws-exceptions';
-import { CreateGameDto } from './dto/createGame.dto';
 import { Game } from './game.class';
 import { GameService } from './game.service';
 
@@ -285,15 +284,8 @@ export class GameGateway
           }
           game.checkWinner();
         }
-        const createGameDto: CreateGameDto = {
-          player1Name: game.player1.name,
-          player1Score: game.score.player1,
-          player2Name: game.player2.name,
-          player2Score: game.score.player2,
-          winner: game.winner.name,
-          reasonEndGame: this.getReasonEndGame(game)
-        };
-        this.gameService.createGame(createGameDto);
+
+        this.gameService.createGame(game.getCreateGameDto());
         user.leave(game.room.toString());
         this.io
           .to(game.room.toString())
@@ -302,17 +294,6 @@ export class GameGateway
         this.queue.splice(i, 1);
         break;
       }
-    }
-  }
-
-
-  getReasonEndGame(game: Game): string {
-    if (game.player1.quit) {
-      return (`player ${game.player1.name} quit the game!`);
-    } else if (game.player2.quit) {
-      return (`player ${game.player2.name} quit the game!`);
-    } else {
-      return ('Enough score points!');
     }
   }
 
