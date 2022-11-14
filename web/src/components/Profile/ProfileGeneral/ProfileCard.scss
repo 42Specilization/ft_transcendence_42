@@ -1,4 +1,4 @@
-@import '../../../styles/variables.scss';
+@import '../../../styles/global.scss';
 
 .profileCard {
   @include displayFlex(space, column);
@@ -34,7 +34,7 @@
   .profileCard {
     font-size: 1.5em;
   }
-  
+
   .profileCard__infos {
     max-width: 400px;
   }

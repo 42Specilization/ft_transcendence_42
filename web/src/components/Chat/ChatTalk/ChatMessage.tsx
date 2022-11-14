@@ -33,7 +33,7 @@ export function ChatMessage({ user, message }: ChatMessageProps) {
   }
 
   return (
-    <div className={`chat__message ${self() ? 'self' : ''}`}>
+    <div className={'chat__message' + (self() ? ' self' : '')}>
       <div
         className='chat__message__icon'
         style={{ backgroundImage: `url(${message.user.image_url})` }}

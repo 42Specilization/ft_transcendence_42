@@ -41,6 +41,7 @@ export function useAuth() {
       window.localStorage.removeItem('userData');
       navigate('/');
     },
+
     logout() {
       window.localStorage.removeItem('token');
       window.localStorage.removeItem('userData');

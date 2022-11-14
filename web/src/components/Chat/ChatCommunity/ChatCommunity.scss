@@ -1,4 +1,4 @@
-@import '../../../styles/variables.scss';
+@import '../../../styles/global.scss';
 
 .chat__community {
   @include displayFlex(center, column);
@@ -30,7 +30,7 @@ $ChatCommunityHeaderHeight: 35px;
   border-radius: 15px 15px 0px 0px;
   padding: 10px;
   background-color: transparent;
-  
+
   button {
     @include truncText();
     font-size: 1.5em;

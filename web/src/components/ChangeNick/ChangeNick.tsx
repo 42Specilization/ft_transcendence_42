@@ -1,22 +1,16 @@
 import './ChangeNick.scss';
 import axios from 'axios';
-import { Dispatch, SetStateAction, useState } from 'react';
-import { IntraData } from '../../Interfaces/interfaces';
-import { getStoredData } from '../../utils/utils';
+import { useState } from 'react';
 import { Modal } from '../Modal/Modal';
 import { PaperPlaneRight } from 'phosphor-react';
+
 interface ChangeNickProps {
-  setIsModalChangeNickVisible: (arg0: boolean) => void;
-  setIntraData: Dispatch<SetStateAction<IntraData>>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentStateStatus: any;
-  login: string;
+  setIsModalChangeNickVisible: (arg0: boolean) => void;
 }
 
 export function ChangeNick({
   setIsModalChangeNickVisible,
-  setIntraData,
-  login,
   currentStateStatus,
 }: ChangeNickProps) {
   const [nick, setNick] = useState<string>('');
@@ -44,12 +38,9 @@ export function ChangeNick({
 
       if (result.status === 200) {
         setIsModalChangeNickVisible(false);
-        // window.localStorage.removeItem('userData');
-        // getStoredData(setIntraData);
         currentStateStatus.socket.emit('changeLogin', nick);
         setPlaceHolder('');
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       if (e && e.response) {
         if (e.response.data.statusCode === 403) {

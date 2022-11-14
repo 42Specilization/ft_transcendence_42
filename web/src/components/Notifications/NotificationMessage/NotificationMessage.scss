@@ -1,12 +1,12 @@
-@import '../../../styles/variables.scss';
+@import '../../../styles/global.scss';
 
 
 .notificationMessage{
   @include displayFlex(space-around, column);
   margin-top: 10px;
-  width: 95%;
-  background-color: $primaryColorHover;
   height: 70px;
+  width: 100%;
+  // background-color: $primaryColorHover;
   border-radius: 10px;
   text-align: center;
   strong  {

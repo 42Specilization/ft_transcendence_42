@@ -6,7 +6,6 @@ import { Dispatch, SetStateAction } from 'react';
 interface ProfileGeneralProps {
   intraData: IntraData;
   setIntraData: Dispatch<SetStateAction<IntraData>>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentStateStatus: any;
 }
 
@@ -14,12 +13,12 @@ export default function ProfileGeneral({ intraData, setIntraData , currentStateS
   return (
     <div className='profile__general'>
       <ProfileCard
-        currentStateStatus={currentStateStatus}
         email={intraData.email}
         image_url={intraData.image_url}
         login={intraData.login}
         full_name={intraData.usual_full_name}
         setIntraData={setIntraData}
+        currentStateStatus={currentStateStatus}
       />
       <div className="profile__general__stats">
         <div className="profile__general__stats__title">

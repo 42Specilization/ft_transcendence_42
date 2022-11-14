@@ -84,25 +84,24 @@ export function TFAValidateCodeModal({
 
   return (
     <>
-      {
-        isModalVerifyCodeVisible ?
-          <Modal
-            id='tfaValidateCode'
-            onClose={() => setIsModalVerifyCodeVisible(false)}
-          >
-            <p className='tfaValidateCode__title'>Insert code received in: {tfaEmail}</p>
-            <div className='tfaValidateCode__inputArea' >
-              <input
-                style={{border:verifyCodeStyle.styles.border}}
-                className='tfaValidateCode__input' type="text"
-                placeholder={verifyCodeStyle.styles.placeholder}
-              />
-              <div className='tfaValidateCode__buttons'>
-                <button className='tfaValidateCode__buttons__validate' onClick={handleValidateCode}>Validate</button>
-                <button className='tfaValidateCode__buttons__cancel' onClick={handleCancel}>Cancel</button>
-              </div>
+      {isModalVerifyCodeVisible &&
+        <Modal
+          id='tfaValidateCode'
+          onClose={() => setIsModalVerifyCodeVisible(false)}
+        >
+          <p className='tfaValidateCode__title'>Insert code received in: {tfaEmail}</p>
+          <div className='tfaValidateCode__inputArea' >
+            <input
+              style={{border:verifyCodeStyle.styles.border}}
+              className='tfaValidateCode__input' type="text"
+              placeholder={verifyCodeStyle.styles.placeholder}
+            />
+            <div className='tfaValidateCode__buttons'>
+              <button className='tfaValidateCode__buttons__validate' onClick={handleValidateCode}>Validate</button>
+              <button className='tfaValidateCode__buttons__cancel' onClick={handleCancel}>Cancel</button>
             </div>
-          </Modal> : null
+          </div>
+        </Modal>
       }
     </>
   );

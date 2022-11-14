@@ -60,8 +60,7 @@ export default function ChatFriends({
         ))
         }
       </div>
-      {
-        isAddFriendModalVisible ?
+      {isAddFriendModalVisible &&
           <Modal
             onClose={() => {
               setIsAddFriendModalVisible(false);
@@ -88,7 +87,7 @@ export default function ChatFriends({
                 <PaperPlaneRight size={30} />
               </button>
             </form>
-          </Modal> : null
+          </Modal>
       }
     </div >);
 }

@@ -1,3 +1,11 @@
+export interface NotificationData {
+  id: string;
+  viewed: boolean;
+  type: string;
+  target_nick: string;
+  source_nick: string;
+}
+
 export interface FriendData {
   status: string;
   login: string;

@@ -43,14 +43,12 @@ export default function ProfileCard({
             onClick={() => setIsModalChangeNickVisible(true)}
           />
         </div>
-        {isModalChangeNickVisible ? (
+        {isModalChangeNickVisible &&
           <ChangeNick
-            login={login}
             currentStateStatus={currentStateStatus}
-            setIntraData={setIntraData}
             setIsModalChangeNickVisible={setIsModalChangeNickVisible}
           />
-        ) : null}
+        }
       </div>
       <TFAButton />
     </div >

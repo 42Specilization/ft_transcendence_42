@@ -1,30 +1,47 @@
-@import '../../../styles/variables.scss';
+@import '../../../styles/global.scss';
 
-.notificationFriend{
-  @include displayFlex(space-around, column);
-  margin-top: 10px;
-  width: 95%;
+.notificationFriend__frontSide {
+  @include displayFlex(center, column);
+  height: 70px;
+  position: relative;
+  overflow: hidden;
+  transition: width 1s;
+}
+
+.notificationFriend__frontSide__nick {
+  font-size: 25px;
+  @include truncText();
+}
+
+.notificationFriend__frontSide__text {
+  font-size: 20px;
+  @include truncText();
+}
+
+.notificationFriend__backSide {
+  @include displayFlex(center);
   background-color: $primaryColorHover;
   height: 70px;
   border-radius: 10px;
-  text-align: center;
-  strong  {
-    font-size: 18px;
+  position:absolute;
+  overflow: hidden;
+  transition: width 1s;
+  &:hover {
+    cursor: pointer;
+    background-color: $primaryColor;
   }
 }
 
-.notificationFriend__buttons{
-  @include displayFlex();
-  text-align: center;
-  width: 60%;
+.notificationFriend__backSide__column {
+  @include displayFlex(space-around, column);
+  width: 270px;
+  height: 60px;
 }
 
-.notificationFriend__buttons__accept,
-.notificationFriend__buttons__reject{
-  @include displayFlex(space-around);
-  text-align: center;
-  width: 75px;
-  font-size: 15px;
-  margin-left: 10px;
-  margin-right: 10px;
+.notificationFriend__backSide__button {
+  @include displayFlex();
+  @include truncText();
+  p {
+    margin-right: 10px;
+  }
 }

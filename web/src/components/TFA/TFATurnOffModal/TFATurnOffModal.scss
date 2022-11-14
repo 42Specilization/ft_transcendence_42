@@ -1,4 +1,4 @@
-@import '../../../styles/variables.scss';
+@import '../../../styles/global.scss';
 
 .tfaTurnOff__buttons{
   @include displayFlex(space-around, row,center);

@@ -1,4 +1,4 @@
-@import '../../../styles/variables.scss';
+@import '../../../styles/global.scss';
 
 .chat__talk {
   @include displayFlex(center, column);
@@ -44,7 +44,6 @@
 .chat__talk__body {
   width: 100%;
   height: calc(100% - 130px);
-  overflow-y: auto;
   padding: 0px 10px 0px 10px;
   @include scrollBar();
 }

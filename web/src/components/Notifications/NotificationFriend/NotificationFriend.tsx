@@ -1,29 +1,55 @@
 import './NotificationFriend.scss';
-import { CheckCircle, XCircle } from 'phosphor-react';
+import { CheckCircle, Prohibit, UserCircle, XCircle } from 'phosphor-react';
+import { useState } from 'react';
+import { NotificationData } from '../../../Interfaces/interfaces';
 
 interface NotificationFriendProps {
-  nick: string;
+  notify: NotificationData;
 }
-export function NotificationFriend({ nick }: NotificationFriendProps) {
-  /**
-   * Pode ocorrer uma requisição a partir daqui respondendo a solicitação amizade
-   * Enviando o nick do usuario, o nick de quem pediu e a resposta dependendo do botao apertado
-   * 
-   */
-  // console.log('nick', nick);
+export function NotificationFriend({ notify }: NotificationFriendProps) {
+
+  const [side, setSide] = useState(true);
+
   return (
-    <div className='notificationFriend'>
-      <strong>{nick} send you a friend request</strong>
-      <div className='notificationFriend__buttons'>
-        <div className='notificationFriend__buttons__accept'>
-          <p> Accept </p>
-          <CheckCircle size={22} color=' rgb(2, 253, 2)' />
+    <>
+      <div className='notificationFriend__frontSide'
+        onClick={() => setSide(prevSide => !prevSide)}
+        style={{ width: (side ? '100%' : '0px') }}>
+        <strong className='notificationFriend__frontSide__nick'>
+          {notify.source_nick}
+        </strong>
+        <strong className='notificationFriend__frontSide__text'>
+          send you a friend request
+        </strong>
+      </div >
+
+      <div className='notificationFriend__backSide'
+        onClick={() => setSide(prevSide => !prevSide)}
+        style={{ width: (side ? '0px' : 'calc(100% - 20px)') }}
+      >
+        <div className='notificationFriend__backSide__column'>
+          <div className='notificationFriend__backSide__button'>
+            <p> Accept </p>
+            <CheckCircle size={22}/>
+          </div>
+          <div className='notificationFriend__backSide__button'>
+            <p> Reject </p>
+            <XCircle size={22} />
+          </div>
         </div>
-        <div className='notificationFriend__buttons__reject'>
-          <p> Reject </p>
-          <XCircle size={22} color='red' />
+        <div className='notificationFriend__backSide__column'>
+          <div className='notificationFriend__backSide__button'>
+            <p> Block </p>
+            <Prohibit size={22}/>
+          </div>
+          <div className='notificationFriend__backSide__button'>
+            <p> Show Perfil </p>
+            <UserCircle size={22}/>
+          </div>
         </div>
-      </div>
-    </div >
+
+
+      </div >
+    </>
   );
 }

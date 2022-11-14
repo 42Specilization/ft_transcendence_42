@@ -1,4 +1,4 @@
-@import '../../styles/variables.scss';
+@import '../../styles/global.scss';
 
 .modal {
   @include displayFlex();
@@ -27,7 +27,7 @@
 }
 
 .modal__container__closeButton {
-  @include displayFlex();  
+  @include displayFlex();
   width: 30px;
   height: 30px;
   position: relative;

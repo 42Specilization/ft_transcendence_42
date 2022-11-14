@@ -86,7 +86,7 @@ export function ChatTalk({ intraData, setIntraData, activeFriend }: ChatTalkProp
 
   return (
     <div className='chat__talk'>
-      {activeFriend ? (
+      {activeFriend != null &&
         <>
           <div className='chat__talk__header'>
             <div className='chat__talk__header__user'>
@@ -99,11 +99,13 @@ export function ChatTalk({ intraData, setIntraData, activeFriend }: ChatTalkProp
               </div>
             </div>
           </div>
-          {/* <div className='chat__talk__body' ref={refBody}>
-            {currentStateChat.chatMsg?.map((msg) => (
+          <div className='chat__talk__body'
+          // ref={refBody}
+          >
+            {/* {currentStateChat.chatMsg?.map((msg) => (
               <ChatMessage key={msg.id} user={intraData} message={msg} />
-            ))}
-          </div> */}
+            ))} */}
+          </div>
           <form className='chat__talk__footer' onSubmit={handleKeyEnter}>
             <input
               className='chat__talk__footer__input'
@@ -115,7 +117,6 @@ export function ChatTalk({ intraData, setIntraData, activeFriend }: ChatTalkProp
             </button>
           </form>
         </>
-      ) : null
       }
     </div >
   );

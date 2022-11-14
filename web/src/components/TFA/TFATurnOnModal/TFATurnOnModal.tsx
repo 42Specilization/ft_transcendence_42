@@ -68,34 +68,32 @@ export function TFATurnOnModal({
 
   return (
     <>
-      {
-        isModalTurnOnVisible ?
-          <Modal id='tfaTurnOn' onClose={() => setIsModalTurnOnVisible(false)}>
-            <p className='tfaTurnOn__title'>Insert your email to receive 2fa code</p>
-            <div className='tfaTurnOn__inputArea' >
-              <input
-                style={{border:verifyMailStyle.styles.border}}
-                className='tfaTurnOn__input' type="text"
-                placeholder={verifyMailStyle.styles.placeholder}
-                onChange={(e) => {
-                  setTfaEmail(e.target.value);
-                }}
+      {isModalTurnOnVisible &&
+        <Modal id='tfaTurnOn' onClose={() => setIsModalTurnOnVisible(false)}>
+          <p className='tfaTurnOn__title'>Insert your email to receive 2fa code</p>
+          <div className='tfaTurnOn__inputArea' >
+            <input
+              style={{border:verifyMailStyle.styles.border}}
+              className='tfaTurnOn__input' type="text"
+              placeholder={verifyMailStyle.styles.placeholder}
+              onChange={(e) => {
+                setTfaEmail(e.target.value);
+              }}
+            />
+            <button className='tfaTurnOn__button' onClick={handleTFA}>Turn on</button>
+          </div>
+          {isLoading &&
+            <div className='tfaTurnOn__loading'>
+              <strong>Wait a moment</strong>
+              <TailSpin
+                width='25'
+                height='25'
+                color='white'
+                ariaLabel='loading'
               />
-              <button className='tfaTurnOn__button' onClick={handleTFA}>Turn on</button>
             </div>
-            {
-              isLoading ?
-                <div className='tfaTurnOn__loading'>
-                  <strong>Wait a moment</strong>
-                  <TailSpin
-                    width='25'
-                    height='25'
-                    color='white'
-                    ariaLabel='loading'
-                  />
-                </div> : null
-            }
-          </Modal> : null
+          }
+        </Modal>
       }
     </>
   );

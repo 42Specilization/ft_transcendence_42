@@ -1,7 +1,14 @@
-import { TelegramLogo } from 'phosphor-react';
 import './NotificationMessage.scss';
+import { TelegramLogo } from 'phosphor-react';
+import { NotificationData } from '../../../Interfaces/interfaces';
 
-export function NotificationMessage() {
+interface NotificationMessageProps {
+  notify: NotificationData;
+}
+
+export function NotificationMessage({
+  notify
+} : NotificationMessageProps) {
   return (
     <div className='notificationMessage'>
       <strong>User sent you a message </strong>

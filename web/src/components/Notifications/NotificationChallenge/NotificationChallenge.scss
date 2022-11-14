@@ -1,17 +1,21 @@
-@import '../../../styles/variables.scss';
+@import '../../../styles/global.scss';
 
 .notificationChallenge{
   @include displayFlex(space-around, column);
-  margin-top: 10px;
-  width: 95%;
-  background-color: $primaryColorHover;
+  width: 100%;
+  // background-color: $primaryColorHover;
   height: 70px;
   border-radius: 10px;
   text-align: center;
   strong  {
     font-size: 18px;
   }
+  &:hover  {
+    cursor: pointer;
+    // background-color: $primaryColorHover;
+  }
 }
+
 .notificationChallenge__buttons{
   @include displayFlex();
   text-align: center;
@@ -23,8 +27,6 @@
   text-align: center;
   width: 80px;
   font-size: 15px;
-  margin-left: 10px;
-  margin-right: 10px;
   :hover {
     cursor: pointer;
     color: gray;
