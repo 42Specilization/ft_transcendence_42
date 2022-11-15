@@ -247,29 +247,15 @@ export class UserService {
     }
   }
 
-
-  async createNotification(email: string) {
+  async popNotification(email: string, id:string) {
     const user = await this.findUserByEmail(email) as User;
-    const newNotify = new Notify();
 
-    newNotify.type = 'friend';
-    // newNotify.user_source = user;
-    user.notify.push(newNotify);
-    try {
-      user.save();
-      return;
-    } catch (err) {
-      throw new InternalServerErrorException('erro salvando notificacao');
-    }
-  }
+    user.notify = user.notify.filter((notify) => {
+      if (notify.id == id)
+        return ;
+      return notify;
+    });
 
-  async popNotification(email: string) {
-    const user = await this.findUserByEmail(email) as User;
-    // const newNotification = new Notification();
-
-    // newNotification.type = 'friend';
-    // newNotification.user_source = user;
-    user.notify.pop();
     try {
       user.save();
       return;

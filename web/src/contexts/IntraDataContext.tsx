@@ -1,12 +1,12 @@
-import { Dispatch, SetStateAction, createContext, useState, ReactNode, useEffect } from "react";
-import { IntraData } from "../Interfaces/interfaces";
-import { actionsStatus } from "../status/statusState";
-import { defaultIntra, getIntraData } from "../utils/utils";
+import { Dispatch, SetStateAction, createContext, useState, ReactNode, useEffect } from 'react';
+import { IntraData } from '../Interfaces/interfaces';
+import { actionsStatus } from '../status/statusState';
+import { defaultIntra, getIntraData } from '../utils/utils';
 
 interface IIntraDataContext {
   intraData: IntraData;
   setIntraData: Dispatch<SetStateAction<IntraData>>;
-  updateImageTime: Number;
+  updateImageTime: number;
   setUpdateImageTime: Dispatch<SetStateAction<number>>;
 }
 

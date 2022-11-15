@@ -32,6 +32,8 @@ export default function FriendProfile() {
     });
     const response = await api.patch('/user/friend', {nick:login} ,config);
     // console.log(response);
+    if (!response.data.image_url.includes('https://cdn.intra.42.fr/'))
+      response.data.image_url = `/public/${response.data.image_url}`;
     setFriend(response.data);
   }
     
@@ -39,7 +41,7 @@ export default function FriendProfile() {
     // console.log(notify);
     getFriend();
     console.log(friend);
-  },[]);
+  },[login]);
 
 
 

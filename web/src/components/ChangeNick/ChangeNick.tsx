@@ -46,7 +46,7 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
         if (e.response.data.statusCode === 403) {
           setPlaceHolder('Nick Unavaiable!');
         } else if (e.response.data.statusCode === 400) {
-          setPlaceHolder('Need have min: 3, max: 15, forbidden: ','');
+          setPlaceHolder('Need have min: 3, max: 15, forbidden: ');
         } else {
           setPlaceHolder('Invalid nick!');
         }

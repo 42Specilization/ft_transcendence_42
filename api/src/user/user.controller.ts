@@ -29,6 +29,7 @@ import * as bcrypt from 'bcrypt';
 import { FriendRequestDto } from './dto/friend-request.dto';
 // import axios from 'axios';
 import { GetFriendDto } from './dto/get-friend.dto';
+import { NotifyRemoveDto } from 'src/notification/dto/notify-dto';
 // import { NotificationService } from 'src/notification/notification.service';
 
 @Controller('user')
@@ -224,6 +225,18 @@ export class UserController {
     await this.userService.sendFriendRequest(userFromJwt.email, friendRequestDto.nick);
     return { message: 'success' };
   }
+
+  @Patch('/removeNotify')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type:NotifyRemoveDto })
+  async removeNotify(
+    @Body(ValidationPipe) notifyRemoveDto: NotifyRemoveDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.userService.popNotification(userFromJwt.email, notifyRemoveDto.id);
+    return { message: 'success' };
+  }
+
 
 
 }

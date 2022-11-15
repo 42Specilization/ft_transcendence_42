@@ -12,7 +12,7 @@ interface NotificationProps {
 export function Notifications({}: NotificationProps) {
 
   const { intraData } = useContext(IntraDataContext);
-
+  
   return (
     <div className='notification__body'>
       {intraData.notify.length > 0 ?

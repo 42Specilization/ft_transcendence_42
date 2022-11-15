@@ -59,7 +59,7 @@ export default function AppRouter() {
           />
         
           <Route
-            path="/devFriend/:login"
+            path="/friend/:login"
             element={
               <IntraDataProvider>
                 <RequireAuth>
