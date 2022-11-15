@@ -285,15 +285,39 @@ export class UserService {
     user.relations.push(relationUser);
     friend.relations.push(relationFriend);
 
-    await this.popNotification(email, id);
 
     try {
       await user.save();
       await friend.save();
-      console.log('salvando relacionamento', relationFriend, relationUser);
+      await this.popNotification(email, id);
       return;
     } catch (err) {
-      console.log('erro salvando a relacao',err)
+      throw new InternalServerErrorException('erro salvando notificacao');
+    }
+
+  }
+  async blockUserByNotification(email: string, id: string) {
+    const user = await this.findUserByEmail(email) as User;
+
+    const requestedNotify: Notify[] = user.notify.filter((notify) => notify.id === id);
+
+    if (!requestedNotify.at(0))
+      throw new BadRequestException('friend not found');
+
+    const blocked = await this.findUserByEmail(requestedNotify.at(0)?.user_source.email as string) as User;
+
+    const relationUser = new Relations();
+
+    relationUser.passive_user = blocked;
+    relationUser.type = 'blocked';
+
+    user.relations.push(relationUser);
+
+    try {
+      await user.save();
+      await this.popNotification(email, id);
+      return;
+    } catch (err) {
       throw new InternalServerErrorException('erro salvando notificacao');
     }
 

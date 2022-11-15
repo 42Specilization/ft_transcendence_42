@@ -111,7 +111,7 @@ export class StatusGateway
     );
 
 
-    
+
     if (this.mapUserData.hasValue(login_target)) {
       const socketsFriends: string[] = this.mapUserData.keyOf(login_target);
       const friend = this.mapUserData.valueOf(socketsFriends[0]);
@@ -127,6 +127,16 @@ export class StatusGateway
         this.server.to(socketId).emit('updateUser', user)
       );
     }
+
+
+  }
+
+  @SubscribeMessage('newBlocked')
+  handleNewBlocked(client: Socket) {
+    const user: UserData = this.mapUserData.valueOf(client.id);
+    this.mapUserData.keyOf(user.login).forEach(socketId => {
+      this.server.to(socketId).emit('updateBlocked');
+    });
 
 
   }

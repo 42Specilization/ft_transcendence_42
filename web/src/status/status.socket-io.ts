@@ -60,7 +60,12 @@ export function createSocketStatus({
 
   socket.on('updateFriend', async () => {
     actionsStatus.updateFriend();
-    console.log('update notify:');
+    console.log('update friend:');
+  });
+
+  socket.on('updateBlocked', async () => {
+    actionsStatus.updateBlocked();
+    console.log('update Blocked:');
   });
 
   return socket;

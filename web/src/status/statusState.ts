@@ -80,7 +80,7 @@ const actionsStatus = {
       stateStatus.setIntraData((prevIntraData) => {
         return {
           ...prevIntraData, friends: prevIntraData.friends.map(friend => {
-            console.log('updateFriends', prevIntraData);
+            console.log('loggedUsers', prevIntraData);
             if (loggedUsers.map(e => e.login).indexOf(friend.login) >= 0) {
               const updateFriend = loggedUsers.find(e => e.login === friend.login);
               return typeof updateFriend !== 'undefined' ? updateFriend : friend;
@@ -155,6 +155,15 @@ const actionsStatus = {
     }
   },
 
+  async updateBlocked() {
+    if (stateStatus.setIntraData) {
+      const user = await getUserInDb();
+      stateStatus.setIntraData((prevIntraData) => {
+
+        return { ...prevIntraData, blockeds: user.blockeds };
+      });
+    }
+  },
 };
 
 export type AppActionsStatus = typeof actionsStatus;

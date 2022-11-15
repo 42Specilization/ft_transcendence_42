@@ -43,10 +43,22 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
     setIntraData((prevIntraData) => {
       return {
         ...prevIntraData,
-        notify: prevIntraData.notify.filter((key)=> key.id != notify.id)
+        notify: prevIntraData.notify.filter((key) => key.id != notify.id)
       };
     });
     currentStateStatus.socket?.emit('newFriend', notify.user_source);
+  }
+
+  async function handleBlock() {
+
+    await api.patch('/user/blockUserByNotification', { id: notify.id }, config);
+    setIntraData((prevIntraData) => {
+      return {
+        ...prevIntraData,
+        notify: prevIntraData.notify.filter((key) => key.id != notify.id)
+      };
+    });
+    currentStateStatus.socket?.emit('newBlocked');
   }
 
   async function handleReject() {
@@ -57,7 +69,7 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
     setIntraData((prevIntraData) => {
       return {
         ...prevIntraData,
-        notify: prevIntraData.notify.filter((key)=> key.id != notify.id)
+        notify: prevIntraData.notify.filter((key) => key.id != notify.id)
       };
     });
     // currentStateStatus.socket?.emit('newNotify', intraData.login);
@@ -95,7 +107,7 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
           <p> Reject </p>
           <XCircle size={22} />
         </div>
-        <div className='notificationFriend__backSide__button'>
+        <div className='notificationFriend__backSide__button' onClick={handleBlock}>
           <p> Block </p>
           <Prohibit size={22} />
         </div>

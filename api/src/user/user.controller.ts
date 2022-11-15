@@ -250,4 +250,15 @@ export class UserController {
     return { message: 'success' };
   }
 
+  @Patch('/blockUserByNotification')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: NotifyHandlerDto })
+  async blockUserByNotification(
+    @Body(ValidationPipe) notifyHandlerDto: NotifyHandlerDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.userService.blockUserByNotification(userFromJwt.email, notifyHandlerDto.id);
+    return { message: 'success' };
+  }
+
 }

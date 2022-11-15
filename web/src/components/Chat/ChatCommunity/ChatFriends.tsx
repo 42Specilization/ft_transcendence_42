@@ -1,13 +1,16 @@
 import './ChatFriends.scss';
 import axios from 'axios';
-import { MagnifyingGlass, PaperPlaneRight, UserPlus } from 'phosphor-react';
-import { Dispatch, SetStateAction, useContext, useState } from 'react';
+import { DotsThreeVertical, MagnifyingGlass, PaperPlaneRight, UserPlus } from 'phosphor-react';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
 import { FriendData } from '../../../Interfaces/interfaces';
 import { stateStatus } from '../../../status/statusState';
 import { Modal } from '../../Modal/Modal';
-import { UserCard } from './UserCard';
+import { UserCardBlocked } from './UserCardBlocked';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import ReactTooltip from 'react-tooltip';
+import { UserCardFriend } from './UserCardFriend';
+
 
 interface ChatFriendsProps {
   setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
@@ -17,6 +20,8 @@ export function ChatFriends({ setActiveFriend }: ChatFriendsProps) {
   const { intraData } = useContext(IntraDataContext);
   const currentStateStatus = useSnapshot(stateStatus);
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
+  const [isTableUsersMenu, setIsTableUsersMenu] = useState(false);
+  const [isTableUsers, setIsTableUsers] = useState('friends');
   const [placeHolder, setPlaceHolder] = useState('');
   const [user_target, setUserTarget] = useState('');
   function handleKeyEnter(event: React.FormEvent<HTMLFormElement>) {
@@ -48,21 +53,70 @@ export function ChatFriends({ setActiveFriend }: ChatFriendsProps) {
     setUserTarget('');
   }
 
+  useEffect(() => {
+    console.log(intraData);
+  }, []);
+
   return (
     < div className='chat__friends' >
       <div className='chat__friends__header'>
-        <UserPlus className='chat__friends__header__icon' size={40}
-          onClick={() => setIsAddFriendModalVisible(true)} />
-        < MagnifyingGlass className='chat__friends__header__icon' size={40} />
-      </div>
-      <div className='chat__friends__body'>
+        <UserPlus
+          className='chat__friends__header__icon' size={40}
+          data-html={true}
+          data-tip={'Add Friend'}
+          onClick={() => setIsAddFriendModalVisible(true)}
+        />
 
-        {intraData.friends.map((obj) => (
-          <UserCard key={obj.login} friend={obj} setActiveFriend={setActiveFriend} />
-        ))
-        }
+        < MagnifyingGlass className='chat__friends__header__icon'
+          size={40}
+          data-html={true}
+          data-tip={'Search Friend'} />
+
+        {/* <div className='chat__friends__header__icon__block'
+          data-html={true}
+          data-tip={'Blocked'}>
+          <UserCircle className='chat__friends__header__icon' size={40} />
+        </div> */}
+
+        <div
+          className='chat__friends__header__menu'
+        >
+          <DotsThreeVertical
+            className='chat__friends__header__icon'
+            size={40}
+            onClick={() => setIsTableUsersMenu(!isTableUsersMenu)}
+            data-html={true}
+            data-tip={'Menu'}
+          />
+          {
+            <div className='chat__friends__header__menu__body'
+              style={{ height: isTableUsersMenu ? '90px' : '0px' }}>
+              <button className='chat__friends__header__menu__button' onClick={() => setIsTableUsers('friends')}>Friends</button>
+              <button className='chat__friends__header__menu__button' onClick={() => setIsTableUsers('blocked')}>Blocked</button>
+            </div>
+          }
+        </div>
+
+        <ReactTooltip className='chat__friends__header__icon__tip' delayShow={50} />
       </div>
-      {isAddFriendModalVisible &&
+      <>{isTableUsers === 'friends' ?
+        < div className='chat__friends__body'>
+          {intraData.friends.map((obj) => (
+            <UserCardFriend key={Math.random()} friend={obj} setActiveFriend={setActiveFriend} />
+          ))
+          }
+        </div>
+        :
+        <div className='chat__friends__body'>
+          {intraData.blockeds.map((obj) => (
+            <UserCardBlocked key={Math.random()} blocked={obj} />
+          ))
+          }
+        </div>
+      }
+      </>
+      {
+        isAddFriendModalVisible &&
         <Modal
           onClose={() => {
             setIsAddFriendModalVisible(false);

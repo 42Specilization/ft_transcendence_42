@@ -14,27 +14,11 @@
   margin-bottom: 10px;
   border-radius: 10px;
   position: relative;
-  background-color: $backgroundColor;
+  background-color: $primaryColor;
   &:hover {
     cursor: pointer;
   }
 }
-
-// .notification__body__content__view {
-//   background-color: $backgroundColor;
-//   &:hover {
-//     cursor: pointer;
-//     background-color: rgba(100, 50, 230, 0.3);
-//   }
-// }
-
-// .notification__body__content__notView {
-//   background-color: $primaryColor;
-//   &:hover {
-//     cursor: pointer;
-//     background-color: $primaryColorHover;
-//   }
-// }
 
 .notify__content__empty {
   @include displayFlex();
