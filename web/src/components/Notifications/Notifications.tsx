@@ -1,18 +1,17 @@
 import './Notifications.scss';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { NotificationChallenge } from './NotificationChallenge/NotificationChallenge';
 import { NotificationFriend } from './NotificationFriend/NotificationFriend';
 import { NotificationMessage } from './NotificationMessage/NotificationMessage';
-// import axios from 'axios';
-import { IntraData } from '../../Interfaces/interfaces';
-
+import { IntraDataContext } from '../../contexts/IntraDataContext';
 
 interface NotificationProps {
-  intraData: IntraData;
-  setIntraData: Dispatch<SetStateAction<IntraData>>;
+
 }
 
-export function Notifications({ intraData, setIntraData }: NotificationProps) {
+export function Notifications({}: NotificationProps) {
+
+  const { intraData } = useContext(IntraDataContext);
 
   return (
     <div className='notification__body'>

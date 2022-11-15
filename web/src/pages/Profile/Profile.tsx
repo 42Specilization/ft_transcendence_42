@@ -1,16 +1,14 @@
 import './Profile.scss';
-import { Dispatch, SetStateAction, useState } from 'react';
-import { IntraData } from '../../Interfaces/interfaces';
+import { useState } from 'react';
 import ProfileGeneral from '../../components/Profile/ProfileGeneral/ProfileGeneral';
 import ProfileHistoric from '../../components/Profile/ProfileHistoric/ProfileHistoric';
 import ProfileAchiviements from '../../components/Profile/ProfileAchiviements/ProfileAchiviements';
 
 interface ProfileProps {
-  intraData: IntraData;
-  setIntraData: Dispatch<SetStateAction<IntraData>>;
+
 }
 
-export default function Profile({ intraData, setIntraData }: ProfileProps) {
+export default function Profile({ }: ProfileProps) {
 
   const [tableSelected, setTableSelected] = useState('General');
 
@@ -44,11 +42,9 @@ export default function Profile({ intraData, setIntraData }: ProfileProps) {
       <div className='profile__body'>
         {(() => {
           if (tableSelected === 'General')
-            return <ProfileGeneral
-              intraData={intraData}
-              setIntraData={setIntraData} />;
+            return <ProfileGeneral />;
           if (tableSelected === 'Historic')
-            return <ProfileHistoric intraData={intraData} />;
+            return <ProfileHistoric />;
           if (tableSelected === 'Achiviements')
             return <ProfileAchiviements />;
         })()}

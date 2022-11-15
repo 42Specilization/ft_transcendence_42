@@ -1,24 +1,19 @@
 import './ProfileGeneral.scss';
 import ProfileCard from './ProfileCard';
-import { IntraData } from '../../../Interfaces/interfaces';
-import { Dispatch, SetStateAction } from 'react';
+import { useContext } from 'react';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
 interface ProfileGeneralProps {
-  intraData: IntraData;
-  setIntraData: Dispatch<SetStateAction<IntraData>>;
 
 }
 
-export default function ProfileGeneral({ intraData, setIntraData }: ProfileGeneralProps) {
+export default function ProfileGeneral({ }: ProfileGeneralProps) {
+
+  const { intraData } = useContext(IntraDataContext);
+
   return (
     <div className='profile__general'>
-      <ProfileCard
-        email={intraData.email}
-        image_url={intraData.image_url}
-        login={intraData.login}
-        full_name={intraData.usual_full_name}
-        setIntraData={setIntraData}
-      />
+      <ProfileCard />
       <div className="profile__general__stats">
         <div className="profile__general__stats__title">
           <p>Stats</p>

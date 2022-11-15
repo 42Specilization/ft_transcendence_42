@@ -1,12 +1,15 @@
 import './ProfileHistoric.scss';
 import HistoricMatch from './HistoricMatch';
-import { IntraData } from '../../../Interfaces/interfaces';
+import { useContext } from 'react';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
 interface ProfileHistoricProps {
-  intraData: IntraData;
+
 }
 
-export default function ProfileHistoric({ intraData }: ProfileHistoricProps) {
+export default function ProfileHistoric({ }: ProfileHistoricProps) {
+
+  const { intraData } = useContext(IntraDataContext);
 
   return (
     <div className="profile__historic">

@@ -1,21 +1,22 @@
 import './UserImage.scss';
 import axios from 'axios';
 import { Dropzone } from '../../Dropzone/Dropzone';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { IntraData } from '../../../Interfaces/interfaces';
+import { useContext, useEffect, useState } from 'react';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
 interface UserImageProps {
-  image_url: string;
-  login: string;
-  setIntraData: Dispatch<SetStateAction<IntraData>>;
+
 }
 
-export default function UserImage({ image_url, login, setIntraData }: UserImageProps) {
+export default function UserImage({ }: UserImageProps) {
+
+  const { intraData, updateImageTime } = useContext(IntraDataContext);
   const [selectedFile, setSelectedFile] = useState<File>();
+
   async function handleSubmit() {
     const token = window.localStorage.getItem('token');
     const data = new FormData();
-    data.append('name', login);
+    data.append('name', intraData.login);
     if (selectedFile) {
       data.append('file', selectedFile);
     }
@@ -36,12 +37,9 @@ export default function UserImage({ image_url, login, setIntraData }: UserImageP
 
   return (
     <div className="userImage__image">
-      <img src={image_url} alt="User Image" />
+      <img src={`${intraData.image_url}?${updateImageTime}`} alt="User Image" />
       <div className="userImage__button_text">
-        <Dropzone
-          onFileUploaded={setSelectedFile}
-          setIntraData={setIntraData}
-        />
+        <Dropzone onFileUploaded={setSelectedFile} />
       </div>
     </div>
   );

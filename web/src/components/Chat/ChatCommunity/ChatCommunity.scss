@@ -20,7 +20,7 @@ $ChatCommunityHeaderHeight: 35px;
 
 .chat__community__header__list {
   @include displayFlex(space-between);
-  width: 80%;
+  width: 90%;
   }
 
 .chat__community__header__list__item {
@@ -33,7 +33,7 @@ $ChatCommunityHeaderHeight: 35px;
 
   button {
     @include truncText();
-    font-size: 1.5em;
+    font-size: 1.3em;
     color: white;
     &:hover {
       cursor: pointer;
@@ -66,8 +66,8 @@ $ChatCommunityHeaderHeight: 35px;
 
 .chat__community__body {
   @include displayFlex();
-  width: 80%;
-  height: calc(90% - $ChatCommunityHeaderHeight);
+  width: 90%;
+  height: calc(85% - $ChatCommunityHeaderHeight);
   overflow: hidden;
 }
 

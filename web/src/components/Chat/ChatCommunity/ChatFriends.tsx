@@ -1,22 +1,20 @@
+import './ChatFriends.scss';
 import axios from 'axios';
 import { MagnifyingGlass, PaperPlaneRight, UserPlus } from 'phosphor-react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { useSnapshot } from 'valtio';
 import { FriendData } from '../../../Interfaces/interfaces';
 import { stateStatus } from '../../../status/statusState';
 import { Modal } from '../../Modal/Modal';
-import './ChatFriends.scss';
 import { UserCard } from './UserCard';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
 interface ChatFriendsProps {
-  friends: FriendData[];
   setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
 }
 
-export default function ChatFriends({
-  friends,
-  setActiveFriend,
-}: ChatFriendsProps) {
+export default function ChatFriends({ setActiveFriend }: ChatFriendsProps) {
+  const { intraData } = useContext(IntraDataContext);
   const currentStateStatus = useSnapshot(stateStatus);
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
   const [placeHolder, setPlaceHolder] = useState('');
@@ -59,7 +57,7 @@ export default function ChatFriends({
       </div>
       <div className='chat__friends__body'>
 
-        {friends.map((obj) => (
+        {intraData.friends.map((obj) => (
           <UserCard key={obj.login} friend={obj} setActiveFriend={setActiveFriend} />
         ))
         }

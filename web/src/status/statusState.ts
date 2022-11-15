@@ -76,10 +76,8 @@ const actionsStatus = {
   },
 
   updateFriends(loggedUsers: UserData[]) {
-    console.log('aqui');
     if (stateStatus.setIntraData) {
       stateStatus.setIntraData((prevIntraData) => {
-        console.log('dentro do if', prevIntraData);
         return {
           ...prevIntraData, friends: prevIntraData.friends.map(friend => {
             console.log('updateFriends', prevIntraData);

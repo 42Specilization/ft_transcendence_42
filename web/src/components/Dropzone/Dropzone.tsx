@@ -1,31 +1,25 @@
 import { NotePencil } from 'phosphor-react';
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { useSnapshot } from 'valtio';
+import { IntraDataContext } from '../../contexts/IntraDataContext';
 import { IntraData } from '../../Interfaces/interfaces';
-import { stateStatus } from '../../status/statusState';
-import { getStoredData } from '../../utils/utils';
 
 interface DropzoneProps {
   onFileUploaded: (file: File) => void;
-  setIntraData: Dispatch<SetStateAction<IntraData>>;
 }
 
+export function Dropzone({ onFileUploaded }: DropzoneProps) {
 
-export function Dropzone({ onFileUploaded, setIntraData }: DropzoneProps) {
-  
+  const { intraData, setUpdateImageTime } = useContext(IntraDataContext);
+
   const onDrop = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (acceptedFiles: any) => {
-      const localStore: string | null = window.localStorage.getItem('userData');
-      if (localStore) {
-        const data: IntraData = JSON.parse(localStore);
-        const file = new File([acceptedFiles[0]], `${data.login}_avatar.jpg`);
-        onFileUploaded(file);
-        window.location.reload();
-      }
+      const file = new File([acceptedFiles[0]], `${intraData.login}_avatar.jpg`);
+      const data = Date.now();
+      setUpdateImageTime(data);
+      onFileUploaded(file);
     },
-    [onFileUploaded]
+    [onFileUploaded, intraData]
   );
 
   const { getRootProps, getInputProps } = useDropzone({

@@ -3,11 +3,10 @@ import useAuth from '../../auth/auth';
 import logoSmall from '../../assets/logo-small.png';
 import { Bell, BellRinging, Chats, GameController, List, SignOut } from 'phosphor-react';
 import { Link } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
-import { IntraData } from '../../Interfaces/interfaces';
-import { defaultIntra, getIntraData } from '../../utils/utils';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Notifications } from '../Notifications/Notifications';
 import { actionsStatus } from '../../status/statusState';
+import { IntraDataContext } from '../../contexts/IntraDataContext';
 
 interface NavBarProps {
   Children: any;
@@ -16,23 +15,15 @@ interface NavBarProps {
 export function NavBar({ Children }: NavBarProps) {
   const { logout } = useAuth();
 
-  const [intraData, setIntraData] = useState<IntraData>(defaultIntra);
+  const { intraData, updateImageTime } = useContext(IntraDataContext);
   const [menuVisible, setMenuVisible] = useState(false);
   const [notifyVisible, setNotifyVisible] = useState(false);
 
-  useEffect(() => {
-    getIntraData(setIntraData);
-    setMenuVisible(false);
-    actionsStatus.initializeSocketStatus(setIntraData);
-  }, []);
-
-
-
-  //changeNick
-  //chanceImage
-  //changeNewFriend
-  //changeStatus
-  //ChangeNotify
+  //changeNick *** funcionando perfeitamente
+  //chanceImage  -- atualizar foto pro user em tempo teal
+  //changeNewFriend ---
+  //changeStatus --- bug em logeedUsers que não tras os users
+  //ChangeNotify  -- notificações carregadas corretamente
 
 
   const menuRef: React.RefObject<HTMLDivElement> = useRef(null);
@@ -120,10 +111,7 @@ export function NavBar({ Children }: NavBarProps) {
             </div>
             <div ref={notifyRef} className='navBar__notify__body'
               style={{ top: (notifyVisible ? '97px' : '-300px') }}>
-              <Notifications
-                intraData={intraData}
-                setIntraData={setIntraData}
-              />
+              <Notifications />
             </div>
           </li>
 
@@ -131,7 +119,7 @@ export function NavBar({ Children }: NavBarProps) {
             <Link to='/profile'>
               <div
                 className='navBar__profile'
-                style={{ backgroundImage: `url(${intraData.image_url})` }}
+                style={{ backgroundImage: `url(${intraData.image_url}?${updateImageTime})` }}
               />
             </Link>
           </li >
@@ -143,7 +131,7 @@ export function NavBar({ Children }: NavBarProps) {
 
         </ul >
       </div >
-      <Children intraData={intraData} setIntraData={setIntraData} />
+      <Children />
     </>
 
   );

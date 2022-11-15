@@ -51,12 +51,7 @@ export class StatusGateway
     client.emit('getUserNotification', login);
     if (this.mapUserData.keyOf(newUser.login).length == 1) {
       client.broadcast.emit('updateUser', newUser);
-      this.server.emit('change');
-      this.server.emit('changeAny');
-    } else {
-      client.emit('change');
     }
-
     this.logger.debug(`iAmOnline => Client: ${client.id}, email: |${newUser.login}|`);
     this.mapUserData.debug();
   }
@@ -67,7 +62,6 @@ export class StatusGateway
 
     if (this.mapUserData.keyOf(user.login).length == 1) {
       this.server.emit('updateUser', this.mapUserData.valueOf(client.id));
-      this.server.emit('change');
     }
     this.mapUserData.delete(client.id);
 
@@ -81,8 +75,12 @@ export class StatusGateway
     const newUser: UserData = newUserData(
       oldUser.status,
       newLogin,
-      `${newLogin}_avatar.jpg`
+      oldUser.image_url
     );
+
+    if (newUser.image_url !== 'userDefault.png'
+        && !newUser.image_url.includes('https://cdn.intra.42.fr'))
+      newUser.image_url = `${newUser.login}_avatar.jpg`;
 
     this.mapUserData.debug();
 
@@ -93,8 +91,6 @@ export class StatusGateway
     client.broadcast.emit('updateUserLogin', oldUser, newUser);
 
     this.mapUserData.debug();
-
-    client.broadcast.emit('change');
   }
 
   @SubscribeMessage('newNotify')

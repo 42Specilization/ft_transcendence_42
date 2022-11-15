@@ -4,11 +4,10 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import ChatFriends from './ChatFriends';
 
 interface ChatCommunityProps {
-  friends: FriendData[];
   setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
 }
 
-export function ChatCommunity({ friends, setActiveFriend }: ChatCommunityProps) {
+export function ChatCommunity({ setActiveFriend }: ChatCommunityProps) {
 
   const [tableSelected, setTableSelected] = useState('Friends');
 
@@ -36,8 +35,7 @@ export function ChatCommunity({ friends, setActiveFriend }: ChatCommunityProps) 
       <div className='chat__community__body'>
         {(() => {
           if (tableSelected === 'Friends')
-            return <ChatFriends
-              friends={friends} setActiveFriend={setActiveFriend} />;
+            return <ChatFriends setActiveFriend={setActiveFriend} />;
           else if (tableSelected === 'Directs')
             return <> </>;
           else

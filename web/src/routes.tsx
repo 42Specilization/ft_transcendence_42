@@ -10,6 +10,7 @@ import Game from './pages/Game/Game';
 import { NavBar } from './components/NavBar/NavBar';
 import { RequireAuth, ValidadeSignin } from './utils/utils';
 import Chat from './pages/Chat/Chat';
+import { IntraDataProvider } from './contexts/IntraDataContext';
 
 
 export default function AppRouter() {
@@ -20,17 +21,21 @@ export default function AppRouter() {
           <Route
             path="/"
             element={
-              <RequireAuth>
-                <NavBar Children={Home} />
-              </RequireAuth>
+              <IntraDataProvider>
+                <RequireAuth>
+                  <NavBar Children={Home} />
+                </RequireAuth>
+              </IntraDataProvider>
             }
           />
           <Route
             path="/profile"
             element={
-              <RequireAuth>
-                <NavBar Children={Profile} />
-              </RequireAuth>
+              <IntraDataProvider>
+                <RequireAuth>
+                  <NavBar Children={Profile} />
+                </RequireAuth>
+              </IntraDataProvider>
             }
           />
           <Route
@@ -44,9 +49,11 @@ export default function AppRouter() {
           <Route
             path="/chat"
             element={
-              <RequireAuth>
-                <NavBar Children={Chat} />
-              </RequireAuth>
+              <IntraDataProvider>
+                <RequireAuth>
+                  <NavBar Children={Chat} />
+                </RequireAuth>
+              </IntraDataProvider>
             }
           />
 
