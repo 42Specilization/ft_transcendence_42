@@ -12,19 +12,21 @@ interface IIntraDataContext {
 
 export const IntraDataContext = createContext<IIntraDataContext>({
   intraData: defaultIntra,
-  setIntraData: () => {},
-  updateImageTime: Date.now(),
-  setUpdateImageTime: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setIntraData: () => { },
+  updateImageTime: 0,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setUpdateImageTime: () => { },
 });
 
-interface IntraDataProvider {
+interface IntraDataProviderProps {
   children: ReactNode;
 }
 
-export const IntraDataProvider = ({ children }: IntraDataProvider) => {
+export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
 
   const [intraData, setIntraData] = useState(defaultIntra);
-  const [updateImageTime, setUpdateImageTime] = useState(Date.now());
+  const [updateImageTime, setUpdateImageTime] = useState(Math.floor(Math.random() * 1000));
 
   useEffect(() => {
     getIntraData(setIntraData);
@@ -33,7 +35,7 @@ export const IntraDataProvider = ({ children }: IntraDataProvider) => {
 
   return (
     <IntraDataContext.Provider value={{ intraData, setIntraData, updateImageTime, setUpdateImageTime }}>
-      { children }
+      {children}
     </IntraDataContext.Provider>
   );
 };

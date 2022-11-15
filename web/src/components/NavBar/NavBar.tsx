@@ -15,7 +15,7 @@ interface NavBarProps {
 export function NavBar({ Children }: NavBarProps) {
   const { logout } = useAuth();
 
-  const { intraData, updateImageTime } = useContext(IntraDataContext);
+  const { intraData, setIntraData, updateImageTime } = useContext(IntraDataContext);
   const [menuVisible, setMenuVisible] = useState(false);
   const [notifyVisible, setNotifyVisible] = useState(false);
 
@@ -28,6 +28,17 @@ export function NavBar({ Children }: NavBarProps) {
 
   const menuRef: React.RefObject<HTMLDivElement> = useRef(null);
   const notifyRef: React.RefObject<HTMLDivElement> = useRef(null);
+
+  useEffect(() => {
+    if (!intraData.image_url.includes('https://cdn.intra.42.fr/')) {
+      setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData,
+          image_url: `/public/${intraData.image_url}`
+        };
+      });
+    }
+  }, []);
 
   useEffect(() => {
     document.addEventListener('click', handleClickOutside, true);
@@ -119,10 +130,11 @@ export function NavBar({ Children }: NavBarProps) {
             <Link to='/profile'>
               <div
                 className='navBar__profile'
-                style={{ backgroundImage: `url(${intraData.image_url}?${updateImageTime})` }}
+                style={{ backgroundImage: `url(${intraData.image_url})` }}
               />
             </Link>
           </li >
+
 
           <li className='navBar__logout navBar__icons' onClick={handleLogOut}>
             <SignOut size={32} />

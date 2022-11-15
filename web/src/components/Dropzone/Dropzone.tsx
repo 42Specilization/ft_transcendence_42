@@ -15,7 +15,7 @@ export function Dropzone({ onFileUploaded }: DropzoneProps) {
   const onDrop = useCallback(
     (acceptedFiles: any) => {
       const file = new File([acceptedFiles[0]], `${intraData.login}_avatar.jpg`);
-      const data = Date.now();
+      const data = Math.floor(Math.random() * 1000);
       setUpdateImageTime(data);
       onFileUploaded(file);
     },

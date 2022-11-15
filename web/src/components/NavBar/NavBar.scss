@@ -18,13 +18,14 @@
   color: white;
   color-scheme: dark;
   border-bottom: 3px solid $primaryColor;
-  padding: 0px 3% 0px 3%;
+  // padding: 0px 3% 0px 3%;
   background-color: $secondaryColor;
   z-index: 5;
 }
 
 .navBar__list {
   @include displayFlex(space-between);
+  padding: 0px 3% 0px 3%;
   width: 100%;
   height: 100%;
   background-color: $secondaryColor;

@@ -19,22 +19,14 @@
 
 .friendCard__infos__nick{
   @include displayFlex(center, row);
-  margin-top: 10px;
+  margin-top: 20px;
   margin-bottom: 10px;
   background-color: $backgroundColor;
   border-radius: 20px;
   padding: 5px 10px 5px 10px;
+  font-size: 30px
 }
 
-.friendCard__infos__button {
-  @include displayFlex(center);
-  margin-left: 15px;
-  border-radius: 5px;
-  &:hover  {
-    cursor: pointer;
-    color: gray;
-  }
-}
 
 .friendCard_image {
   @include displayFlex(center);

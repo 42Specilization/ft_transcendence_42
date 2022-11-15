@@ -4,22 +4,23 @@ $friendProfileHeaderHeight: 35px;
 
 .friendProfile__header {
   @include displayFlex();
-  width: 80%;
+  width: 100%;
   height: $friendProfileHeaderHeight;
   color: white;
   background-color: $backgroundColor;
+  border-radius: 20px 20px 0 0;
 }
 
 .friendProfile__header__list {
-  @include displayFlex(space-between);
-  width: 80%;
+  @include displayFlex(space-around);
+  width: 100%;
 }
 
 .friendProfile__header__list__item {
   @include displayFlex();
   width: 30%;
   height: $friendProfileHeaderHeight;
-  border-radius: 0px 0px 20px 20px;
+  border-radius: 20px;
   background-color: $backgroundColor;
 
   button {
@@ -46,7 +47,7 @@ $friendProfileHeaderHeight: 35px;
 
 .friendProfile__body {
   @include displayFlex(center, column);
-  width: 80%;
+  width: 100%;
   height: calc(90% - $friendProfileHeaderHeight);
   overflow: hidden;
 }
