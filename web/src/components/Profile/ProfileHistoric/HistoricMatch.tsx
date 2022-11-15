@@ -7,20 +7,20 @@ interface HistoricMatchProps {
   image_url: string;
 }
 
-export default function HistoricMatch({
+export function HistoricMatch({
   nick,
   date,
   result,
   image_url,
 }: HistoricMatchProps) {
   return (
-    <div className="historicMatch">
-      <div className="historicMatch__player">
-        <img src={image_url} alt="user image" />
-        <div className="historicMatch__player__nick">{nick}</div>
+    <div className='historicMatch'>
+      <div className='historicMatch__player'>
+        <img src={image_url} alt='user image' />
+        <div className='historicMatch__player__nick'>{nick}</div>
       </div>
-      <p className="historicMatch__infos">{date}</p>
-      <p className="historicMatch__infos">{result}</p>
+      <p className='historicMatch__infos'>{date}</p>
+      <p className='historicMatch__infos'>{result}</p>
     </div >
   );
 }

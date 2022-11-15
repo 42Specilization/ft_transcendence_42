@@ -38,7 +38,7 @@ export function TFAButton(){
   }, []);
 
   return (
-    <div className="tfaButton">
+    <div className='tfaButton'>
       <strong>2FA Authentication</strong>
       <button className='tfaButton__button'
         style={{backgroundColor: tfaEnable ? 'green' : 'red'}}

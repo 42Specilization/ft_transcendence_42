@@ -46,7 +46,7 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
         if (e.response.data.statusCode === 403) {
           setPlaceHolder('Nick Unavaiable!');
         } else if (e.response.data.statusCode === 400) {
-          setPlaceHolder('Need have min: 3, max: 15, forbidden: ","');
+          setPlaceHolder('Need have min: 3, max: 15, forbidden: ','');
         } else {
           setPlaceHolder('Invalid nick!');
         }
@@ -61,13 +61,13 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
       setPlaceHolder('');
       setNick('');
     }}
-      id={'modal__changeNick'}
+    id={'modal__changeNick'}
     >
-      <form className="change__nick__modal" onSubmit={handleKeyEnter}>
-        <div className="change__nick__modal__textdiv">
+      <form className='change__nick__modal' onSubmit={handleKeyEnter}>
+        <div className='change__nick__modal__textdiv'>
           <h3>Insert the new nick</h3>
           <input
-            className="change__nick__modal__input"
+            className='change__nick__modal__input'
             value={nick}
             placeholder={placeHolder}
             style={{ border: placeHolder !== '' ? '3px solid red' : 'none' }}
@@ -77,7 +77,7 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
             }}
           />
         </div>
-        <button className="change__nick__modal__button" type="submit">
+        <button className='change__nick__modal__button' type='submit'>
           <PaperPlaneRight size={30} />
         </button>
       </form>

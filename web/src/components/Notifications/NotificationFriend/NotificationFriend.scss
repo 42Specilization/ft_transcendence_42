@@ -38,6 +38,10 @@
   padding-right: 15px;
   border-radius: 20px;
   background-color: rgba(65, 5, 93, 0.583);
+  p {
+    color: white;
+    @include displayFlex(space-around);
+  }
   &:hover {
     cursor: pointer;
     background-color: rgba(38, 4, 54, 0.687);

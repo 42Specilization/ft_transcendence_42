@@ -8,7 +8,7 @@ interface UserImageProps {
 
 }
 
-export default function UserImage({ }: UserImageProps) {
+export function UserImage({ }: UserImageProps) {
 
   const { intraData, updateImageTime } = useContext(IntraDataContext);
   const [selectedFile, setSelectedFile] = useState<File>();
@@ -36,9 +36,9 @@ export default function UserImage({ }: UserImageProps) {
   }, [selectedFile]);
 
   return (
-    <div className="userImage__image">
-      <img src={`${intraData.image_url}?${updateImageTime}`} alt="User Image" />
-      <div className="userImage__button_text">
+    <div className='userImage__image'>
+      <img src={`${intraData.image_url}?${updateImageTime}`} alt='User Image' />
+      <div className='userImage__button_text'>
         <Dropzone onFileUploaded={setSelectedFile} />
       </div>
     </div>

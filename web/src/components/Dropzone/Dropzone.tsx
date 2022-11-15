@@ -33,8 +33,8 @@ export function Dropzone({ onFileUploaded }: DropzoneProps) {
 
   return (
     <div {...getRootProps()}>
-      <input {...getInputProps()} accept="image/*" />
-      <NotePencil size={120} className="dropzone__button"></NotePencil>
+      <input {...getInputProps()} accept='image/*' />
+      <NotePencil size={120} className='dropzone__button'></NotePencil>
     </div>
   );
 }

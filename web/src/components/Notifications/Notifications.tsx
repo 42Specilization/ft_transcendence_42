@@ -23,7 +23,7 @@ export function Notifications({}: NotificationProps) {
               {(() => {
                 if (obj.type === 'friend')
                   return <NotificationFriend notify={obj} />;
-                // if (obj.type === 'message')
+              // if (obj.type === 'message')
                 //   return <NotificationMessage notify={obj} />;
                 // if (obj.type === 'challenge')
                 //   return <NotificationChallenge notify={obj} />;

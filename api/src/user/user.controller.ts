@@ -10,7 +10,8 @@ import { Body,
   UploadedFile,
   ValidationPipe,
   UnauthorizedException,
-  InternalServerErrorException } from '@nestjs/common';
+  InternalServerErrorException, 
+  BadRequestException} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
@@ -166,10 +167,22 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   // @UseGuards(JwtAuthGuard)
   @ApiBody({ type: GetFriendDto })
-  async getfriend(@Body() getFriendDto: GetFriendDto): Promise<User> {
+  async getfriend(@Body() getFriendDto: GetFriendDto): Promise<any> {
     // console.log('getFriend', getFriendDto);
-    const userValidate = await this.userService.getUser(getFriendDto.email);
-    return (userValidate);
+    const userValidate = await this.userService.findUserByNick(getFriendDto.nick);
+    if (userValidate){
+      const friendData = {
+        image_url: userValidate.imgUrl,
+        login: userValidate.nick,
+        matches: userValidate.matches,
+        wins: userValidate.wins,
+        lose: userValidate.lose,
+        name:userValidate.usual_full_name,
+      };
+      return (friendData);
+    }
+    throw new BadRequestException('friend not found');
+    
   }
 
   /* This method is used to update the user's image. */

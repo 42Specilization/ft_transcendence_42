@@ -38,13 +38,13 @@ export function TFATurnOffModal({
       {isModalTurnOffVisible &&
         <Modal onClose={() => setIsModalTurnOffVisible(false)}>
           <p className='tfaTurnOff__title'> Are you sure you want to disable 2fa ?</p>
-          <div className="tfaTurnOff__buttons">
-            <button className="tfaTurnOff__button__confirm"
-                  onClick={handleTurnOff}>
+          <div className='tfaTurnOff__buttons'>
+            <button className='tfaTurnOff__button__confirm'
+              onClick={handleTurnOff}>
               Confirm
             </button>
-            <button className="tfaTurnOff__button__cancel"
-                  onClick={()=> setIsModalTurnOffVisible(false)}>
+            <button className='tfaTurnOff__button__cancel'
+              onClick={()=> setIsModalTurnOffVisible(false)}>
               Cancel
             </button>
           </div>

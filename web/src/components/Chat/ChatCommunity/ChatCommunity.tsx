@@ -1,7 +1,7 @@
 import './ChatCommunity.scss';
 import { FriendData } from '../../../Interfaces/interfaces';
 import { Dispatch, SetStateAction, useState } from 'react';
-import ChatFriends from './ChatFriends';
+import { ChatFriends } from './ChatFriends';
 
 interface ChatCommunityProps {
   setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;

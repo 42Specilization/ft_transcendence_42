@@ -13,7 +13,7 @@ interface ChatFriendsProps {
   setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
 }
 
-export default function ChatFriends({ setActiveFriend }: ChatFriendsProps) {
+export function ChatFriends({ setActiveFriend }: ChatFriendsProps) {
   const { intraData } = useContext(IntraDataContext);
   const currentStateStatus = useSnapshot(stateStatus);
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
