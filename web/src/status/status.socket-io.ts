@@ -34,7 +34,7 @@ export function createSocketStatus({
   });
 
   socket.on('loggedUsers', (friends: UserData[]) => {
-    actionsStatus.updateFriends(friends);
+    actionsStatus.loggedUsers(friends);
     console.log('logged users:', friends);
   });
 
@@ -55,6 +55,11 @@ export function createSocketStatus({
 
   socket.on('updateNotify', async () => {
     actionsStatus.updateNotify();
+    console.log('update notify:');
+  });
+
+  socket.on('updateFriend', async () => {
+    actionsStatus.updateFriend();
     console.log('update notify:');
   });
 

@@ -17,6 +17,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import * as fs from 'fs';
 import { Notify } from '../notification/entities/notify.entity';
+import { Relations } from 'src/relations/entity/relations.entity';
 @Injectable()
 export class UserService {
   constructor(
@@ -247,15 +248,13 @@ export class UserService {
     }
   }
 
-  async popNotification(email: string, id:string) {
+  async popNotification(email: string, id: string) {
     const user = await this.findUserByEmail(email) as User;
-
     user.notify = user.notify.filter((notify) => {
       if (notify.id == id)
-        return ;
+        return;
       return notify;
     });
-
     try {
       user.save();
       return;
@@ -264,6 +263,41 @@ export class UserService {
     }
   }
 
+  async acceptFriend(email: string, id: string) {
+    const user = await this.findUserByEmail(email) as User;
+
+    const requestedNotify: Notify[] = user.notify.filter((notify) => notify.id === id);
+
+    if (!requestedNotify.at(0))
+      throw new BadRequestException('friend not found');
+
+    const friend = await this.findUserByEmail(requestedNotify.at(0)?.user_source.email as string) as User;
+
+    const relationUser = new Relations();
+    const relationFriend = new Relations();
+
+    relationUser.passive_user = friend;
+    relationUser.type = 'friend';
+
+    relationFriend.passive_user = user;
+    relationFriend.type = 'friend';
+
+    user.relations.push(relationUser);
+    friend.relations.push(relationFriend);
+
+    await this.popNotification(email, id);
+
+    try {
+      await user.save();
+      await friend.save();
+      console.log('salvando relacionamento', relationFriend, relationUser);
+      return;
+    } catch (err) {
+      console.log('erro salvando a relacao',err)
+      throw new InternalServerErrorException('erro salvando notificacao');
+    }
+
+  }
 
 
 }

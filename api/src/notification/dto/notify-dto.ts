@@ -8,7 +8,7 @@ export class NotifyDto {
   date: Date;
 }
 
-export class NotifyRemoveDto {
+export class NotifyHandlerDto {
   @IsNotEmpty({message: 'Inform a valid id'})
     id: string;
 }

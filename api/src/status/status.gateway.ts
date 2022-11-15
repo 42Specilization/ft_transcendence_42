@@ -79,7 +79,7 @@ export class StatusGateway
     );
 
     if (newUser.image_url !== 'userDefault.png'
-        && !newUser.image_url.includes('https://cdn.intra.42.fr'))
+      && !newUser.image_url.includes('https://cdn.intra.42.fr'))
       newUser.image_url = `${newUser.login}_avatar.jpg`;
 
     this.mapUserData.debug();
@@ -99,6 +99,36 @@ export class StatusGateway
     this.mapUserData.keyOf(login_target).forEach(socketId =>
       this.server.to(socketId).emit('updateNotify')
     );
+  }
+
+  @SubscribeMessage('newFriend')
+  handleNewFriend(client: Socket, login_target: string) {
+    const user: UserData = this.mapUserData.valueOf(client.id);
+    const socketsUser: string[] = this.mapUserData.keyOf(user.login);
+    socketsUser.forEach(socketId => {
+      this.server.to(socketId).emit('updateFriend');
+    }
+    );
+
+
+    
+    if (this.mapUserData.hasValue(login_target)) {
+      const socketsFriends: string[] = this.mapUserData.keyOf(login_target);
+      const friend = this.mapUserData.valueOf(socketsFriends[0]);
+      socketsFriends.forEach(socketId =>
+        this.server.to(socketId).emit('updateFriend')
+      );
+
+      socketsUser.forEach(socketId =>
+        this.server.to(socketId).emit('updateUser', friend)
+      );
+
+      socketsFriends.forEach(socketId =>
+        this.server.to(socketId).emit('updateUser', user)
+      );
+    }
+
+
   }
 
   // @SubscribeMessage('changeImage')

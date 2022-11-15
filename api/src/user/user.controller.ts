@@ -1,8 +1,9 @@
-import { Body,
-  Controller, 
+import {
+  Body,
+  Controller,
   Get,
-  HttpCode, 
-  HttpStatus, 
+  HttpCode,
+  HttpStatus,
   Patch,
   Post,
   UseGuards,
@@ -10,8 +11,9 @@ import { Body,
   UploadedFile,
   ValidationPipe,
   UnauthorizedException,
-  InternalServerErrorException, 
-  BadRequestException} from '@nestjs/common';
+  InternalServerErrorException,
+  BadRequestException
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
@@ -29,7 +31,7 @@ import * as bcrypt from 'bcrypt';
 import { FriendRequestDto } from './dto/friend-request.dto';
 // import axios from 'axios';
 import { GetFriendDto } from './dto/get-friend.dto';
-import { NotifyRemoveDto } from 'src/notification/dto/notify-dto';
+import { NotifyHandlerDto } from 'src/notification/dto/notify-dto';
 // import { NotificationService } from 'src/notification/notification.service';
 
 @Controller('user')
@@ -171,19 +173,19 @@ export class UserController {
   async getfriend(@Body() getFriendDto: GetFriendDto): Promise<any> {
     // console.log('getFriend', getFriendDto);
     const userValidate = await this.userService.findUserByNick(getFriendDto.nick);
-    if (userValidate){
+    if (userValidate) {
       const friendData = {
         image_url: userValidate.imgUrl,
         login: userValidate.nick,
         matches: userValidate.matches,
         wins: userValidate.wins,
         lose: userValidate.lose,
-        name:userValidate.usual_full_name,
+        name: userValidate.usual_full_name,
       };
       return (friendData);
     }
     throw new BadRequestException('friend not found');
-    
+
   }
 
   /* This method is used to update the user's image. */
@@ -228,17 +230,24 @@ export class UserController {
 
   @Patch('/removeNotify')
   @UseGuards(JwtAuthGuard)
-  @ApiBody({ type:NotifyRemoveDto })
+  @ApiBody({ type: NotifyHandlerDto })
   async removeNotify(
-    @Body(ValidationPipe) notifyRemoveDto: NotifyRemoveDto,
+    @Body(ValidationPipe) notifyHandlerDto: NotifyHandlerDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
   ): Promise<{ message: string }> {
-    await this.userService.popNotification(userFromJwt.email, notifyRemoveDto.id);
+    await this.userService.popNotification(userFromJwt.email, notifyHandlerDto.id);
     return { message: 'success' };
   }
 
-  
-
-
+  @Patch('/acceptFriend')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: NotifyHandlerDto })
+  async acceptFriend(
+    @Body(ValidationPipe) notifyHandlerDto: NotifyHandlerDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.userService.acceptFriend(userFromJwt.email, notifyHandlerDto.id);
+    return { message: 'success' };
+  }
 
 }

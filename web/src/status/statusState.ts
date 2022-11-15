@@ -75,7 +75,7 @@ const actionsStatus = {
     }
   },
 
-  updateFriends(loggedUsers: UserData[]) {
+  loggedUsers(loggedUsers: UserData[]) {
     if (stateStatus.setIntraData) {
       stateStatus.setIntraData((prevIntraData) => {
         return {
@@ -133,6 +133,24 @@ const actionsStatus = {
       const user = await getUserInDb();
       stateStatus.setIntraData((prevIntraData) => {
         return { ...prevIntraData, notify: user.notify };
+      });
+    }
+  },
+
+  async updateFriend() {
+    if (stateStatus.setIntraData) {
+      const user = await getUserInDb();
+      stateStatus.setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData,
+          friends: user.friends.map((obj) => {
+            if (prevIntraData.friends.map(e => e.login).indexOf(obj.login) >= 0) {
+              const updateFriend = prevIntraData.friends.find(e => e.login === obj.login);
+              return typeof updateFriend !== 'undefined' ? updateFriend : obj;
+            }
+            return obj;
+          })
+        };
       });
     }
   },
