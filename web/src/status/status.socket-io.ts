@@ -68,6 +68,11 @@ export function createSocketStatus({
     console.log('update Blocked:');
   });
 
+  socket.on('updateRemove', async () => {
+    actionsStatus.updateRemove();
+    console.log('update Remove:');
+  });
+
   return socket;
 
 }

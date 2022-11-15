@@ -261,4 +261,15 @@ export class UserController {
     return { message: 'success' };
   }
 
+  @Patch('/removeFriend')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: GetFriendDto })
+  async removeFriend(
+    @Body(ValidationPipe) getFriendDto: GetFriendDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.userService.removeFriend(userFromJwt.email, getFriendDto.nick);
+    return { message: 'success' };
+  }
+
 }

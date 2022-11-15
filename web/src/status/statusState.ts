@@ -159,11 +159,20 @@ const actionsStatus = {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
       stateStatus.setIntraData((prevIntraData) => {
-
         return { ...prevIntraData, blockeds: user.blockeds };
       });
     }
   },
+
+  async updateRemove() {
+    if (stateStatus.setIntraData) {
+      const user = await getUserInDb();
+      stateStatus.setIntraData((prevIntraData) => {
+        return { ...prevIntraData, friends: user.friends };
+      });
+    }
+  },
+
 };
 
 export type AppActionsStatus = typeof actionsStatus;

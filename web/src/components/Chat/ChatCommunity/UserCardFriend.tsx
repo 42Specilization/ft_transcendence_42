@@ -1,8 +1,12 @@
 import './UserCardFriend.scss';
 import { FriendData } from '../../../Interfaces/interfaces';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useMemo, useState } from 'react';
 import { DotsThreeVertical, Prohibit, Sword, UserMinus } from 'phosphor-react';
 import ReactTooltip from 'react-tooltip';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import axios from 'axios';
+import { useSnapshot } from 'valtio';
+import { stateStatus } from '../../../status/statusState';
 
 interface UserCardFriendProps {
   friend: FriendData;
@@ -11,15 +15,39 @@ interface UserCardFriendProps {
 
 export function UserCardFriend({ friend, setActiveFriend }: UserCardFriendProps) {
   const [isTableFriendUsersMenu, setIsTableFriendUsersMenu] = useState(false);
-
+  const currentStateStatus = useSnapshot(stateStatus);
+  const { intraData, setIntraData } = useContext(IntraDataContext);
   function selectActiveFriend(e: any) {
     if (e.target.id !== 'user__card__friend__menu') {
       setActiveFriend(friend);
     }
   }
 
+  const token = useMemo(() => window.localStorage.getItem('token'), []);
+
+  const config = useMemo(() => {
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  }, []);
+
+  const api = useMemo(() => axios.create({
+    baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
+  }), []);
+
   async function handleRemoveFriend() {
 
+    await api.patch('/user/removeFriend', { nick: friend.login }, config);
+    console.log('enviou')
+    setIntraData((prevIntraData) => {
+      return {
+        ...prevIntraData,
+        friends: prevIntraData.friends.filter((key) => key.login != friend.login)
+      };
+    });
+    currentStateStatus.socket?.emit('deleteFriend', friend.login);
   }
 
 

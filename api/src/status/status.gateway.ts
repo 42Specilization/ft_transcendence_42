@@ -110,8 +110,6 @@ export class StatusGateway
     }
     );
 
-
-
     if (this.mapUserData.hasValue(login_target)) {
       const socketsFriends: string[] = this.mapUserData.keyOf(login_target);
       const friend = this.mapUserData.valueOf(socketsFriends[0]);
@@ -127,8 +125,6 @@ export class StatusGateway
         this.server.to(socketId).emit('updateUser', user)
       );
     }
-
-
   }
 
   @SubscribeMessage('newBlocked')
@@ -137,27 +133,17 @@ export class StatusGateway
     this.mapUserData.keyOf(user.login).forEach(socketId => {
       this.server.to(socketId).emit('updateBlocked');
     });
-
-
   }
 
-  // @SubscribeMessage('changeImage')
-  // handleChangeImage(client: Socket) {
-  //   client;
-  //   const user = this.mapUserData.valueOf(client.id);
-  //   const newUser: UserData = newUserData(
-  //     user.status,
-  //     newLogin,
-  //     user.image_url = `${user.login}_avatar.jpg`
-  //   );
+  @SubscribeMessage('deleteFriend')
+  handleDeleteFriend(client: Socket, login_target: string) {
+    client;
+    if (this.mapUserData.hasValue(login_target)) {
+        this.mapUserData.keyOf(login_target).forEach(socketId =>
+        this.server.to(socketId).emit('updateRemove')
+      );
 
-  //   this.mapUserData.debug();
-
-  //   this.mapUserData.updateValue(oldUser, newUser);
-  //   this.mapUserData.keyOf(this.mapUserData.valueOf(client.id).login).forEach(socketId =>
-  //     this.server.to(socketId).emit('updateYourself', newUser)
-  //   );
-  //   client.broadcast.emit('updateUserLogin', oldUser, newUser);
-  // }
+    }
+  }
 
 }
