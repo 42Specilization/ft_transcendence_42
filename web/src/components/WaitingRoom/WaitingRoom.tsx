@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import './WaitingRoom.scss';
 
 export function WaitingRoom() {
-
   useEffect(() => {
     document.addEventListener('keydown', handleKeydown);
   }, []);
@@ -20,9 +19,7 @@ export function WaitingRoom() {
 
   return (
     <div className='waiting-room'>
-      <h1>
-        Waiting for another player!
-      </h1>
+      <h1>Waiting for another player!</h1>
     </div>
   );
 }

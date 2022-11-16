@@ -1,29 +1,25 @@
 import { NotePencil } from 'phosphor-react';
-import { Dispatch, SetStateAction, useCallback } from 'react';
+import { useCallback, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { IntraData } from '../../Interfaces/interfaces';
-import { getStoredData } from '../../pages/Home/Home';
+import { IntraDataContext } from '../../contexts/IntraDataContext';
 
 interface DropzoneProps {
   onFileUploaded: (file: File) => void;
-  setIntraData: Dispatch<SetStateAction<IntraData>>;
 }
 
-export function Dropzone({ onFileUploaded, setIntraData }: DropzoneProps) {
+export function Dropzone({ onFileUploaded }: DropzoneProps) {
+
+  const { intraData, setUpdateImageTime } = useContext(IntraDataContext);
+
   const onDrop = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (acceptedFiles: any) => {
-      const localStore: string | null = window.localStorage.getItem('userData');
-      if (localStore) {
-        const data: IntraData = JSON.parse(localStore);
-        const file = new File([acceptedFiles[0]], `${data.login}_avatar.jpg`);
-        onFileUploaded(file);
-        window.localStorage.removeItem('userData');
-        getStoredData(setIntraData);
-        window.location.reload();
-      }
+      const file = new File([acceptedFiles[0]], `${intraData.login}_avatar.jpg`);
+      const data = Math.floor(Math.random() * 1000);
+      setUpdateImageTime(data);
+      onFileUploaded(file);
     },
-    [onFileUploaded]
+    [onFileUploaded, intraData]
   );
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -37,9 +33,8 @@ export function Dropzone({ onFileUploaded, setIntraData }: DropzoneProps) {
 
   return (
     <div {...getRootProps()}>
-      <input {...getInputProps()} accept="image/*" />
-      <NotePencil size={120} className='dropzone__button'>
-      </NotePencil>
+      <input {...getInputProps()} accept='image/*' />
+      <NotePencil size={120} className='dropzone__button'></NotePencil>
     </div>
   );
 }

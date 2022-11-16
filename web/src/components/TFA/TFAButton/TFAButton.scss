@@ -1,0 +1,26 @@
+@import '../../../styles/global.scss';
+
+.tfaButton{
+  @include displayFlex(space-around);
+  width: 100%;
+  font-size: 1.1em;
+}
+
+.tfaButton__button{
+  @include displayFlex();
+  height: 32px;
+  color:white;
+  font-size: 15px;
+  border-radius: 20px;
+  background-color: $primaryColor;
+  &:hover {
+    // background-color: $primaryColorHover;
+    filter: grayscale(0.7)
+  }
+}
+
+@media (min-width:1200px) {
+  .tfaButton__button{
+    font-size: 0.6em;
+  }
+}

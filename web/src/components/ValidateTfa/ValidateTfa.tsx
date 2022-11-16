@@ -77,22 +77,53 @@ export function ValidateTfa() {
 
   return (
     <div className="validateTfa">
-      {
-        isModalRequestMailVisible ?
-          <Modal
-            id='tfaRequestModal'
-          >
-            <div className='tfaRequestModal__requestArea'>
-              <h3>Click to request a new code</h3>
-              <button
-                className='tfaRequestModal__buttonRequest'
-                onClick={sendEmail}>
-                Send Code
-              </button>
+      {isModalRequestMailVisible &&
+        <Modal
+          id='tfaRequestModal'
+        >
+          <div className='tfaRequestModal__requestArea'>
+            <h3>Click to request a new code</h3>
+            <button
+              className='tfaRequestModal__buttonRequest'
+              onClick={sendEmail}>
+              Send Code
+            </button>
+          </div>
+          {isLoading &&
+            <div className='tfaRequestModal__loading'>
+              <strong>Wait a moment...</strong>
+              <TailSpin
+                width='30'
+                height='30'
+                color='purple'
+                ariaLabel='loading'
+              />
             </div>
-            {
-              isLoading ?
-                <div className='tfaRequestModal__loading'>
+          }
+        </Modal>
+      }
+      {isModalVerifyCodeVisible &&
+        <Modal id='tfaVerifyModal'>
+          <div className='tfaVerifyModal__inputArea' >
+            <h3>Insert received code</h3>
+            <input
+              style={{border:verifyCodeStyle.styles.border}}
+              className='tfaVerifyModal__input' type="text"
+              placeholder={verifyCodeStyle.styles.placeholder}
+            />
+            <button
+              className='tfaVerifyModal__button'
+              onClick={handleValidateCode}>
+              Validate
+            </button>
+            <button
+              className='tfaVerifyModal__buttonRecovery'
+              onClick={sendEmail}>
+                Dont receive? Click to request again
+            </button>
+            {isLoading &&
+              <div className="tfaVerify_recovery">
+                <div className='tfaVerify__loading'>
                   <strong>Wait a moment...</strong>
                   <TailSpin
                     width='30'
@@ -100,46 +131,11 @@ export function ValidateTfa() {
                     color='purple'
                     ariaLabel='loading'
                   />
-                </div> : null
+                </div>
+              </div>
             }
-          </Modal>: null
-      }
-      {
-        isModalVerifyCodeVisible ?
-          <Modal id='tfaVerifyModal'>
-            <div className='tfaVerifyModal__inputArea' >
-              <h3>Insert received code</h3>
-              <input
-                style={{border:verifyCodeStyle.styles.border}}
-                className='tfaVerifyModal__input' type="text"
-                placeholder={verifyCodeStyle.styles.placeholder}
-              />
-              <button
-                className='tfaVerifyModal__button'
-                onClick={handleValidateCode}>
-                Validate
-              </button>
-              <button
-                className='tfaVerifyModal__buttonRecovery'
-                onClick={sendEmail}>
-                  Dont receive? Click to request again
-              </button>
-              {
-                isLoading ?
-                  <div className="tfaVerify_recovery">
-                    <div className='tfaVerify__loading'>
-                      <strong>Wait a moment...</strong>
-                      <TailSpin
-                        width='30'
-                        height='30'
-                        color='purple'
-                        ariaLabel='loading'
-                      />
-                    </div>
-                  </div> : null
-              }
-            </div>
-          </Modal> : null
+          </div>
+        </Modal>
       }
     </div >
   );

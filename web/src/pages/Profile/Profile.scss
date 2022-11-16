@@ -1,87 +1,52 @@
-@import '../../styles/variables.scss';
+@import '../../styles/global.scss';
 
-.profile {
-  @include flexCenter(center, column);
-  font-family: 'Oxanium', cursive;
-  background-color: rgba(139, 92, 246, 0.31);
-  border-radius: 0 0 50px 50px;
-  top: 0;
-  left:50%;
-  position: absolute;
+$ProfileHeaderHeight: 35px;
 
-}
-
-.profile .navBar {
-  top: 0;
-  left: 0;
-}
-
-.profile__stats {
-  @include flexCenter(unset, column, center);
-  background-color: rgba(139, 92, 246, 0.4);
-  border-radius: 30px;
-  color: white;
-  position: relative;
-  top: 40px;
-  width: 350px;
-}
-
-.profile .profileCard{
-  position: relative;
-  top : 40px;
-  justify-content: center;
-  margin-left: 0;
-}
-
-.profile__stats__title {
-  @include flexCenter(center, row, start);
-  margin-top: 20px;
-  font-size: 3em;
-}
-
-.profile__stats__wins,
-.profile__stats__lose,
-.profile__stats__ratio,
-.profile__stats__matches {
-  @include flexCenter(space-between, row);
-  font-size: 1.3em;
+.profile__header {
+  @include displayFlex();
   width: 80%;
-  margin-bottom: 8px
+  height: $ProfileHeaderHeight;
+  color: white;
+  background-color: $backgroundColor;
 }
 
-@media (max-width: 1199px){
-  .profile {
-    max-width: 350px;
-    height: 740px;
-    margin-left: -175px;
-  }
-
-  .profile__stats {
-    height: 260px;
-    margin-top: 20px;
-  }
+.profile__header__list {
+  @include displayFlex(space-between);
+  width: 80%;
 }
 
-@media (min-width:1199px){
-  .profile {
-    @include flexCenter(center, row, center);
-    width: 1100px;
-    height: 600px;
-    margin-left: -550px;
-  }
+.profile__header__list__item {
+  @include displayFlex();
+  width: 30%;
+  height: $ProfileHeaderHeight;
+  border-radius: 0px 0px 20px 20px;
+  background-color: $backgroundColor;
 
-  .profile .profileCard{
-    right: 5%;
-  }
+  button {
+    @include truncText();
+    font-size: 1.5em;
+    color: white;
+    &:hover {
+      cursor: pointer;
+      color: rgb(74, 71, 71);
+   }
+ }
+}
 
-  .profile__stats {
-    display: flex;
-    height:350px;
-    margin-left: 100px;
-    font-size: 1.8em;
-  }
+.profile__header__list__item__selected {
+  background-color: transparent;
 
- .profile__stats__title {
-    font-size: 2em;
-  }
+  button {
+    &:hover {
+      cursor: default;
+      color: white;
+   }
+ }
+}
+
+.profile__body {
+  @include displayFlex(center, column);
+  width: 80%;
+  height: calc(90% - $ProfileHeaderHeight);
+  overflow: hidden;
 }

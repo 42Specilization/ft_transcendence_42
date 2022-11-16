@@ -1,66 +1,153 @@
-import logoSmall from '../../assets/logo-small.png';
-import { Chats, List, SignOut } from 'phosphor-react';
 import './NavBar.scss';
 import useAuth from '../../auth/auth';
+import logoSmall from '../../assets/logo-small.png';
+import { Bell, BellRinging, Chats, GameController, List, SignOut } from 'phosphor-react';
 import { Link } from 'react-router-dom';
-import React from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { Notifications } from '../Notifications/Notifications';
+import { actionsStatus } from '../../status/statusState';
+import { IntraDataContext } from '../../contexts/IntraDataContext';
 
 interface NavBarProps {
-  name: string,
-  imgUrl: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Children: any;
 }
 
-export function NavBar({ name, imgUrl }: NavBarProps) {
-
+export function NavBar({ Children }: NavBarProps) {
   const { logout } = useAuth();
 
+  const { intraData, setIntraData } = useContext(IntraDataContext);
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [notifyVisible, setNotifyVisible] = useState(false);
+
+  //changeNick *** funcionando perfeitamente
+  //chanceImage  -- atualizar foto pro user em tempo teal
+  //changeNewFriend ---
+  //changeStatus --- bug em logeedUsers que não tras os users
+  //ChangeNotify  -- notificações carregadas corretamente
+
+
+  const menuRef: React.RefObject<HTMLDivElement> = useRef(null);
+  const notifyRef: React.RefObject<HTMLDivElement> = useRef(null);
+
+  useEffect(() => {
+    if (!intraData.image_url.includes('https://cdn.intra.42.fr/')) {
+      setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData,
+          image_url: `/public/${intraData.image_url}`
+        };
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside, true);
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true);
+    };
+  }, []);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleClickOutside = (event: any) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)
+      && event.target.id !== 'navBar__menu__icon') {
+      setMenuVisible(false);
+    }
+    if (notifyRef.current && !notifyRef.current.contains(event.target)
+      && event.target.id !== 'navBar__notify__icon') {
+      setNotifyVisible(false);
+    }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleClickInside = (event: any) => {
+    if (event.target.id === 'navBar__menu__icon') {
+      setMenuVisible((prevMenuVisible) => !prevMenuVisible);
+    }
+    if (event.target.id === 'navBar__notify__icon') {
+      setNotifyVisible((prevNotifyVisible) => !prevNotifyVisible);
+    }
+  };
+
   async function handleLogOut() {
+    actionsStatus.disconnectSocketStatus();
     logout();
   }
 
   return (
-    <div className='navBar'>
-      <ul className='navBar__list '>
-        <li className='navBar__logo'>
-          <Link to='/'><img className='navBar__logo__image' src={logoSmall} alt='logo small' /></Link>
-        </li>
-        <li className='navBar__divider' />
-        <div className='navBar__div__menu'>
-          <p className='navBar__menus__list'><span><List size={22} /></span></p>
-          <nav className='navBar__menu'>
-            <Link to='/' className='navBar__achievements'>Achievements</Link>
-            <Link to='/historic' className='navBar__historic'>Historic</Link>
-            <Link to='/game' className='navBar__ladderLevel'>Game</Link>
-          </nav>
-        </div>
-        <li className='navBar__divider' />
-        <li className='navBar__chats'>
-          <Link to='/' className='navBar__chats__link'>
-            <Chats className='navBar__chats__icon' />
-            <p className="navBar__chats__text">
-              Chats
-            </p>
-          </Link>
-        </li>
-        <li>
-          <div className='navBar__user'>
-            <div
-              className='navBar__user__icon'
-              style={{ 'backgroundImage': `url(${imgUrl})` }}
-            >
-            </div>
-            <div className='navBar__user__name'>
-              <Link to='/profile'>{name}</Link>
-            </div>
-          </div>
-        </li>
+    <>
+      <div className='navBar'>
+        <ul className='navBar__list'>
 
-        <li className='navBar__logout' onClick={handleLogOut}>
-          <SignOut size={22} />
-          Log-out
-        </li>
+          <li className='navBar__logo'>
+            <Link to='/'>
+              <img src={logoSmall} alt='logo small' />
+            </Link>
+          </li>
 
-      </ul>
-    </div >
+          <li className='navBar__divider' />
+
+          <li className='navBar__pages' onClick={(e) => handleClickInside(e)}>
+            <div className='navBar__menu__icon'>
+              <List id='navBar__menu__icon' size={40} className='navBar__icons' />
+            </div>
+            <nav ref={menuRef} className='navBar__menu'
+              style={{ top: (menuVisible ? '97px' : '-165px') }}>
+              <Link to='/game' className='navBar__icons'>
+                <GameController size={32} />
+                Game
+              </Link>
+              <Link to='/chat' className='navBar__icons'>
+                <Chats size={32} />
+                <p>Chats</p>
+              </Link>
+            </nav>
+          </li>
+
+          <li className='navBar__divider' />
+
+          <li className='navBar__notify' onClick={(e) => handleClickInside(e)}>
+            <div id='navBar__notify__icon' className='navBar__notify__icon'>
+              {intraData.notify.length == 0 ?
+                <Bell id='navBar__notify__icon'
+                  className='navBar__icons' size={40} />
+                :
+                <>
+                  <BellRinging id='navBar__notify__icon'
+                    className='navBar__icons' size={40} />
+                  <div id='navBar__notify__icon'
+                    className='notify__icon__notEmpty'>
+                    {intraData.notify.length < 99 ? intraData.notify.length : 99}
+                  </div>
+                </>
+              }
+            </div>
+            <div ref={notifyRef} className='navBar__notify__body'
+              style={{ top: (notifyVisible ? '97px' : '-300px') }}>
+              <Notifications />
+            </div>
+          </li>
+
+          <li>
+            <Link to='/profile'>
+              <div
+                className='navBar__profile'
+                style={{ backgroundImage: `url(${intraData.image_url})` }}
+              />
+            </Link>
+          </li >
+
+
+          <li className='navBar__logout navBar__icons' onClick={handleLogOut}>
+            <SignOut size={32} />
+            Log-out
+          </li>
+
+        </ul >
+      </div >
+      <Children />
+    </>
+
   );
 }

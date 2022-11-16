@@ -77,14 +77,13 @@ export class GameGateway
   @SubscribeMessage('join-game')
   async joinGame(@ConnectedSocket() user: Socket, @MessageBody() name: string) {
     const index = this.checkGameArray();
+
     const game = this.queue[index];
     if (game.player1.socketId === '') {
       game.player1.socketId = user.id;
       game.player1.name = name;
       user.join(game.room.toString());
-      this.io
-        .to(game.room.toString())
-        .emit('update-game', game.getGameDto());
+      this.io.to(game.room.toString()).emit('update-game', game.getGameDto());
       this.logger.debug(
         `Player one connected name: ${name} socket id:${user.id} Game room:${game.room}`
       );

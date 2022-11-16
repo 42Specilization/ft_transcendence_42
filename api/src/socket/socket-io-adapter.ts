@@ -20,10 +20,10 @@ export class SocketIOAdapter extends IoAdapter {
   }
 
   /**
-   * 
+   *
    * @param port Port to stand up the socket
    * @param options Configs of the server.
-   * @returns 
+   * @returns
    */
   override createIOServer(port: number, options?: ServerOptions) {
     const clientPort = this.configService.get('CLIENT_PORT');
@@ -46,6 +46,7 @@ export class SocketIOAdapter extends IoAdapter {
 
     const server: Server = super.createIOServer(port, optionsWithCORS);
     //set middleware configuration of nestjs to socket with namespace game
+    server.of('chat').use(createTokenMiddleware(jwtService, this.logger));
     server.of('game').use(createTokenMiddleware(jwtService, this.logger));
     return (server);
   }
@@ -53,10 +54,10 @@ export class SocketIOAdapter extends IoAdapter {
 
 /**
  * function to validate the token received on socket connection.
- * 
+ *
  * @param jwtService Service JWT to work with.
  * @param logger Logger instance to work with.
- * @returns 
+ * @returns
  */
 const createTokenMiddleware =
   (jwtService: JwtService, logger: Logger) =>

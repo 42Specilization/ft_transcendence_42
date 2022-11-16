@@ -9,12 +9,15 @@ import {
   UpdateDateColumn,
   ManyToMany,
   JoinTable,
+  OneToMany
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail } from 'class-validator';
 import { GameEntity } from 'src/game/entities/game.entity';
+import { Notify } from 'src/notification/entities/notify.entity';
+import { Relations } from 'src/relations/entity/relations.entity';
 
 @Entity()
 @Unique(['email', 'nick'])
@@ -89,6 +92,14 @@ export class User extends BaseEntity {
   @ManyToMany(() => GameEntity, { cascade: true })
   @JoinTable()
   games: GameEntity[];
+
+  @OneToMany(() => Notify, (notify) => notify.user_target, { cascade: ['insert'] })
+  notify: Notify[];
+  
+  @ApiProperty()
+  @OneToMany(() => Relations, (relations) => relations.active_user, { cascade: ['insert', 'update'] })
+  relations: Relations[];
+
 
   async checkToken(token: string): Promise<boolean> {
     try {

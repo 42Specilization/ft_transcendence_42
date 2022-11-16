@@ -49,15 +49,15 @@ const state = proxy<AppState>({
   get me() {
     const localStore = window.localStorage.getItem('userData');
     if (!localStore) {
-      return (undefined);
+      return undefined;
     }
     const data: IntraData = JSON.parse(localStore);
     const myData = {
       name: data.login,
-      id: this.socket?.id
+      id: this.socket?.id,
     };
-    return (myData);
-  }
+    return myData;
+  },
 });
 
 const actions = {

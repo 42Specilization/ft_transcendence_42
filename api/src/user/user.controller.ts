@@ -1,4 +1,19 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Post, UseGuards, UseInterceptors, UploadedFile, ValidationPipe, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Patch,
+  Post,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  ValidationPipe,
+  UnauthorizedException,
+  InternalServerErrorException,
+  BadRequestException
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
@@ -13,11 +28,19 @@ import * as nodemailer from 'nodemailer';
 import { smtpConfig } from '../config/smtp';
 import { UserDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
+import { FriendRequestDto } from './dto/friend-request.dto';
+// import axios from 'axios';
+import { GetFriendDto } from './dto/get-friend.dto';
+import { NotifyHandlerDto } from 'src/notification/dto/notify-dto';
+// import { NotificationService } from 'src/notification/notification.service';
 
 @Controller('user')
 @ApiTags('user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(
+    private readonly userService: UserService,
+    // private readonly notificationService: NotificationService
+  ) { }
 
   @Post()
   @ApiBody({ type: CreateUserDto })
@@ -35,7 +58,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async turnOnTfa(
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
-    @GetUserFromJwt() userFromJwt : UserFromJwt,
+    @GetUserFromJwt() userFromJwt: UserFromJwt,
   ) {
     await this.userService.updateUser(updateUserDto, userFromJwt.email);
     return { message: 'turned on' };
@@ -47,7 +70,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async turnOffTfa(
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
-    @GetUserFromJwt() userFromJwt : UserFromJwt,
+    @GetUserFromJwt() userFromJwt: UserFromJwt,
   ) {
     this.userService.updateUser(updateUserDto, userFromJwt.email);
     return { message: 'turned off' };
@@ -59,10 +82,10 @@ export class UserController {
   @ApiBody({ type: UpdateUserDto })
   async validateTFACode(
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
-    @GetUserFromJwt() userFromJwt : UserFromJwt,
+    @GetUserFromJwt() userFromJwt: UserFromJwt,
   ) {
     const user = await this.userService.getUser(userFromJwt.email);
-    if (!bcrypt.compareSync(updateUserDto.tfaCode as string, user.tfaCode as string)){
+    if (!bcrypt.compareSync(updateUserDto.tfaCode as string, user.tfaCode as string)) {
       throw new UnauthorizedException('Invalid Code');
     }
     return ({
@@ -75,13 +98,13 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async validateEmailTFA(
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
-    @GetUserFromJwt() userFromJwt : UserFromJwt,
+    @GetUserFromJwt() userFromJwt: UserFromJwt,
   ) {
 
-    function generateCode(){
+    function generateCode() {
       let code = '';
       const avaliableChar = '1234567890abcdefghijklmnopqrstuvwxyz';
-      for (let i = 0; i < 6; i++){
+      for (let i = 0; i < 6; i++) {
         code += avaliableChar.charAt(Math.floor(Math.random() * avaliableChar.length));
       }
       return code;
@@ -107,7 +130,7 @@ export class UserController {
       await transporter.sendMail({
         text: `Your validation code is ${sendedCode}`,
         subject: 'Verify Code from Transcendence',
-        from:process.env['TFA_EMAIL_FROM'],
+        from: process.env['TFA_EMAIL_FROM'],
         to: [user.tfaEmail as string]
       });
     } else {
@@ -122,8 +145,11 @@ export class UserController {
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt,
   ) {
+    // const user =
+    await this.userService.getUserDTO(userFromJwt.email);
     await this.userService.updateUser(updateUserDto, userFromJwt.email);
-    return { message: 'succes' };
+    // await this.notificationService.updateNotificationLogin(user.login, updateUserDto.nick as string);
+    return { message: 'success' };
   }
 
   @Get()
@@ -136,8 +162,31 @@ export class UserController {
   @Get('me')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
-  async getUser( @GetUserFromJwt() userFromJwt : UserFromJwt): Promise<UserDto> {
+  async getUser(@GetUserFromJwt() userFromJwt: UserFromJwt): Promise<UserDto> {
     return (await this.userService.getUserDTO(userFromJwt.email));
+  }
+
+  @Patch('friend')
+  @HttpCode(HttpStatus.OK)
+  // @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: GetFriendDto })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async getfriend(@Body() getFriendDto: GetFriendDto): Promise<any> {
+    // console.log('getFriend', getFriendDto);
+    const userValidate = await this.userService.findUserByNick(getFriendDto.nick);
+    if (userValidate) {
+      const friendData = {
+        image_url: userValidate.imgUrl,
+        login: userValidate.nick,
+        matches: userValidate.matches,
+        wins: userValidate.wins,
+        lose: userValidate.lose,
+        name: userValidate.usual_full_name,
+      };
+      return (friendData);
+    }
+    throw new BadRequestException('friend not found');
+
   }
 
   /* This method is used to update the user's image. */
@@ -167,7 +216,83 @@ export class UserController {
     const updateUserDto: UpdateUserDto = { imgUrl: file.originalname };
     this.userService.updateUser(updateUserDto, userFromJwt.email);
     return { message: 'succes', path: file.path };
+  }
 
+  @Patch('/sendFriendRequest')
+  @UseGuards(JwtAuthGuard)
+  async sendFriendRequest(
+    @Body(ValidationPipe) friendRequestDto: FriendRequestDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    console.log(friendRequestDto);
+    await this.userService.sendFriendRequest(userFromJwt.email, friendRequestDto.nick);
+    return { message: 'success' };
+  }
+
+  @Patch('/removeNotify')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: NotifyHandlerDto })
+  async removeNotify(
+    @Body(ValidationPipe) notifyHandlerDto: NotifyHandlerDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.userService.popNotification(userFromJwt.email, notifyHandlerDto.id);
+    return { message: 'success' };
+  }
+
+  @Patch('/acceptFriend')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: NotifyHandlerDto })
+  async acceptFriend(
+    @Body(ValidationPipe) notifyHandlerDto: NotifyHandlerDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.userService.acceptFriend(userFromJwt.email, notifyHandlerDto.id);
+    return { message: 'success' };
+  }
+
+  @Patch('/blockUserByNotification')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: NotifyHandlerDto })
+  async blockUserByNotification(
+    @Body(ValidationPipe) notifyHandlerDto: NotifyHandlerDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.userService.blockUserByNotification(userFromJwt.email, notifyHandlerDto.id);
+    return { message: 'success' };
+  }
+
+  @Patch('/removeFriend')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: GetFriendDto })
+  async removeFriend(
+    @Body(ValidationPipe) getFriendDto: GetFriendDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.userService.removeFriend(userFromJwt.email, getFriendDto.nick);
+    return { message: 'success' };
+  }
+  
+  @Patch('/addBlocked')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: GetFriendDto })
+  async addBlocked(
+    @Body(ValidationPipe) getFriendDto: GetFriendDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.userService.addBlocked(userFromJwt.email, getFriendDto.nick);
+    return { message: 'success' };
+  }
+
+  @Patch('/removeBlocked')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: GetFriendDto })
+  async removeBlocked(
+    @Body(ValidationPipe) getFriendDto: GetFriendDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.userService.removeBlocked(userFromJwt.email, getFriendDto.nick);
+    return { message: 'success' };
   }
 
 }

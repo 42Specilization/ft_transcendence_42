@@ -1,7 +1,7 @@
-@import '../../styles/variables.scss';
+@import '../../styles/global.scss';
 
 .gameMenu__watchGame {
-  @include flexCenter(flex-start, column);
+  @include displayFlex(flex-start, column);
   padding: 15px ;
   gap: 17px;
   height: 100%;
@@ -18,7 +18,7 @@
   overflow-y: auto;
   height: auto;
   li {
-    @include flexCenter(center);
+    @include displayFlex(center);
     margin-top: 20px;
     background-color: $secondaryColor;
     border-radius: 5px;
