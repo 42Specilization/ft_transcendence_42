@@ -170,6 +170,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   // @UseGuards(JwtAuthGuard)
   @ApiBody({ type: GetFriendDto })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getfriend(@Body() getFriendDto: GetFriendDto): Promise<any> {
     // console.log('getFriend', getFriendDto);
     const userValidate = await this.userService.findUserByNick(getFriendDto.nick);

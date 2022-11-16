@@ -40,7 +40,6 @@ export function UserCardFriend({ friend, setActiveFriend }: UserCardFriendProps)
   async function handleRemoveFriend() {
 
     await api.patch('/user/removeFriend', { nick: friend.login }, config);
-    console.log('enviou')
     setIntraData((prevIntraData) => {
       return {
         ...prevIntraData,

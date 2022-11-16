@@ -72,12 +72,6 @@ export function ChatFriends({ setActiveFriend }: ChatFriendsProps) {
           data-html={true}
           data-tip={'Search Friend'} />
 
-        {/* <div className='chat__friends__header__icon__block'
-          data-html={true}
-          data-tip={'Blocked'}>
-          <UserCircle className='chat__friends__header__icon' size={40} />
-        </div> */}
-
         <div
           className='chat__friends__header__menu'
         >
@@ -91,8 +85,17 @@ export function ChatFriends({ setActiveFriend }: ChatFriendsProps) {
           {
             <div className='chat__friends__header__menu__body'
               style={{ height: isTableUsersMenu ? '90px' : '0px' }}>
-              <button className='chat__friends__header__menu__button' onClick={() => setIsTableUsers('friends')}>Friends</button>
-              <button className='chat__friends__header__menu__button' onClick={() => setIsTableUsers('blocked')}>Blocked</button>
+              <button className='chat__friends__header__menu__button' onClick={() => {
+                setIsTableUsers('friends');
+                setIsTableUsersMenu(false);
+              }
+              }>Friends</button>
+              <button className='chat__friends__header__menu__button' onClick={() => {
+                setIsTableUsers('blocked');
+                setIsTableUsersMenu(false);
+              }
+
+              }>Blocked</button>
             </div>
           }
         </div>
