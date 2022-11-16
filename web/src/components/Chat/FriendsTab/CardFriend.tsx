@@ -1,4 +1,4 @@
-import './UserCardFriend.scss';
+import './CardFriend.scss';
 import { FriendData } from '../../../Interfaces/interfaces';
 import { Dispatch, SetStateAction, useContext, useMemo, useState } from 'react';
 import { DotsThreeVertical, Prohibit, Sword, UserMinus } from 'phosphor-react';

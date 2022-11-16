@@ -1,4 +1,4 @@
-import './UserCardBlocked.scss';
+import './CardBlocked.scss';
 import { BlockedData } from '../../../Interfaces/interfaces';
 import { UserMinus } from 'phosphor-react';
 import { useContext, useMemo, useState } from 'react';
@@ -32,7 +32,7 @@ export function UserCardBlocked({ blocked }: UserCardBlockedProps) {
     baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
   }), []);
 
-  async function handleUnblock(){
+  async function handleUnblock() {
     await api.patch('/user/removeBlocked', { nick: blocked.login }, config);
     setIntraData((prevIntraData) => {
       return {
@@ -42,13 +42,13 @@ export function UserCardBlocked({ blocked }: UserCardBlockedProps) {
     });
     // currentStateStatus.socket?.emit('removeBlocked', blocked.login);
   }
-  
+
 
 
 
   return (
-    <div className='user__card__blocked'  onClick={() => setIsTableFriendUsersMenu(prev => !prev)}>
-      
+    <div className='user__card__blocked' onClick={() => setIsTableFriendUsersMenu(prev => !prev)}>
+
       <div className="user__card__blocked__div">
         <div
           className='user__card__blocked__icon'
@@ -58,7 +58,7 @@ export function UserCardBlocked({ blocked }: UserCardBlockedProps) {
       </div>
 
       <div className="user__card__blocked__menu">
-        <div 
+        <div
           className="user__card__blocked__menu__body"
           style={{ height: isTableFriendUsersMenu ? '55px' : '0px', width: isTableFriendUsersMenu ? '90px' : '0px' }}
         >

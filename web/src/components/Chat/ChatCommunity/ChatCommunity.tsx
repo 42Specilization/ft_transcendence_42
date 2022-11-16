@@ -1,7 +1,7 @@
 import './ChatCommunity.scss';
 import { FriendData } from '../../../Interfaces/interfaces';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { ChatFriends } from './ChatFriends';
+import { FriendTab } from '../FriendsTab/FriendsTab';
 
 interface ChatCommunityProps {
   setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
@@ -35,7 +35,7 @@ export function ChatCommunity({ setActiveFriend }: ChatCommunityProps) {
       <div className='chat__community__body'>
         {(() => {
           if (tableSelected === 'Friends')
-            return <ChatFriends setActiveFriend={setActiveFriend} />;
+            return <FriendTab setActiveFriend={setActiveFriend} />;
           else if (tableSelected === 'Directs')
             return <> </>;
           else

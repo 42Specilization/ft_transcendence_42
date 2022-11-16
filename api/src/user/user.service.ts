@@ -149,7 +149,7 @@ export class UserService {
       }),
       friends: user.relations.filter((rel) => rel.type === 'friend').map((rel) => {
         return {
-          status: rel.type,
+          status: 'offline',
           login: rel.passive_user.nick,
           image_url: rel.passive_user.imgUrl,
         };
@@ -223,6 +223,19 @@ export class UserService {
   }
 
 
+  isBlocked(user_passive: User, user_active: User) {
+    const blocked = user_active.relations.filter((friendRelation) => {
+      if (friendRelation.type == 'blocked' && friendRelation.passive_user.nick == user_passive.nick)
+        return friendRelation;
+      return;
+    });
+
+    if (blocked.length > 0)
+      return true;
+    return false;
+  }
+
+
   /**
    * It sends a friend request to a user
    * @param {string} user_email - string - the email of the user who sent the request
@@ -244,19 +257,20 @@ export class UserService {
     if (friend.notify?.length === 0) {
       friend.notify = [];
     }
-    const duplicated = friend.notify.filter((friendNotify) =>{
+    const duplicated = friend.notify.filter((friendNotify) => {
       if (friendNotify.type == newNotify.type && friendNotify.user_source.nick == newNotify.user_source.nick)
         return friendNotify;
-      return ;
+      return;
     });
 
     console.log(duplicated.length);
     if (duplicated.length > 0)
       throw new BadRequestException('This user already your order');
 
+    if (this.isBlocked(user, friend) == true)
+      return;
 
     friend.notify?.push(newNotify);
-
     try {
       friend.save();
     } catch (err) {
@@ -265,11 +279,11 @@ export class UserService {
   }
 
   /**
-  * It finds a user by email, filters out the notification with the given id, and saves the user
-  * @param {string} email - string - The email of the user you want to find.
-  * @param {string} id - the id of the notification
-  * @returns The user is being returned.
-  */
+* It finds a user by email, filters out the notification with the given id, and saves the user
+* @param {string} email - string - The email of the user you want to find.
+* @param {string} id - the id of the notification
+* @returns The user is being returned.
+*/
   async popNotification(email: string, id: string) {
     const user = await this.findUserByEmail(email) as User;
     user.notify = user.notify.filter((notify) => {
@@ -286,11 +300,11 @@ export class UserService {
   }
 
   /**
-   * It accepts a friend request
-   * @param {string} email - string - the email of the user who will accept the friend request
-   * @param {string} id - the id of the notification
-   * @returns nothing.
-   */
+ * It accepts a friend request
+ * @param {string} email - string - the email of the user who will accept the friend request
+ * @param {string} id - the id of the notification
+ * @returns nothing.
+ */
   async acceptFriend(email: string, id: string) {
     const user = await this.findUserByEmail(email) as User;
 
@@ -325,13 +339,13 @@ export class UserService {
   }
 
   /**
-   * It receives an email and an id, finds the user by email, finds the notification by id, finds the
-   * user who sent the notification, creates a new relation, adds the relation to the user's relations,
-   * saves the user, and pops the notification
-   * @param {string} email - string, id: string
-   * @param {string} id - the id of the notification
-   * @returns The user is being returned.
-   */
+ * It receives an email and an id, finds the user by email, finds the notification by id, finds the
+ * user who sent the notification, creates a new relation, adds the relation to the user's relations,
+ * saves the user, and pops the notification
+ * @param {string} email - string, id: string
+ * @param {string} id - the id of the notification
+ * @returns The user is being returned.
+ */
   async blockUserByNotification(email: string, id: string) {
     const user = await this.findUserByEmail(email) as User;
 
@@ -360,11 +374,11 @@ export class UserService {
 
 
   /**
-   * It removes a friend from the user's friend list and vice-versa
-   * @param {string} email - string, friend_login: string
-   * @param {string} friend_login - string - the login of the user you want to add as a friend
-   * @returns The user's friends
-   */
+ * It removes a friend from the user's friend list and vice-versa
+ * @param {string} email - string, friend_login: string
+ * @param {string} friend_login - string - the login of the user you want to add as a friend
+ * @returns The user's friends
+ */
   async removeFriend(email: string, friend_login: string) {
     const user = await this.findUserByEmail(email) as User;
 
@@ -392,11 +406,11 @@ export class UserService {
   }
 
   /**
-   * It removes a friend from the user's friend list and adds the friend to the user's blocked list
-   * @param {string} email - string, friend_login: string
-   * @param {string} friend_login - string
-   * @returns the user object.
-   */
+ * It removes a friend from the user's friend list and adds the friend to the user's blocked list
+ * @param {string} email - string, friend_login: string
+ * @param {string} friend_login - string
+ * @returns the user object.
+ */
   async addBlocked(email: string, friend_login: string) {
     const user = await this.findUserByEmail(email) as User;
 
@@ -431,11 +445,11 @@ export class UserService {
   }
 
   /**
-   * It removes a blocked user from the user's blocked list
-   * @param {string} email - string - the email of the user who is blocking the other user
-   * @param {string} friend_login - the login of the user you want to unblock
-   * @returns The user's relations array is being filtered to remove the blocked relation.
-   */
+ * It removes a blocked user from the user's blocked list
+ * @param {string} email - string - the email of the user who is blocking the other user
+ * @param {string} friend_login - the login of the user you want to unblock
+ * @returns The user's relations array is being filtered to remove the blocked relation.
+ */
   async removeBlocked(email: string, friend_login: string) {
     const user = await this.findUserByEmail(email) as User;
 

@@ -74,6 +74,24 @@ const actionsStatus = {
     }
   },
 
+  sortFriends() {
+    if (stateStatus.setIntraData) {
+      stateStatus.setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData, friends: prevIntraData.friends.sort((a, b) => {
+            if (a.status !== b.status) {
+              if (a.status === 'offline')
+                return 1;
+              if (b.status === 'offline')
+                return -1;
+            }
+            return a.login < b.login ? -1 : 1;
+          })
+        };
+      });
+    }
+  },
+
   loggedUsers(loggedUsers: UserData[]) {
     if (stateStatus.setIntraData) {
       stateStatus.setIntraData((prevIntraData) => {
@@ -88,6 +106,7 @@ const actionsStatus = {
           }),
         };
       });
+      this.sortFriends();
     }
   },
 
@@ -102,6 +121,7 @@ const actionsStatus = {
           }),
         };
       });
+      this.sortFriends();
     }
   },
 
@@ -124,6 +144,7 @@ const actionsStatus = {
           }),
         };
       });
+      this.sortFriends();
     }
   },
 
@@ -151,6 +172,7 @@ const actionsStatus = {
           })
         };
       });
+      this.sortFriends();
     }
   },
 

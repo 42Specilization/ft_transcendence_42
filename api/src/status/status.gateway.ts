@@ -50,7 +50,8 @@ export class StatusGateway
     client.emit('loggedUsers', Array.from(this.mapUserData.getValues()));
     client.emit('getUserNotification', login);
     if (this.mapUserData.keyOf(newUser.login).length == 1) {
-      client.broadcast.emit('updateUser', newUser);
+      setTimeout(() => { client.broadcast.emit('updateUser', newUser); }, 5000);
+      // client.broadcast.emit('updateUser', newUser);
     }
     this.logger.debug(`iAmOnline => Client: ${client.id}, email: |${newUser.login}|`);
     this.mapUserData.debug();
