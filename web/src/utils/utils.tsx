@@ -115,6 +115,7 @@ export async function getUserInDb(): Promise<IntraData> {
 
 export async function getIntraData(setIntraData: Dispatch<SetStateAction<IntraData>>) {
   const data = await getUserInDb();
+  console.log('data',data);
   window.localStorage.removeItem('userData');
   window.localStorage.setItem('userData', JSON.stringify(data));
   setIntraData(data);
@@ -162,4 +163,5 @@ export const defaultIntra: IntraData = {
   friends: [],
   blockeds: [],
   notify: [],
+  directs: [],
 };

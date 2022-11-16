@@ -25,6 +25,19 @@ export interface BlockedData {
   image_url: string;
 }
 
+export interface DirectUserData {
+  login: string;
+  image_url: string;
+}
+
+export interface DirectData {
+  id: string;
+  type: string;
+  name?: string;
+  image?: string;
+  users: DirectUserData[];
+}
+
 export interface IntraData {
   first_name: string;
   email: string;
@@ -36,9 +49,10 @@ export interface IntraData {
   lose: string;
   isTFAEnable: boolean;
   tfaValidated: boolean;
-  notify: NotifyData[]
+  notify: NotifyData[];
   friends: FriendData[];
   blockeds: BlockedData[];
+  directs: DirectData[]
 }
 
 export interface ErrResponse {

@@ -1,19 +1,19 @@
 import './FriendsTab.scss';
 import { DotsThreeVertical, MagnifyingGlass, UserPlus, X } from 'phosphor-react';
 import { Dispatch, SetStateAction, useContext, useState } from 'react';
-import { FriendData } from '../../../Interfaces/interfaces';
-import { UserCardBlocked } from './CardBlocked';
+import { DirectData } from '../../../Interfaces/interfaces';
+import { CardBlocked } from './CardBlocked';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import ReactTooltip from 'react-tooltip';
-import { UserCardFriend } from './CardFriend';
+import { CardFriend } from './CardFriend';
 import { FriendRequestModal } from './FriendsRequestModal';
 
 
 interface FriendTabProps {
-  setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
+  setActiveChat: Dispatch<SetStateAction<DirectData | null>>;
 }
 
-export function FriendTab({ setActiveFriend }: FriendTabProps) {
+export function FriendTab({ setActiveChat }: FriendTabProps) {
   const { intraData } = useContext(IntraDataContext);
 
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
@@ -21,6 +21,10 @@ export function FriendTab({ setActiveFriend }: FriendTabProps) {
   const [isTableSearch, setIsTableSearch] = useState(false);
   const [isTableUsers, setIsTableUsers] = useState('friends');
   const [searchInput, setSearchInput] = useState('');
+
+  // const [friendSelected, setFriendSelected]
+
+
 
   return (
     < div className='friends__tab' >
@@ -96,14 +100,14 @@ export function FriendTab({ setActiveFriend }: FriendTabProps) {
       <>{isTableUsers === 'friends' ?
         < div className='friends__tab__body'>
           {intraData.friends.filter((obj) => obj.login.includes(searchInput)).map((obj) => (
-            <UserCardFriend key={Math.random()} friend={obj} setActiveFriend={setActiveFriend} />
+            <CardFriend key={Math.random()} friend={obj} setActiveChat={setActiveChat} />
           ))
           }
         </div>
         :
         <div className='friends__tab__body'>
           {intraData.blockeds.sort((a, b) => a.login < b.login ? -1 : 1).map((obj) => (
-            <UserCardBlocked key={Math.random()} blocked={obj} />
+            <CardBlocked key={Math.random()} blocked={obj} />
           ))
           }
         </div>

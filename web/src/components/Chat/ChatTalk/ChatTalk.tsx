@@ -1,5 +1,5 @@
 import './ChatTalk.scss';
-import { FriendData, IntraData } from '../../../Interfaces/interfaces';
+import { DirectData, FriendData, IntraData } from '../../../Interfaces/interfaces';
 import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react';
 import { ArrowBendUpLeft, PaperPlaneRight } from 'phosphor-react';
 import { ChatMessage } from './ChatMessage';
@@ -11,8 +11,8 @@ import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModa
 import ReactTooltip from 'react-tooltip';
 
 interface ChatTalkProps {
-  activeFriend: FriendData | null;
-  setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
+  activeChat: DirectData | null;
+  setActiveChat: Dispatch<SetStateAction<FriendData | null>>;
 }
 
 export interface ChatMsg {
@@ -22,7 +22,7 @@ export interface ChatMsg {
   date: Date;
 }
 
-export function ChatTalk({ activeFriend, setActiveFriend }: ChatTalkProps) {
+export function ChatTalk({ activeChat, setActiveChat }: ChatTalkProps) {
 
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
   // const { intraData, setIntraData } = useContext(IntraDataContext);
@@ -94,22 +94,22 @@ export function ChatTalk({ activeFriend, setActiveFriend }: ChatTalkProps) {
 
   return (
     <div className='chat__talk'>
-      {activeFriend != null &&
+      {activeChat != null &&
         <>
           <div className='chat__talk__header'>
-            <ArrowBendUpLeft size={32}  onClick={()=> setActiveFriend(null)}/>
+            <ArrowBendUpLeft size={32} onClick={() => setActiveChat(null)} />
             <div
-              className='chat__talk__header__user' 
+              className='chat__talk__header__user'
               onClick={() => setFriendProfileVisible(true)}
               data-html={true}
-              data-tip={`${activeFriend.login} profile`}
+              data-tip={`${activeChat.name} profile`}
             >
               <div
                 className='chat__talk__header__user__icon'
-                style={{ backgroundImage: `url(${activeFriend.image_url})` }}
+                style={{ backgroundImage: `url(${activeChat.image})` }}
               />
               <div className='chat__talk__header__user__name'>
-                {activeFriend.login}
+                {activeChat.name}
               </div>
             </div>
           </div>
@@ -121,9 +121,9 @@ export function ChatTalk({ activeFriend, setActiveFriend }: ChatTalkProps) {
             ))} */}
           </div>
           {friendProfileVisible &&
-          <ProfileFriendModal
-            login={activeFriend.login}
-            setFriendProfileVisible={setFriendProfileVisible} />
+            <ProfileFriendModal
+              login={activeChat.name as string}
+              setFriendProfileVisible={setFriendProfileVisible} />
           }
           <form className='chat__talk__footer' onSubmit={handleKeyEnter}>
             <input

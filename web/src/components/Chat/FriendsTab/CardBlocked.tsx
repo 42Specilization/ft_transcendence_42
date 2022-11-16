@@ -8,11 +8,11 @@ import { IntraDataContext } from '../../../contexts/IntraDataContext';
 // import { stateStatus } from '../../../status/statusState';
 import axios from 'axios';
 
-interface UserCardBlockedProps {
+interface CardBlockedProps {
   blocked: BlockedData;
 }
 
-export function UserCardBlocked({ blocked }: UserCardBlockedProps) {
+export function CardBlocked({ blocked }: CardBlockedProps) {
 
   const [isTableFriendUsersMenu, setIsTableFriendUsersMenu] = useState(false);
   // const currentStateStatus = useSnapshot(stateStatus);
@@ -47,23 +47,23 @@ export function UserCardBlocked({ blocked }: UserCardBlockedProps) {
 
 
   return (
-    <div className='user__card__blocked' onClick={() => setIsTableFriendUsersMenu(prev => !prev)}>
+    <div className='card__blocked' onClick={() => setIsTableFriendUsersMenu(prev => !prev)}>
 
-      <div className="user__card__blocked__div">
+      <div className="card__blocked__div">
         <div
-          className='user__card__blocked__icon'
+          className='card__blocked__icon'
           style={{ backgroundImage: `url(${blocked.image_url})` }}>
         </div>
-        <div className='user__card__blocked__name'>{blocked.login}</div>
+        <div className='card__blocked__name'>{blocked.login}</div>
       </div>
 
-      <div className="user__card__blocked__menu">
+      <div className="card__blocked__menu">
         <div
-          className="user__card__blocked__menu__body"
+          className="card__blocked__menu__body"
           style={{ height: isTableFriendUsersMenu ? '55px' : '0px', width: isTableFriendUsersMenu ? '90px' : '0px' }}
         >
           <button
-            className='user__card__blocked__menu__button'
+            className='card__blocked__menu__button'
             onClick={handleUnblock}
             data-html={true}
             data-tip={'Unblock'}

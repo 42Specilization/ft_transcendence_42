@@ -95,7 +95,7 @@ export class User extends BaseEntity {
   games: GameEntity[];
 
   @JoinTable()
-  @ManyToMany(() => Chat, (chat) => chat.users, { cascade: ['insert'] })
+  @ManyToMany(() => Chat, (chat) => chat.users)
   chats: Chat[];
 
   @ApiProperty()

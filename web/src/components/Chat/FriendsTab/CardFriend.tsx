@@ -8,18 +8,18 @@ import axios from 'axios';
 import { useSnapshot } from 'valtio';
 import { stateStatus } from '../../../status/statusState';
 
-interface UserCardFriendProps {
+interface CardFriendProps {
   friend: FriendData;
   setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
 }
 
-export function UserCardFriend({ friend, setActiveFriend }: UserCardFriendProps) {
+export function CardFriend({ friend, setActiveFriend }: CardFriendProps) {
   const [isTableFriendUsersMenu, setIsTableFriendUsersMenu] = useState(false);
   const currentStateStatus = useSnapshot(stateStatus);
   const { setIntraData } = useContext(IntraDataContext);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function selectActiveFriend(e: any) {
-    if (e.target.id !== 'user__card__friend__menu') {
+    if (e.target.id !== 'card__friend__menu') {
       setActiveFriend(friend);
     }
   }
@@ -65,33 +65,33 @@ export function UserCardFriend({ friend, setActiveFriend }: UserCardFriendProps)
   }
 
   return (
-    <div className='user__card__friend'
+    <div className='card__friend'
       onClick={(e) => selectActiveFriend(e)}
     >
-      <div className='user__card__friend__div'>
+      <div className='card__friend__div'>
         <div
-          className='user__card__friend__icon'
+          className='card__friend__icon'
           style={{ backgroundImage: `url(${friend.image_url})` }}
         >
-          <div className='user__card__friend__status'
+          <div className='card__friend__status'
             style={{ backgroundColor: friend.status === 'online' ? 'green' : 'rgb(70, 70, 70)' }}>
           </div>
         </div>
-        <div className='user__card__friend__name'>{friend.login}</div>
+        <div className='card__friend__name'>{friend.login}</div>
       </div>
 
-      <div id='user__card__friend__menu' className='user__card__friend__menu'>
+      <div id='card__friend__menu' className='card__friend__menu'>
 
-        <div className='user__card__friend__menu__body'
+        <div className='card__friend__menu__body'
           style={{ height: isTableFriendUsersMenu ? '145px' : '0px', width: isTableFriendUsersMenu ? '80px' : '0px' }}>
-          <button className='user__card__friend__menu__button'
+          <button className='card__friend__menu__button'
             onClick={() => console.log('chamou', friend.login, 'pra um desafio')}
             data-html={true}
             data-tip={'Challenge'}>
             <Sword size={32} />
           </button>
           <button
-            className='user__card__friend__menu__button'
+            className='card__friend__menu__button'
             onClick={handleRemoveFriend}
             data-html={true}
             data-tip={'Remove Friend'}
@@ -99,7 +99,7 @@ export function UserCardFriend({ friend, setActiveFriend }: UserCardFriendProps)
             <UserMinus size={32} />
           </button>
 
-          <button className='user__card__friend__menu__button'
+          <button className='card__friend__menu__button'
             onClick={handleBlockFriend}
             data-html={true}
             data-tip={'Block'}
@@ -110,7 +110,7 @@ export function UserCardFriend({ friend, setActiveFriend }: UserCardFriendProps)
         </div>
 
         <DotsThreeVertical
-          id='user__card__friend__menu'
+          id='card__friend__menu'
           className='chat__friends__header__icon'
           size={40}
           onClick={() => setIsTableFriendUsersMenu(prev => !prev)}

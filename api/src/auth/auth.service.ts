@@ -46,7 +46,7 @@ export class AuthService {
    * @returns User data.
    */
   async getUserInfos(data: UserFromJwt): Promise<UserDto> {
-    const UserDto = await this.userService.getUserDTO(data.email);
+    const userDto = await this.userService.getUserDTO(data.email);
     // const UserDto: UserDto = {
     //   email: user.email,
     //   first_name: user.first_name,
@@ -72,7 +72,7 @@ export class AuthService {
     // }
     // UserDto.friends.sort((a, b) => a.login < b.login ? -1 : 1);
 
-    return (UserDto);
+    return (userDto);
   }
 
   /**
@@ -107,6 +107,7 @@ export class AuthService {
           notify: [],
           friends: [],
           blockeds: [],
+          directs:[],
         });
       }).catch(err => {
         if (err.code == 'ERR_BAD_REQUEST')

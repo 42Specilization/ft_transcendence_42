@@ -1,3 +1,4 @@
+import { DirectDto } from 'src/chat/dto/chat.dto';
 import { NotifyDto } from 'src/notification/dto/notify-dto';
 import { BlockedDto, FriendsDto } from 'src/relations/dto/relations-dto';
 
@@ -15,4 +16,5 @@ export class UserDto {
   notify: NotifyDto[];
   friends: FriendsDto[];
   blockeds: BlockedDto[];
+  directs: DirectDto[];
 }

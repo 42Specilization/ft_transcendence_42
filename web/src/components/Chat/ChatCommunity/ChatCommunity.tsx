@@ -1,15 +1,22 @@
 import './ChatCommunity.scss';
-import { FriendData } from '../../../Interfaces/interfaces';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { DirectData } from '../../../Interfaces/interfaces';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { FriendTab } from '../FriendsTab/FriendsTab';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { DirectTab } from '../DirectTab/DirectTab';
 
 interface ChatCommunityProps {
-  setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
+  setActiveChat: Dispatch<SetStateAction<DirectData | null>>;
 }
 
-export function ChatCommunity({ setActiveFriend }: ChatCommunityProps) {
+export function ChatCommunity({ setActiveChat }: ChatCommunityProps) {
 
   const [tableSelected, setTableSelected] = useState('Friends');
+  const { intraData } = useContext(IntraDataContext);
+
+  useEffect(() => {
+    console.log(intraData);
+  }, []);
 
   return (
     <div className='chat__community'>
@@ -35,9 +42,9 @@ export function ChatCommunity({ setActiveFriend }: ChatCommunityProps) {
       <div className='chat__community__body'>
         {(() => {
           if (tableSelected === 'Friends')
-            return <FriendTab setActiveFriend={setActiveFriend} />;
+            return <FriendTab setActiveChat={setActiveChat} />;
           else if (tableSelected === 'Directs')
-            return <> </>;
+            return <DirectTab setActiveChat={setActiveChat} />;
           else
             return <></>;
         })()}

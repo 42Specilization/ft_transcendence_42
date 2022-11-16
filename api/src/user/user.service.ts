@@ -19,14 +19,13 @@ import * as fs from 'fs';
 import { GameEntity } from 'src/game/entities/game.entity';
 import { Notify } from '../notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
-import { Chat } from 'src/chat/entities/chat.entity';
-import { ChatService } from 'src/chat/chat.service';
+// import { Chat } from 'src/chat/entities/chat.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
-     private readonly chatService: ChatService
+    
   ) { }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
@@ -174,6 +173,7 @@ export class UserService {
           date: notify.date,
         };
       }),
+      
       friends: user.relations.filter((rel) => rel.type === 'friend').map((rel) => {
         return {
           status: 'offline',
@@ -181,14 +181,31 @@ export class UserService {
           image_url: rel.passive_user.imgUrl,
         };
       }),
-      blockeds: user.relations.filter((rel) => rel.type === 'blocked').map((rel) => {
-        return {
-          login: rel.passive_user.nick,
-          image_url: rel.passive_user.imgUrl,
-        };
-      }),
-    };
+     
+      blockeds: user.relations.filter((rel) => rel.type === 'blocked')
+        .map((rel) => {
+          return {
+            login: rel.passive_user.nick,
+            image_url: rel.passive_user.imgUrl,
+          };
+        }),
 
+      directs: user.chats.filter((chat)=> chat.type === 'direct')
+        .map((chat) => {
+          return {
+            id: chat.id,
+            type: chat.type,
+            users: chat.users.filter((key) => key.nick != user.nick)
+              .map((key) =>{
+                return {
+                  login: key.nick,
+                  image_url: key.imgUrl,
+                };
+              }),
+          };
+        })
+    };
+    // console.log('userDto', user.chats[0].users);
     return userDto;
   }
 
@@ -495,27 +512,17 @@ export class UserService {
   }
 
 
-  async createChat() {
-    const chat  = new Chat();
-    const gsilva = await this.getUser('gsilva-v@student.42sp.org.br');
-    const mmoreira = await this.getUser('mmoreira@student.42sp.org.br');
-    const mavinici = await this.getUser('mavinici@student.42sp.org.br');
+  // async createChat() {
+  //   // const chat  = new Chat();
+  //   // const gsilva = await this.getUser('gsilva-v@student.42sp.org.br');
+  //   // const mmoreira = await this.getUser('mmoreira@student.42sp.org.br');
+  //   // const mavinici = await this.getUser('mavinici@student.42sp.org.br');
 
-    chat.users = [];
-    chat.type = 'direct';
-    chat.users.push(gsilva);
-    chat.users.push(mmoreira);
-    chat.users.push(mavinici);
-    
+  //   await this.createChat();
+ 
 
-    try {
-      await this.chatService.save(chat);
-    }catch(err){
-      console.log(err);
-    }
-
-    return;
-  }
+  //   return;
+  // }
 
 
   

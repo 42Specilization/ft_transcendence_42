@@ -297,14 +297,15 @@ export class UserController {
 
 
 
-  @Post('/chat')
-  @HttpCode(HttpStatus.CREATED)
-  createChat(): { msg: string } {
-    this.userService.createChat();
-    return ({
-      msg: 'success'
-    });
-  }
+  // @Post('/chat')
+  // @ApiBody({ type: CreateDirectDto })
+  // @HttpCode(HttpStatus.CREATED)
+  // createChat(): { msg: string } {
+  //   // this.userService.createChat();
+  //   return ({
+  //     msg: 'success'
+  //   });
+  // }
 
 
 
