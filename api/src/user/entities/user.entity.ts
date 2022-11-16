@@ -7,14 +7,15 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
   ManyToMany,
-  JoinTable
+  JoinTable,
+  OneToMany
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail } from 'class-validator';
+import { GameEntity } from 'src/game/entities/game.entity';
 import { Notify } from 'src/notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
 import { Chat } from 'src/chat/entities/chat.entity';
@@ -89,6 +90,10 @@ export class User extends BaseEntity {
   isTFAEnable: boolean;
 
   @ApiProperty()
+  @ManyToMany(() => GameEntity, { cascade: true })
+  @JoinTable()
+  games: GameEntity[];
+
   @JoinTable()
   @ManyToMany(() => Chat, (chat) => chat.users, { cascade: ['insert'] })
   chats: Chat[];
@@ -100,6 +105,7 @@ export class User extends BaseEntity {
   @ApiProperty()
   @OneToMany(() => Relations, (relations) => relations.active_user, { cascade: ['insert', 'update'] })
   relations: Relations[];
+
 
   async checkToken(token: string): Promise<boolean> {
     try {

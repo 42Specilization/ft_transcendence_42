@@ -1,39 +1,6 @@
-export interface Paddle {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  color: string;
-}
-
-interface Ball {
-  y: number;
-  x: number;
-  radius: number;
-  speed: number;
-  velocityX: number;
-  velocityY: number;
-  color: string;
-}
-export interface Position {
-  x: number;
-  y: number;
-}
-
-export interface Player {
-  paddle: Paddle;
-  score: number;
-  socketId: string;
-  name: string;
-  quit: boolean;
-}
-
-interface PaddleOrBallSides {
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
-}
+import { CreateGameDto } from './dto/createGame.dto';
+import { GameDto } from './dto/Game.dto';
+import { IPlayer, IScore, IBall, IPaddle, IPaddleOrBallSides } from './interface/game.interfaces';
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
@@ -53,15 +20,18 @@ export class Game {
   waiting: boolean;
   hasStarted: boolean;
   hasEnded: boolean;
-  winner: Player;
+  winner: IPlayer;
   msgEndGame: string;
   paddleIncrement = 5;
   ballSpeed = 5;
   ballVelocityY = 5;
   ballVelocityX = 5;
+  score: IScore = {
+    player1: 0,
+    player2: 0
+  };
 
-
-  player1: Player = {
+  player1: IPlayer = {
     paddle: {
       x: 10,
       y: (CANVAS_HEIGHT / 2) - (100 / 2),
@@ -70,12 +40,11 @@ export class Game {
       color: '#7C1CED'
     },
     socketId: '',
-    score: 0,
     name: '',
     quit: false
   };
 
-  player2: Player = {
+  player2: IPlayer = {
     paddle: {
       x: CANVAS_WIDTH - 20,
       y: (CANVAS_HEIGHT / 2) - (100 / 2),
@@ -84,14 +53,11 @@ export class Game {
       color: '#7C1CED'
     },
     socketId: '',
-    score: 0,
     name: '',
     quit: false
   };
 
-
-
-  ball: Ball = {
+  ball: IBall = {
     x: CANVAS_WIDTH / 2,
     y: CANVAS_HEIGHT / 2,
     radius: 10,
@@ -101,8 +67,8 @@ export class Game {
     color: '#7C1CED'
   };
 
-  paddleSides(paddle: Paddle): PaddleOrBallSides {
-    const paddleSides: PaddleOrBallSides = {
+  paddleSides(paddle: IPaddle): IPaddleOrBallSides {
+    const paddleSides: IPaddleOrBallSides = {
       top: paddle.y,
       bottom: paddle.y + paddle.h,
       left: paddle.x,
@@ -111,8 +77,8 @@ export class Game {
     return (paddleSides);
   }
 
-  ballSides(ball: Ball): PaddleOrBallSides {
-    const ballSides: PaddleOrBallSides = {
+  ballSides(ball: IBall): IPaddleOrBallSides {
+    const ballSides: IPaddleOrBallSides = {
       top: ball.y - ball.radius,
       bottom: ball.y + ball.radius,
       left: ball.x - ball.radius,
@@ -121,7 +87,7 @@ export class Game {
     return (ballSides);
   }
 
-  isPaddleCollision(paddle: Paddle, direction: string): boolean {
+  isPaddleCollision(paddle: IPaddle, direction: string): boolean {
     const player = this.paddleSides(paddle);
     if (direction === 'up' && player.top - this.paddleIncrement < 0) {
       return (true);
@@ -131,7 +97,7 @@ export class Game {
     return (false);
   }
 
-  isBallCollision(paddle: Paddle, ball: Ball) {
+  isBallCollision(paddle: IPaddle, ball: IBall) {
     const player = this.paddleSides(paddle);
     const ballSides = this.ballSides(ball);
 
@@ -147,7 +113,7 @@ export class Game {
   }
 
   checkWinner(): boolean {
-    if (this.player1.score >= 10 || this.player2.quit) {
+    if (this.score.player1 >= 10 || this.player2.quit) {
       this.hasEnded = true;
       this.winner = this.player1;
       if (this.player2.quit) {
@@ -156,7 +122,7 @@ export class Game {
         this.msgEndGame = `${this.player1.name} is the winner!`;
       }
       return (true);
-    } else if (this.player2.score >= 10 || this.player1.quit) {
+    } else if (this.score.player2 >= 10 || this.player1.quit) {
       this.hasEnded = true;
       this.winner = this.player2;
       if (this.player1.quit) {
@@ -203,13 +169,68 @@ export class Game {
 
     // update the score
     if (this.ball.x - this.ball.radius < 0) {
-      this.player2.score++;
+      this.score.player2++;
       this.resetBall();
+      return (true);
     } else if (this.ball.x + this.ball.radius > CANVAS_WIDTH) {
-      this.player1.score++;
+      this.score.player1++;
       this.resetBall();
+      return (true);
+    }
+    return (false);
+  }
+
+  getGameDto(): GameDto {
+    const gameDto: GameDto = {
+      room: this.room,
+      waiting: this.waiting,
+      hasStarted: this.hasStarted,
+      hasEnded: this.hasEnded,
+      winner: this.winner,
+      msgEndGame: this.msgEndGame,
+      player1Name: this.player1.name,
+      player2Name: this.player2.name,
+    };
+    return (gameDto);
+  }
+
+  getReasonEndGame(): string {
+    if (this.player1.quit) {
+      return (`player ${this.player1.name} quit the game!`);
+    } else if (this.player2.quit) {
+      return (`player ${this.player2.name} quit the game!`);
+    } else {
+      return ('Enough score points!');
     }
   }
 
+  getCreateGameDto(): CreateGameDto {
+
+    let winner: string;
+    let looser: string;
+    let looserScore = 0;
+    let winnerScore = 0;
+    if (this.player1.name === this.winner.name) {
+      winner = this.player1.name;
+      winnerScore = this.score.player1;
+      looser = this.player2.name;
+      looserScore = this.score.player2;
+    } else {
+      winner = this.player2.name;
+      winnerScore = this.score.player2;
+      looser = this.player1.name;
+      looserScore = this.score.player1;
+    }
+
+    const createGameDto: CreateGameDto = {
+      looser: looser,
+      winner: winner,
+      reasonEndGame: this.getReasonEndGame(),
+      looserScore: looserScore,
+      winnerScore: winnerScore
+    };
+
+    return (createGameDto);
+  }
 
 }
