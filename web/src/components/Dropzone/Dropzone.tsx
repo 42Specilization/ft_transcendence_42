@@ -1,8 +1,7 @@
 import { NotePencil } from 'phosphor-react';
-import { Dispatch, SetStateAction, useCallback, useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
-import { IntraData } from '../../Interfaces/interfaces';
 
 interface DropzoneProps {
   onFileUploaded: (file: File) => void;
@@ -13,6 +12,7 @@ export function Dropzone({ onFileUploaded }: DropzoneProps) {
   const { intraData, setUpdateImageTime } = useContext(IntraDataContext);
 
   const onDrop = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (acceptedFiles: any) => {
       const file = new File([acceptedFiles[0]], `${intraData.login}_avatar.jpg`);
       const data = Math.floor(Math.random() * 1000);

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { ValidateTfa } from '../components/ValidateTfa/ValidateTfa';
-import { ErrResponse, IntraData } from '../Interfaces/interfaces';
+import { IntraData } from '../Interfaces/interfaces';
 import { getInfos } from '../pages/OAuth/OAuth';
 
 export function getAccessToken() {
@@ -129,7 +129,7 @@ export async function getIntraDataNotify(intraData: IntraData, setIntraData: Dis
       Authorization: `Bearer ${token}`
     }
   };
-  let data: any;
+  let data: IntraData;
   await axios(`http://${import.meta.env.VITE_API_HOST}:3000/auth/me`, config)
     .then(response => {
       data = response.data as IntraData;

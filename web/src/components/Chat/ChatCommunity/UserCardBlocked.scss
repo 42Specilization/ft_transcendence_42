@@ -1,7 +1,7 @@
 @import '../../../styles/global.scss';
 
 .user__card__blocked {
-  @include displayFlex(left);
+  @include displayFlex(space-between);
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 50px;
@@ -32,4 +32,40 @@
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+
+.user__card__blocked__div {
+  @include displayFlex(left);
+  overflow: hidden;
+}
+
+.user__card__blocked__menu {
+  @include displayFlex();
+
+}
+  
+.user__card__blocked__menu__body {
+  background-color: $backgroundColor;
+  top: 45px;
+  transition: height 0.6s, width 0.6s;
+  overflow: hidden;
+  border-radius: 10px ;
+  padding: 0px 10px 0px 10px;
+}
+  
+.user__card__blocked__menu__button {
+  @include displayFlex();
+  width: 100%;
+  height: 35px;
+  font-size: 20px;
+  color: white;
+  text-align: center;
+  margin-top: 10px;
+  background-color: rgb(92, 19, 144);
+  border-radius: 10px;
+  &:hover{
+    background-color: rgb(64, 13, 100);
+    cursor: pointer;
+  }
 }

@@ -16,7 +16,8 @@ interface UserCardFriendProps {
 export function UserCardFriend({ friend, setActiveFriend }: UserCardFriendProps) {
   const [isTableFriendUsersMenu, setIsTableFriendUsersMenu] = useState(false);
   const currentStateStatus = useSnapshot(stateStatus);
-  const { intraData, setIntraData } = useContext(IntraDataContext);
+  const { setIntraData } = useContext(IntraDataContext);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function selectActiveFriend(e: any) {
     if (e.target.id !== 'user__card__friend__menu') {
       setActiveFriend(friend);
@@ -46,7 +47,21 @@ export function UserCardFriend({ friend, setActiveFriend }: UserCardFriendProps)
         friends: prevIntraData.friends.filter((key) => key.login != friend.login)
       };
     });
+    setActiveFriend(null);
     currentStateStatus.socket?.emit('deleteFriend', friend.login);
+  }
+
+  async function handleBlockFriend() {
+
+    await api.patch('/user/addBlocked', { nick: friend.login }, config);
+    setIntraData((prevIntraData) => {
+      prevIntraData.blockeds.push(friend);
+      return {
+        ...prevIntraData,
+        friends: prevIntraData.friends.filter((key) => key.login != friend.login),
+      };
+    });
+    setActiveFriend(null);
   }
 
 
@@ -68,8 +83,6 @@ export function UserCardFriend({ friend, setActiveFriend }: UserCardFriendProps)
 
       <div id='user__card__friend__menu' className='user__card__friend__menu'>
 
-
-
         <div className='user__card__friend__menu__body'
           style={{ height: isTableFriendUsersMenu ? '145px' : '0px', width: isTableFriendUsersMenu ? '90px' : '0px' }}>
           <button className='user__card__friend__menu__button'
@@ -86,13 +99,15 @@ export function UserCardFriend({ friend, setActiveFriend }: UserCardFriendProps)
           >
             <UserMinus size={32} />
           </button>
+          
           <button className='user__card__friend__menu__button'
-            onClick={() => { }}
+            onClick={handleBlockFriend}
             data-html={true}
             data-tip={'Block'}
           >
             <Prohibit size={32} />
           </button>
+
         </div>
 
         <DotsThreeVertical
@@ -103,7 +118,6 @@ export function UserCardFriend({ friend, setActiveFriend }: UserCardFriendProps)
           data-html={true}
           data-tip={'Menu'}
         />
-
         <ReactTooltip className='chat__friends__header__icon__tip' delayShow={50} />
       </div>
     </div >

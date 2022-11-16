@@ -1,5 +1,5 @@
 import { XCircle } from 'phosphor-react';
-import { Dispatch, ReactNode, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { FriendProfile } from '../../components/FriendProfile/FriendProfile';
 import './ProfileFriendsModal.scss';
 

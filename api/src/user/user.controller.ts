@@ -272,5 +272,27 @@ export class UserController {
     await this.userService.removeFriend(userFromJwt.email, getFriendDto.nick);
     return { message: 'success' };
   }
+  
+  @Patch('/addBlocked')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: GetFriendDto })
+  async addBlocked(
+    @Body(ValidationPipe) getFriendDto: GetFriendDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.userService.addBlocked(userFromJwt.email, getFriendDto.nick);
+    return { message: 'success' };
+  }
+
+  @Patch('/removeBlocked')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: GetFriendDto })
+  async removeBlocked(
+    @Body(ValidationPipe) getFriendDto: GetFriendDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.userService.removeBlocked(userFromJwt.email, getFriendDto.nick);
+    return { message: 'success' };
+  }
 
 }

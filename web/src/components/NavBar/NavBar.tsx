@@ -9,13 +9,14 @@ import { actionsStatus } from '../../status/statusState';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 
 interface NavBarProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Children: any;
 }
 
 export function NavBar({ Children }: NavBarProps) {
   const { logout } = useAuth();
 
-  const { intraData, setIntraData, updateImageTime } = useContext(IntraDataContext);
+  const { intraData, setIntraData } = useContext(IntraDataContext);
   const [menuVisible, setMenuVisible] = useState(false);
   const [notifyVisible, setNotifyVisible] = useState(false);
 
@@ -47,6 +48,7 @@ export function NavBar({ Children }: NavBarProps) {
     };
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClickOutside = (event: any) => {
     if (menuRef.current && !menuRef.current.contains(event.target)
       && event.target.id !== 'navBar__menu__icon') {
@@ -58,6 +60,7 @@ export function NavBar({ Children }: NavBarProps) {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClickInside = (event: any) => {
     if (event.target.id === 'navBar__menu__icon') {
       setMenuVisible((prevMenuVisible) => !prevMenuVisible);

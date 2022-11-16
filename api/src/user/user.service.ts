@@ -351,4 +351,58 @@ export class UserService {
 
   }
 
+  async addBlocked(email: string, friend_login: string) {
+    const user = await this.findUserByEmail(email) as User;
+
+    const friend = await this.findUserByNick(friend_login) as User;
+
+    user.relations = user.relations.filter((relation) => {
+      if (relation.type === 'friend' && relation.passive_user.nick == friend.nick)
+        return;
+      return relation;
+    });
+
+    friend.relations = friend.relations.filter((relation) => {
+      if (relation.type === 'friend' && relation.passive_user.nick == user.nick)
+        return;
+      return relation;
+    });
+
+    const relationUser = new Relations();
+
+    relationUser.passive_user = friend;
+    relationUser.type = 'blocked';
+
+    user.relations.push(relationUser);
+
+    try {
+      await user.save();
+      await friend.save();
+      return;
+    } catch (err) {
+      throw new InternalServerErrorException('erro salvando notificacao');
+    }
+
+  }
+
+  async removeBlocked(email: string, friend_login: string) {
+    const user = await this.findUserByEmail(email) as User;
+
+    
+
+    user.relations = user.relations.filter((relation) => {
+      if (relation.type === 'blocked' && relation.passive_user.nick == friend_login)
+        return;
+      return relation;
+    });
+
+    try {
+      await user.save();
+      return;
+    } catch (err) {
+      throw new InternalServerErrorException('erro salvando notificacao');
+    }
+
+  }
+
 }

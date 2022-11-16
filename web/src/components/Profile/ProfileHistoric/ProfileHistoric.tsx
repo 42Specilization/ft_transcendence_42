@@ -3,11 +3,7 @@ import  { HistoricMatch } from './HistoricMatch';
 import { useContext } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
-interface ProfileHistoricProps {
-
-}
-
-export function ProfileHistoric({ }: ProfileHistoricProps) {
+export function ProfileHistoric() {
 
   const { intraData } = useContext(IntraDataContext);
 

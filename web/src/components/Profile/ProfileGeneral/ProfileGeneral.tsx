@@ -3,11 +3,7 @@ import {ProfileCard} from './ProfileCard';
 import { useContext } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
-interface ProfileGeneralProps {
-
-}
-
-export  function ProfileGeneral({ }: ProfileGeneralProps) {
+export  function ProfileGeneral() {
 
   const { intraData } = useContext(IntraDataContext);
 

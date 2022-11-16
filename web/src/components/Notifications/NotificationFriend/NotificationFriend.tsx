@@ -1,11 +1,10 @@
 import './NotificationFriend.scss';
 import { CheckCircle, Prohibit, UserCircle, XCircle } from 'phosphor-react';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { NotifyData } from '../../../Interfaces/interfaces';
 import axios from 'axios';
 import { useSnapshot } from 'valtio';
 import { stateStatus } from '../../../status/statusState';
-import { getUserInDb } from '../../../utils/utils';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
@@ -16,12 +15,7 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
   const currentStateStatus = useSnapshot(stateStatus);
   const [side, setSide] = useState(true);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
-  const { intraData, setIntraData } = useContext(IntraDataContext);
-
-
-  useEffect(() => {
-    console.log('notify', notify);
-  }, []);
+  const { setIntraData } = useContext(IntraDataContext);
 
   const token = useMemo(() => window.localStorage.getItem('token'), []);
 
@@ -75,6 +69,7 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
     // currentStateStatus.socket?.emit('newNotify', intraData.login);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function changeSide(event: any) {
     if (event.target.id === 'front_side' || event.target.id === 'back_side') {
       setSide(prevSide => !prevSide);

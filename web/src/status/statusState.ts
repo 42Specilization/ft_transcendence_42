@@ -1,9 +1,8 @@
-import axios from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
 import { IntraData } from '../Interfaces/interfaces';
-import { defaultIntra, getAccessToken, getUserInDb } from '../utils/utils';
+import { getAccessToken, getUserInDb } from '../utils/utils';
 import {
   createSocketStatus,
   CreateSocketStatusOptions,

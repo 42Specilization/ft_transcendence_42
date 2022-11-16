@@ -11,7 +11,6 @@ import { NavBar } from './components/NavBar/NavBar';
 import { RequireAuth, ValidadeSignin } from './utils/utils';
 import Chat from './pages/Chat/Chat';
 import { IntraDataProvider } from './contexts/IntraDataContext';
-import FriendProfile from './pages/FriendProfile/FriendProfile';
 
 
 export default function AppRouter() {
@@ -57,7 +56,6 @@ export default function AppRouter() {
               </IntraDataProvider>
             }
           />
-
           <Route path="/oauth" element={<OAuth />} />
           <Route
             path="/signin"

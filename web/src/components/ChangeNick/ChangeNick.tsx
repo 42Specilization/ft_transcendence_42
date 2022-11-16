@@ -41,6 +41,7 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
         currentStateStatus.socket?.emit('changeLogin', nick);
         setPlaceHolder('');
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       if (e && e.response) {
         if (e.response.data.statusCode === 403) {

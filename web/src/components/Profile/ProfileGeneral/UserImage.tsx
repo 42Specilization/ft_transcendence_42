@@ -4,11 +4,7 @@ import { Dropzone } from '../../Dropzone/Dropzone';
 import { useContext, useEffect, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
-interface UserImageProps {
-
-}
-
-export function UserImage({ }: UserImageProps) {
+export function UserImage() {
 
   const { intraData, updateImageTime } = useContext(IntraDataContext);
   const [selectedFile, setSelectedFile] = useState<File>();

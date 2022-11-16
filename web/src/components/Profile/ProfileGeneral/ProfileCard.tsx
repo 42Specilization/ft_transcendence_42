@@ -1,4 +1,3 @@
-
 import './ProfileCard.scss';
 import { UserImage } from './UserImage';
 import { NotePencil } from 'phosphor-react';
@@ -7,11 +6,7 @@ import { ChangeNick } from '../../ChangeNick/ChangeNick';
 import { useContext, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
-interface ProfileCardProps {
-
-}
-
-export function ProfileCard({}: ProfileCardProps) {
+export function ProfileCard() {
   const { intraData } = useContext(IntraDataContext);
   const [isModalChangeNickVisible, setIsModalChangeNickVisible] = useState(false);
 

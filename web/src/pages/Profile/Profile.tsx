@@ -4,11 +4,7 @@ import{ ProfileGeneral } from '../../components/Profile/ProfileGeneral/ProfileGe
 import { ProfileHistoric} from '../../components/Profile/ProfileHistoric/ProfileHistoric';
 import ProfileAchiviements from '../../components/Profile/ProfileAchiviements/ProfileAchiviements';
 
-interface ProfileProps {
-
-}
-
-export default function Profile({ }: ProfileProps) {
+export default function Profile() {
 
   const [tableSelected, setTableSelected] = useState('General');
 

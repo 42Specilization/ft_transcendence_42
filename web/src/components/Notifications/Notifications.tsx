@@ -5,11 +5,7 @@ import { NotificationFriend } from './NotificationFriend/NotificationFriend';
 import { NotificationMessage } from './NotificationMessage/NotificationMessage';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 
-interface NotificationProps {
-
-}
-
-export function Notifications({}: NotificationProps) {
+export function Notifications() {
 
   const { intraData } = useContext(IntraDataContext);
   

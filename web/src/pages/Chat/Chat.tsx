@@ -4,11 +4,7 @@ import { ChatCommunity } from '../../components/Chat/ChatCommunity/ChatCommunity
 import { ChatTalk } from '../../components/Chat/ChatTalk/ChatTalk';
 import { FriendData } from '../../Interfaces/interfaces';
 
-interface ChatProps {
-
-}
-
-export default function Chat({}: ChatProps) {
+export default function Chat() {
 
   const [activeFriend, setActiveFriend] = useState<FriendData | null>(null);
 
