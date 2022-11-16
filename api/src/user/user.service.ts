@@ -16,8 +16,10 @@ import { CredentialsDto } from './dto/credentials.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import * as fs from 'fs';
+import { GameEntity } from 'src/game/entities/game.entity';
 import { Notify } from '../notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
+
 @Injectable()
 export class UserService {
   constructor(
@@ -49,6 +51,22 @@ export class UserService {
           'createUser: Error to create a user!'
         );
       }
+    }
+  }
+
+  async saveNewGame(nick: string, game: GameEntity) {
+    const user = await this.findUserByNick(nick);
+    if (!user) {
+      return;
+    }
+    if (!user.games) {
+      user.games = [];
+    }
+    user.games.push(game);
+    try {
+      await this.usersRepository.save(user);
+    } catch {
+      throw new InternalServerErrorException('saveNewGame: Error to save a new game on db!');
     }
   }
 
@@ -184,8 +202,7 @@ export class UserService {
 
   async updateUser(updateUserDto: UpdateUserDto, email: string): Promise<User> {
     const user = (await this.findUserByEmail(email)) as User;
-    const { nick, imgUrl, isTFAEnable, tfaEmail, tfaValidated, tfaCode } =
-      updateUserDto;
+    const { nick, imgUrl, isTFAEnable, tfaEmail, tfaValidated, tfaCode } = updateUserDto;
     if (nick && (await this.checkDuplicateNick(nick)))
       throw new ForbiddenException('Duplicated nickname');
 
@@ -194,6 +211,7 @@ export class UserService {
     user.isTFAEnable =
       isTFAEnable !== undefined ? isTFAEnable : user.isTFAEnable;
     user.tfaEmail = tfaEmail ? tfaEmail : user?.tfaEmail;
+
     user.tfaValidated =
       tfaValidated !== undefined ? tfaValidated : user.tfaValidated;
     user.tfaCode = tfaCode ? bcrypt.hashSync(tfaCode, 8) : user.tfaCode;

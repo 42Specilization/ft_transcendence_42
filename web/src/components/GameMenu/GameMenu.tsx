@@ -5,13 +5,10 @@ import { WatchGame } from '../WatchGame/WatchGame';
 import { WithFriend } from '../WithFriend/WithFriend';
 import './GameMenu.scss';
 
-
-
 export function GameMenu() {
 
   const [commands, setCommands] = useState<boolean>(true);
   const [watch, setWatch] = useState<boolean>(false);
-
 
   const handleStartGame = () => {
     actions.initializeSocket();

@@ -3,6 +3,7 @@ import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
+import { GameEntity } from './game/entities/game.entity';
 import { ConfigModule } from "@nestjs/config";
 import { UserModule } from "./user/user.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -24,7 +25,7 @@ import { Relations } from "./relations/entity/relations.entity";
       username: "pguser",
       password: "pgpassword",
       database: "postgres",
-      entities: [User, Notify, Relations],
+      entities: [User, Notify, Relations, GameEntity],
       synchronize: true,
       logging: false,
     }),
@@ -35,7 +36,6 @@ import { Relations } from "./relations/entity/relations.entity";
     // ChatModule,
     StatusModule,
   ],
-
   controllers: [AppController],
   providers: [
     AppService,
