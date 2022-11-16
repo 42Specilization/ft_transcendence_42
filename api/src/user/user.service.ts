@@ -101,10 +101,6 @@ export class UserService {
       });
   }
 
-//   async findUserByNick(nick: string): Promise<User | null> {
-//     return (await this.usersRepository.findOneBy({ nick }));
-//   }
-
   async findUserById(id: string): Promise<User> {
     const user = await this.usersRepository.findOne({
       where: {
