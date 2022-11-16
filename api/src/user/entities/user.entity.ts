@@ -7,7 +7,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany
+  OneToMany,
+  ManyToMany,
+  JoinTable
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
@@ -15,6 +17,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail } from 'class-validator';
 import { Notify } from 'src/notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
+import { Chat } from 'src/chat/entities/chat.entity';
 
 @Entity()
 @Unique(['email', 'nick'])
@@ -86,9 +89,14 @@ export class User extends BaseEntity {
   isTFAEnable: boolean;
 
   @ApiProperty()
+  @JoinTable()
+  @ManyToMany(() => Chat, (chat) => chat.users, { cascade: ['insert'] })
+  chats: Chat[];
+
+  @ApiProperty()
   @OneToMany(() => Notify, (notify) => notify.user_target, { cascade: ['insert'] })
   notify: Notify[];
-  
+
   @ApiProperty()
   @OneToMany(() => Relations, (relations) => relations.active_user, { cascade: ['insert', 'update'] })
   relations: Relations[];

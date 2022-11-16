@@ -272,7 +272,7 @@ export class UserController {
     await this.userService.removeFriend(userFromJwt.email, getFriendDto.nick);
     return { message: 'success' };
   }
-  
+
   @Patch('/addBlocked')
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: GetFriendDto })
@@ -294,5 +294,27 @@ export class UserController {
     await this.userService.removeBlocked(userFromJwt.email, getFriendDto.nick);
     return { message: 'success' };
   }
+
+
+
+  @Post('/chat')
+  @HttpCode(HttpStatus.CREATED)
+  createChat(): { msg: string } {
+    this.userService.createChat();
+    return ({
+      msg: 'success'
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
 
 }

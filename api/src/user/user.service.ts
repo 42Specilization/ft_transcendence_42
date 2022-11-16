@@ -18,10 +18,13 @@ import { UserDto } from './dto/user.dto';
 import * as fs from 'fs';
 import { Notify } from '../notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
+import { Chat } from 'src/chat/entities/chat.entity';
+import { ChatService } from 'src/chat/chat.service';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>
+    @InjectRepository(User) private usersRepository: Repository<User>,
+     private readonly chatService: ChatService
   ) { }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
@@ -62,6 +65,8 @@ export class UserService {
         'notify.user_source',
         'relations',
         'relations.passive_user',
+        'chats',
+        'chats.users',
       ]
 
     });
@@ -78,6 +83,8 @@ export class UserService {
           'notify.user_source',
           'relations',
           'relations.passive_user',
+          'chats',
+          'chats.users',
         ]
 
       });
@@ -121,6 +128,8 @@ export class UserService {
       relations: [
         'notify',
         'relations',
+        'chats',
+        'chats.users',
       ]
     });
   }
@@ -466,5 +475,34 @@ export class UserService {
       throw new InternalServerErrorException('erro salvando notificacao');
     }
   }
+
+
+  async createChat() {
+    const chat  = new Chat();
+    const gsilva = await this.getUser('gsilva-v@student.42sp.org.br');
+    const mmoreira = await this.getUser('mmoreira@student.42sp.org.br');
+    const mavinici = await this.getUser('mavinici@student.42sp.org.br');
+
+    chat.users = [];
+    chat.type = 'direct';
+    chat.users.push(gsilva);
+    chat.users.push(mmoreira);
+    chat.users.push(mavinici);
+    
+
+    try {
+      await this.chatService.save(chat);
+    }catch(err){
+      console.log(err);
+    }
+
+    return;
+  }
+
+
+  
+
+
+
 
 }
