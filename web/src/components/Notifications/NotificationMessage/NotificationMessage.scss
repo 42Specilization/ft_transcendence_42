@@ -1,0 +1,27 @@
+@import '../../../styles/global.scss';
+
+
+.notificationMessage{
+  @include displayFlex(space-around, column);
+  margin-top: 10px;
+  height: 70px;
+  width: 100%;
+  // background-color: $primaryColorHover;
+  border-radius: 10px;
+  text-align: center;
+  strong  {
+    font-size: 18px;
+  }
+}
+
+.notificationMessage__button{
+  @include displayFlex(space-around);
+  text-align: center;
+  width: 100px;
+  font-size: 15px;
+  &:hover {
+    cursor: pointer;
+    color: gray;
+  }
+}
+

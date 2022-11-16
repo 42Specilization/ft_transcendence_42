@@ -1,35 +1,23 @@
-@import '../../styles/variables.scss';
+@import '../../styles/global.scss';
 
-.spinner-container
-{
-    // background-color: #fff;
-    @include flexCenter(center, column);
-    // z-index: 99;
-    // position: fixed;
+.spinner-container {
+    @include displayFlex(center, column);
     width: 500px;
-    // padding: 10px;
-    // top: 50%;
-    // display: flex;
-    // justify-content: center;
-    // align-content: center;
-    // flex-direction: column;
-    // left: 50%;
-    // margin-top: -100px; 
-    // margin-left: -50px;
-    // border-radius: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    height: 100vh;
 }
 
-.spinner-container p
-{
+.spinner-container p {
     text-align: center;
     margin: 5px 0 0 0;
     color: $primaryColor;
     font-size: 42px;
 }
 
-#inner
-
-{
+#inner {
     animation: rotate linear;
     animation-duration: 5s;
     animation-iteration-count: infinite;
@@ -37,36 +25,29 @@
     transform-box: border-box;
 }
 
-#outer
-
-{
+#outer {
     animation: rotate-inverse linear;
-    
     animation-duration: 4s;
     animation-iteration-count: infinite;
     transform-origin: center;
     transform-box: border-box;
-    
+
 }
 
 @keyframes rotate {
-    0%
-    {
+    0% {
         transform: rotateZ(0deg);
     }
-    100%
-    {
+    100% {
         transform: rotateZ(360deg);
     }
 }
 
 @keyframes rotate-inverse {
-    0%
-    {
+    0% {
         transform: rotateZ(360deg);
     }
-    100%
-    {
+    100% {
         transform: rotateZ(0deg);
     }
 }

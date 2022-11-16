@@ -1,12 +1,14 @@
- @import '../../styles/variables.scss';
+ @import '../../styles/global.scss';
 
 .signin {
   max-width: 1344px;
   margin-left: auto;
   margin-right: auto;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
 .signin__img {

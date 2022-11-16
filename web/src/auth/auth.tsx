@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { createContext, ReactNode, useContext } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { getUserInDb } from '../utils/utils';
 
 interface UserType {
   login: () => Promise<unknown>;
@@ -18,7 +19,7 @@ interface AccessTokenResponse {
 
 const AuthContext = createContext<UserType>(DEFAULT_VALUE);
 
-function useAuth() {
+export function useAuth() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -38,9 +39,12 @@ function useAuth() {
         return;
       }
       window.localStorage.setItem('token', token.access_token);
+      const data = await getUserInDb();
+      window.localStorage.removeItem('userData');
+      window.localStorage.setItem('userData', JSON.stringify(data));
       navigate('/');
-
     },
+
     logout() {
       window.localStorage.removeItem('token');
       window.localStorage.removeItem('userData');

@@ -1,0 +1,9 @@
+@import '../../styles/global.scss';
+
+.chat {
+	@include displayFlex(center);
+	width: 80%;
+	height: 90%;
+	color: white;
+	border-radius: 0px 0px 50px 50px;
+}

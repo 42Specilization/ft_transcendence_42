@@ -1,4 +1,4 @@
-@import '../../styles/variables.scss';
+@import '../../styles/global.scss';
 
 .validateTfa{
   .modal{
@@ -12,7 +12,7 @@
   }
   .modal__container {
     max-width: 420px;
-    @include flexCenter(flex-start, row, center);
+    @include displayFlex(flex-start, row, center);
     .tfaRequestModal__requestArea{
       font-size: 20px;
       width: 100%;
@@ -20,7 +20,7 @@
       justify-content: space-between;
     }
     .tfaRequestModal__loading{
-      @include flexCenter(space-around, row, center);
+      @include displayFlex(space-around, row, center);
       width: 100%;
     }
   }
@@ -68,7 +68,7 @@
   }
 
   .tfaRequestModal__requestArea{
-    @include flexCenter(center, column, center);
+    @include displayFlex(center, column, center);
     width: 80%;
   }
 
@@ -93,7 +93,7 @@
   .tfaVerifyModal__inputArea {
     width: 100%;
     height: 100%;
-    @include flexCenter(space-around, column, center);
+    @include displayFlex(space-around, column, center);
     .tfaVerifyModal__input{
       font-family: 'Oxanium', cursive;
       font-size: 18px;
@@ -123,14 +123,14 @@
       }
     }
     .tfaVerify_recovery{
-      @include flexCenter(space-between, row, center);
+      @include displayFlex(space-between, row, center);
       font-size: 14px;
       height: 35px;
       width: 200px;
 
     }
     .tfaVerify__loading{
-      @include flexCenter(space-around, row, center);
+      @include displayFlex(space-around, row, center);
       width: 100%;
     }
   }

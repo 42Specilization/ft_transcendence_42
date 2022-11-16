@@ -1,325 +1,195 @@
-@import '../../styles/variables.scss';
+@import '../../styles/global.scss';
+
+@mixin transitionTopDiv {
+  position: absolute;
+  transition: top 0.6s;
+  border: 3px solid $primaryColor;
+  border-top: none;
+  border-radius: 0px 0px 20px 20px;
+  background-color: $secondaryColor;
+  z-index: -1;
+}
 
 .navBar {
-  @include flexCenter(space-between, column, center);
-  font-family: 'Oxanium', cursive;
-  position: fixed;
-  top: 0;
+  @include displayFlex(center, column);
   width: 100%;
+  height: 100px;
   min-width: 400px;
-  height: 80px;
-  border-bottom: 3px solid;
-  border-color: $primaryColor;
+  color: white;
+  color-scheme: dark;
+  border-bottom: 3px solid $primaryColor;
+  // padding: 0px 3% 0px 3%;
   background-color: $secondaryColor;
-  flex-wrap: wrap;
+  z-index: 5;
 }
 
 .navBar__list {
-  @include flexCenter(space-between, row, center);
-  padding: 0 20px;
-  height: 100%;
+  @include displayFlex(space-between);
+  padding: 0px 3% 0px 3%;
   width: 100%;
-  max-width: 1300px;
-  color: white;
-  list-style-type: none;
-  font-size: 12px;
+  height: 100%;
+  background-color: $secondaryColor;
 }
 
 .navBar__divider {
-  border-right: 1px solid #4F456A;
-  height: 100%;
-}
-
-.navBar__div__menu{
-  @include flexCenter(center, column, revert);
-  text-align: center;
-}
-
-.navBar__achievements,
-.navBar__historic,
-.navBar__ladderLevel{
-  color: white;
-  margin-top: 10px;
-  text-decoration: none;
-  &:hover {
-    color: rgb(65, 62, 62);
-  }
-}
-
-.navBar__ladderLevel{
-  margin-bottom: 10px;
-}
-
-.navBar__menu {
-  @include flexCenter(space-between, column, center);
-  position: absolute;
-  top:-200px;
-  border-radius: 8px;
-  width: 100px;
-  height: auto;
-  transform: translateX(-28%);
-  background-color: $primaryColor;
-  transition: all 0.5s;
-  z-index: 1;
-}
-
-.navBar__menu:hover {
-  top: 55px;
-}
-
-.navBar__menus__list {
-  padding: 5px 10px;
-  border-radius: 8px;
+  display: none;
   z-index: 2;
-  :hover{
-    color: gray;
+}
+
+.navBar__icons {
+  @include displayFlex(center, column);
+  color: white;
+  margin: 12px;
+  font-size: 20px;
+  &:hover {
+    cursor: pointer;
+    color: rgb(60, 60, 60);
   }
 }
 
-.navBar__menus__list:hover ~ .navBar__menu {
-  top: 55px;
-  z-index: 1;
-  opacity: 1;
-}
+
 
 .navBar__logo {
-  @include flexCenter(center);
+  @include displayFlex();
+  width: 25%;
   max-width: 300px;
   max-height: 100px;
-  .navBar__logo__image{
-    width: 130px;
+
+  img {
+    width: 90%;
   }
+
   &:hover  {
     cursor: pointer;
     filter: grayscale(0.6);
   }
 }
 
-.navBar__chats {
-  @include flexCenter(center, column);
-  font-size: 30px;
-  .navBar__chats__link{
-    @include flexCenter(center, column, center);
-    color: white;
-    text-decoration: none;
-    &:hover{
-      color: gray;
+
+
+.navBar__pages {
+  @include displayFlex();
+  position: relative;
+  width: 25%;
+  height: 100%;
+  border-right: 3px solid #4F456A;
+  border-left: 3px solid #4F456A;
+}
+
+.navBar__menu {
+  @include displayFlex(space-around, column);
+  @include transitionTopDiv;
+  width: 100%;
+  height: 165px;
+}
+
+
+
+
+.navBar__notify {
+  @include displayFlex();
+  position: relative;
+  width: 65px;
+  height: 100%;
+}
+
+.navBar__notify__body {
+  @include displayFlex();
+  @include transitionTopDiv;
+  width: 300px;
+  height: 300px;
+  padding: 10px 0px 10px 10px;
+}
+
+.navBar__notify__icon {
+  width: 50px;
+  height: 50px;
+  .navBar__icons {
+    margin: 0;
+  }
+  &:hover {
+    #navBar__notify__icon {
+      cursor: pointer;
+      color: rgb(60, 60, 60);
+    }
+    .notify__icon__notEmpty {
+      cursor: pointer;
+      color: rgb(60, 60, 60);
+      border-color: rgb(60, 60, 60);
+      background-color: rgb(130, 0, 0);
     }
   }
-  .navBar__chats__icon {
-    size: 32;
-  }
-  .navBar__chats__text{
-    font-size: 10px;
-  }
 }
 
-.navBar__user {
-  @include flexCenter(center);
-  font-size: 15px;
-  border-radius: 25px;
-  width: 100%;
+.notify__icon__notEmpty {
+  @include displayFlex();
+  position: absolute;
+  width: 30px;
   height: 30px;
-  background-color: $primaryColor;
-  &:hover{
-    background-color: $primaryColorHover;
+  top: 50px;
+  left: 30px;
+  border-radius: 50%;
+  border: 2.5px solid white;
+  background-color: red;
+  &:hover {
+    cursor: pointer;
+    color: rgb(60, 60, 60);
+    border-color: rgb(60, 60, 60);
+    background-color: rgb(130, 0, 0);
+    #navBar__notify__icon {
+      cursor: pointer;
+      color: rgb(60, 60, 60);
+    }
   }
 }
 
-.navBar__user__icon {
+
+.navBar__profile {
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
-  height:25px;
-  width: 25px;
+  border: 5px solid $primaryColor;
   background-repeat: none;
   background-size: cover;
   background-position: 50% 50%;
+  &:hover{
+    border-color: $primaryColorHover;
+  }
 }
 
-.navBar__user__name {
-  padding-right: 5px;
-  padding-left: 5px
- }
+
 
 .navBar__logout {
-  @include flexCenter(center, column);
+  min-width: 75px;
   color: $primaryColor;
   &:hover  {
-    cursor: pointer;
     color: $primaryColorHover;
   }
 }
 
-@media (max-width:700px) {
-
-  .navBar__user {
-    max-width: 200px;
-  }
-
-  .navBar__user__name {
-    padding-right: 5px;
-    padding-left: 5px;
-    display: inline-block;
-    text-align: center;
-    white-space: nowrap;
-    max-width: 60px;
-    overflow: hidden !important;
-   }
-}
-
-
-@media (min-width: 600px) and (max-width:850px) {
-  .navBar {
-    min-width: 100%;
-  }
-
-  .navBar__logo {
-    .navBar__logo__image{
-      width: 200px;
-    }
-  }
-
-  .navBar__divider {
-    border-right: 2px solid #4F456A;
-  }
-
-  .navBar__user {
-    font-size: 20px;
-    height: 40px;
-  }
-
-  .navBar__user__icon {
-    height:30px;
-    width: 30px;
-  }
-
-  .navBar__logout {
-    font-size: 15px;
-  }
-}
-
-@media (min-width: 850px) and (max-width:1200px) {
-  .navBar {
-    min-width: 100%;
-    height: 100px;
-  }
-
-  .navBar__logo {
-    .navBar__logo__image{
-      width: 250px;
-    }
-  }
-
-  .navBar__divider {
-    border-right: 3px solid #4F456A;
-  }
-
-  .navBar__chats {
-    font-size: 40px;
-    .navBar__chats__text{
-      font-size: 20px;
-    }
-  }
-
-  .navBar__user {
-    font-size: 25px;
-    height: 55px;
-  }
-
-  .navBar__user__icon {
-    height: 45px;
-    width: 45px;
-  }
-
-  .navBar__logout {
-    font-size: 20px;
-  }
-}
 
 @media (min-width: 1200px) {
-  .navBar {
-    min-width: 100%;
-    height: 100px;
-  }
-
-  .navBar__list {
-    max-width: 100%;
-  }
-
-  .navBar__logo {
-    .navBar__logo__image{
-      width: 250px;
-    }
-  }
 
   .navBar__divider {
+    display: block;
     border-right: 3px solid #4F456A;
-  }
-
- .navBar__chats {
-    font-size: 40px;
-    .navBar__chats__text{
-      font-size: 20px;
-    }
-  }
-
-  .navBar__user {
-    font-size: 30px;
-    height: 55px;
-    padding-right: 10px;
-    border-radius: 30px;
-  }
-
-  .navBar__user__icon {
-    height: 50px;
-    width: 55px;
-  }
-
-  .navBar__logout {
-    font-size: 20px;
-  }
-
-  .navBar__achievements,
-  .navBar__historic,
-  .navBar__ladderLevel{
-    margin: 12px;
-    font-size: 20px;
-  }
-
-  .navBar__div__menu{
-    @include flexCenter(center, row, center);
-    justify-items: center;
-    width: 35%;
     height: 100%;
-    font-size: 20px;
+  }
+
+
+
+  .navBar__pages{
+    @include displayFlex(space-around);
+    width: 35%;
+    border: none;
   }
 
   .navBar__menu {
-    @include flexCenter(space-around, row, center);
-    background: none;
-    position: relative;
     display: contents;
-    top:0px;
-    width: auto;
-    transition: 0;
-    justify-items: center;
   }
 
-  .navBar__menus__list {
+  .navBar__menu__icon {
     display: none;
-  }
-
-  .navBar__menus__list {
-    padding: 5px 10px;
-    border-radius: 8px;
-    z-index: 2;
-    :hover{
-      background-color: #4F456A;
-      background-size: cover;
-    }
-  }
-
-  .navBar__menu:hover {
-    top: 0px;
   }
 
 }

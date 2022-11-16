@@ -1,0 +1,51 @@
+@import '../../../styles/global.scss';
+
+.tfaValidateCode__inputArea{
+  width: 80%;
+  @include displayFlex(space-between, column,center);
+}
+
+.tfaValidateCode__title{
+  font-size: 20px;
+}
+
+.tfaValidateCode__input{
+  color: white;
+  width: 200px;
+  height: 35px;
+  padding: 5px;
+  border-radius: 5px;
+  outline: 0;
+  border: 3px solid rgb(255, 255, 255);
+  box-shadow: 3px 3px 4px 2px rgba(67, 66, 66, 0.8);
+}
+
+.tfaValidateCode__buttons {
+  @include displayFlex(space-around, row,center);
+  width:70%;
+  height: 30px;
+  margin-top: 15px;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.tfaValidateCode__buttons__validate,
+.tfaValidateCode__buttons__cancel{
+  width: 77px;
+  height: 25px;
+  color:white;
+  background-color: rgba(224, 9, 9, 0.94);
+  border-radius: 5px;
+  font-size: 18px;
+  &:hover {
+    background-color: rgba(119, 11, 11, 0.94);
+    box-shadow: 3px 3px 4px 2px rgba(67, 66, 66, 0.8);
+  }
+}
+
+.tfaValidateCode__buttons__validate{
+  background-color: rgba(42, 189, 9, 0.94);
+  &:hover {
+    background-color: rgba(36, 136, 13, 0.94);
+  }
+}

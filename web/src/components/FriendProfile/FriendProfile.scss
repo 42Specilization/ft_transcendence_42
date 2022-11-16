@@ -1,0 +1,53 @@
+@import '../../styles/global.scss';
+
+$friendProfileHeaderHeight: 35px;
+
+.friendProfile__header {
+  @include displayFlex();
+  width: 100%;
+  height: $friendProfileHeaderHeight;
+  color: white;
+  background-color: $backgroundColor;
+  border-radius: 20px 20px 0 0;
+}
+
+.friendProfile__header__list {
+  @include displayFlex(space-around);
+  width: 100%;
+}
+
+.friendProfile__header__list__item {
+  @include displayFlex();
+  width: 30%;
+  height: $friendProfileHeaderHeight;
+  border-radius: 20px;
+  background-color: $backgroundColor;
+
+  button {
+    @include truncText();
+    font-size: 1.5em;
+    color: white;
+    &:hover {
+      cursor: pointer;
+      color: rgb(74, 71, 71);
+   }
+ }
+}
+
+.friendProfile__header__list__item__selected {
+  background-color: transparent;
+
+  button {
+    &:hover {
+      cursor: default;
+      color: white;
+   }
+ }
+}
+
+.friendProfile__body {
+  @include displayFlex(center, column);
+  width: 100%;
+  height: calc(90% - $friendProfileHeaderHeight);
+  overflow: hidden;
+}

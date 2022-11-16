@@ -1,8 +1,8 @@
-@import '../../styles/variables.scss';
+@import '../../styles/global.scss';
 
 
 .waiting-room {
-  @include flexCenter(center, column);
+  @include displayFlex(center, column);
   width: 800px;
   height: 600px;
   border: 2px solid $primaryColor;
