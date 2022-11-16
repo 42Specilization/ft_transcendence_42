@@ -52,7 +52,6 @@ export function UserCardFriend({ friend, setActiveFriend }: UserCardFriendProps)
   }
 
   async function handleBlockFriend() {
-
     await api.patch('/user/addBlocked', { nick: friend.login }, config);
     setIntraData((prevIntraData) => {
       prevIntraData.blockeds.push(friend);
@@ -62,8 +61,8 @@ export function UserCardFriend({ friend, setActiveFriend }: UserCardFriendProps)
       };
     });
     setActiveFriend(null);
+    currentStateStatus.socket?.emit('deleteFriend', friend.login);
   }
-
 
   return (
     <div className='user__card__friend'
@@ -84,9 +83,9 @@ export function UserCardFriend({ friend, setActiveFriend }: UserCardFriendProps)
       <div id='user__card__friend__menu' className='user__card__friend__menu'>
 
         <div className='user__card__friend__menu__body'
-          style={{ height: isTableFriendUsersMenu ? '145px' : '0px', width: isTableFriendUsersMenu ? '90px' : '0px' }}>
+          style={{ height: isTableFriendUsersMenu ? '145px' : '0px', width: isTableFriendUsersMenu ? '80px' : '0px' }}>
           <button className='user__card__friend__menu__button'
-            onClick={() => { }}
+            onClick={() => console.log('chamou', friend.login, 'pra um desafio')}
             data-html={true}
             data-tip={'Challenge'}>
             <Sword size={32} />
@@ -99,7 +98,7 @@ export function UserCardFriend({ friend, setActiveFriend }: UserCardFriendProps)
           >
             <UserMinus size={32} />
           </button>
-          
+
           <button className='user__card__friend__menu__button'
             onClick={handleBlockFriend}
             data-html={true}

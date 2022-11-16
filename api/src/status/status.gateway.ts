@@ -139,10 +139,9 @@ export class StatusGateway
   handleDeleteFriend(client: Socket, login_target: string) {
     client;
     if (this.mapUserData.hasValue(login_target)) {
-        this.mapUserData.keyOf(login_target).forEach(socketId =>
+      this.mapUserData.keyOf(login_target).forEach(socketId =>
         this.server.to(socketId).emit('updateRemove')
       );
-
     }
   }
 

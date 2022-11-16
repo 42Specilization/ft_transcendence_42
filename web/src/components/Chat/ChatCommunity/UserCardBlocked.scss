@@ -32,12 +32,14 @@
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  width: 100%;
 }
 
-
 .user__card__blocked__div {
-  @include displayFlex(left);
-  overflow: hidden;
+  display:grid;
+  grid-template-columns: 0.1fr 1fr;
+  align-items: center;
+  justify-items: left;
 }
 
 .user__card__blocked__menu {

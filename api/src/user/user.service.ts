@@ -223,6 +223,11 @@ export class UserService {
   }
 
 
+  /**
+   * It sends a friend request to a user
+   * @param {string} user_email - string - the email of the user who sent the request
+   * @param {string} user_target - string - the nickname of the user to whom we send the request
+   */
   async sendFriendRequest(user_email: string, user_target: string) {
     const user = await this.findUserByEmail(user_email);
     const friend = await this.findUserByNick(user_target);
@@ -232,14 +237,25 @@ export class UserService {
       throw new BadRequestException('You cant add yourself');
     }
 
-    const notify = new Notify();
-    notify.type = 'friend';
-    notify.user_source = user;
-    notify.date = new Date(Date.now());
+    const newNotify = new Notify();
+    newNotify.type = 'friend';
+    newNotify.user_source = user;
+    newNotify.date = new Date(Date.now());
     if (friend.notify?.length === 0) {
       friend.notify = [];
     }
-    friend.notify?.push(notify);
+    const duplicated = friend.notify.filter((friendNotify) =>{
+      if (friendNotify.type == newNotify.type && friendNotify.user_source.nick == newNotify.user_source.nick)
+        return friendNotify;
+      return ;
+    });
+
+    console.log(duplicated.length);
+    if (duplicated.length > 0)
+      throw new BadRequestException('This user already your order');
+
+
+    friend.notify?.push(newNotify);
 
     try {
       friend.save();
@@ -248,6 +264,12 @@ export class UserService {
     }
   }
 
+  /**
+  * It finds a user by email, filters out the notification with the given id, and saves the user
+  * @param {string} email - string - The email of the user you want to find.
+  * @param {string} id - the id of the notification
+  * @returns The user is being returned.
+  */
   async popNotification(email: string, id: string) {
     const user = await this.findUserByEmail(email) as User;
     user.notify = user.notify.filter((notify) => {
@@ -263,6 +285,12 @@ export class UserService {
     }
   }
 
+  /**
+   * It accepts a friend request
+   * @param {string} email - string - the email of the user who will accept the friend request
+   * @param {string} id - the id of the notification
+   * @returns nothing.
+   */
   async acceptFriend(email: string, id: string) {
     const user = await this.findUserByEmail(email) as User;
 
@@ -294,8 +322,16 @@ export class UserService {
     } catch (err) {
       throw new InternalServerErrorException('erro salvando notificacao');
     }
-
   }
+
+  /**
+   * It receives an email and an id, finds the user by email, finds the notification by id, finds the
+   * user who sent the notification, creates a new relation, adds the relation to the user's relations,
+   * saves the user, and pops the notification
+   * @param {string} email - string, id: string
+   * @param {string} id - the id of the notification
+   * @returns The user is being returned.
+   */
   async blockUserByNotification(email: string, id: string) {
     const user = await this.findUserByEmail(email) as User;
 
@@ -320,10 +356,15 @@ export class UserService {
     } catch (err) {
       throw new InternalServerErrorException('erro salvando notificacao');
     }
-
   }
 
 
+  /**
+   * It removes a friend from the user's friend list and vice-versa
+   * @param {string} email - string, friend_login: string
+   * @param {string} friend_login - string - the login of the user you want to add as a friend
+   * @returns The user's friends
+   */
   async removeFriend(email: string, friend_login: string) {
     const user = await this.findUserByEmail(email) as User;
 
@@ -348,9 +389,14 @@ export class UserService {
     } catch (err) {
       throw new InternalServerErrorException('erro salvando notificacao');
     }
-
   }
 
+  /**
+   * It removes a friend from the user's friend list and adds the friend to the user's blocked list
+   * @param {string} email - string, friend_login: string
+   * @param {string} friend_login - string
+   * @returns the user object.
+   */
   async addBlocked(email: string, friend_login: string) {
     const user = await this.findUserByEmail(email) as User;
 
@@ -382,13 +428,16 @@ export class UserService {
     } catch (err) {
       throw new InternalServerErrorException('erro salvando notificacao');
     }
-
   }
 
+  /**
+   * It removes a blocked user from the user's blocked list
+   * @param {string} email - string - the email of the user who is blocking the other user
+   * @param {string} friend_login - the login of the user you want to unblock
+   * @returns The user's relations array is being filtered to remove the blocked relation.
+   */
   async removeBlocked(email: string, friend_login: string) {
     const user = await this.findUserByEmail(email) as User;
-
-    
 
     user.relations = user.relations.filter((relation) => {
       if (relation.type === 'blocked' && relation.passive_user.nick == friend_login)
@@ -402,7 +451,6 @@ export class UserService {
     } catch (err) {
       throw new InternalServerErrorException('erro salvando notificacao');
     }
-
   }
 
 }

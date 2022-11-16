@@ -12,7 +12,7 @@ export default function Chat() {
     <div className='body'>
       <div className='chat'>
         <ChatCommunity setActiveFriend={setActiveFriend} />
-        <ChatTalk activeFriend={activeFriend} />
+        <ChatTalk setActiveFriend={setActiveFriend} activeFriend={activeFriend} />
       </div>
     </div>
   );

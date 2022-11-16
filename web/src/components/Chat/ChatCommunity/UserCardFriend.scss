@@ -15,8 +15,10 @@
 }
 
 .user__card__friend__div {
-  @include displayFlex(left);
-  overflow: hidden;
+  display:grid;
+  grid-template-columns: 0.1fr 1fr;
+  align-items: center;
+  justify-items: left;
 }
 
 .user__card__friend__icon {
@@ -33,11 +35,10 @@
 }
 
 .user__card__friend__name {
+  @include truncText();
   font-size: x-large;
   margin-left: 10px;
-  overflow-x: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  width: 100%;
 }
 
 
@@ -51,19 +52,19 @@
   }
 
 
-  .user__card__friend__menu {
+.user__card__friend__menu {
   @include displayFlex();
 
-  }
-  
-  .user__card__friend__menu__body {
+ }
+   
+.user__card__friend__menu__body {
   background-color: $backgroundColor;
   top: 45px;
   transition: height 0.6s, width 0.6s;
   overflow: hidden;
   border-radius: 10px ;
   padding: 0px 10px 0px 10px;
-  }
+}
   
   .user__card__friend__menu__button {
   @include displayFlex();

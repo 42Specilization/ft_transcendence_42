@@ -1,15 +1,18 @@
 import './ChatTalk.scss';
 import { FriendData, IntraData } from '../../../Interfaces/interfaces';
 import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react';
-import { PaperPlaneRight } from 'phosphor-react';
+import { ArrowBendUpLeft, PaperPlaneRight } from 'phosphor-react';
 import { ChatMessage } from './ChatMessage';
 import * as uuid from 'uuid';
 import { actionsChat, stateChat } from '../../../chat/chatState';
 import { useSnapshot } from 'valtio';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
+import ReactTooltip from 'react-tooltip';
 
 interface ChatTalkProps {
   activeFriend: FriendData | null;
+  setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
 }
 
 export interface ChatMsg {
@@ -19,8 +22,9 @@ export interface ChatMsg {
   date: Date;
 }
 
-export function ChatTalk({ activeFriend }: ChatTalkProps) {
+export function ChatTalk({ activeFriend, setActiveFriend }: ChatTalkProps) {
 
+  const [friendProfileVisible, setFriendProfileVisible] = useState(false);
   // const { intraData, setIntraData } = useContext(IntraDataContext);
   // const currentStateChat = useSnapshot(stateChat);
 
@@ -85,12 +89,21 @@ export function ChatTalk({ activeFriend }: ChatTalkProps) {
   //   }
   // }, [currentStateChat.chatMsg]);
 
+
+
+
   return (
     <div className='chat__talk'>
       {activeFriend != null &&
         <>
           <div className='chat__talk__header'>
-            <div className='chat__talk__header__user'>
+            <ArrowBendUpLeft size={32}  onClick={()=> setActiveFriend(null)}/>
+            <div
+              className='chat__talk__header__user' 
+              onClick={() => setFriendProfileVisible(true)}
+              data-html={true}
+              data-tip={`${activeFriend.login} profile`}
+            >
               <div
                 className='chat__talk__header__user__icon'
                 style={{ backgroundImage: `url(${activeFriend.image_url})` }}
@@ -107,6 +120,11 @@ export function ChatTalk({ activeFriend }: ChatTalkProps) {
               <ChatMessage key={msg.id} user={intraData} message={msg} />
             ))} */}
           </div>
+          {friendProfileVisible &&
+          <ProfileFriendModal
+            login={activeFriend.login}
+            setFriendProfileVisible={setFriendProfileVisible} />
+          }
           <form className='chat__talk__footer' onSubmit={handleKeyEnter}>
             <input
               className='chat__talk__footer__input'
@@ -117,6 +135,7 @@ export function ChatTalk({ activeFriend }: ChatTalkProps) {
               <PaperPlaneRight size={30} />
             </button>
           </form>
+          <ReactTooltip className='chat__friends__header__icon__tip' delayShow={50} />
         </>
       }
     </div >
