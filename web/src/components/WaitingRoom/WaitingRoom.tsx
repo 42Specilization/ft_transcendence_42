@@ -1,5 +1,6 @@
 /* eslint-disable indent */
 import { useEffect } from 'react';
+import { Loader } from '../Loader/Loader';
 import './WaitingRoom.scss';
 
 export function WaitingRoom() {
@@ -20,6 +21,7 @@ export function WaitingRoom() {
   return (
     <div className='waiting-room'>
       <h1>Waiting for another player!</h1>
+      <Loader />
     </div>
   );
 }
