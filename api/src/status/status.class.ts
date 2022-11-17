@@ -57,6 +57,23 @@ export class MapUserData {
     return [];
   }
 
+  keyNotOf(value: string): string[] {
+    const usersOnline = Array.from(this.keyMap.values()).map(user => user.login);
+    if (usersOnline) {
+      let socketsNotOf: string[] = [];
+      usersOnline.forEach(user => {
+        if (user !== value) {
+          const socketsUser = this.valueMap.get(user);
+          if (socketsUser) {
+            socketsNotOf = [...socketsNotOf, ...socketsUser];
+          }
+        }
+      })
+      return socketsNotOf;
+    }
+    return [];
+  }
+
   getValues(): UserData[] {
     return Array.from(this.keyMap.values());
   }

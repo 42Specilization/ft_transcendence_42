@@ -111,8 +111,7 @@ export class StatusGateway
     const socketsUser: string[] = this.mapUserData.keyOf(user.login);
     socketsUser.forEach(socketId => {
       this.server.to(socketId).emit('updateFriend');
-    }
-    );
+    });
 
     if (this.mapUserData.hasValue(login_target)) {
       const socketsFriends: string[] = this.mapUserData.keyOf(login_target);
