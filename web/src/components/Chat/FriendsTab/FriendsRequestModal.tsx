@@ -25,7 +25,6 @@ export function FriendRequestModal({ setIsAddFriendModalVisible }: FriendsReques
   }
 
   async function sendFriendRequest() {
-    console.log(userTarget);
     const token = window.localStorage.getItem('token');
     const config = {
       headers: {

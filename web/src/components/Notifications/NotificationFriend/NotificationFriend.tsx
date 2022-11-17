@@ -56,7 +56,6 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
   }
 
   async function handleReject() {
-    console.log('clicou');
     // Talvez colocar uma validação de confirmação
     await api.patch('/user/removeNotify', { id: notify.id }, config);
 

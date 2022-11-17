@@ -1,5 +1,5 @@
 import './ChatTalk.scss';
-import { DirectChatData, MsgToServer } from '../../../Interfaces/interfaces';
+import { DirectData, MsgToServer } from '../../../Interfaces/interfaces';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ArrowBendUpLeft, PaperPlaneRight } from 'phosphor-react';
 import { ChatMessage } from './ChatMessage';
@@ -27,13 +27,17 @@ export function ChatTalk(
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
   const [message, setMessage] = useState('');
 
+  function changeActiveChat(data: DirectData) {
+    if (activeChat)
+      actionsChat.leaveChat(activeChat.id);
+    setActiveChat(data);
+    actionsChat.joinChat(data.id);
+  }
+
   useEffect(() => {
-    console.log('directsChat', directsChat);
     async function getDirect() {
       const response = await api.patch('/chat/getDirect', { id: directsChat }, config);
-      console.log(response);
-      setActiveChat(response.data as DirectChatData);
-      actionsChat.joinChat(response.data.id);
+      changeActiveChat(response.data as DirectData);
     }
     if (directsChat) {
       getDirect();
@@ -41,12 +45,9 @@ export function ChatTalk(
   }, [directsChat]);
 
   useEffect(() => {
-    console.log('friendsChat', friendsChat);
     async function getDirect() {
       const response = await api.patch('/chat/getFriendChat', { id: friendsChat?.login }, config);
-      console.log(response);
-      setActiveChat(response.data as DirectChatData);
-      actionsChat.joinChat(response.data.id);
+      changeActiveChat(response.data as DirectData);
     }
     if (friendsChat) {
       getDirect();

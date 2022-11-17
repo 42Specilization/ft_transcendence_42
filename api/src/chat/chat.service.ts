@@ -4,7 +4,7 @@ import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { MsgToClient, MsgToServer } from './chat.class';
-import { DirectChat, DirectDto } from './dto/chat.dto';
+import {  DirectDto } from './dto/chat.dto';
 import { CreateDirectDto } from './dto/create-direct.dto';
 import { Chat } from './entities/chat.entity';
 import { Message } from './entities/message.entity';
@@ -47,25 +47,13 @@ export class ChatService {
   }
 
   async getDirects(user_email: string) {
-    const user = await this.userService.findUserByEmail(user_email);
+    const user = await this.userService.findUserChatsByEmail(user_email);
     if (!user)
       throw new BadRequestException('User Not Found getDirects');
-
     const directs: DirectDto[] = user.chats.filter((chat) => chat.type == 'direct')
       .map((chat) => {
         const friend = chat.users.filter((key) => key.nick != user.nick).at(0);
-        return {
-          id: chat.id,
-          type: chat.type,
-          name: friend?.nick,
-          image: friend?.imgUrl,
-          users: chat.users.map((user) => {
-            return {
-              login: user.nick,
-              image_url: user.imgUrl,
-            };
-          })
-        };
+        return this. createDirectDto(chat, friend);
       });
     return directs;
   }
@@ -133,16 +121,16 @@ export class ChatService {
     }
   }
 
-  createDirectChat(chat: Chat, user: User): DirectChat {
-    const directChat: DirectChat = {
+  createDirectDto(chat: Chat, user: User | undefined): DirectDto {
+    const directDto: DirectDto = {
       id: chat.id,
-      type: chat.type,
-      name: user.nick,
-      image: user.imgUrl,
+      name: user?.nick,
+      image: user?.imgUrl,
+      date: chat.messages?.sort((a, b) => a.date < b.date ? -1 : 1).at(-1)?.date,
       messages: chat.messages?.map((message) => {
         return {
           id: message.id,
-          chat: message.chat.id,
+          chat: chat.id,
           user: {
             login: message.sender.nick,
             image: message.sender.imgUrl,
@@ -152,10 +140,11 @@ export class ChatService {
         };
       }),
     };
-    return directChat;
+    
+    return directDto;
   }
 
-  async getDirect(owner_email: string, id: string): Promise<DirectChat> {
+  async getDirect(owner_email: string, id: string): Promise<DirectDto> {
     const chat = await this.findChatById(id);
     if (!chat)
       throw new BadRequestException('Invalid chat GetDirect');
@@ -163,7 +152,7 @@ export class ChatService {
     if (!user)
       throw new BadRequestException('Invalid user GetDirect');
 
-    return this.createDirectChat(chat, user);
+    return this.createDirectDto(chat, user);
   }
 
   async createDirectUser(users: User[]): Promise<Chat> {
@@ -179,9 +168,9 @@ export class ChatService {
     }
   }
 
-  async getFriendChat(owner_email: string, friend_login: string): Promise<DirectChat> {
-    const owner = await this.userService.findUserByEmail(owner_email);
-    const friend = await this.userService.findUserByNick(friend_login);
+  async getFriendChat(owner_email: string, friend_login: string): Promise<DirectDto> {
+    const owner = await this.userService.findUserChatsByEmail(owner_email);
+    const friend = await this.userService.findUserChatsByNick(friend_login);
     if (!owner || !friend)
       throw new BadRequestException('User Not Found getFriendChat');
 
@@ -198,6 +187,6 @@ export class ChatService {
       direct = await this.findChatById(chats[0].id);
     }
 
-    return this.createDirectChat(direct, friend);
+    return this.createDirectDto(direct, friend);
   }
 }

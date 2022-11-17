@@ -115,7 +115,6 @@ export async function getUserInDb(): Promise<IntraData> {
 
 export async function getIntraData(setIntraData: Dispatch<SetStateAction<IntraData>>) {
   const data = await getUserInDb();
-  console.log('data',data);
   window.localStorage.removeItem('userData');
   window.localStorage.setItem('userData', JSON.stringify(data));
   setIntraData(data);
@@ -123,7 +122,6 @@ export async function getIntraData(setIntraData: Dispatch<SetStateAction<IntraDa
 
 
 export async function getIntraDataNotify(intraData: IntraData, setIntraData: Dispatch<SetStateAction<IntraData>>) {
-  console.log('getintradataNotify');
   const token = window.localStorage.getItem('token');
   const config = {
     headers: {
@@ -141,11 +139,9 @@ export async function getIntraDataNotify(intraData: IntraData, setIntraData: Dis
     }
 
     );
-  console.log('antes', intraData);
   setIntraData((prevIntraData: IntraData) => {
     return { ...prevIntraData, notify: data.notify };
   });
-  console.log('depois', intraData);
 
 }
 

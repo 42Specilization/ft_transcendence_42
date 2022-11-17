@@ -1,38 +1,27 @@
 import { MagnifyingGlass, X } from 'phosphor-react';
-import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { actionsChat } from '../../../chat/chatState';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { DirectData } from '../../../Interfaces/interfaces';
 import { CardDirect } from './CardDirect';
 import './DirectTab.scss';
 
-interface DirectTabProps {
-
-}
-
-export function DirectTab({ }: DirectTabProps) {
-  const { api } = useContext(IntraDataContext);
-
+export function DirectTab() {
+  const { api, config } = useContext(IntraDataContext);
   const [isTableSearch, setIsTableSearch] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-  const [directs, setDirects] = useState<DirectData[]>([]);
-
-  const config = useMemo(() => {
-    return {
-      headers: {
-        Authorization: `Bearer ${window.localStorage.getItem('token')}`,
-      },
-    };
-  }, []);
+  const [directs, setDirects] = useState<DirectData[] | []>([]);
 
   useEffect(() => {
     async function getDirects() {
       const result = await api.get('/chat/getDirects', config);
       setDirects(result.data);
+      console.log(result.data);
       return result;
     }
     getDirects();
-  }, []);
-
+    actionsChat.setChatList(setDirects);
+  }, [actionsChat]);
 
   return (
     < div className='directs__tab' >
@@ -68,6 +57,11 @@ export function DirectTab({ }: DirectTabProps) {
       < div className='directs__tab__body'>
         {
           directs.filter((obj) => obj.name?.includes(searchInput))
+            .sort((a: DirectData, b: DirectData) => {
+              if (a.date < b.date )
+                return 1;
+              return -1;
+            })
             .map((obj) => (
               <CardDirect key={Math.random()} chat={obj} />
             ))

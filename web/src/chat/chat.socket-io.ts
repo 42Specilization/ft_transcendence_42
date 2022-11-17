@@ -25,7 +25,8 @@ export function createSocketChat({
     transports: ['websocket', 'polling'],
   });
 
-  socket.on('connect', () => console.log('user connected', stateChat.me?.name));
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  socket.on('connect',() => {});
 
   socket.on('msgToClient', (message: MsgToClient) => {
     actionsChat.msgToClient(message);

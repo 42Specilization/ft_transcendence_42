@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
-import { DirectChatData, IntraData, MsgToClient, MsgToServer } from '../Interfaces/interfaces';
+import { DirectChatData, DirectData, IntraData, MsgToClient, MsgToServer } from '../Interfaces/interfaces';
 import { getAccessToken } from '../utils/utils';
 import {
   createSocketChat,
@@ -19,6 +19,7 @@ export interface AppStateChat {
   me: Me | undefined;
   accessToken?: string | null;
   setActiveChat?: Dispatch<SetStateAction<DirectChatData | null>> | null;
+  setChatList?: Dispatch<SetStateAction<DirectData[] | []>> | null;
 }
 
 const stateChat = proxy<AppStateChat>({
@@ -63,6 +64,10 @@ const actionsChat = {
     }
   },
 
+  setChatList(setChatList: Dispatch<SetStateAction<DirectChatData[] | []>>) {
+    stateChat.setChatList = ref(setChatList);
+  },
+
   joinChat(id: string) {
     stateChat.socket?.emit('joinChat', id);
   },
@@ -77,17 +82,31 @@ const actionsChat = {
 
   msgToClient(message: MsgToClient) {
     if (stateChat.setActiveChat) {
-      console.log(message);
       stateChat.setActiveChat((prev) => {
         if (prev && prev.id === message.chat) {
           if (prev.messages)
-            return { ...prev, messages: [...prev.messages, message] };
-          return { ...prev, messages: [message] };
+            return { ...prev, messages: [...prev.messages, message], date: message.date };
+          return { ...prev, messages: [message], date: message.date};
         }
         return null;
       });
+      if(stateChat.setChatList) {
+        stateChat.setChatList((prev) => {
+          if (prev){
+            return prev.map((key) => {
+              console.log('key', key)
+              if ( key.id === message.chat) 
+                return { ...key, date: message.date };
+              return key;
+            });
+          }
+          return [];
+        });
+      }
     }
   },
+
+
 
 };
 

@@ -7,7 +7,7 @@ import { GetUserFromJwt } from 'src/auth/decorators/get-user.decorator';
 import { UserFromJwt } from 'src/auth/dto/UserFromJwt.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
-import { DirectChat, DirectDto, GetDirectDto } from './dto/chat.dto';
+import { DirectDto, GetDirectDto } from './dto/chat.dto';
 import { CreateDirectDto } from './dto/create-direct.dto';
 
 @Controller('chat')
@@ -31,7 +31,9 @@ export class ChatController {
   @Get('/getDirects')
   @UseGuards(JwtAuthGuard)
   async getDirects(@GetUserFromJwt() userFromJwt: UserFromJwt): Promise<DirectDto[] | null> {
-    return await this.chatService.getDirects(userFromJwt.email);
+    const result = await this.chatService.getDirects(userFromJwt.email);
+    // console.log(result);
+    return result; 
   }
 
   @Patch('/getDirect')
@@ -39,7 +41,7 @@ export class ChatController {
   async getDirect(
     @Body() getDirectDto: GetDirectDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
-  ): Promise<DirectChat> {
+  ): Promise<DirectDto> {
     // console.log('id getDirect', getDirectDto.id);
     return await this.chatService.getDirect(userFromJwt.email, getDirectDto.id);
   }

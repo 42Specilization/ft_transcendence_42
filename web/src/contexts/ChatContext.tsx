@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, createContext, useState, ReactNode, useEffect } from 'react';
 import { actionsChat } from '../chat/chatState';
-import { DirectChatData, DirectData, FriendData } from '../Interfaces/interfaces';
+import { DirectChatData, FriendData } from '../Interfaces/interfaces';
 
 
 interface IChatContext {

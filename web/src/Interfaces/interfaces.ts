@@ -25,22 +25,19 @@ export interface BlockedData {
   image_url: string;
 }
 
-
-
-
-
-export interface DirectUserData {
-  login: string;
-  image_url: string;
-}
-
 export interface DirectData {
   id: string;
-  type: string;
   name?: string;
   image?: string;
-  users: DirectUserData[];
+  date: Date;
+  messages?: MsgToClient[];
 }
+
+// export interface DirectChatData {
+//   id: string;
+//   name: string;
+//   image: string;
+// }
 
 export interface UserMsg {
   login: string;
@@ -61,13 +58,7 @@ export interface MsgToClient {
   msg: string;
 }
 
-export interface DirectChatData {
-  id: string;
-  type: string;
-  name: string;
-  image: string;
-  messages?: MsgToClient[];
-}
+
 
 export interface IntraData {
   first_name: string;

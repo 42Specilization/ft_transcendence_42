@@ -1,7 +1,6 @@
 import './FriendsTab.scss';
 import { DotsThreeVertical, MagnifyingGlass, UserPlus, X } from 'phosphor-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
-import { DirectData } from '../../../Interfaces/interfaces';
 import { CardBlocked } from './CardBlocked';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import ReactTooltip from 'react-tooltip';

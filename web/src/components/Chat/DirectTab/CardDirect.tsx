@@ -1,6 +1,5 @@
-import { Dispatch, SetStateAction, useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { ChatContext } from '../../../contexts/ChatContext';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { DirectData } from '../../../Interfaces/interfaces';
 import './CardDirect.scss';
 
@@ -10,8 +9,6 @@ interface CardDirectProps {
 }
 
 export function CardDirect({ chat }: CardDirectProps) {
-  const { api, config } = useContext(IntraDataContext);
-
   const { setDirectsChat } = useContext(ChatContext);
 
   function setChat(chat: DirectData) {

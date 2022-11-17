@@ -224,7 +224,6 @@ export class UserController {
     @Body(ValidationPipe) friendRequestDto: FriendRequestDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
   ): Promise<{ message: string }> {
-    console.log(friendRequestDto);
     await this.userService.sendFriendRequest(userFromJwt.email, friendRequestDto.nick);
     return { message: 'success' };
   }

@@ -82,10 +82,7 @@ export class UserService {
         'notify.user_source',
         'relations',
         'relations.passive_user',
-        'chats',
-        'chats.users',
       ]
-
     });
   }
 
@@ -100,11 +97,37 @@ export class UserService {
           'notify.user_source',
           'relations',
           'relations.passive_user',
+        ]
+      });
+  }
+
+  async findUserChatsByEmail(email: string): Promise<User | null> {
+    return await this.usersRepository.findOne(
+      {
+        where: {
+          email,
+        },
+        relations: [
           'chats',
           'chats.users',
-
+          'chats.messages',
+          'chats.messages.sender',
         ]
+      });
+  }
 
+  async findUserChatsByNick(nick: string): Promise<User | null> {
+    return await this.usersRepository.findOne(
+      {
+        where: {
+          nick,
+        },
+        relations: [
+          'chats',
+          'chats.users',
+          'chats.messages',
+          'chats.messages.sender',
+        ]
       });
   }
 
@@ -190,29 +213,12 @@ export class UserService {
             image_url: rel.passive_user.imgUrl,
           };
         }),
-
-      directs: user.chats.filter((chat) => chat.type === 'direct')
-        .map((chat) => {
-          return {
-            id: chat.id,
-            type: chat.type,
-            users: chat.users.filter((key) => key.nick != user.nick)
-              .map((key) => {
-                return {
-                  login: key.nick,
-                  image_url: key.imgUrl,
-                };
-              }),
-          };
-        })
     };
-    // console.log('userDto', user.chats[0].users);
     return userDto;
   }
 
   async getUser(email: string): Promise<User> {
     const user = (await this.findUserByEmail(email)) as User;
-
     return user;
   }
 
@@ -244,30 +250,13 @@ export class UserService {
     user.tfaCode = tfaCode ? bcrypt.hashSync(tfaCode, 8) : user.tfaCode;
     if (nick) {
       if (user.imgUrl !== 'userDefault.png' && !user.imgUrl.includes('https://cdn.intra.42.fr')) {
-        // if(user.imgUrl.includes('/public/')){
-        // fs.rename(
-        //   `../web/${user.imgUrl}`,
-        //   `../web/${nick}_avatar.jpg`,
-        //   function (err) {
-        //     if (err) throw err;
-        //   }
-        // );
-        fs.rename(
+               fs.rename(
           `${user.imgUrl}`,
           `${nick}_avatar.jpg`,
           function (err) {
             if (err) throw err;
           }
         );
-        // } else {
-        //   fs.rename(
-        //     `../web/public/${user.imgUrl}`,
-        //     `../web/public/${nick}_avatar.jpg`,
-        //     function (err) {
-        //       if (err) throw err;
-        //     }
-        //   );
-        // }
         user.imgUrl = `${nick}_avatar.jpg`;
       }
     }

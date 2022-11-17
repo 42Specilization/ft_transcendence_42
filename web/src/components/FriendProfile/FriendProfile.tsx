@@ -33,18 +33,12 @@ export function FriendProfile({ login }: FriendProfileProps) {
     const api = axios.create({
       baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
     });
-    console.log('login', login);
     const response = await api.patch('/user/friend', { nick: login }, config);
-    console.log(response);
-    // if (!response.data.image_url.includes('https://cdn.intra.42.fr/'))
-    //   response.data.image_url = `/public/${response.data.image_url}`;
     setFriend(response.data);
   }
 
   useEffect(() => {
-    // console.log(notify);
     getFriend();
-    console.log('friend', friend);
   }, [login]);
 
   return (
