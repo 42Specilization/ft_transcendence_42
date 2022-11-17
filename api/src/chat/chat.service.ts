@@ -133,19 +133,13 @@ export class ChatService {
     }
   }
 
-  async getDirect(owner_email: string, id: string) {
-    const chat = await this.findChatById(id);
-    if (!chat)
-      throw new BadRequestException('Invalid chat GetDirect');
-    const user = chat.users.filter((key) => key.email != owner_email).at(0);
-    if (!user)
-      throw new BadRequestException('Invalid user GetDirect');
+  createDirectChat(chat: Chat, user: User): DirectChat {
     const directChat: DirectChat = {
       id: chat.id,
       type: chat.type,
       name: user.nick,
       image: user.imgUrl,
-      messages: chat.messages.map((message) => {
+      messages: chat.messages?.map((message) => {
         return {
           id: message.id,
           chat: message.chat.id,
@@ -161,8 +155,49 @@ export class ChatService {
     return directChat;
   }
 
+  async getDirect(owner_email: string, id: string): Promise<DirectChat> {
+    const chat = await this.findChatById(id);
+    if (!chat)
+      throw new BadRequestException('Invalid chat GetDirect');
+    const user = chat.users.filter((key) => key.email != owner_email).at(0);
+    if (!user)
+      throw new BadRequestException('Invalid user GetDirect');
 
+    return this.createDirectChat(chat, user);
+  }
 
+  async createDirectUser(users: User[]): Promise<Chat> {
+    const chat = new Chat();
+    chat.type = 'direct';
+    chat.users = users;
 
+    try {
+      await this.chatRepository.save(chat);
+      return chat;
+    } catch (err) {
+      throw new InternalServerErrorException('Error saving chat in db');
+    }
+  }
 
+  async getFriendChat(owner_email: string, friend_login: string): Promise<DirectChat> {
+    const owner = await this.userService.findUserByEmail(owner_email);
+    const friend = await this.userService.findUserByNick(friend_login);
+    if (!owner || !friend)
+      throw new BadRequestException('User Not Found getFriendChat');
+
+    const chats: Chat[] = owner.chats.filter(key => {
+      if (key.type === 'direct' && key.users.map(u => u.nick).indexOf(friend.nick) >= 0)
+        return key;
+      return;
+    });
+
+    let direct;
+    if (chats.length < 1) {
+      direct = await this.createDirectUser([owner, friend]);
+    } else {
+      direct = await this.findChatById(chats[0].id);
+    }
+
+    return this.createDirectChat(direct, friend);
+  }
 }

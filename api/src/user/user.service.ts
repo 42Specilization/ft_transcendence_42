@@ -102,6 +102,7 @@ export class UserService {
           'relations.passive_user',
           'chats',
           'chats.users',
+
         ]
 
       });
@@ -190,13 +191,13 @@ export class UserService {
           };
         }),
 
-      directs: user.chats.filter((chat)=> chat.type === 'direct')
+      directs: user.chats.filter((chat) => chat.type === 'direct')
         .map((chat) => {
           return {
             id: chat.id,
             type: chat.type,
             users: chat.users.filter((key) => key.nick != user.nick)
-              .map((key) =>{
+              .map((key) => {
                 return {
                   login: key.nick,
                   image_url: key.imgUrl,

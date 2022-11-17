@@ -17,14 +17,18 @@ export function ChatTalk(
   // { }: ChatTalkProps
 ) {
 
-  const { activeChat, setActiveChat, directsChat, setDirectsChat } = useContext(ChatContext);
+  const {
+    activeChat, setActiveChat,
+    directsChat, setDirectsChat,
+    friendsChat, setFriendsChat,
+  } = useContext(ChatContext);
   const { intraData, api, config } = useContext(IntraDataContext);
 
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    console.log('directChat', directsChat);
+    console.log('directsChat', directsChat);
     async function getDirect() {
       const response = await api.patch('/chat/getDirect', { id: directsChat }, config);
       console.log(response);
@@ -35,6 +39,19 @@ export function ChatTalk(
       getDirect();
     }
   }, [directsChat]);
+
+  useEffect(() => {
+    console.log('friendsChat', friendsChat);
+    async function getDirect() {
+      const response = await api.patch('/chat/getFriendChat', { id: friendsChat?.login }, config);
+      console.log(response);
+      setActiveChat(response.data as DirectChatData);
+      actionsChat.joinChat(response.data.id);
+    }
+    if (friendsChat) {
+      getDirect();
+    }
+  }, [friendsChat]);
 
 
   /**
@@ -81,6 +98,7 @@ export function ChatTalk(
             <ArrowBendUpLeft size={32} onClick={() => {
               setActiveChat(null);
               setDirectsChat(null);
+              setFriendsChat(null);
               actionsChat.leaveChat(activeChat.id);
             }}
             />

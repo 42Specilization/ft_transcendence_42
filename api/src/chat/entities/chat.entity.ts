@@ -23,6 +23,10 @@ export class Chat extends BaseEntity {
   @Column({ nullable: false })
   type: string;
 
+  // @ApiProperty()
+  // // @Column({ nullable: false })
+  // admins: string[];
+
   @ApiProperty()
   @ManyToMany(() => User, (user) => user.chats)
   users: User[];

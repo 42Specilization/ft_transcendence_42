@@ -9,12 +9,12 @@ import { CardFriend } from './CardFriend';
 import { FriendRequestModal } from './FriendsRequestModal';
 import { actionsStatus } from '../../../status/statusState';
 
-// interface FriendTabProps {
-
-// }
+interface FriendTabProps {
+  setTableSelected: Dispatch<SetStateAction<string>>;
+}
 
 export function FriendTab(
-  // { }: FriendTabProps
+  { setTableSelected }: FriendTabProps
 ) {
   const { intraData } = useContext(IntraDataContext);
 
@@ -102,7 +102,7 @@ export function FriendTab(
       <>{isTableUsers === 'friends' ?
         < div className='friends__tab__body'>
           {intraData.friends.filter((obj) => obj.login.includes(searchInput)).map((obj) => (
-            <CardFriend key={Math.random()} friend={obj} />
+            <CardFriend key={Math.random()} friend={obj} setTableSelected={setTableSelected} />
           ))
           }
         </div>
