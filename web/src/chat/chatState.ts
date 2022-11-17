@@ -1,6 +1,7 @@
+import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
-import { IntraData } from '../Interfaces/interfaces';
+import { DirectChatData, IntraData, MsgToClient, MsgToServer } from '../Interfaces/interfaces';
 import { getAccessToken } from '../utils/utils';
 import {
   createSocketChat,
@@ -9,22 +10,15 @@ import {
 } from './chat.socket-io';
 
 interface Me {
+  id: string | undefined;
   name: string;
-  id: string;
-}
-
-export interface ChatMsg {
-  id: string;
-  user: IntraData;
-  msg: string;
-  date: Date;
 }
 
 export interface AppStateChat {
   socket?: Socket;
   me: Me | undefined;
   accessToken?: string | null;
-  chatMsg?: ChatMsg[] | undefined;
+  setActiveChat?: Dispatch<SetStateAction<DirectChatData | null>> | null;
 }
 
 const stateChat = proxy<AppStateChat>({
@@ -34,16 +28,16 @@ const stateChat = proxy<AppStateChat>({
       return undefined;
     }
     const data: IntraData = JSON.parse(localStore);
-    const myData = {
-      name: data.login,
+    const myData: Me = {
       id: this.socket?.id,
+      name: data.login,
     };
     return myData;
   },
 });
 
 const actionsChat = {
-  initializeSocketChat: (): void => {
+  initializeSocketChat: (setActiveChat: Dispatch<SetStateAction<DirectChatData | null>>): void => {
     if (!stateChat.socket) {
       const createSocketOptions: CreateSocketChatOptions = {
         accessToken: getAccessToken(),
@@ -52,11 +46,13 @@ const actionsChat = {
         stateChat: stateChat,
       };
       stateChat.socket = ref(createSocketChat(createSocketOptions));
+      stateChat.setActiveChat = ref(setActiveChat);
       return;
     }
 
     if (!stateChat.socket.connected) {
       stateChat.socket.connect();
+      stateChat.setActiveChat = ref(setActiveChat);
       return;
     }
   },
@@ -67,13 +63,32 @@ const actionsChat = {
     }
   },
 
-  updateChatMessage(message: ChatMsg) {
-    stateChat.chatMsg?.push(message);
+  joinChat(id: string) {
+    stateChat.socket?.emit('joinChat', id);
   },
 
-  startChatMessage(messageChat:ChatMsg[]) {
-    stateChat.chatMsg = messageChat;
-  }
+  leaveChat(id: string) {
+    stateChat.socket?.emit('leaveChat', id);
+  },
+
+  msgToServer(message: MsgToServer) {
+    stateChat.socket?.emit('msgToServer', message);
+  },
+
+  msgToClient(message: MsgToClient) {
+    if (stateChat.setActiveChat) {
+      console.log(message);
+      stateChat.setActiveChat((prev) => {
+        if (prev && prev.id === message.chat) {
+          if (prev.messages)
+            return { ...prev, messages: [...prev.messages, message] };
+          return { ...prev, messages: [message] };
+        }
+        return null;
+      });
+    }
+  },
+
 };
 
 export type AppActionsChat = typeof actionsChat;

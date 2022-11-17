@@ -74,6 +74,10 @@ const actionsStatus = {
     }
   },
 
+  whoIsOnline() {
+    stateStatus.socket?.emit('whoIsOnline');
+  },
+
   sortFriends() {
     if (stateStatus.setIntraData) {
       stateStatus.setIntraData((prevIntraData) => {
@@ -92,14 +96,13 @@ const actionsStatus = {
     }
   },
 
-  loggedUsers(loggedUsers: UserData[]) {
+  onlineUsers(onlineUsers: UserData[]) {
     if (stateStatus.setIntraData) {
       stateStatus.setIntraData((prevIntraData) => {
         return {
           ...prevIntraData, friends: prevIntraData.friends.map(friend => {
-            console.log('loggedUsers', prevIntraData);
-            if (loggedUsers.map(e => e.login).indexOf(friend.login) >= 0) {
-              const updateFriend = loggedUsers.find(e => e.login === friend.login);
+            if (onlineUsers.map(e => e.login).indexOf(friend.login) >= 0) {
+              const updateFriend = onlineUsers.find(e => e.login === friend.login);
               return typeof updateFriend !== 'undefined' ? updateFriend : friend;
             }
             return friend;

@@ -29,4 +29,8 @@ export class Message extends BaseEntity {
   @Column({ nullable: false })
   date: Date;
 
+  @ApiProperty()
+  @Column({ nullable: false })
+  msg: string;
+
 }

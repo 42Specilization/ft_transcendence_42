@@ -1,18 +1,21 @@
 import './FriendsTab.scss';
 import { DotsThreeVertical, MagnifyingGlass, UserPlus, X } from 'phosphor-react';
-import { Dispatch, SetStateAction, useContext, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { DirectData } from '../../../Interfaces/interfaces';
 import { CardBlocked } from './CardBlocked';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import ReactTooltip from 'react-tooltip';
 import { CardFriend } from './CardFriend';
 import { FriendRequestModal } from './FriendsRequestModal';
+import { actionsStatus } from '../../../status/statusState';
 
-interface FriendTabProps {
+// interface FriendTabProps {
 
-}
+// }
 
-export function FriendTab({  }: FriendTabProps) {
+export function FriendTab(
+  // { }: FriendTabProps
+) {
   const { intraData } = useContext(IntraDataContext);
 
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
@@ -21,9 +24,9 @@ export function FriendTab({  }: FriendTabProps) {
   const [isTableUsers, setIsTableUsers] = useState('friends');
   const [searchInput, setSearchInput] = useState('');
 
-  // const [friendSelected, setFriendSelected]
-
-
+  useEffect(() => {
+    actionsStatus.whoIsOnline();
+  }, []);
 
   return (
     < div className='friends__tab' >

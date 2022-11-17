@@ -53,7 +53,9 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
         }
       }
     }
+    
     setNick('');
+    window.location.reload();
   }
 
   return (

@@ -14,14 +14,14 @@ interface CardFriendProps {
 }
 
 export function CardFriend({ friend }: CardFriendProps) {
-  const { setActiveChat } = useContext(ChatContext);
+  const { setFriendsChat } = useContext(ChatContext);
   const [isTableFriendUsersMenu, setIsTableFriendUsersMenu] = useState(false);
   const currentStateStatus = useSnapshot(stateStatus);
   const { setIntraData } = useContext(IntraDataContext);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function selectActiveFriend(e: any) {
     if (e.target.id !== 'card__friend__menu') {
-      setActiveChat(friend);
+      setFriendsChat(friend);
     }
   }
 
@@ -48,7 +48,7 @@ export function CardFriend({ friend }: CardFriendProps) {
         friends: prevIntraData.friends.filter((key) => key.login != friend.login)
       };
     });
-    setActiveChat(null);
+    setFriendsChat(null);
     currentStateStatus.socket?.emit('deleteFriend', friend.login);
   }
 
@@ -61,7 +61,7 @@ export function CardFriend({ friend }: CardFriendProps) {
         friends: prevIntraData.friends.filter((key) => key.login != friend.login),
       };
     });
-    setActiveChat(null);
+    setFriendsChat(null);
     currentStateStatus.socket?.emit('deleteFriend', friend.login);
   }
 

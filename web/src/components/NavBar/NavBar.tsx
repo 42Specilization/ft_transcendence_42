@@ -35,7 +35,8 @@ export function NavBar({ Children }: NavBarProps) {
       setIntraData((prevIntraData) => {
         return {
           ...prevIntraData,
-          image_url: `/public/${intraData.image_url}`
+          image_url: `${intraData.image_url}`
+          // image_url: `/public/${intraData.image_url}`
         };
       });
     }

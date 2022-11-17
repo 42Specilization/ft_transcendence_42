@@ -1,8 +1,8 @@
 import { io, Socket } from 'socket.io-client';
+import { MsgToClient } from '../Interfaces/interfaces';
 import { AppActionsChat, AppStateChat } from './chatState';
 
-export const socketChatIOUrl = `http://${import.meta.env.VITE_API_HOST}:${
-  import.meta.env.VITE_API_PORT
+export const socketChatIOUrl = `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT
 }/${import.meta.env.VITE_CHAT_NAMESPACE}`;
 
 export interface CreateSocketChatOptions {
@@ -15,7 +15,7 @@ export interface CreateSocketChatOptions {
 export function createSocketChat({
   accessToken,
   socketChatIOUrl,
-  // actionsChat,
+  actionsChat,
   stateChat,
 }: CreateSocketChatOptions): Socket {
   const socket = io(socketChatIOUrl, {
@@ -26,6 +26,14 @@ export function createSocketChat({
   });
 
   socket.on('connect', () => console.log('user connected', stateChat.me?.name));
+
+  socket.on('msgToClient', (message: MsgToClient) => {
+    actionsChat.msgToClient(message);
+    console.log('msg to client:', message);
+  });
+
+
+
 
   return socket;
 }

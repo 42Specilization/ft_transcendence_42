@@ -3,12 +3,14 @@ import axios from 'axios';
 import { Dropzone } from '../../Dropzone/Dropzone';
 import { useContext, useEffect, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { useSnapshot } from 'valtio';
+import { stateStatus } from '../../../status/statusState';
 
 export function UserImage() {
 
   const { intraData, updateImageTime } = useContext(IntraDataContext);
   const [selectedFile, setSelectedFile] = useState<File>();
-
+  const currentStateStatus = useSnapshot(stateStatus);
   async function handleSubmit() {
     const token = window.localStorage.getItem('token');
     const data = new FormData();
@@ -25,6 +27,9 @@ export function UserImage() {
       baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
     });
     await api.post('/user/updateImage', data, config);
+
+    currentStateStatus.socket?.emit('changeImage', intraData.login);
+    window.location.reload();
   }
 
   useEffect(() => {

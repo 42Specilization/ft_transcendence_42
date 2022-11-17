@@ -12,14 +12,10 @@ interface CardDirectProps {
 export function CardDirect({ chat }: CardDirectProps) {
   const { api, config } = useContext(IntraDataContext);
 
-  const { setActiveChat } = useContext(ChatContext);
+  const { setDirectsChat } = useContext(ChatContext);
 
   function setChat(chat: DirectData) {
-    setActiveChat({
-      status: 'offline',
-      login: chat.name ? chat.name : '',
-      image_url: chat.image ? chat.image : '',
-    })
+    setDirectsChat(chat.id);
   }
 
   return (

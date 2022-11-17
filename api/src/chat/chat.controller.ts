@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post,
+import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Post,
   UseGuards
 } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
@@ -6,7 +6,7 @@ import { GetUserFromJwt } from 'src/auth/decorators/get-user.decorator';
 import { UserFromJwt } from 'src/auth/dto/UserFromJwt.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
-import { DirectDto } from './dto/chat.dto';
+import { DirectChat, DirectDto, GetDirectDto } from './dto/chat.dto';
 import { CreateDirectDto } from './dto/create-direct.dto';
 
 @Controller('chat')
@@ -31,6 +31,16 @@ export class ChatController {
   @UseGuards(JwtAuthGuard)
   async getDirects(@GetUserFromJwt() userFromJwt: UserFromJwt): Promise<DirectDto[] | null> {
     return await this.chatService.getDirects(userFromJwt.email);
+  }
+
+  @Patch('/getDirect')
+  @UseGuards(JwtAuthGuard)
+  async getDirect(
+    @Body()  getDirectDto :GetDirectDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<DirectChat> {
+    // console.log('id getDirect', getDirectDto.id);
+    return await this.chatService.getDirect(userFromJwt.email, getDirectDto.id);
   }
 
 

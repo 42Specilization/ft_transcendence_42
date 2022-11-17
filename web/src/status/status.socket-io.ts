@@ -33,9 +33,9 @@ export function createSocketStatus({
     });
   });
 
-  socket.on('loggedUsers', (friends: UserData[]) => {
-    actionsStatus.loggedUsers(friends);
-    console.log('logged users:', friends);
+  socket.on('onlineUsers', (users: UserData[]) => {
+    actionsStatus.onlineUsers(users);
+    console.log('online users:', users);
   });
 
   socket.on('updateUser', (user: UserData) => {

@@ -1,18 +1,17 @@
 import './ChatMessage.scss';
-import { ChatMsg } from './ChatTalk';
-import { IntraData } from '../../../Interfaces/interfaces';
 import { ReactElement } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import ReactTooltip from 'react-tooltip';
+import { MsgToClient } from '../../../Interfaces/interfaces';
 
 interface ChatMessageProps {
-  user: IntraData;
-  message: ChatMsg;
+  user: string;
+  message: MsgToClient;
 }
 
 export function ChatMessage({ user, message }: ChatMessageProps) {
   function self(): boolean {
-    return user.login === message.user.login;
+    return user === message.user.login;
   }
 
   function formatDate(date: Date): ReactElement {
@@ -36,7 +35,7 @@ export function ChatMessage({ user, message }: ChatMessageProps) {
     <div className={'chat__message' + (self() ? ' self' : '')}>
       <div
         className='chat__message__icon'
-        style={{ backgroundImage: `url(${message.user.image_url})` }}
+        style={{ backgroundImage: `url(${message.user.image})` }}
       />
       <p
         data-html={true}

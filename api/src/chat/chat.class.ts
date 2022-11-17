@@ -1,4 +1,3 @@
-import { UserDto } from 'src/user/dto/user.dto';
 
 export interface UserMsg {
   login: string;
@@ -16,11 +15,5 @@ export interface MsgToClient {
   chat: string;
   user: UserMsg;
   date: Date;
-}
-
-export interface ChatMsg {
-  id: number;
-  user: UserDto;
-  msg: string;
-  date: Date;
+  msg:string;
 }

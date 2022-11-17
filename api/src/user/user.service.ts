@@ -113,7 +113,7 @@ export class UserService {
         id,
       },
     });
-    if (!user) throw new NotFoundException('Usuário não encontrado');
+    if (!user) throw new NotFoundException('User Not Found FindUserByID');
     return user;
   }
 
@@ -243,13 +243,30 @@ export class UserService {
     user.tfaCode = tfaCode ? bcrypt.hashSync(tfaCode, 8) : user.tfaCode;
     if (nick) {
       if (user.imgUrl !== 'userDefault.png' && !user.imgUrl.includes('https://cdn.intra.42.fr')) {
+        // if(user.imgUrl.includes('/public/')){
+        // fs.rename(
+        //   `../web/${user.imgUrl}`,
+        //   `../web/${nick}_avatar.jpg`,
+        //   function (err) {
+        //     if (err) throw err;
+        //   }
+        // );
         fs.rename(
-          `../web/public/${user.imgUrl}`,
-          `../web/public/${nick}_avatar.jpg`,
+          `${user.imgUrl}`,
+          `${nick}_avatar.jpg`,
           function (err) {
             if (err) throw err;
           }
         );
+        // } else {
+        //   fs.rename(
+        //     `../web/public/${user.imgUrl}`,
+        //     `../web/public/${nick}_avatar.jpg`,
+        //     function (err) {
+        //       if (err) throw err;
+        //     }
+        //   );
+        // }
         user.imgUrl = `${nick}_avatar.jpg`;
       }
     }
@@ -262,7 +279,7 @@ export class UserService {
       await user.save();
       return user;
     } catch (error) {
-      throw new InternalServerErrorException('Erro ao salvar os dados no db');
+      throw new InternalServerErrorException('Error saving user update');
     }
   }
 
@@ -339,7 +356,7 @@ export class UserService {
       user.save();
       return;
     } catch (err) {
-      throw new InternalServerErrorException('erro salvando notificacao');
+      throw new InternalServerErrorException('Error saving notify');
     }
   }
 
@@ -378,7 +395,7 @@ export class UserService {
       await this.popNotification(email, id);
       return;
     } catch (err) {
-      throw new InternalServerErrorException('erro salvando notificacao');
+      throw new InternalServerErrorException('Error saving notify accept');
     }
   }
 
@@ -412,7 +429,7 @@ export class UserService {
       await this.popNotification(email, id);
       return;
     } catch (err) {
-      throw new InternalServerErrorException('erro salvando notificacao');
+      throw new InternalServerErrorException('Error saving notify block ');
     }
   }
 
@@ -445,7 +462,7 @@ export class UserService {
       await friend.save();
       return;
     } catch (err) {
-      throw new InternalServerErrorException('erro salvando notificacao');
+      throw new InternalServerErrorException('Error saving notify remove');
     }
   }
 
@@ -484,7 +501,7 @@ export class UserService {
       await friend.save();
       return;
     } catch (err) {
-      throw new InternalServerErrorException('erro salvando notificacao');
+      throw new InternalServerErrorException('Error saving notify new blocked');
     }
   }
 
@@ -507,27 +524,7 @@ export class UserService {
       await user.save();
       return;
     } catch (err) {
-      throw new InternalServerErrorException('erro salvando notificacao');
+      throw new InternalServerErrorException('Error saving notify remove blocked');
     }
   }
-
-
-  // async createChat() {
-  //   // const chat  = new Chat();
-  //   // const gsilva = await this.getUser('gsilva-v@student.42sp.org.br');
-  //   // const mmoreira = await this.getUser('mmoreira@student.42sp.org.br');
-  //   // const mavinici = await this.getUser('mavinici@student.42sp.org.br');
-
-  //   await this.createChat();
-
-
-  //   return;
-  // }
-
-
-
-
-
-
-
 }
