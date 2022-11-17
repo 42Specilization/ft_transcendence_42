@@ -6,11 +6,11 @@ import { CardDirect } from './CardDirect';
 import './DirectTab.scss';
 
 interface DirectTabProps {
-  setActiveChat: Dispatch<SetStateAction<DirectData | null>>;
+
 }
 
-export function DirectTab({ setActiveChat }: DirectTabProps) {
-  const { intraData, api } = useContext(IntraDataContext);
+export function DirectTab({ }: DirectTabProps) {
+  const { api } = useContext(IntraDataContext);
 
   const [isTableSearch, setIsTableSearch] = useState(false);
   const [searchInput, setSearchInput] = useState('');
@@ -69,7 +69,7 @@ export function DirectTab({ setActiveChat }: DirectTabProps) {
         {
           directs.filter((obj) => obj.name?.includes(searchInput))
             .map((obj) => (
-              <CardDirect key={Math.random()} chat={obj} setActiveChat={setActiveChat} />
+              <CardDirect key={Math.random()} chat={obj} />
             ))
         }
       </div>

@@ -25,7 +25,7 @@ import { Relations } from 'src/relations/entity/relations.entity';
 export class UserService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
-    
+
   ) { }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
@@ -173,7 +173,7 @@ export class UserService {
           date: notify.date,
         };
       }),
-      
+
       friends: user.relations.filter((rel) => rel.type === 'friend').map((rel) => {
         return {
           status: 'offline',
@@ -181,7 +181,7 @@ export class UserService {
           image_url: rel.passive_user.imgUrl,
         };
       }),
-     
+
       blockeds: user.relations.filter((rel) => rel.type === 'blocked')
         .map((rel) => {
           return {
@@ -519,13 +519,13 @@ export class UserService {
   //   // const mavinici = await this.getUser('mavinici@student.42sp.org.br');
 
   //   await this.createChat();
- 
+
 
   //   return;
   // }
 
 
-  
+
 
 
 

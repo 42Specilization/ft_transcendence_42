@@ -14,6 +14,7 @@ import { StatusModule } from "./status/status.module";
 import { Relations } from "./relations/entity/relations.entity";
 import { Chat } from "./chat/entities/chat.entity";
 import { ChatModule } from "./chat/chat.module";
+import { Message } from "./chat/entities/message.entity";
 // import { APP_GUARD } from '@nestjs/core';
 // import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
@@ -26,7 +27,7 @@ import { ChatModule } from "./chat/chat.module";
       username: "pguser",
       password: "pgpassword",
       database: "postgres",
-      entities: [User, Notify, Relations, Chat, GameEntity],
+      entities: [User, Notify, Relations, Chat, GameEntity, Message],
       synchronize: true,
       logging: false,
     }),

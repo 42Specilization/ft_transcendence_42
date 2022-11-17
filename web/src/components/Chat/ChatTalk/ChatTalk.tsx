@@ -9,10 +9,10 @@ import { useSnapshot } from 'valtio';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import ReactTooltip from 'react-tooltip';
+import { ChatContext } from '../../../contexts/ChatContext';
 
 interface ChatTalkProps {
-  activeChat: DirectData | null;
-  setActiveChat: Dispatch<SetStateAction<FriendData | null>>;
+
 }
 
 export interface ChatMsg {
@@ -22,8 +22,9 @@ export interface ChatMsg {
   date: Date;
 }
 
-export function ChatTalk({ activeChat, setActiveChat }: ChatTalkProps) {
+export function ChatTalk({  }: ChatTalkProps) {
 
+  const {activeChat, setActiveChat} = useContext(ChatContext);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
   // const { intraData, setIntraData } = useContext(IntraDataContext);
   // const currentStateChat = useSnapshot(stateChat);
@@ -102,14 +103,14 @@ export function ChatTalk({ activeChat, setActiveChat }: ChatTalkProps) {
               className='chat__talk__header__user'
               onClick={() => setFriendProfileVisible(true)}
               data-html={true}
-              data-tip={`${activeChat.name} profile`}
+              data-tip={`${activeChat.login} profile`}
             >
               <div
                 className='chat__talk__header__user__icon'
-                style={{ backgroundImage: `url(${activeChat.image})` }}
+                style={{ backgroundImage: `url(${activeChat.image_url})` }}
               />
               <div className='chat__talk__header__user__name'>
-                {activeChat.name}
+                {activeChat.login}
               </div>
             </div>
           </div>
@@ -122,7 +123,7 @@ export function ChatTalk({ activeChat, setActiveChat }: ChatTalkProps) {
           </div>
           {friendProfileVisible &&
             <ProfileFriendModal
-              login={activeChat.name as string}
+              login={activeChat.login}
               setFriendProfileVisible={setFriendProfileVisible} />
           }
           <form className='chat__talk__footer' onSubmit={handleKeyEnter}>

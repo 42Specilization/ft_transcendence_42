@@ -10,7 +10,7 @@ interface IIntraDataContext {
   updateImageTime: number;
   setUpdateImageTime: Dispatch<SetStateAction<number>>;
   config: {
-    header: {
+    headers: {
       Authorization: string
     }
   },
@@ -25,7 +25,7 @@ export const IntraDataContext = createContext<IIntraDataContext>({
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setUpdateImageTime: () => { },
   config: {
-    header: {
+    headers: {
       Authorization: ''
     }
   },
@@ -62,6 +62,7 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
   useEffect(() => {
     getIntraData(setIntraData);
     actionsStatus.initializeSocketStatus(setIntraData);
+    return 
   }, []);
 
   return (

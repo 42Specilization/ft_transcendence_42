@@ -8,12 +8,11 @@ import ReactTooltip from 'react-tooltip';
 import { CardFriend } from './CardFriend';
 import { FriendRequestModal } from './FriendsRequestModal';
 
-
 interface FriendTabProps {
-  setActiveChat: Dispatch<SetStateAction<DirectData | null>>;
+
 }
 
-export function FriendTab({ setActiveChat }: FriendTabProps) {
+export function FriendTab({  }: FriendTabProps) {
   const { intraData } = useContext(IntraDataContext);
 
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
@@ -100,7 +99,7 @@ export function FriendTab({ setActiveChat }: FriendTabProps) {
       <>{isTableUsers === 'friends' ?
         < div className='friends__tab__body'>
           {intraData.friends.filter((obj) => obj.login.includes(searchInput)).map((obj) => (
-            <CardFriend key={Math.random()} friend={obj} setActiveChat={setActiveChat} />
+            <CardFriend key={Math.random()} friend={obj} />
           ))
           }
         </div>

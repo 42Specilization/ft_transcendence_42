@@ -1,34 +1,32 @@
 /* eslint-disable indent */
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/user/entities/user.entity';
-import { Message } from './message.entity';
-
+import { Chat } from './chat.entity';
 import {
   BaseEntity,
   Column,
   Entity,
-  ManyToMany,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn
 } from 'typeorm';
 
 @Entity()
-export class Chat extends BaseEntity {
+export class Message extends BaseEntity {
 
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ApiProperty()
+  @ManyToOne(() => Chat, (chat: Chat) => chat.messages, { orphanedRowAction: 'delete' })
+  chat: Chat;
+
+  @ApiProperty()
+  @ManyToOne(() => User)
+  sender: User;
+
+  @ApiProperty()
   @Column({ nullable: false })
-  type: string;
-
-  @ApiProperty()
-  @ManyToMany(() => User, (user) => user.chats)
-  users: User[];
-
-  @ApiProperty()
-  @OneToMany(() => Message, (message: Message) => message.chat, { cascade: ['insert'] })
-  messages: Message[];
+  date: Date;
 
 }

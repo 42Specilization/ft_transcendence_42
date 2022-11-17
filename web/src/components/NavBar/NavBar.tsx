@@ -48,6 +48,10 @@ export function NavBar({ Children }: NavBarProps) {
     };
   }, []);
 
+  useEffect(() => {
+    console.log('renderizou de novo');
+  });
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClickOutside = (event: any) => {
     if (menuRef.current && !menuRef.current.contains(event.target)

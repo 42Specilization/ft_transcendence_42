@@ -7,20 +7,21 @@ import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import axios from 'axios';
 import { useSnapshot } from 'valtio';
 import { stateStatus } from '../../../status/statusState';
+import { ChatContext } from '../../../contexts/ChatContext';
 
 interface CardFriendProps {
   friend: FriendData;
-  setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
 }
 
-export function CardFriend({ friend, setActiveFriend }: CardFriendProps) {
+export function CardFriend({ friend }: CardFriendProps) {
+  const { setActiveChat } = useContext(ChatContext);
   const [isTableFriendUsersMenu, setIsTableFriendUsersMenu] = useState(false);
   const currentStateStatus = useSnapshot(stateStatus);
   const { setIntraData } = useContext(IntraDataContext);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function selectActiveFriend(e: any) {
     if (e.target.id !== 'card__friend__menu') {
-      setActiveFriend(friend);
+      setActiveChat(friend);
     }
   }
 
@@ -47,7 +48,7 @@ export function CardFriend({ friend, setActiveFriend }: CardFriendProps) {
         friends: prevIntraData.friends.filter((key) => key.login != friend.login)
       };
     });
-    setActiveFriend(null);
+    setActiveChat(null);
     currentStateStatus.socket?.emit('deleteFriend', friend.login);
   }
 
@@ -60,7 +61,7 @@ export function CardFriend({ friend, setActiveFriend }: CardFriendProps) {
         friends: prevIntraData.friends.filter((key) => key.login != friend.login),
       };
     });
-    setActiveFriend(null);
+    setActiveChat(null);
     currentStateStatus.socket?.emit('deleteFriend', friend.login);
   }
 

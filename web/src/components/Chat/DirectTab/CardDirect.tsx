@@ -1,21 +1,29 @@
 import { Dispatch, SetStateAction, useContext, useEffect } from 'react';
+import { ChatContext } from '../../../contexts/ChatContext';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { DirectData } from '../../../Interfaces/interfaces';
 import './CardDirect.scss';
 
 interface CardDirectProps {
   chat: DirectData;
-  setActiveChat: Dispatch<SetStateAction<DirectData | null>>;
+
 }
 
-export function CardDirect({ chat, setActiveChat }: CardDirectProps) {
+export function CardDirect({ chat }: CardDirectProps) {
   const { api, config } = useContext(IntraDataContext);
 
-  // const data ={}
-  // api.post('/chat/createDirect', ,)
+  const { setActiveChat } = useContext(ChatContext);
+
+  function setChat(chat: DirectData) {
+    setActiveChat({
+      status: 'offline',
+      login: chat.name ? chat.name : '',
+      image_url: chat.image ? chat.image : '',
+    })
+  }
 
   return (
-    <div className='card__direct' onClick={() => setActiveChat(chat)}>
+    <div className='card__direct' onClick={() => setChat(chat)}>
       <div className="card__direct__div">
         <div
           className='card__direct__icon'
@@ -23,7 +31,7 @@ export function CardDirect({ chat, setActiveChat }: CardDirectProps) {
         </div>
         <div className='card__direct__name'>{chat.name}</div>
       </div>
-      {/* 
+      {/*
       <div className="card__blocked__menu">
         <div
           className="card__blocked__menu__body"

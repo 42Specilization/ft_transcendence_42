@@ -11,6 +11,7 @@ import { NavBar } from './components/NavBar/NavBar';
 import { RequireAuth, ValidadeSignin } from './utils/utils';
 import Chat from './pages/Chat/Chat';
 import { IntraDataProvider } from './contexts/IntraDataContext';
+import { ChatProvider } from './contexts/ChatContext';
 
 
 export default function AppRouter() {
@@ -51,7 +52,9 @@ export default function AppRouter() {
             element={
               <IntraDataProvider>
                 <RequireAuth>
-                  <NavBar Children={Chat} />
+                  <ChatProvider>
+                    <NavBar Children={Chat} />
+                  </ChatProvider>
                 </RequireAuth>
               </IntraDataProvider>
             }
