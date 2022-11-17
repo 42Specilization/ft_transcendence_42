@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
 import { User } from '../user/entities/user.entity';
@@ -175,6 +175,23 @@ export class AuthService {
       email: finalUser.email,
       token: finalUser.token,
       tfaEmail: finalUser.tfaEmail as string,
+    };
+
+    return ({
+      access_token: this.jwtService.sign(payload)
+    });
+  }
+
+  async generateJwtToken(email: string): Promise<JwtTokenAccess> {
+    const user = await this.userService.findUserByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException('generateJwt: user not found!');
+    }
+    const payload: UserPayload = {
+      email: user.email,
+      tfaEmail: '',
+      token: ''
     };
 
     return ({

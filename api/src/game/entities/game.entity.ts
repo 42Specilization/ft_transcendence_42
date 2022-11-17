@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/user/entities/user.entity';
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class GameEntity extends BaseEntity {
@@ -22,12 +22,12 @@ export class GameEntity extends BaseEntity {
   reasonEndGame: string;
 
   @ApiProperty()
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   @JoinColumn()
   winner: User;
 
   @ApiProperty()
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   @JoinColumn()
   looser: User;
 
