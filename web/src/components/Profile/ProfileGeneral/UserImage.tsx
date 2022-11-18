@@ -27,6 +27,7 @@ export function UserImage() {
       baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
     });
     await api.post('/user/updateImage', data, config);
+    console.log(selectedFile?.name);
     currentStateStatus.socket?.emit('changeImage', selectedFile?.name);
     // window.location.reload();
   }
