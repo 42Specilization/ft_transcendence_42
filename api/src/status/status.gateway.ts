@@ -31,7 +31,7 @@ export class StatusGateway
 
     this.logger.log(`WS client with id: ${client.id} connected of StatusSocket!`);
     this.logger.debug(`Number of connected StatusSockets: ${sockets.size}`);
-    this.mapUserData.debug();
+    // this.mapUserData.debug();
   }
 
   handleDisconnect(client: Socket) {
@@ -40,7 +40,7 @@ export class StatusGateway
     this.newUserOffline(client);
     this.logger.log(`Disconnected of StatusSocket the socket id: ${client.id}`);
     this.logger.debug(`Number of connected StatusSockets: ${sockets.size}`);
-    this.mapUserData.debug();
+    // this.mapUserData.debug();
   }
 
   @SubscribeMessage('iAmOnline')
@@ -52,7 +52,7 @@ export class StatusGateway
       client.broadcast.emit('updateUser', newUser);
     }
     this.logger.debug(`iAmOnline => Client: ${client.id}, email: |${newUser.login}|`);
-    this.mapUserData.debug();
+    // this.mapUserData.debug();
   }
 
   @SubscribeMessage('whoIsOnline')
@@ -82,19 +82,29 @@ export class StatusGateway
       oldUser.image_url
     );
 
-    if (newUser.image_url !== 'userDefault.png'
-      && !newUser.image_url.includes('https://cdn.intra.42.fr'))
-      newUser.image_url = `${newUser.login}_avatar.jpg`;
-
-    this.mapUserData.debug();
-
     this.mapUserData.updateValue(oldUser, newUser);
     this.mapUserData.keyOf(newLogin).forEach(socketId =>
       this.server.to(socketId).emit('updateYourself', newUser)
     );
     client.broadcast.emit('updateUserLogin', oldUser, newUser);
 
-    this.mapUserData.debug();
+    // this.mapUserData.debug();
+  }
+
+  @SubscribeMessage('changeImage')
+  handleChangeImage(client: Socket, image_url: string) {
+    const oldUser = this.mapUserData.valueOf(client.id);
+    const newUser: UserData = newUserData(
+      oldUser.status,
+      oldUser.login,
+      image_url
+    );
+
+    this.mapUserData.updateValue(oldUser, newUser);
+    this.mapUserData.keyOf(oldUser.login).forEach(socketId =>
+      this.server.to(socketId).emit('updateYourself', newUser)
+    );
+    client.broadcast.emit('updateUserImage', oldUser, newUser);
   }
 
   @SubscribeMessage('newNotify')

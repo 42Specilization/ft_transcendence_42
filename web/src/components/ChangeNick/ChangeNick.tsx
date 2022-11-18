@@ -54,7 +54,7 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
       }
     }
     setNick('');
-    window.location.reload();
+    // window.location.reload();
   }
 
   return (

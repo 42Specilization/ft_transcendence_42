@@ -151,6 +151,21 @@ const actionsStatus = {
     }
   },
 
+  updateUserImage(oldUser: UserData, newUser: UserData) {
+    if (stateStatus.setIntraData) {
+      stateStatus.setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData, friends: prevIntraData.friends.map(friend => {
+            if (oldUser.login === friend.login)
+              return newUser;
+            return friend;
+          }),
+        };
+      });
+      this.sortFriends();
+    }
+  },
+
   async updateNotify() {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();

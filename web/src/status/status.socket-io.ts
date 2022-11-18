@@ -51,6 +51,11 @@ export function createSocketStatus({
     actionsStatus.updateUserLogin(oldUser, newUser);
     console.log('update user login:', newUser);
   });
+  
+  socket.on('updateUserImage', (oldUser: UserData, newUser: UserData) => {
+    actionsStatus.updateUserImage(oldUser, newUser);
+    console.log('update user image:', newUser);
+  });
 
   socket.on('updateNotify', async () => {
     actionsStatus.updateNotify();

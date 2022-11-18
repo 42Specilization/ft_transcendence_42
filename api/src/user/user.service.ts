@@ -15,7 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { CredentialsDto } from './dto/credentials.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
-// import * as fs from 'fs';
+import * as fs from 'fs';
 import { GameEntity } from 'src/game/entities/game.entity';
 import { Notify } from '../notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
@@ -240,26 +240,26 @@ export class UserService {
       throw new ForbiddenException('Duplicated nickname');
 
     user.nick = nick ? nick : user?.nick;
-    user.imgUrl = imgUrl ? imgUrl : user?.imgUrl;
+    // user.imgUrl = imgUrl ? imgUrl : user?.imgUrl;
     user.isTFAEnable =
       isTFAEnable !== undefined ? isTFAEnable : user.isTFAEnable;
     user.tfaEmail = tfaEmail ? tfaEmail : user?.tfaEmail;
-
     user.tfaValidated =
       tfaValidated !== undefined ? tfaValidated : user.tfaValidated;
     user.tfaCode = tfaCode ? bcrypt.hashSync(tfaCode, 8) : user.tfaCode;
-    // if (nick) {
-    //   if (user.imgUrl !== 'userDefault.png' && !user.imgUrl.includes('https://cdn.intra.42.fr')) {
-    //            fs.rename(
-    //       `${user.imgUrl}`,
-    //       `${nick}_avatar.jpg`,
-    //       function (err) {
-    //         if (err) throw err;
-    //       }
-    //     );
-    //     user.imgUrl = `${nick}_avatar.jpg`;
-    //   }
-    // }
+    if (imgUrl) {
+      if (user.imgUrl !== 'userDefault.png'
+       && !user.imgUrl.includes('https://')) {
+        fs.rm(
+          `../web/public/${user.imgUrl}`,
+          function (err) {
+            if (err) throw err;
+          }
+        );
+        user.imgUrl = imgUrl;
+      }
+    }
+    
 
     if (tfaCode == null) {
       user.tfaCode = '';
@@ -316,17 +316,15 @@ export class UserService {
     if (duplicated.length > 0)
       throw new BadRequestException('This user already your order');
       
-      
     const alreadyFriends = friend.relations.filter((relation) => {
       if (relation.type === 'friend' 
         && relation.passive_user.nick == user.nick)
         return relation;
       return ;
     });
-      
+    
     if (alreadyFriends.length > 0)
       throw new BadRequestException('This user already is your friend');
-
 
     if (this.isBlocked(user, friend) == true)
       return;
@@ -387,7 +385,6 @@ export class UserService {
 
     user.relations.push(relationUser);
     friend.relations.push(relationFriend);
-
 
     try {
       await user.save();
