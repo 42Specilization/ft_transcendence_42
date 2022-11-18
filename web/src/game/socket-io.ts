@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import { Ball } from '../components/Canvas/Canvas';
-import { AppActions, AppState, Game, Player, Score } from './gameState';
+import { AppActions, AppState, Game, IPowerUp, Player, Score } from './gameState';
 
 export const socketIOUrl =
   `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/${import.meta.env.VITE_GAME_NAMESPACE}`;
@@ -46,6 +46,11 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
 
   socket.on('update-score', (score: Score) => {
     actions.updateScore(score);
+  });
+
+  socket.on('update-powerUp', (powerUp: IPowerUp) => {
+    actions.updatePowerUp(powerUp);
+    console.log(state.powerUp);
   });
 
   socket.on('end-game', (game: Game) => {

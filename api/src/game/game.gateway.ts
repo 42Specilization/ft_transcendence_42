@@ -134,11 +134,11 @@ export class GameGateway
 
     switch (direction) {
       case 'up':
-        player.paddle.y -= 5;
+        player.paddle.y -= 20;
         this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
         break;
       case 'down':
-        player.paddle.y += 5;
+        player.paddle.y += 20;
         this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
         break;
     }
@@ -158,16 +158,25 @@ export class GameGateway
     if (!game) {
       return;
     }
-    if (!this.isPlayer(game, user) || game.player1.socketId !== user.id) {
+    if (game.player1.socketId !== user.id) {
       return;
     }
+    const strRoom = room.toString();
     if (game.update()) {
-      this.io.to(game.room.toString()).emit('update-score', game.score);
+      this.io.to(strRoom).emit('update-score', game.score);
+      this.io.to(strRoom).emit('update-powerUp', game.powerUpBox);
     }
     if (game.checkWinner()) {
-      this.io.to(game.room.toString()).emit('end-game', game);
+      this.io.to(strRoom).emit('end-game', game);
     } else {
-      this.io.to(game.room.toString()).emit('update-ball', game.ball);
+      this.io.to(strRoom).emit('update-ball', game.ball);
+    }
+    if (game.powerUpBox.updateSend) {
+      this.io.to(strRoom).emit('update-powerUp', game.powerUpBox);
+      if (game.powerUpBox.isActive) {
+        this.io.to(strRoom).emit('update-player', game.player1, game.player2);
+      }
+      game.powerUpBox.updateSend = false;
     }
   }
 
@@ -283,8 +292,9 @@ export class GameGateway
           }
           game.checkWinner();
         }
-
-        this.gameService.createGame(game.getCreateGameDto());
+        if (game.hasStarted) {
+          this.gameService.createGame(game.getCreateGameDto());
+        }
         user.leave(game.room.toString());
         this.io
           .to(game.room.toString())

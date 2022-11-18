@@ -22,6 +22,16 @@ export interface Player {
   name: string;
 }
 
+interface IPosition {
+  x: number;
+  y: number;
+}
+
+export interface IPowerUp {
+  position: IPosition;
+  itsDrawn: boolean;
+}
+
 export interface Game {
   room: number;
   waiting: boolean;
@@ -43,6 +53,7 @@ export interface AppState {
   player1?: Player;
   player2?: Player;
   score?: Score;
+  powerUp?: IPowerUp;
 }
 
 const state = proxy<AppState>({
@@ -104,6 +115,9 @@ const actions = {
   },
   updateScore(score: Score) {
     state.score = score;
+  },
+  updatePowerUp(powerUp: IPowerUp) {
+    state.powerUp = powerUp;
   },
   disconnectSocket() {
     if (state.socket?.connected) {

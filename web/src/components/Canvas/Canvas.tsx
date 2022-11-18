@@ -74,16 +74,22 @@ export function drawNet(context: CanvasRenderingContext2D) {
   }
 }
 
+export function drawPowerUpBox(context: CanvasRenderingContext2D, x: number, y: number, img: HTMLElement) {
+  context.drawImage(img, x, y);
+}
 
 export function Canvas({ canvasRef, ...props }: CanvasProps) {
 
   return (
-    <canvas
-      {...props}
-      className='canvas'
-      ref={canvasRef}
-      width={800}
-      height={600}
-    />
+    <div>
+      <canvas
+        {...props}
+        className='canvas'
+        ref={canvasRef}
+        width={800}
+        height={600}
+      />
+      <img id='powerUp-box' src='powerUp-box.png' className='box-powerUp' />
+    </div>
   );
 }

@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 import { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
-import { Canvas, drawCircle, drawFillRect, drawNet, drawText, } from '../../components/Canvas/Canvas';
+import { Canvas, drawCircle, drawFillRect, drawNet, drawPowerUpBox, drawText, } from '../../components/Canvas/Canvas';
 import { state } from '../../game/gameState';
 import { getEndGameData, getGameData } from './data';
 import './PongGame.scss';
@@ -11,6 +11,7 @@ export function PongGame() {
   const currentState = useSnapshot(state);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const context: CanvasRenderingContext2D | undefined | null = canvasRef.current?.getContext('2d');
+  const img = document.getElementById('powerUp-box');
 
   const move = (direction: string) => {
     if (!currentState.game || !currentState.isPlayer) {
@@ -40,6 +41,13 @@ export function PongGame() {
     drawCircle(context, ball);
     drawFillRect(context, player1Rect);
     drawFillRect(context, player2Rect);
+
+    if (currentState.powerUp && currentState.powerUp.itsDrawn) {
+      if (!img) {
+        return;
+      }
+      drawPowerUpBox(context, currentState.powerUp.position.x, currentState.powerUp.position.y, img);
+    }
 
     if (currentState.game?.hasEnded) {
       if (!context) {
