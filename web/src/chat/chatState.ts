@@ -82,7 +82,7 @@ const actionsChat = {
 
   msgToClient(message: MsgToClient) {
     if (stateChat.setActiveChat) {
-      stateChat.setActiveChat((prev) => {
+      stateChat.setActiveChat((prev: any) => {
         if (prev && prev.id === message.chat) {
           if (prev.messages)
             return { ...prev, messages: [...prev.messages, message], date: message.date };
@@ -94,7 +94,6 @@ const actionsChat = {
         stateChat.setChatList((prev) => {
           if (prev){
             return prev.map((key) => {
-              console.log('key', key)
               if ( key.id === message.chat) 
                 return { ...key, date: message.date };
               return key;

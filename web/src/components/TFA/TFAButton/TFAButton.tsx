@@ -43,8 +43,8 @@ export function TFAButton() {
             tfaEmail={tfaEmail}
             setTfaEmail={setTfaEmail}
             setTfaModal={setTfaModal} />;
-            if (tfaModal === 'TFAValidate')
-            return <TFAValidateCodeModal
+        if (tfaModal === 'TFAValidate')
+          return <TFAValidateCodeModal
             tfaEmail={tfaEmail}
             setTfaEmail={setTfaEmail}
             setTfaModal={setTfaModal}

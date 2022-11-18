@@ -16,7 +16,7 @@ import { ChatService } from './chat.service';
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({ namespace: 'chat' })
 export class ChatGateway
-  implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
+implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
 
   @WebSocketServer() server: Namespace;
 

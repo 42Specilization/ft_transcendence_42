@@ -5,7 +5,6 @@ import { Modal } from '../Modal/Modal';
 import { TailSpin } from 'react-loader-spinner';
 
 export function ValidateTfa() {
-
   const [side, setSide] = useState('');
   const [code, setCode] = useState('');
   const [placeHolder, setPlaceHolder] = useState('');

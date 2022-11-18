@@ -4,7 +4,6 @@ import { Modal } from '../../Modal/Modal';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
 interface TFAValidateCodeModalProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tfaEmail: string;
   setTfaEmail: (arg0: string) => void;
   setTfaEnable: (arg0: boolean) => void;

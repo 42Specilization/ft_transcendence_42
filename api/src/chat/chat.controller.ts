@@ -17,6 +17,7 @@ export class ChatController {
 
   }
 
+  // Rota para testes durante o desenvolvimento, remover no final
   @Post('/createDirect')
   @HttpCode(HttpStatus.CREATED)
   // @UseGuards(JwtAuthGuard)
@@ -32,7 +33,6 @@ export class ChatController {
   @UseGuards(JwtAuthGuard)
   async getDirects(@GetUserFromJwt() userFromJwt: UserFromJwt): Promise<DirectDto[] | null> {
     const result = await this.chatService.getDirects(userFromJwt.email);
-    // console.log(result);
     return result; 
   }
 
@@ -42,7 +42,6 @@ export class ChatController {
     @Body() getDirectDto: GetDirectDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
   ): Promise<DirectDto> {
-    // console.log('id getDirect', getDirectDto.id);
     return await this.chatService.getDirect(userFromJwt.email, getDirectDto.id);
   }
 
@@ -52,7 +51,6 @@ export class ChatController {
     @Body() getDirectDto: GetDirectDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
   ) {
-    // console.log('id getFriendChat', getFriendChatDto.id);
     return await this.chatService.getFriendChat(userFromJwt.email, getDirectDto.id);
   }
 

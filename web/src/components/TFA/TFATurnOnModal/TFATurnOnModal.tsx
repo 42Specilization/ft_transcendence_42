@@ -6,7 +6,6 @@ import { Modal } from '../../Modal/Modal';
 import './TFATurnOnModal.scss';
 
 interface TFATurnOnModalProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tfaEmail: string;
   setTfaEmail: (arg0: string) => void
   setTfaModal: (arg0: string) => void
@@ -49,7 +48,7 @@ export function TFATurnOnModal({
     <Modal onClose={() => {
       setTfaModal('');
       setTfaEmail('');
-      }}>
+    }}>
       <form className='tfaTurnOn__modal' onSubmit={handleKeyEnter}>
         <div className='tfaTurnOn__modal__textdiv'>
           <h3>Insert your email to receive 2FA code</h3>

@@ -62,7 +62,7 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
   useEffect(() => {
     getIntraData(setIntraData);
     actionsStatus.initializeSocketStatus(setIntraData);
-    return 
+    return; 
   }, []);
 
   return (

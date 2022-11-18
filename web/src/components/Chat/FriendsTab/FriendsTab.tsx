@@ -101,14 +101,14 @@ export function FriendTab(
       </div>
       <>{isTableUsers === 'friends' ?
         < div className='friends__tab__body'>
-          {intraData.friends.filter((obj) => obj.login.includes(searchInput)).map((obj) => (
+          {intraData.friends?.filter((obj) => obj.login.includes(searchInput)).map((obj) => (
             <CardFriend key={Math.random()} friend={obj} setTableSelected={setTableSelected} />
           ))
           }
         </div>
         :
         <div className='friends__tab__body'>
-          {intraData.blockeds.sort((a, b) => a.login < b.login ? -1 : 1).map((obj) => (
+          {intraData.blockeds?.sort((a, b) => a.login < b.login ? -1 : 1).map((obj) => (
             <CardBlocked key={Math.random()} blocked={obj} />
           ))
           }

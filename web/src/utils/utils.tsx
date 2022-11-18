@@ -136,9 +136,7 @@ export async function getIntraDataNotify(intraData: IntraData, setIntraData: Dis
     }).catch(err => {
       data = defaultIntra;
       console.log('error on getIntraData', err);
-    }
-
-    );
+    });
   setIntraData((prevIntraData: IntraData) => {
     return { ...prevIntraData, notify: data.notify };
   });

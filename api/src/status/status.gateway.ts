@@ -112,6 +112,9 @@ export class StatusGateway
     socketsUser.forEach(socketId => {
       this.server.to(socketId).emit('updateFriend');
     });
+    this.mapUserData.keyOf(user.login).forEach(socketId => {
+      this.server.to(socketId).emit('updateNotify');
+    });
 
     if (this.mapUserData.hasValue(login_target)) {
       const socketsFriends: string[] = this.mapUserData.keyOf(login_target);
@@ -138,14 +141,27 @@ export class StatusGateway
     });
   }
 
+  @SubscribeMessage('removeBlocked')
+  handleRemoveBlocked(client: Socket) {
+    const user: UserData = this.mapUserData.valueOf(client.id);
+    this.mapUserData.keyOf(user.login).forEach(socketId => {
+      this.server.to(socketId).emit('updateBlocked');
+    });
+  }
+
   @SubscribeMessage('deleteFriend')
   handleDeleteFriend(client: Socket, login_target: string) {
     client;
     if (this.mapUserData.hasValue(login_target)) {
-      this.mapUserData.keyOf(login_target).forEach(socketId =>
-        this.server.to(socketId).emit('updateRemove')
+      this.mapUserData.keyOf(login_target).forEach(socketId =>{
+        this.server.to(socketId).emit('updateRemove');
+      }
       );
     }
+    const user: UserData = this.mapUserData.valueOf(client.id);
+    this.mapUserData.keyOf(user.login).forEach(socketId => {
+      this.server.to(socketId).emit('updateRemove');
+    });
   }
 
 }

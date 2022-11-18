@@ -7,6 +7,8 @@ import { IntraDataContext } from '../../../contexts/IntraDataContext';
 // import { useSnapshot } from 'valtio';
 // import { stateStatus } from '../../../status/statusState';
 import axios from 'axios';
+import { useSnapshot } from 'valtio';
+import { stateStatus } from '../../../status/statusState';
 
 interface CardBlockedProps {
   blocked: BlockedData;
@@ -15,7 +17,7 @@ interface CardBlockedProps {
 export function CardBlocked({ blocked }: CardBlockedProps) {
 
   const [isTableFriendUsersMenu, setIsTableFriendUsersMenu] = useState(false);
-  // const currentStateStatus = useSnapshot(stateStatus);
+  const currentStateStatus = useSnapshot(stateStatus);
   const { setIntraData } = useContext(IntraDataContext);
 
   const token = useMemo(() => window.localStorage.getItem('token'), []);
@@ -40,7 +42,7 @@ export function CardBlocked({ blocked }: CardBlockedProps) {
         blockeds: prevIntraData.blockeds.filter((key) => key.login != blocked.login)
       };
     });
-    // currentStateStatus.socket?.emit('removeBlocked', blocked.login);
+    currentStateStatus.socket?.emit('removeBlocked', blocked.login);
   }
 
 

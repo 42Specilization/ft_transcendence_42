@@ -182,8 +182,15 @@ const actionsStatus = {
   async updateBlocked() {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
+      console.log(user.blockeds);
       stateStatus.setIntraData((prevIntraData) => {
-        return { ...prevIntraData, blockeds: user.blockeds };
+        return { ...prevIntraData, blockeds: user.blockeds.map((obj) => {
+          if (prevIntraData.blockeds.map(e => e.login).indexOf(obj.login) >= 0) {
+            const updateFriend = prevIntraData.blockeds.find(e => e.login === obj.login);
+            return typeof updateFriend !== 'undefined' ? updateFriend : obj;
+          }
+          return obj;
+        }) };
       });
     }
   },
@@ -192,7 +199,7 @@ const actionsStatus = {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
       stateStatus.setIntraData((prevIntraData) => {
-        return { ...prevIntraData, friends: user.friends };
+        return { ...prevIntraData, friends: user.friends, blockeds: user.blockeds};
       });
     }
   },

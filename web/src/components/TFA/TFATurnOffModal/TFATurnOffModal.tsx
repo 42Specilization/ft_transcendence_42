@@ -1,4 +1,3 @@
-import { AxiosInstance } from 'axios';
 import { useContext } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { Modal } from '../../Modal/Modal';

@@ -68,7 +68,7 @@ export class MapUserData {
             socketsNotOf = [...socketsNotOf, ...socketsUser];
           }
         }
-      })
+      });
       return socketsNotOf;
     }
     return [];

@@ -40,8 +40,10 @@ export function FriendRequestModal({ setIsAddFriendModalVisible }: FriendsReques
       setIsAddFriendModalVisible(false);
       setPlaceHolder('');
       currentStateStatus.socket?.emit('newNotify', userTarget);
-    } catch (err) {
-      setPlaceHolder('Invalid nick!');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err : any) {
+      console.log(err);
+      setPlaceHolder(err.response.data.message);
 
     }
     setUserTarget('');

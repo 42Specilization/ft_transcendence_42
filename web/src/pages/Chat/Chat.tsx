@@ -1,8 +1,6 @@
 import './Chat.scss';
-import { useContext, useState } from 'react';
-// import { ChatCommunity } from '../../components/Chat/ChatCommunity/ChatCommunity';
+import { useState } from 'react';
 import { ChatTalk } from '../../components/Chat/ChatTalk/ChatTalk';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
 import { FriendTab } from '../../components/Chat/FriendsTab/FriendsTab';
 import { DirectTab } from '../../components/Chat/DirectTab/DirectTab';
 
