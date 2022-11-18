@@ -135,6 +135,7 @@ export function ChatTalk(
               className='chat__talk__footer__input'
               value={message}
               onChange={(msg) => setMessage(msg.target.value)}
+              ref={e => {if (activeChat) e?.focus();}}
             />
             <button className='chat__talk__footer__button' type='submit'>
               <PaperPlaneRight size={30} />

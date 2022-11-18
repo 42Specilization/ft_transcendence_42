@@ -53,7 +53,6 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
         }
       }
     }
-    
     setNick('');
     window.location.reload();
   }
@@ -78,6 +77,7 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
               setNick(msg.target.value);
               setPlaceHolder('');
             }}
+            ref={e => e?.focus()}
           />
         </div>
         <button className='change__nick__modal__button' type='submit'>

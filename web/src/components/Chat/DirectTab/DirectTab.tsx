@@ -46,6 +46,7 @@ export function DirectTab() {
             onChange={(msg) => {
               setSearchInput(msg.target.value);
             }}
+            ref={e => {if (isTableSearch) e?.focus();}}
           />
           <X
             className='friends__tab__header__icon'

@@ -69,6 +69,7 @@ export function FriendRequestModal({ setIsAddFriendModalVisible }: FriendsReques
               setUserTarget(msg.target.value);
               setPlaceHolder('');
             }}
+            ref={e => e?.focus()}
           />
         </div>
         <button className='chat__friends__modal__button' type='submit'>

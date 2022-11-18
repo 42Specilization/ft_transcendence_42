@@ -22,8 +22,9 @@ export function ProfileFriendModal({ login, setFriendProfileVisible }: ProfileFr
         <div className="profile__friends__modal__container__content">
           <FriendProfile login={login} />
         </div>
-        <div className='profile__friends__modal__container__closeButton__div' onClick={()=> setFriendProfileVisible(false)}>
-          <button className="profile__friends__modal__container__closeButton" >
+        <div className='profile__friends__modal__container__closeButton__div' >
+          <button className="profile__friends__modal__container__closeButton"
+                  onClick={()=> setFriendProfileVisible(false)}>
             <XCircle size={40} />
           </button>
         </div>
