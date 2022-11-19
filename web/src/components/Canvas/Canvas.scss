@@ -7,4 +7,11 @@
   background-color: rgba(42, 38, 52, 0.46);
   height: 100vh;
   width:  100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.box-powerUp {
+  visibility: hidden;
 }

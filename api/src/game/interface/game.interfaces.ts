@@ -15,9 +15,19 @@ export interface IBall {
   velocityY: number;
   color: string;
 }
+
 export interface IPosition {
   x: number;
   y: number;
+}
+
+export interface IPowerUp {
+  position: IPosition;
+  w: number;
+  h: number;
+  itsDrawn: boolean;
+  updateSend: boolean;
+  isActive: boolean;
 }
 
 export interface IPlayer {
@@ -27,7 +37,7 @@ export interface IPlayer {
   quit: boolean;
 }
 
-export interface IPaddleOrBallSides {
+export interface IObjectSides {
   top: number;
   bottom: number;
   left: number;
@@ -38,3 +48,4 @@ export interface IScore {
   player1: number;
   player2: number;
 }
+

@@ -6,7 +6,6 @@ FROM node:16.17-alpine3.15 as builder
 
 ENV NODE_ENV build
 
-
 WORKDIR /app/
 
 COPY package*.json ./

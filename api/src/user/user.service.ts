@@ -25,6 +25,7 @@ import { Relations } from 'src/relations/entity/relations.entity';
 export class UserService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
+    private readonly chatService: ChatService
 
   ) { }
 
@@ -56,8 +57,14 @@ export class UserService {
     }
   }
 
+  incrementStat(stats: string): string {
+    let newStats = Number(stats);
+    newStats++;
+    return (newStats.toString());
+  }
+
   async saveNewGame(nick: string, game: GameEntity) {
-    const user = await this.findUserByNick(nick);
+    const user = await this.findUserByNickWithGames(nick);
     if (!user) {
       return;
     }
@@ -65,6 +72,14 @@ export class UserService {
       user.games = [];
     }
     user.games.push(game);
+
+    if (nick === game.winner.nick) {
+      user.wins = this.incrementStat(user.wins);
+    } else {
+      user.lose = this.incrementStat(user.lose);
+    }
+    user.matches = this.incrementStat(user.matches);
+
     try {
       await this.usersRepository.save(user);
     } catch {
@@ -85,6 +100,26 @@ export class UserService {
       ]
     });
   }
+
+  async findUserByNickWithGames(nick: string): Promise<User | null> {
+    return (await this.usersRepository.find({
+      where: { nick },
+      relations: {
+        games: true
+      }
+    }))[0];
+  }
+
+  async getUsersWithGames(): Promise<User[]> {
+    return await this.usersRepository.find({
+      relations: [
+        'games',
+        'games.loser',
+        'games.winner',
+      ]
+    });
+  }
+
 
   async findUserByEmail(email: string): Promise<User | null> {
     return await this.usersRepository.findOne(
@@ -529,7 +564,31 @@ export class UserService {
       await user.save();
       return;
     } catch (err) {
-      throw new InternalServerErrorException('Error saving notify remove blocked');
+      throw new InternalServerErrorException('erro salvando notificacao');
     }
   }
+
+
+  async createChat() {
+    const chat = new Chat();
+    const gsilva = await this.getUser('gsilva-v@student.42sp.org.br');
+    const mmoreira = await this.getUser('mmoreira@student.42sp.org.br');
+    const mavinici = await this.getUser('mavinici@student.42sp.org.br');
+
+    chat.users = [];
+    chat.type = 'direct';
+    chat.users.push(gsilva);
+    chat.users.push(mmoreira);
+    chat.users.push(mavinici);
+
+
+    try {
+      await this.chatService.save(chat);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Error saving notify remove blocked');
+
+    }
+  }
+
 }

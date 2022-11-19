@@ -1,18 +1,21 @@
+import { getRandomInt } from 'src/utils/utils';
 import { CreateGameDto } from './dto/createGame.dto';
 import { GameDto } from './dto/Game.dto';
-import { IPlayer, IScore, IBall, IPaddle, IPaddleOrBallSides } from './interface/game.interfaces';
+import { IPlayer, IScore, IBall, IPaddle, IObjectSides, IPowerUp } from './interface/game.interfaces';
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
+const DEFAULT_PADDLE_HEIGHT = 100;
 
 export class Game {
 
-  constructor(room: number, index: number) {
+  constructor(room: number, index: number, isWithPowerUps = false) {
     this.room = room;
     this.index = index;
     this.waiting = true;
     this.hasEnded = false;
     this.hasStarted = false;
+    this.isWithPowerUps = isWithPowerUps;
   }
 
   room: number;
@@ -30,13 +33,15 @@ export class Game {
     player1: 0,
     player2: 0
   };
+  ballLastHit: number;
+  isWithPowerUps: boolean;
 
   player1: IPlayer = {
     paddle: {
       x: 10,
-      y: (CANVAS_HEIGHT / 2) - (100 / 2),
+      y: (CANVAS_HEIGHT / 2) - (DEFAULT_PADDLE_HEIGHT / 2),
       w: 10,
-      h: 100,
+      h: DEFAULT_PADDLE_HEIGHT,
       color: '#7C1CED'
     },
     socketId: '',
@@ -47,9 +52,9 @@ export class Game {
   player2: IPlayer = {
     paddle: {
       x: CANVAS_WIDTH - 20,
-      y: (CANVAS_HEIGHT / 2) - (100 / 2),
+      y: (CANVAS_HEIGHT / 2) - (DEFAULT_PADDLE_HEIGHT / 2),
       w: 10,
-      h: 100,
+      h: DEFAULT_PADDLE_HEIGHT,
       color: '#7C1CED'
     },
     socketId: '',
@@ -67,8 +72,20 @@ export class Game {
     color: '#7C1CED'
   };
 
-  paddleSides(paddle: IPaddle): IPaddleOrBallSides {
-    const paddleSides: IPaddleOrBallSides = {
+  powerUpBox: IPowerUp = {
+    position: {
+      x: 300,
+      y: 200
+    },
+    itsDrawn: false,
+    updateSend: false,
+    w: 64,
+    h: 64,
+    isActive: false
+  };
+
+  paddleSides(paddle: IPaddle): IObjectSides {
+    const paddleSides: IObjectSides = {
       top: paddle.y,
       bottom: paddle.y + paddle.h,
       left: paddle.x,
@@ -77,8 +94,18 @@ export class Game {
     return (paddleSides);
   }
 
-  ballSides(ball: IBall): IPaddleOrBallSides {
-    const ballSides: IPaddleOrBallSides = {
+  boxPowerUpSides(powerUp: IPowerUp): IObjectSides {
+    const boxSides: IObjectSides = {
+      top: powerUp.position.y,
+      bottom: powerUp.position.y + powerUp.h,
+      left: powerUp.position.x,
+      right: powerUp.position.x + powerUp.w
+    };
+    return (boxSides);
+  }
+
+  ballSides(ball: IBall): IObjectSides {
+    const ballSides: IObjectSides = {
       top: ball.y - ball.radius,
       bottom: ball.y + ball.radius,
       left: ball.x - ball.radius,
@@ -97,12 +124,19 @@ export class Game {
     return (false);
   }
 
-  isBallCollision(paddle: IPaddle, ball: IBall) {
-    const player = this.paddleSides(paddle);
+  isBallCollision(item: IObjectSides, ball: IBall) {
     const ballSides = this.ballSides(ball);
 
-    return (ballSides.right > player.left && ballSides.top < player.bottom &&
-      ballSides.left < player.right && ballSides.bottom > player.top);
+    return (ballSides.right > item.left && ballSides.top < item.bottom &&
+      ballSides.left < item.right && ballSides.bottom > item.top);
+  }
+
+  resetPowerUp() {
+    this.powerUpBox.itsDrawn = false;
+    this.powerUpBox.updateSend = false;
+    this.powerUpBox.isActive = false;
+    this.player1.paddle.h = DEFAULT_PADDLE_HEIGHT;
+    this.player2.paddle.h = DEFAULT_PADDLE_HEIGHT;
   }
 
   resetBall() {
@@ -110,6 +144,9 @@ export class Game {
     this.ball.y = CANVAS_HEIGHT / 2;
     this.ball.speed = this.ballSpeed;
     this.ball.velocityX = -this.ball.velocityX;
+    if (this.isWithPowerUps) {
+      this.resetPowerUp();
+    }
   }
 
   checkWinner(): boolean {
@@ -136,6 +173,37 @@ export class Game {
     }
   }
 
+  generateBoxPosition() {
+    this.powerUpBox.position.x = getRandomInt(30 + this.powerUpBox.w, 770 - this.powerUpBox.h);
+    this.powerUpBox.position.y = getRandomInt(50 + this.powerUpBox.w, 550 - this.powerUpBox.h);
+    this.powerUpBox.itsDrawn = true;
+    this.powerUpBox.updateSend = true;
+  }
+
+  randomPowerUp() {
+    const player = this.ballLastHit === 1 ? this.player1 : this.player2;
+    const powerUp = getRandomInt(0, 1);
+    console.log('power up is ', powerUp);
+    if (powerUp === 0) {
+      player.paddle.h = 200;
+    } else if (powerUp === 1) {
+      player.paddle.h = 50;
+    }
+  }
+
+  checkPowerUp() {
+    if (!this.powerUpBox.itsDrawn) {
+      return;
+    }
+    if (this.isBallCollision(this.boxPowerUpSides(this.powerUpBox), this.ball)) {
+      this.powerUpBox.itsDrawn = false;
+      this.powerUpBox.updateSend = true;
+      this.powerUpBox.isActive = true;
+      console.log('collision with power up');
+      this.randomPowerUp();
+    }
+  }
+
   update() {
 
     // move the ball
@@ -150,7 +218,7 @@ export class Game {
 
     const player = (this.ball.x < CANVAS_WIDTH / 2) ? this.player1 : this.player2;
 
-    if (this.isBallCollision(player.paddle, this.ball)) {
+    if (this.isBallCollision(this.paddleSides(player.paddle), this.ball)) {
       // where the ball hit the player
       let collidePoint = (this.ball.y - (player.paddle.y + player.paddle.h / 2));
       collidePoint = collidePoint / (player.paddle.h / 2);
@@ -165,6 +233,14 @@ export class Game {
 
       // every time the ball hit a paddle, we increase its speed
       this.ball.speed += 0.5;
+      this.ballLastHit = (this.ball.x < CANVAS_WIDTH / 2) ? 1 : 2;
+      if (this.isWithPowerUps && !this.powerUpBox.itsDrawn && !this.powerUpBox.isActive) {
+        this.generateBoxPosition();
+      }
+    }
+
+    if (this.isWithPowerUps) {
+      this.checkPowerUp();
     }
 
     // update the score
@@ -207,26 +283,26 @@ export class Game {
   getCreateGameDto(): CreateGameDto {
 
     let winner: string;
-    let looser: string;
-    let looserScore = 0;
+    let loser: string;
+    let loserScore = 0;
     let winnerScore = 0;
     if (this.player1.name === this.winner.name) {
       winner = this.player1.name;
       winnerScore = this.score.player1;
-      looser = this.player2.name;
-      looserScore = this.score.player2;
+      loser = this.player2.name;
+      loserScore = this.score.player2;
     } else {
       winner = this.player2.name;
       winnerScore = this.score.player2;
-      looser = this.player1.name;
-      looserScore = this.score.player1;
+      loser = this.player1.name;
+      loserScore = this.score.player1;
     }
 
     const createGameDto: CreateGameDto = {
-      looser: looser,
+      loser: loser,
       winner: winner,
       reasonEndGame: this.getReasonEndGame(),
-      looserScore: looserScore,
+      loserScore: loserScore,
       winnerScore: winnerScore
     };
 

@@ -12,14 +12,14 @@ export class GameService {
     private userService: UserService) { }
 
   async createGame(createGameDto: CreateGameDto) {
-    const { winner, looser, looserScore, winnerScore, reasonEndGame } = createGameDto;
+    const { winner, loser, loserScore, winnerScore, reasonEndGame } = createGameDto;
 
     const game = new GameEntity();
 
-    game.looserScore = looserScore;
+    game.loserScore = loserScore;
     game.winnerScore = winnerScore;
     game.winner = await this.userService.findUserByNick(winner) as User;
-    game.looser = await this.userService.findUserByNick(looser) as User;
+    game.loser = await this.userService.findUserByNick(loser) as User;
     game.reasonEndGame = reasonEndGame;
 
     try {
@@ -29,11 +29,11 @@ export class GameService {
     }
 
     await this.userService.saveNewGame(winner, game);
-    await this.userService.saveNewGame(looser, game);
+    await this.userService.saveNewGame(loser, game);
 
   }
 
   async getGames() {
-    return (await this.gameRepository.find({ relations: { looser: true, winner: true } }));
+    return (await this.gameRepository.find({ relations: { loser: true, winner: true } }));
   }
 }

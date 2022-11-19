@@ -304,15 +304,10 @@ export class UserController {
   //   });
   // }
 
-
-
-
-
-
-
-
-
-
-
+  @Get('games')
+  @HttpCode(HttpStatus.OK)
+  async getUsersWithGames(): Promise<User[]> {
+    return (await this.userService.getUsersWithGames());
+  }
 
 }

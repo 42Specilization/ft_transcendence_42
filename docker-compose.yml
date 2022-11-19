@@ -14,6 +14,8 @@ services:
       - "80:80"
     environment:
       - VITE_API_HOST=api
+    env_file:
+      - ./web/.env
 
   api:
     depends_on:
@@ -28,6 +30,8 @@ services:
       - "3000:3000"
     environment:
       - DATABASE_HOST=pgsql
+    env_file:
+      - ./api/.env
     
   pgsql:
     image: postgres:alpine
