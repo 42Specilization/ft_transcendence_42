@@ -25,7 +25,6 @@ import { Relations } from 'src/relations/entity/relations.entity';
 export class UserService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
-    private readonly chatService: ChatService
 
   ) { }
 
@@ -565,29 +564,6 @@ export class UserService {
       return;
     } catch (err) {
       throw new InternalServerErrorException('erro salvando notificacao');
-    }
-  }
-
-
-  async createChat() {
-    const chat = new Chat();
-    const gsilva = await this.getUser('gsilva-v@student.42sp.org.br');
-    const mmoreira = await this.getUser('mmoreira@student.42sp.org.br');
-    const mavinici = await this.getUser('mavinici@student.42sp.org.br');
-
-    chat.users = [];
-    chat.type = 'direct';
-    chat.users.push(gsilva);
-    chat.users.push(mmoreira);
-    chat.users.push(mavinici);
-
-
-    try {
-      await this.chatService.save(chat);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Error saving notify remove blocked');
-
     }
   }
 
