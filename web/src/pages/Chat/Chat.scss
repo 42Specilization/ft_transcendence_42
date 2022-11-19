@@ -1,9 +1,74 @@
 @import '../../styles/global.scss';
 
 .chat {
-	@include displayFlex(center);
-	width: 80%;
-	height: 90%;
-	color: white;
-	border-radius: 0px 0px 50px 50px;
+  @include displayFlex(center);
+  width: 80%;
+  height: 90%;
+  color: white;
+  border-radius: 0px 0px 50px 50px;
+}
+
+.chat__community {
+  @include displayFlex(center, column);
+  width: 35%;
+  height: calc(100% - 20px);
+  margin: 20px 10px 0px 0px;
+  border-radius: 50px;
+  background-color: $backgroundColor;
+}
+  
+$ChatCommunityHeaderHeight: 35px;
+
+.chat__community__header {
+  @include displayFlex();
+  width: 100%;
+  height: $ChatCommunityHeaderHeight;
+  border-radius: 50px 50px 0px 0px;
+}
+
+.chat__community__header__list {
+  @include displayFlex(space-between);
+  width: 90%;
+  }
+
+.chat__community__header__list__item {
+  @include displayFlex();
+  width: 30%;
+  height: $ChatCommunityHeaderHeight;
+  border-radius: 15px 15px 0px 0px;
+  padding: 10px;
+  background-color: transparent;
+
+  button {
+    @include truncText();
+    font-size: 1.3em;
+    color: white;
+    &:hover {
+      cursor: pointer;
+      color: rgb(74, 71, 71);
+    }
+  }
+}
+
+.chat__community__header__list__item__selected {
+  background-color: $primaryColor;
+
+  button {
+    &:hover {
+      cursor: default;
+      color: white;
+    }
+  }
+}
+
+.chat__community__body {
+  @include displayFlex();
+  width: 90%;
+  height: calc(85% - $ChatCommunityHeaderHeight);
+  overflow: hidden;
+}
+
+.chat__community__footer {
+  width: 100%;
+  height: 30px;
 }

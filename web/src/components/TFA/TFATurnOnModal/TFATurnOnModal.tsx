@@ -1,100 +1,80 @@
-import { AxiosInstance } from 'axios';
-import { useState } from 'react';
+import { PaperPlaneRight } from 'phosphor-react';
+import { useContext, useState } from 'react';
 import { TailSpin } from 'react-loader-spinner';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { Modal } from '../../Modal/Modal';
 import './TFATurnOnModal.scss';
 
-interface TFATurnOnModalProps{
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config: any;
-  setIsModalTurnOnVisible: (arg0: boolean) => void;
-  isModalTurnOnVisible:boolean;
-  setTfaEmail: (arg0: string) => void;
-  tfaEmail:string
-  api: AxiosInstance;
-  emailInput: HTMLInputElement;
-  setIsModalVerifyCodeVisible: (arg0: boolean) => void;
+interface TFATurnOnModalProps {
+  tfaEmail: string;
+  setTfaEmail: (arg0: string) => void
+  setTfaModal: (arg0: string) => void
 }
 
 export function TFATurnOnModal({
-  setIsModalTurnOnVisible,
-  isModalTurnOnVisible,
-  api,
-  config,
-  setTfaEmail,
   tfaEmail,
-  emailInput,
-  setIsModalVerifyCodeVisible,
-} : TFATurnOnModalProps){
+  setTfaEmail,
+  setTfaModal }: TFATurnOnModalProps) {
 
-  const verifyMailStyleDefault = {
-    styles: {
-      placeholder: 'Insert your email...',
-      border: '3px solid white'
-    },
-  };
-  const [verifyMailStyle, setVerifyMailStyle] = useState(verifyMailStyleDefault);
+  const { api, config } = useContext(IntraDataContext);
+  const [placeHolder, setPlaceHolder] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleTFA() {
-    setTfaEmail(emailInput.value);
     const body = {
       isTFAEnable: true,
       tfaEmail: tfaEmail,
       tfaValidated: false,
     };
     try {
-      setVerifyMailStyle(verifyMailStyleDefault);
       setIsLoading(true);
       const validateEmail = await api.patch('/user/validate-email', body, config);
       setIsLoading(false);
-      if (validateEmail.status === 200){
-        setIsModalVerifyCodeVisible(true);
-        setIsModalTurnOnVisible(false);
-      }
+      if (validateEmail.status === 200)
+        setTfaModal('TFAValidate');
     } catch (error) {
       setIsLoading(false);
-      const typedMail = document.querySelector('.tfaTurnOn__input') as HTMLInputElement;
-      typedMail.value = '';
-      const errorVefify = {
-        styles: {
-          placeholder: 'Invalid Mail',
-          border: '3px solid red'
-        },
-      };
-      setVerifyMailStyle(errorVefify);
+      setTfaEmail('');
+      setPlaceHolder('Invalid Mail');
     }
   }
 
+  function handleKeyEnter(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    handleTFA();
+  }
+
   return (
-    <>
-      {isModalTurnOnVisible &&
-        <Modal id='tfaTurnOn' onClose={() => setIsModalTurnOnVisible(false)}>
-          <p className='tfaTurnOn__title'>Insert your email to receive 2fa code</p>
-          <div className='tfaTurnOn__inputArea' >
-            <input
-              style={{border:verifyMailStyle.styles.border}}
-              className='tfaTurnOn__input' type="text"
-              placeholder={verifyMailStyle.styles.placeholder}
-              onChange={(e) => {
-                setTfaEmail(e.target.value);
-              }}
-            />
-            <button className='tfaTurnOn__button' onClick={handleTFA}>Turn on</button>
-          </div>
-          {isLoading &&
-            <div className='tfaTurnOn__loading'>
-              <strong>Wait a moment</strong>
-              <TailSpin
-                width='25'
-                height='25'
-                color='white'
-                ariaLabel='loading'
-              />
-            </div>
-          }
-        </Modal>
-      }
-    </>
+    <Modal onClose={() => {
+      setTfaModal('');
+      setTfaEmail('');
+    }}>
+      <form className='tfaTurnOn__modal' onSubmit={handleKeyEnter}>
+        <div className='tfaTurnOn__modal__textdiv'>
+          <h3>Insert your email to receive 2FA code</h3>
+          <input
+            className='tfaTurnOn__modal__input'
+            value={tfaEmail}
+            placeholder={placeHolder}
+            style={{ border: placeHolder !== '' ? '3px solid red' : 'none' }}
+            onChange={(tfaEmail) => {
+              setTfaEmail(tfaEmail.target.value);
+              setPlaceHolder('');
+            }}
+            ref={e => e?.focus()}
+          />
+        </div>
+        <button className='tfaTurnOn__modal__button' type='submit'>
+          <PaperPlaneRight size={30} />
+        </button>
+      </form>
+      <div className='tfaTurnOn__modal__loading'>
+        <div className='tfaTurnOn__modal__loading__div'
+          style={{ display: isLoading ? '' : 'none' }}>
+          <strong>Wait a moment</strong>
+          <TailSpin width='25' height='25' color='white' ariaLabel='loading' />
+        </div>
+      </div>
+    </Modal>
   );
 }

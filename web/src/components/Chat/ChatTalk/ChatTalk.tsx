@@ -1,39 +1,59 @@
 import './ChatTalk.scss';
-import { FriendData, IntraData } from '../../../Interfaces/interfaces';
-import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react';
+import { DirectData, MsgToServer } from '../../../Interfaces/interfaces';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { ArrowBendUpLeft, PaperPlaneRight } from 'phosphor-react';
 import { ChatMessage } from './ChatMessage';
-import * as uuid from 'uuid';
-import { actionsChat, stateChat } from '../../../chat/chatState';
-import { useSnapshot } from 'valtio';
+import { actionsChat } from '../../../chat/chatState';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import ReactTooltip from 'react-tooltip';
+import { ChatContext } from '../../../contexts/ChatContext';
 
-interface ChatTalkProps {
-  activeFriend: FriendData | null;
-  setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
-}
+// interface ChatTalkProps {
 
-export interface ChatMsg {
-  id: string;
-  user: IntraData;
-  msg: string;
-  date: Date;
-}
+// }
 
-export function ChatTalk({ activeFriend, setActiveFriend }: ChatTalkProps) {
+export function ChatTalk(
+  // { }: ChatTalkProps
+) {
+
+  const {
+    activeChat, setActiveChat,
+    directsChat, setDirectsChat,
+    friendsChat, setFriendsChat,
+  } = useContext(ChatContext);
+  const { intraData, api, config } = useContext(IntraDataContext);
 
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
-  // const { intraData, setIntraData } = useContext(IntraDataContext);
-  // const currentStateChat = useSnapshot(stateChat);
-
-  // useEffect(() => {
-  //   actionsChat.initializeSocketChat();
-  //   actionsChat.startChatMessage([]);
-  // }, []);
-
   const [message, setMessage] = useState('');
+
+  function changeActiveChat(data: DirectData) {
+    if (activeChat)
+      actionsChat.leaveChat(activeChat.id);
+    setActiveChat(data);
+    actionsChat.joinChat(data.id);
+  }
+
+  useEffect(() => {
+    async function getDirect() {
+      const response = await api.patch('/chat/getDirect', { id: directsChat }, config);
+      changeActiveChat(response.data as DirectData);
+    }
+    if (directsChat) {
+      getDirect();
+    }
+  }, [directsChat]);
+
+  useEffect(() => {
+    async function getDirect() {
+      const response = await api.patch('/chat/getFriendChat', { id: friendsChat?.login }, config);
+      changeActiveChat(response.data as DirectData);
+    }
+    if (friendsChat) {
+      getDirect();
+    }
+  }, [friendsChat]);
+
 
   /**
    * The function takes an event as an argument, and then calls the preventDefault() method on the
@@ -49,87 +69,73 @@ export function ChatTalk({ activeFriend, setActiveFriend }: ChatTalkProps) {
    * It sends a message to the server if the message is not empty
    */
   function submitMessage() {
-    // if (message.trim()) {
-    //   const newMessage: ChatMsg = {
-    //     id: uuid.v4(),
-    //     user: intraData,
-    //     msg: message,
-    //     date: new Date(Date.now()),
-    //   };
-    //   // currentStateChat.socket?.emit('msgToServer', newMessage);
-    // }
+    if (message.trim() && activeChat) {
+      const newMessage: MsgToServer = {
+        chat: activeChat?.id,
+        user: intraData.login,
+        msg: message,
+      };
+      actionsChat.msgToServer(newMessage);
+    }
     setMessage('');
   }
 
-  /**
-   * Received message is a function that takes a message of type ChatMsg and
-   * updates the chat message.
-   * @param {ChatMsg} message - ChatMsg - The message that was received.
-   */
-  // function receivedMessage(message: ChatMsg) {
-  //   actionsChat.updateChatMessage(message);
-  // }
-
-  // useEffect(() => {
-  //   if (currentStateChat.socket) {
-  //     currentStateChat.socket.on('msgToClient', (message: ChatMsg) => {
-  //       receivedMessage(message);
-  //     });
-  //   }
-  // }, [currentStateChat.socket]);
-
-  // const refBody: React.RefObject<HTMLDivElement> = useRef(null);
-  // useEffect(() => {
-  //   if (
-  //     refBody.current &&
-  //     refBody.current.scrollHeight > refBody.current.offsetHeight
-  //   ) {
-  //     refBody.current.scrollTop =
-  //       refBody.current.scrollHeight - refBody.current.offsetHeight;
-  //   }
-  // }, [currentStateChat.chatMsg]);
-
-
-
+  const refBody: React.RefObject<HTMLDivElement> = useRef(null);
+  useEffect(() => {
+    if (
+      refBody.current &&
+      refBody.current.scrollHeight > refBody.current.offsetHeight
+    ) {
+      refBody.current.scrollTop =
+        refBody.current.scrollHeight - refBody.current.offsetHeight;
+    }
+  }, [activeChat]);
 
   return (
     <div className='chat__talk'>
-      {activeFriend != null &&
+      {activeChat != null &&
         <>
           <div className='chat__talk__header'>
-            <ArrowBendUpLeft size={32}  onClick={()=> setActiveFriend(null)}/>
+            <ArrowBendUpLeft size={32} onClick={() => {
+              setActiveChat(null);
+              setDirectsChat(null);
+              setFriendsChat(null);
+              actionsChat.leaveChat(activeChat.id);
+            }}
+            />
             <div
-              className='chat__talk__header__user' 
+              className='chat__talk__header__user'
               onClick={() => setFriendProfileVisible(true)}
               data-html={true}
-              data-tip={`${activeFriend.login} profile`}
+              data-tip={`${activeChat.name} profile`}
             >
               <div
                 className='chat__talk__header__user__icon'
-                style={{ backgroundImage: `url(${activeFriend.image_url})` }}
+                style={{ backgroundImage: `url(${activeChat.image})` }}
               />
               <div className='chat__talk__header__user__name'>
-                {activeFriend.login}
+                {activeChat.name}
               </div>
             </div>
           </div>
           <div className='chat__talk__body'
-          // ref={refBody}
+            ref={refBody}
           >
-            {/* {currentStateChat.chatMsg?.map((msg) => (
-              <ChatMessage key={msg.id} user={intraData} message={msg} />
-            ))} */}
+            {activeChat.messages?.map((msg) => (
+              <ChatMessage key={msg.id} user={intraData.login} message={msg} />
+            ))}
           </div>
           {friendProfileVisible &&
-          <ProfileFriendModal
-            login={activeFriend.login}
-            setFriendProfileVisible={setFriendProfileVisible} />
+            <ProfileFriendModal
+              login={activeChat.name}
+              setFriendProfileVisible={setFriendProfileVisible} />
           }
           <form className='chat__talk__footer' onSubmit={handleKeyEnter}>
             <input
               className='chat__talk__footer__input'
               value={message}
               onChange={(msg) => setMessage(msg.target.value)}
+              ref={e => {if (activeChat) e?.focus();}}
             />
             <button className='chat__talk__footer__button' type='submit'>
               <PaperPlaneRight size={30} />

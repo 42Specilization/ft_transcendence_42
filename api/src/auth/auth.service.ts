@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
 import { User } from '../user/entities/user.entity';
@@ -27,7 +27,6 @@ export class AuthService {
    * @returns Access token to get infos from intra.
    */
   async getToken(code: string): Promise<AccessTokenResponse> {
-
     const url = `${process.env['ACCESS_TOKEN_URI']}?grant_type=authorization_code&client_id=${process.env['CLIENT_ID']}&client_secret=${process.env['CLIENT_SECRET']}&redirect_uri=${process.env['REDIRECT_URI']}&code=${code}`;
     return (
       await axios.post(url).then((response) => {
@@ -46,7 +45,7 @@ export class AuthService {
    * @returns User data.
    */
   async getUserInfos(data: UserFromJwt): Promise<UserDto> {
-    const UserDto = await this.userService.getUserDTO(data.email);
+    const userDto = await this.userService.getUserDTO(data.email);
     // const UserDto: UserDto = {
     //   email: user.email,
     //   first_name: user.first_name,
@@ -72,7 +71,7 @@ export class AuthService {
     // }
     // UserDto.friends.sort((a, b) => a.login < b.login ? -1 : 1);
 
-    return (UserDto);
+    return (userDto);
   }
 
   /**
@@ -107,6 +106,7 @@ export class AuthService {
           notify: [],
           friends: [],
           blockeds: [],
+          directs:[],
         });
       }).catch(err => {
         if (err.code == 'ERR_BAD_REQUEST')
@@ -181,4 +181,23 @@ export class AuthService {
       access_token: this.jwtService.sign(payload)
     });
   }
+
+  async generateJwtToken(email: string): Promise<JwtTokenAccess> {
+    const user = await this.userService.findUserByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException('generateJwt: user not found!');
+    }
+    const payload: UserPayload = {
+      email: user.email,
+      tfaEmail: '',
+      token: ''
+    };
+
+    return ({
+      access_token: this.jwtService.sign(payload)
+    });
+  }
+
+
 }

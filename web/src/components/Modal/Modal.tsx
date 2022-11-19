@@ -18,9 +18,11 @@ export function Modal({ id = 'modal', children, onClose = () => { } }: ModalProp
   return (
     <div id={id} className='modal' onClick={handleOutsideClick}>
       <div className="modal__container">
-        <button onClick={onClose} className="modal__container__closeButton" >
-          <XCircle size={40} />
-        </button>
+        <div className="modal__container__closeButton__div">
+          <button onClick={onClose} className="modal__container__closeButton" >
+            <XCircle size={40} />
+          </button>
+        </div>
         <div className="modal__container__content">
           {children}
         </div>

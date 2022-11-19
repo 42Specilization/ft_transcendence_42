@@ -19,14 +19,13 @@ import * as fs from 'fs';
 import { GameEntity } from 'src/game/entities/game.entity';
 import { Notify } from '../notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
-import { Chat } from 'src/chat/entities/chat.entity';
-import { ChatService } from 'src/chat/chat.service';
+// import { Chat } from 'src/chat/entities/chat.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
-     private readonly chatService: ChatService
+
   ) { }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
@@ -83,10 +82,7 @@ export class UserService {
         'notify.user_source',
         'relations',
         'relations.passive_user',
-        'chats',
-        'chats.users',
       ]
-
     });
   }
 
@@ -101,10 +97,37 @@ export class UserService {
           'notify.user_source',
           'relations',
           'relations.passive_user',
+        ]
+      });
+  }
+
+  async findUserChatsByEmail(email: string): Promise<User | null> {
+    return await this.usersRepository.findOne(
+      {
+        where: {
+          email,
+        },
+        relations: [
           'chats',
           'chats.users',
+          'chats.messages',
+          'chats.messages.sender',
         ]
+      });
+  }
 
+  async findUserChatsByNick(nick: string): Promise<User | null> {
+    return await this.usersRepository.findOne(
+      {
+        where: {
+          nick,
+        },
+        relations: [
+          'chats',
+          'chats.users',
+          'chats.messages',
+          'chats.messages.sender',
+        ]
       });
   }
 
@@ -114,7 +137,7 @@ export class UserService {
         id,
       },
     });
-    if (!user) throw new NotFoundException('Usuário não encontrado');
+    if (!user) throw new NotFoundException('User Not Found FindUserByID');
     return user;
   }
 
@@ -174,6 +197,7 @@ export class UserService {
           date: notify.date,
         };
       }),
+
       friends: user.relations.filter((rel) => rel.type === 'friend').map((rel) => {
         return {
           status: 'offline',
@@ -181,20 +205,20 @@ export class UserService {
           image_url: rel.passive_user.imgUrl,
         };
       }),
-      blockeds: user.relations.filter((rel) => rel.type === 'blocked').map((rel) => {
-        return {
-          login: rel.passive_user.nick,
-          image_url: rel.passive_user.imgUrl,
-        };
-      }),
-    };
 
+      blockeds: user.relations.filter((rel) => rel.type === 'blocked')
+        .map((rel) => {
+          return {
+            login: rel.passive_user.nick,
+            image_url: rel.passive_user.imgUrl,
+          };
+        }),
+    };
     return userDto;
   }
 
   async getUser(email: string): Promise<User> {
     const user = (await this.findUserByEmail(email)) as User;
-
     return user;
   }
 
@@ -216,27 +240,25 @@ export class UserService {
       throw new ForbiddenException('Duplicated nickname');
 
     user.nick = nick ? nick : user?.nick;
-    user.imgUrl = imgUrl ? imgUrl : user?.imgUrl;
     user.isTFAEnable =
       isTFAEnable !== undefined ? isTFAEnable : user.isTFAEnable;
     user.tfaEmail = tfaEmail ? tfaEmail : user?.tfaEmail;
-
     user.tfaValidated =
       tfaValidated !== undefined ? tfaValidated : user.tfaValidated;
     user.tfaCode = tfaCode ? bcrypt.hashSync(tfaCode, 8) : user.tfaCode;
-    if (nick) {
-      if (user.imgUrl !== 'userDefault.png' && !user.imgUrl.includes('https://cdn.intra.42.fr')) {
-        fs.rename(
+    if (imgUrl) {
+      if (user.imgUrl !== 'userDefault.png'
+       && !user.imgUrl.includes('https://')) {
+        fs.rm(
           `../web/public/${user.imgUrl}`,
-          `../web/public/${nick}_avatar.jpg`,
           function (err) {
             if (err) throw err;
           }
         );
-        user.imgUrl = `${nick}_avatar.jpg`;
       }
+      user.imgUrl = imgUrl;
     }
-
+    
     if (tfaCode == null) {
       user.tfaCode = '';
     }
@@ -245,7 +267,7 @@ export class UserService {
       await user.save();
       return user;
     } catch (error) {
-      throw new InternalServerErrorException('Erro ao salvar os dados no db');
+      throw new InternalServerErrorException('Error saving user update');
     }
   }
 
@@ -262,6 +284,19 @@ export class UserService {
     return false;
   }
 
+  alreadyFriends(user: User, friend: User) {
+    const alreadyFriends = friend.relations.filter((relation) => {
+      if (relation.type === 'friend' 
+        && relation.passive_user.nick == user.nick)
+        return relation;
+      return ;
+    });
+    
+    if (alreadyFriends.length > 0)
+      return true;
+    return false;
+  }
+
 
   /**
    * It sends a friend request to a user
@@ -272,7 +307,7 @@ export class UserService {
     const user = await this.findUserByEmail(user_email);
     const friend = await this.findUserByNick(user_target);
     if (!friend || !user)
-      throw new InternalServerErrorException('User not found in data base');
+      throw new InternalServerErrorException('User not found');
     if (user && friend && user.nick === friend.nick) {
       throw new BadRequestException('You cant add yourself');
     }
@@ -289,10 +324,13 @@ export class UserService {
         return friendNotify;
       return;
     });
-
-    console.log(duplicated.length);
     if (duplicated.length > 0)
       throw new BadRequestException('This user already your order');
+      
+    const alreadyFriends = this.alreadyFriends(user, friend);
+    if (alreadyFriends)
+      throw new BadRequestException('This user already is your friend');
+
 
     if (this.isBlocked(user, friend) == true)
       return;
@@ -319,10 +357,10 @@ export class UserService {
       return notify;
     });
     try {
-      user.save();
+      await user.save();
       return;
     } catch (err) {
-      throw new InternalServerErrorException('erro salvando notificacao');
+      throw new InternalServerErrorException('Error saving notify');
     }
   }
 
@@ -334,34 +372,35 @@ export class UserService {
  */
   async acceptFriend(email: string, id: string) {
     const user = await this.findUserByEmail(email) as User;
-
     const requestedNotify: Notify[] = user.notify.filter((notify) => notify.id === id);
-
+    
     if (!requestedNotify.at(0))
       throw new BadRequestException('friend not found');
-
+    
+    console.log('apagou a notificaçao');
     const friend = await this.findUserByEmail(requestedNotify.at(0)?.user_source.email as string) as User;
-
+    const alreadyFriends = this.alreadyFriends(user, friend);
+    if (alreadyFriends){
+      this.popNotification(email, id);
+      throw new BadRequestException('This user already is your friend');
+    }
+      
     const relationUser = new Relations();
     const relationFriend = new Relations();
-
     relationUser.passive_user = friend;
     relationUser.type = 'friend';
-
     relationFriend.passive_user = user;
     relationFriend.type = 'friend';
-
     user.relations.push(relationUser);
     friend.relations.push(relationFriend);
-
-
+    
     try {
       await user.save();
       await friend.save();
       await this.popNotification(email, id);
       return;
     } catch (err) {
-      throw new InternalServerErrorException('erro salvando notificacao');
+      throw new InternalServerErrorException('Error saving notify accept');
     }
   }
 
@@ -395,7 +434,7 @@ export class UserService {
       await this.popNotification(email, id);
       return;
     } catch (err) {
-      throw new InternalServerErrorException('erro salvando notificacao');
+      throw new InternalServerErrorException('Error saving notify block ');
     }
   }
 
@@ -428,7 +467,7 @@ export class UserService {
       await friend.save();
       return;
     } catch (err) {
-      throw new InternalServerErrorException('erro salvando notificacao');
+      throw new InternalServerErrorException('Error saving notify remove');
     }
   }
 
@@ -467,7 +506,7 @@ export class UserService {
       await friend.save();
       return;
     } catch (err) {
-      throw new InternalServerErrorException('erro salvando notificacao');
+      throw new InternalServerErrorException('Error saving notify new blocked');
     }
   }
 
@@ -490,37 +529,7 @@ export class UserService {
       await user.save();
       return;
     } catch (err) {
-      throw new InternalServerErrorException('erro salvando notificacao');
+      throw new InternalServerErrorException('Error saving notify remove blocked');
     }
   }
-
-
-  async createChat() {
-    const chat  = new Chat();
-    const gsilva = await this.getUser('gsilva-v@student.42sp.org.br');
-    const mmoreira = await this.getUser('mmoreira@student.42sp.org.br');
-    const mavinici = await this.getUser('mavinici@student.42sp.org.br');
-
-    chat.users = [];
-    chat.type = 'direct';
-    chat.users.push(gsilva);
-    chat.users.push(mmoreira);
-    chat.users.push(mavinici);
-    
-
-    try {
-      await this.chatService.save(chat);
-    }catch(err){
-      console.log(err);
-    }
-
-    return;
-  }
-
-
-  
-
-
-
-
 }

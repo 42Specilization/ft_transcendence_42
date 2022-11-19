@@ -1,6 +1,6 @@
 @import '../../../styles/global.scss';
 
-.user__card__blocked {
+.card__blocked {
   @include displayFlex(space-between);
   padding: 10px;
   margin-bottom: 10px;
@@ -13,7 +13,7 @@
   }
 }
 
-.user__card__blocked__icon {
+.card__blocked__icon {
   @include displayFlex(flex-end, row, flex-end);
   width:45px;
   height:45px;
@@ -26,7 +26,7 @@
   background-position: 50% 50%;
 }
 
-.user__card__blocked__name {
+.card__blocked__name {
   font-size: x-large;
   margin-left: 10px;
   overflow-x: hidden;
@@ -35,19 +35,19 @@
   width: 100%;
 }
 
-.user__card__blocked__div {
+.card__blocked__div {
   display:grid;
   grid-template-columns: 0.1fr 1fr;
   align-items: center;
   justify-items: left;
 }
 
-.user__card__blocked__menu {
+.card__blocked__menu {
   @include displayFlex();
 
 }
   
-.user__card__blocked__menu__body {
+.card__blocked__menu__body {
   background-color: $backgroundColor;
   top: 45px;
   transition: height 0.6s, width 0.6s;
@@ -56,7 +56,7 @@
   padding: 0px 10px 0px 10px;
 }
   
-.user__card__blocked__menu__button {
+.card__blocked__menu__button {
   @include displayFlex();
   width: 100%;
   height: 35px;

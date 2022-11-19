@@ -1,24 +1,21 @@
-import { AxiosInstance } from 'axios';
+import { useContext } from 'react';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { Modal } from '../../Modal/Modal';
 import './TFATurnOffModal.scss';
-interface TFATurnOffModalProps{
+interface TFATurnOffModalProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config: any;
-  setIsModalTurnOffVisible: (arg0: boolean) => void;
-  isModalTurnOffVisible: boolean;
-  setTfaEnable:(arg0:boolean) => void;
-  api: AxiosInstance;
+  setTfaModal: (arg0: string) => void;
+  setTfaEnable: (arg0: boolean) => void;
 }
 
 export function TFATurnOffModal({
-  setIsModalTurnOffVisible,
-  isModalTurnOffVisible,
+  setTfaModal,
   setTfaEnable,
-  api,
-  config,
-} : TFATurnOffModalProps){
+}: TFATurnOffModalProps) {
 
-  async function handleTurnOff(){
+  const { api, config } = useContext(IntraDataContext);
+
+  async function handleTurnOff() {
     const body = {
       isTFAEnable: false,
       tfaValidated: false,
@@ -26,30 +23,26 @@ export function TFATurnOffModal({
       tfaCode: null,
     };
     const validateEmail = await api.patch('/user/turn-off-tfa', body, config);
-    if (validateEmail.status === 200){
+    if (validateEmail.status === 200) {
       setTfaEnable(false);
-      setIsModalTurnOffVisible(false);
-      return ;
+      setTfaModal('');
+      return;
     }
   }
 
   return (
-    <>
-      {isModalTurnOffVisible &&
-        <Modal onClose={() => setIsModalTurnOffVisible(false)}>
-          <p className='tfaTurnOff__title'> Are you sure you want to disable 2fa ?</p>
-          <div className='tfaTurnOff__buttons'>
-            <button className='tfaTurnOff__button__confirm'
-              onClick={handleTurnOff}>
-              Confirm
-            </button>
-            <button className='tfaTurnOff__button__cancel'
-              onClick={()=> setIsModalTurnOffVisible(false)}>
-              Cancel
-            </button>
-          </div>
-        </Modal>
-      }
-    </>
+    <Modal onClose={() => setTfaModal('')}>
+      <h3 className='tfaTurnOff__title'> Are you sure you want to disable 2FA ?</h3>
+      <div className='tfaTurnOff__buttons'>
+        <button className='tfaTurnOff__button__confirm'
+          onClick={handleTurnOff}>
+          Confirm
+        </button>
+        <button className='tfaTurnOff__button__cancel'
+          onClick={() => setTfaModal('')}>
+          Cancel
+        </button>
+      </div>
+    </Modal>
   );
 }

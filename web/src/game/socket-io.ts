@@ -72,9 +72,7 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
     }
   }
 
-  // socket.on('exception', (err) => {
-  //   console.log('err ', err);
-  // });
+
 
   return (socket);
 

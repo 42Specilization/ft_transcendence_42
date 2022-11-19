@@ -31,7 +31,7 @@ export class StatusGateway
 
     this.logger.log(`WS client with id: ${client.id} connected of StatusSocket!`);
     this.logger.debug(`Number of connected StatusSockets: ${sockets.size}`);
-    this.mapUserData.debug();
+    // this.mapUserData.debug();
   }
 
   handleDisconnect(client: Socket) {
@@ -40,21 +40,24 @@ export class StatusGateway
     this.newUserOffline(client);
     this.logger.log(`Disconnected of StatusSocket the socket id: ${client.id}`);
     this.logger.debug(`Number of connected StatusSockets: ${sockets.size}`);
-    this.mapUserData.debug();
+    // this.mapUserData.debug();
   }
 
   @SubscribeMessage('iAmOnline')
   newUserOnline(client: Socket, { login, image_url }: { login: string, image_url: string }) {
     const newUser: UserData = newUserData('online', login, image_url);
     this.mapUserData.set(client.id, newUser);
-    client.emit('loggedUsers', Array.from(this.mapUserData.getValues()));
-    client.emit('getUserNotification', login);
+
     if (this.mapUserData.keyOf(newUser.login).length == 1) {
-      setTimeout(() => { client.broadcast.emit('updateUser', newUser); }, 5000);
-      // client.broadcast.emit('updateUser', newUser);
+      client.broadcast.emit('updateUser', newUser);
     }
     this.logger.debug(`iAmOnline => Client: ${client.id}, email: |${newUser.login}|`);
-    this.mapUserData.debug();
+    // this.mapUserData.debug();
+  }
+
+  @SubscribeMessage('whoIsOnline')
+  whoIsOnline(client: Socket) {
+    client.emit('onlineUsers', Array.from(this.mapUserData.getValues()));
   }
 
   newUserOffline(client: Socket) {
@@ -79,19 +82,29 @@ export class StatusGateway
       oldUser.image_url
     );
 
-    if (newUser.image_url !== 'userDefault.png'
-      && !newUser.image_url.includes('https://cdn.intra.42.fr'))
-      newUser.image_url = `${newUser.login}_avatar.jpg`;
-
-    this.mapUserData.debug();
-
     this.mapUserData.updateValue(oldUser, newUser);
     this.mapUserData.keyOf(newLogin).forEach(socketId =>
       this.server.to(socketId).emit('updateYourself', newUser)
     );
     client.broadcast.emit('updateUserLogin', oldUser, newUser);
 
-    this.mapUserData.debug();
+    // this.mapUserData.debug();
+  }
+
+  @SubscribeMessage('changeImage')
+  handleChangeImage(client: Socket, image_url: string) {
+    const oldUser = this.mapUserData.valueOf(client.id);
+    const newUser: UserData = newUserData(
+      oldUser.status,
+      oldUser.login,
+      image_url
+    );
+
+    this.mapUserData.updateValue(oldUser, newUser);
+    this.mapUserData.keyOf(oldUser.login).forEach(socketId =>
+      this.server.to(socketId).emit('updateYourself', newUser)
+    );
+    client.broadcast.emit('updateUserImage', oldUser, newUser);
   }
 
   @SubscribeMessage('newNotify')
@@ -108,8 +121,10 @@ export class StatusGateway
     const socketsUser: string[] = this.mapUserData.keyOf(user.login);
     socketsUser.forEach(socketId => {
       this.server.to(socketId).emit('updateFriend');
-    }
-    );
+    });
+    this.mapUserData.keyOf(user.login).forEach(socketId => {
+      this.server.to(socketId).emit('updateNotify');
+    });
 
     if (this.mapUserData.hasValue(login_target)) {
       const socketsFriends: string[] = this.mapUserData.keyOf(login_target);
@@ -136,14 +151,27 @@ export class StatusGateway
     });
   }
 
+  @SubscribeMessage('removeBlocked')
+  handleRemoveBlocked(client: Socket) {
+    const user: UserData = this.mapUserData.valueOf(client.id);
+    this.mapUserData.keyOf(user.login).forEach(socketId => {
+      this.server.to(socketId).emit('updateBlocked');
+    });
+  }
+
   @SubscribeMessage('deleteFriend')
   handleDeleteFriend(client: Socket, login_target: string) {
     client;
     if (this.mapUserData.hasValue(login_target)) {
-      this.mapUserData.keyOf(login_target).forEach(socketId =>
-        this.server.to(socketId).emit('updateRemove')
+      this.mapUserData.keyOf(login_target).forEach(socketId =>{
+        this.server.to(socketId).emit('updateRemove');
+      }
       );
     }
+    const user: UserData = this.mapUserData.valueOf(client.id);
+    this.mapUserData.keyOf(user.login).forEach(socketId => {
+      this.server.to(socketId).emit('updateRemove');
+    });
   }
 
 }

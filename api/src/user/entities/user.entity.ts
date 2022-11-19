@@ -42,7 +42,7 @@ export class User extends BaseEntity {
 
   @ApiProperty()
   @Column({ nullable: false, type: 'varchar', length: 50 })
-  nick: string;
+   nick: string;
 
   @ApiProperty()
   @Column({ nullable: false, type: 'varchar' })
@@ -78,11 +78,11 @@ export class User extends BaseEntity {
 
   @ApiProperty()
   @IsEmail()
-  @Column({ nullable: true })
+  @Column({ nullable: true , default: null})
   tfaEmail?: string;
 
   @ApiProperty()
-  @Column({ nullable: true })
+  @Column({ nullable: true , default: null})
   tfaCode?: string;
 
   @ApiProperty()
@@ -95,7 +95,7 @@ export class User extends BaseEntity {
   games: GameEntity[];
 
   @JoinTable()
-  @ManyToMany(() => Chat, (chat) => chat.users, { cascade: ['insert'] })
+  @ManyToMany(() => Chat, (chat) => chat.users)
   chats: Chat[];
 
   @ApiProperty()

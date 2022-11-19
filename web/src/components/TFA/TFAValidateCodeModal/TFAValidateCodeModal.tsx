@@ -1,47 +1,54 @@
 import './TFAValidateCodeModal.scss';
-import { AxiosInstance } from 'axios';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Modal } from '../../Modal/Modal';
-interface TFAValidateCodeModalProps{
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config: any;
-  setIsModalVerifyCodeVisible: (arg0: boolean) => void;
-  isModalVerifyCodeVisible: boolean;
-  tfaEmail:string
-  api: AxiosInstance;
-  emailInput: HTMLInputElement;
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
+
+interface TFAValidateCodeModalProps {
+  tfaEmail: string;
+  setTfaEmail: (arg0: string) => void;
   setTfaEnable: (arg0: boolean) => void;
+  setTfaModal: (arg0: string) => void;
 }
 
 export function TFAValidateCodeModal({
-  api,
-  config,
   tfaEmail,
-  setIsModalVerifyCodeVisible,
-  isModalVerifyCodeVisible,
+  setTfaEmail,
+  setTfaModal,
   setTfaEnable,
+}: TFAValidateCodeModalProps) {
 
-
-} : TFAValidateCodeModalProps){
-
-  const verifyCodeStyleDefault = {
-    styles: {
-      placeholder: 'Insert Code...',
-      border: '3px solid white'
-    },
-  };
-  const [verifyCodeStyle, setVerifyCodeStyle] = useState(verifyCodeStyleDefault);
+  const { api, config } = useContext(IntraDataContext);
+  const [code, setCode] = useState('');
+  const [placeHolder, setPlaceHolder] = useState('');
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async function turnOnTFA(body:any, config :any){
-    const updateTfa = await api.patch('/user/turn-on-tfa', body,config);
-    if (updateTfa.status === 200){
-      setIsModalVerifyCodeVisible(false);
+  async function turnOnTFA(body: any, config: any) {
+    const updateTfa = await api.patch('/user/turn-on-tfa', body, config);
+    if (updateTfa.status === 200) {
+      setTfaModal('');
+      setTfaEmail('');
       window.location.reload();
     }
   }
 
-  async function handleCancel(){
+  async function handleValidateCode() {
+    const body = {
+      tfaCode: code,
+      tfaValidated: false,
+    };
+    try {
+      const validateCode = await api.patch('/user/validate-code', body, config);
+      if (validateCode.status === 200) {
+        body.tfaValidated = true;
+        turnOnTFA(body, config);
+      }
+    } catch (err) {
+      setPlaceHolder('Invalid Code');
+    }
+    setCode('');
+  }
+
+  async function handleCancel() {
     const body = {
       isTFAEnable: false,
       tfaValidated: false,
@@ -49,60 +56,45 @@ export function TFAValidateCodeModal({
       tfaCode: null,
     };
     const validateEmail = await api.patch('/user/turn-off-tfa', body, config);
-    setIsModalVerifyCodeVisible(false);
-    if (validateEmail.status === 200){
+    if (validateEmail.status === 200) {
       setTfaEnable(false);
     }
+    setTfaModal('');
+    setTfaEmail('');
   }
 
-  async function handleValidateCode(){
-    const typedCode = document.querySelector('.tfaValidateCode__input') as HTMLInputElement;
-    const body = {
-      tfaCode: typedCode.value,
-      tfaValidated: false,
-    };
-    try{
-      const validateCode = await api.patch('/user/validate-code', body, config);
-      if (validateCode.status === 200){
-        body.tfaValidated = true;
-        setVerifyCodeStyle(verifyCodeStyleDefault);
-        turnOnTFA(body, config);
-      }
-    } catch (err) {
-      typedCode.value = '';
-      const errorVefify = {
-        styles: {
-          placeholder: 'Invalid Code',
-          border: '3px solid red'
-        },
-      };
-      setVerifyCodeStyle(errorVefify);
-    }
-
+  function handleKeyEnter(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    handleValidateCode();
   }
-
 
   return (
-    <>
-      {isModalVerifyCodeVisible &&
-        <Modal
-          id='tfaValidateCode'
-          onClose={() => setIsModalVerifyCodeVisible(false)}
-        >
-          <p className='tfaValidateCode__title'>Insert code received in: {tfaEmail}</p>
-          <div className='tfaValidateCode__inputArea' >
-            <input
-              style={{border:verifyCodeStyle.styles.border}}
-              className='tfaValidateCode__input' type="text"
-              placeholder={verifyCodeStyle.styles.placeholder}
-            />
-            <div className='tfaValidateCode__buttons'>
-              <button className='tfaValidateCode__buttons__validate' onClick={handleValidateCode}>Validate</button>
-              <button className='tfaValidateCode__buttons__cancel' onClick={handleCancel}>Cancel</button>
-            </div>
-          </div>
-        </Modal>
-      }
-    </>
+    <Modal onClose={() => handleCancel()}>
+      <form className='tfaValidate__modal' onSubmit={handleKeyEnter}>
+        <h3> Insert code received in:</h3>
+        <h3> {tfaEmail} </h3>
+        <input
+          className='tfaValidate__modal__input'
+          value={code}
+          placeholder={placeHolder}
+          style={{ border: placeHolder !== '' ? '3px solid red' : 'none' }}
+          onChange={(code) => {
+            setCode(code.target.value);
+            setPlaceHolder('');
+          }}
+          ref={e => e?.focus()}
+        />
+        <div className='tfaValidate__modal__buttons'>
+          <button className='tfaValidate__modal__button__validate'
+            onClick={handleValidateCode}>
+            Validate
+          </button>
+          <button className='tfaValidate__modal__button__cancel'
+            onClick={handleCancel}>
+            Cancel
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 }

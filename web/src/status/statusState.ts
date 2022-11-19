@@ -74,6 +74,10 @@ const actionsStatus = {
     }
   },
 
+  whoIsOnline() {
+    stateStatus.socket?.emit('whoIsOnline');
+  },
+
   sortFriends() {
     if (stateStatus.setIntraData) {
       stateStatus.setIntraData((prevIntraData) => {
@@ -92,14 +96,13 @@ const actionsStatus = {
     }
   },
 
-  loggedUsers(loggedUsers: UserData[]) {
+  onlineUsers(onlineUsers: UserData[]) {
     if (stateStatus.setIntraData) {
       stateStatus.setIntraData((prevIntraData) => {
         return {
           ...prevIntraData, friends: prevIntraData.friends.map(friend => {
-            console.log('loggedUsers', prevIntraData);
-            if (loggedUsers.map(e => e.login).indexOf(friend.login) >= 0) {
-              const updateFriend = loggedUsers.find(e => e.login === friend.login);
+            if (onlineUsers.map(e => e.login).indexOf(friend.login) >= 0) {
+              const updateFriend = onlineUsers.find(e => e.login === friend.login);
               return typeof updateFriend !== 'undefined' ? updateFriend : friend;
             }
             return friend;
@@ -148,6 +151,21 @@ const actionsStatus = {
     }
   },
 
+  updateUserImage(oldUser: UserData, newUser: UserData) {
+    if (stateStatus.setIntraData) {
+      stateStatus.setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData, friends: prevIntraData.friends.map(friend => {
+            if (oldUser.login === friend.login)
+              return newUser;
+            return friend;
+          }),
+        };
+      });
+      this.sortFriends();
+    }
+  },
+
   async updateNotify() {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
@@ -179,8 +197,15 @@ const actionsStatus = {
   async updateBlocked() {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
+      console.log(user.blockeds);
       stateStatus.setIntraData((prevIntraData) => {
-        return { ...prevIntraData, blockeds: user.blockeds };
+        return { ...prevIntraData, blockeds: user.blockeds.map((obj) => {
+          if (prevIntraData.blockeds.map(e => e.login).indexOf(obj.login) >= 0) {
+            const updateFriend = prevIntraData.blockeds.find(e => e.login === obj.login);
+            return typeof updateFriend !== 'undefined' ? updateFriend : obj;
+          }
+          return obj;
+        }) };
       });
     }
   },
@@ -189,7 +214,7 @@ const actionsStatus = {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
       stateStatus.setIntraData((prevIntraData) => {
-        return { ...prevIntraData, friends: user.friends };
+        return { ...prevIntraData, friends: user.friends, blockeds: user.blockeds};
       });
     }
   },

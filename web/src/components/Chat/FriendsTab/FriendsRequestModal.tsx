@@ -25,7 +25,6 @@ export function FriendRequestModal({ setIsAddFriendModalVisible }: FriendsReques
   }
 
   async function sendFriendRequest() {
-    console.log(userTarget);
     const token = window.localStorage.getItem('token');
     const config = {
       headers: {
@@ -41,8 +40,10 @@ export function FriendRequestModal({ setIsAddFriendModalVisible }: FriendsReques
       setIsAddFriendModalVisible(false);
       setPlaceHolder('');
       currentStateStatus.socket?.emit('newNotify', userTarget);
-    } catch (err) {
-      setPlaceHolder('Invalid nick!');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err : any) {
+      console.log(err);
+      setPlaceHolder(err.response.data.message);
 
     }
     setUserTarget('');
@@ -70,6 +71,7 @@ export function FriendRequestModal({ setIsAddFriendModalVisible }: FriendsReques
               setUserTarget(msg.target.value);
               setPlaceHolder('');
             }}
+            ref={e => e?.focus()}
           />
         </div>
         <button className='chat__friends__modal__button' type='submit'>

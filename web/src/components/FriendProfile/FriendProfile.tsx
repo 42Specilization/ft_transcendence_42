@@ -5,12 +5,10 @@ import { FriendProfileHistoric } from '../../components/FriendProfile/FriendProf
 import './FriendProfile.scss';
 interface FriendProfileProps {
   login: string;
-
 }
 
 export function FriendProfile({ login }: FriendProfileProps) {
   const [tableSelected, setTableSelected] = useState('General');
-  // const { login } = useParams();
 
   const defaultFriend = {
     image_url: 'default',
@@ -23,7 +21,6 @@ export function FriendProfile({ login }: FriendProfileProps) {
   const [friend, setFriend] = useState(defaultFriend);
 
   async function getFriend() {
-
     const token = window.localStorage.getItem('token');
     const config = {
       headers: {
@@ -33,18 +30,12 @@ export function FriendProfile({ login }: FriendProfileProps) {
     const api = axios.create({
       baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
     });
-    console.log('login', login);
     const response = await api.patch('/user/friend', { nick: login }, config);
-    console.log(response);
-    // if (!response.data.image_url.includes('https://cdn.intra.42.fr/'))
-    //   response.data.image_url = `/public/${response.data.image_url}`;
     setFriend(response.data);
   }
 
   useEffect(() => {
-    // console.log(notify);
     getFriend();
-    console.log('friend', friend);
   }, [login]);
 
   return (

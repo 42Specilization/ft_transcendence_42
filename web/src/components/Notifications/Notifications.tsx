@@ -1,8 +1,8 @@
 import './Notifications.scss';
 import { useContext } from 'react';
-import { NotificationChallenge } from './NotificationChallenge/NotificationChallenge';
+// import { NotificationChallenge } from './NotificationChallenge/NotificationChallenge';
 import { NotificationFriend } from './NotificationFriend/NotificationFriend';
-import { NotificationMessage } from './NotificationMessage/NotificationMessage';
+// import { NotificationMessage } from './NotificationMessage/NotificationMessage';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 
 export function Notifications() {

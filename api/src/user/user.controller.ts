@@ -168,18 +168,16 @@ export class UserController {
 
   @Patch('friend')
   @HttpCode(HttpStatus.OK)
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBody({ type: GetFriendDto })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async getfriend(@Body() getFriendDto: GetFriendDto): Promise<any> {
-    // console.log('getFriend', getFriendDto);
+  async getfriend(@Body() getFriendDto: GetFriendDto) {
     const userValidate = await this.userService.findUserByNick(getFriendDto.nick);
     if (userValidate) {
       const friendData = {
         image_url: userValidate.imgUrl,
         login: userValidate.nick,
         matches: userValidate.matches,
-        wins: userValidate.wins,
+        wins: userValidate.wins, 
         lose: userValidate.lose,
         name: userValidate.usual_full_name,
       };
@@ -224,7 +222,6 @@ export class UserController {
     @Body(ValidationPipe) friendRequestDto: FriendRequestDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
   ): Promise<{ message: string }> {
-    console.log(friendRequestDto);
     await this.userService.sendFriendRequest(userFromJwt.email, friendRequestDto.nick);
     return { message: 'success' };
   }
@@ -297,14 +294,15 @@ export class UserController {
 
 
 
-  @Post('/chat')
-  @HttpCode(HttpStatus.CREATED)
-  createChat(): { msg: string } {
-    this.userService.createChat();
-    return ({
-      msg: 'success'
-    });
-  }
+  // @Post('/chat')
+  // @ApiBody({ type: CreateDirectDto })
+  // @HttpCode(HttpStatus.CREATED)
+  // createChat(): { msg: string } {
+  //   // this.userService.createChat();
+  //   return ({
+  //     msg: 'success'
+  //   });
+  // }
 
 
 
