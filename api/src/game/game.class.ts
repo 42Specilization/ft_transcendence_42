@@ -9,12 +9,13 @@ const DEFAULT_PADDLE_HEIGHT = 100;
 
 export class Game {
 
-  constructor(room: number, index: number) {
+  constructor(room: number, index: number, isWithPowerUps = false) {
     this.room = room;
     this.index = index;
     this.waiting = true;
     this.hasEnded = false;
     this.hasStarted = false;
+    this.isWithPowerUps = isWithPowerUps;
   }
 
   room: number;
@@ -33,6 +34,7 @@ export class Game {
     player2: 0
   };
   ballLastHit: number;
+  isWithPowerUps: boolean;
 
   player1: IPlayer = {
     paddle: {
@@ -142,6 +144,9 @@ export class Game {
     this.ball.y = CANVAS_HEIGHT / 2;
     this.ball.speed = this.ballSpeed;
     this.ball.velocityX = -this.ball.velocityX;
+    if (this.isWithPowerUps) {
+      this.resetPowerUp();
+    }
   }
 
   checkWinner(): boolean {
@@ -229,23 +234,23 @@ export class Game {
       // every time the ball hit a paddle, we increase its speed
       this.ball.speed += 0.5;
       this.ballLastHit = (this.ball.x < CANVAS_WIDTH / 2) ? 1 : 2;
-      if (!this.powerUpBox.itsDrawn && !this.powerUpBox.isActive) {
+      if (this.isWithPowerUps && !this.powerUpBox.itsDrawn && !this.powerUpBox.isActive) {
         this.generateBoxPosition();
       }
     }
 
-    this.checkPowerUp();
+    if (this.isWithPowerUps) {
+      this.checkPowerUp();
+    }
 
     // update the score
     if (this.ball.x - this.ball.radius < 0) {
       this.score.player2++;
       this.resetBall();
-      this.resetPowerUp();
       return (true);
     } else if (this.ball.x + this.ball.radius > CANVAS_WIDTH) {
       this.score.player1++;
       this.resetBall();
-      this.resetPowerUp();
       return (true);
     }
     return (false);
@@ -278,26 +283,26 @@ export class Game {
   getCreateGameDto(): CreateGameDto {
 
     let winner: string;
-    let looser: string;
-    let looserScore = 0;
+    let loser: string;
+    let loserScore = 0;
     let winnerScore = 0;
     if (this.player1.name === this.winner.name) {
       winner = this.player1.name;
       winnerScore = this.score.player1;
-      looser = this.player2.name;
-      looserScore = this.score.player2;
+      loser = this.player2.name;
+      loserScore = this.score.player2;
     } else {
       winner = this.player2.name;
       winnerScore = this.score.player2;
-      looser = this.player1.name;
-      looserScore = this.score.player1;
+      loser = this.player1.name;
+      loserScore = this.score.player1;
     }
 
     const createGameDto: CreateGameDto = {
-      looser: looser,
+      loser: loser,
       winner: winner,
       reasonEndGame: this.getReasonEndGame(),
-      looserScore: looserScore,
+      loserScore: loserScore,
       winnerScore: winnerScore
     };
 

@@ -22,6 +22,11 @@ interface IMove {
   room: number;
 }
 
+interface IPlayerInfos {
+  name: string;
+  isWithPowerUps: boolean;
+}
+
 /**
  * Web Socket configuration of the game pong.
  * The game socket has filters exceptions and authentication with jwt.
@@ -75,13 +80,13 @@ export class GameGateway
    * @param user Socket of the user player.
    */
   @SubscribeMessage('join-game')
-  async joinGame(@ConnectedSocket() user: Socket, @MessageBody() name: string) {
-    const index = this.checkGameArray();
+  async joinGame(@ConnectedSocket() user: Socket, @MessageBody() playerInfos: IPlayerInfos) {
+    const index = this.checkGameArray(playerInfos.isWithPowerUps);
 
     const game = this.queue[index];
     if (game.player1.socketId === '') {
       game.player1.socketId = user.id;
-      game.player1.name = name;
+      game.player1.name = playerInfos.name;
       user.join(game.room.toString());
       this.io.to(game.room.toString()).emit('update-game', game.getGameDto());
       this.logger.debug(
@@ -89,7 +94,7 @@ export class GameGateway
       );
     } else if (game.player2.socketId === '') {
       game.player2.socketId = user.id;
-      game.player2.name = name;
+      game.player2.name = playerInfos.name;
       user.join(game.room.toString());
       this.logger.debug(
         `Player two connected name: ${name} socket id:${user.id} Game room:${game.room}`
@@ -344,13 +349,13 @@ export class GameGateway
    * Otherwise another instance of game will be create on queue and this player will stay there waiting for another player.
    * @returns index of the game on queue array.
    */
-  checkGameArray(): number {
+  checkGameArray(isWithPowerUps: boolean): number {
     if (this.queue.length > 0) {
       for (let i = 0; i < this.queue.length; i++) {
         if (
           (this.queue[i].player1.socketId === '' ||
             this.queue[i].player2.socketId === '') &&
-          !this.queue[i].hasEnded
+          !this.queue[i].hasEnded && this.queue[i].isWithPowerUps === isWithPowerUps
         )
           return i;
       }
@@ -358,7 +363,8 @@ export class GameGateway
     this.queue.push(
       new Game(
         this.checkGameRoom(randomInt(100)),
-        this.queue.length - 1 > 0 ? this.queue.length - 1 : this.queue.length
+        this.queue.length - 1 > 0 ? this.queue.length - 1 : this.queue.length,
+        isWithPowerUps
       )
     );
     return this.queue.length - 1;

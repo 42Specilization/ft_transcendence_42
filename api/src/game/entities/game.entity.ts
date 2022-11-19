@@ -15,7 +15,7 @@ export class GameEntity extends BaseEntity {
 
   @ApiProperty()
   @Column({ nullable: false, type: 'integer' })
-  looserScore: number;
+  loserScore: number;
 
   @ApiProperty()
   @Column({ nullable: false, type: 'varchar' })
@@ -29,7 +29,7 @@ export class GameEntity extends BaseEntity {
   @ApiProperty()
   @ManyToOne(() => User)
   @JoinColumn()
-  looser: User;
+  loser: User;
 
   @ApiProperty()
   @CreateDateColumn()

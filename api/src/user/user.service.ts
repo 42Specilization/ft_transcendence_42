@@ -117,7 +117,7 @@ export class UserService {
     return await this.usersRepository.find({
       relations: [
         'games',
-        'games.looser',
+        'games.loser',
         'games.winner',
       ]
     });

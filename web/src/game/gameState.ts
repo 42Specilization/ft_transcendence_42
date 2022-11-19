@@ -32,6 +32,11 @@ export interface IPowerUp {
   itsDrawn: boolean;
 }
 
+export interface IPlayerInfos {
+  name: string;
+  isWithPowerUps: boolean;
+}
+
 export interface Game {
   room: number;
   waiting: boolean;
@@ -54,6 +59,7 @@ export interface AppState {
   player2?: Player;
   score?: Score;
   powerUp?: IPowerUp;
+  isWithPowerUps?: boolean;
 }
 
 const state = proxy<AppState>({
@@ -73,7 +79,11 @@ const state = proxy<AppState>({
 
 const actions = {
   initializeGame: (): void => {
-    state.socket?.emit('join-game', state.me?.name);
+    const playerInfos: IPlayerInfos = {
+      isWithPowerUps: state.isWithPowerUps as boolean,
+      name: state.me?.name as string
+    };
+    state.socket?.emit('join-game', playerInfos);
   },
   initializeSocket: (): void => {
     if (!state.socket) {
@@ -92,6 +102,9 @@ const actions = {
       state.socket.connect();
       return;
     }
+  },
+  updateIsWithPowerUps(isWithPowerUps: boolean) {
+    state.isWithPowerUps = isWithPowerUps;
   },
   updateGame(game?: Game) {
     state.game = game;
