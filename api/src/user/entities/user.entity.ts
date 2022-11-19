@@ -42,7 +42,7 @@ export class User extends BaseEntity {
 
   @ApiProperty()
   @Column({ nullable: false, type: 'varchar', length: 50 })
-  nick: string;
+   nick: string;
 
   @ApiProperty()
   @Column({ nullable: false, type: 'varchar' })

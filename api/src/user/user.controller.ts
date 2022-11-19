@@ -168,18 +168,16 @@ export class UserController {
 
   @Patch('friend')
   @HttpCode(HttpStatus.OK)
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBody({ type: GetFriendDto })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async getfriend(@Body() getFriendDto: GetFriendDto): Promise<any> {
-    // console.log('getFriend', getFriendDto);
+  async getfriend(@Body() getFriendDto: GetFriendDto) {
     const userValidate = await this.userService.findUserByNick(getFriendDto.nick);
     if (userValidate) {
       const friendData = {
         image_url: userValidate.imgUrl,
         login: userValidate.nick,
         matches: userValidate.matches,
-        wins: userValidate.wins,
+        wins: userValidate.wins, 
         lose: userValidate.lose,
         name: userValidate.usual_full_name,
       };

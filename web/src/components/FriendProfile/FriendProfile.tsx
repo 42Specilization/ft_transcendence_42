@@ -5,12 +5,10 @@ import { FriendProfileHistoric } from '../../components/FriendProfile/FriendProf
 import './FriendProfile.scss';
 interface FriendProfileProps {
   login: string;
-
 }
 
 export function FriendProfile({ login }: FriendProfileProps) {
   const [tableSelected, setTableSelected] = useState('General');
-  // const { login } = useParams();
 
   const defaultFriend = {
     image_url: 'default',
@@ -23,7 +21,6 @@ export function FriendProfile({ login }: FriendProfileProps) {
   const [friend, setFriend] = useState(defaultFriend);
 
   async function getFriend() {
-
     const token = window.localStorage.getItem('token');
     const config = {
       headers: {

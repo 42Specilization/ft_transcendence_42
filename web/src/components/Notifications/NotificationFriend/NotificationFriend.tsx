@@ -31,40 +31,41 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
     baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
   }), []);
 
-  async function handleAccept() {
-
-    await api.patch('/user/acceptFriend', { id: notify.id }, config);
+  async function  removeNotify() {
     setIntraData((prevIntraData) => {
       return {
         ...prevIntraData,
         notify: prevIntraData.notify.filter((key) => key.id != notify.id)
       };
     });
-    currentStateStatus.socket?.emit('newFriend', notify.user_source);
+  }
+
+  async function handleAccept() {
+    try {
+      await api.patch('/user/acceptFriend', { id: notify.id }, config);
+      removeNotify();
+      currentStateStatus.socket?.emit('newFriend', notify.user_source);
+      return ;
+    } catch (err: any) {
+      console.log('result', err.response.data.message);
+      if (err.response.data.message == 'This user already is your friend'){
+        removeNotify();
+      }
+    } 
+    
   }
 
   async function handleBlock() {
 
     await api.patch('/user/blockUserByNotification', { id: notify.id }, config);
-    setIntraData((prevIntraData) => {
-      return {
-        ...prevIntraData,
-        notify: prevIntraData.notify.filter((key) => key.id != notify.id)
-      };
-    });
+    removeNotify();
     currentStateStatus.socket?.emit('newBlocked');
   }
 
   async function handleReject() {
     // Talvez colocar uma validação de confirmação
     await api.patch('/user/removeNotify', { id: notify.id }, config);
-
-    setIntraData((prevIntraData) => {
-      return {
-        ...prevIntraData,
-        notify: prevIntraData.notify.filter((key) => key.id != notify.id)
-      };
-    });
+    removeNotify();
     // currentStateStatus.socket?.emit('newNotify', intraData.login);
   }
 

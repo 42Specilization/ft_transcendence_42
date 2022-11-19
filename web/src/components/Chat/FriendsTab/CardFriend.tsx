@@ -20,7 +20,7 @@ export function CardFriend({ friend, setTableSelected }: CardFriendProps) {
   const { setIntraData, api, config } = useContext(IntraDataContext);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function selectActiveFriend(e: any) {
-    if (e.target.id !== 'card__friend__menu') {
+    if (e.target.id === 'card__friend') {
       setFriendsChat(friend);
       setTableSelected('Directs');
     }
@@ -36,7 +36,7 @@ export function CardFriend({ friend, setTableSelected }: CardFriendProps) {
     });
     currentStateStatus.socket?.emit('deleteFriend', friend.login);
   }
-
+  
   async function handleBlockFriend() {
     await api.patch('/user/addBlocked', { nick: friend.login }, config);
     setIntraData((prevIntraData) => {
@@ -51,6 +51,7 @@ export function CardFriend({ friend, setTableSelected }: CardFriendProps) {
 
   return (
     <div className='card__friend'
+      id='card__friend'
       onClick={(e) => selectActiveFriend(e)}
     >
       <div className='card__friend__div'>
@@ -65,9 +66,8 @@ export function CardFriend({ friend, setTableSelected }: CardFriendProps) {
         <div className='card__friend__name'>{friend.login}</div>
       </div>
 
-      <div id='card__friend__menu' className='card__friend__menu'>
-
-        <div className='card__friend__menu__body'
+      <div className='card__friend__menu'>
+        <div id='card__friend__menu__body' className='card__friend__menu__body'
           style={{ height: isTableFriendUsersMenu ? '145px' : '0px', width: isTableFriendUsersMenu ? '80px' : '0px' }}>
           <button className='card__friend__menu__button'
             onClick={() => console.log('chamou', friend.login, 'pra um desafio')}
