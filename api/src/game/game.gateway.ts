@@ -90,14 +90,14 @@ export class GameGateway
       user.join(game.room.toString());
       this.io.to(game.room.toString()).emit('update-game', game.getGameDto());
       this.logger.debug(
-        `Player one connected name: ${name} socket id:${user.id} Game room:${game.room}`
+        `Player one connected name: ${playerInfos.name} socket id:${user.id} Game room:${game.room}`
       );
     } else if (game.player2.socketId === '') {
       game.player2.socketId = user.id;
       game.player2.name = playerInfos.name;
       user.join(game.room.toString());
       this.logger.debug(
-        `Player two connected name: ${name} socket id:${user.id} Game room:${game.room}`
+        `Player two connected name: ${playerInfos.name} socket id:${user.id} Game room:${game.room} custom ${playerInfos.isWithPowerUps}`
       );
       game.hasStarted = true;
       game.waiting = false;

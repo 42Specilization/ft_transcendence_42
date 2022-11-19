@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { actions } from '../../game/gameState';
+import { actions, state } from '../../game/gameState';
+import { Checkbox } from '../Checkbox/Checkbox';
 import { Commands } from '../Commands/Commands';
 import { WatchGame } from '../WatchGame/WatchGame';
 import { WithFriend } from '../WithFriend/WithFriend';
@@ -9,10 +10,11 @@ export function GameMenu() {
 
   const [commands, setCommands] = useState<boolean>(true);
   const [watch, setWatch] = useState<boolean>(false);
+  const [powerUp, setPowerUp] = useState<boolean>(false);
 
   const handleStartGame = () => {
     actions.initializeSocket();
-    actions.initializeGame();
+    actions.initializeGame(powerUp);
   };
 
   const handleCommands = () => {
@@ -68,6 +70,12 @@ export function GameMenu() {
         >
           Quit
         </button>
+        <div className='gameMenu__buttons__checkbox'>
+          <label htmlFor='powerUp'>
+            <Checkbox id='powerUp' onCheckedChange={() => setPowerUp(!powerUp)} />
+            <span>Enable power up</span>
+          </label>
+        </div>
       </div>
       <div className='gameMenu__options'>
         {commands === true ? <Commands /> : (watch === true ? <WatchGame /> : <WithFriend />)}

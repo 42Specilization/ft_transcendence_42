@@ -40,6 +40,11 @@
   height: 50%;
 }
 
+.gameMenu__buttons__checkbox {
+  span {
+    padding-left: 10px;
+  }
+}
 
 @media (min-width: 900px) {
   .gameMenu {
