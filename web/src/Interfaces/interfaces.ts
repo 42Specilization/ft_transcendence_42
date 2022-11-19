@@ -25,6 +25,41 @@ export interface BlockedData {
   image_url: string;
 }
 
+export interface DirectData {
+  id: string;
+  name?: string;
+  image?: string;
+  date: Date;
+  messages?: MsgToClient[];
+}
+
+// export interface DirectChatData {
+//   id: string;
+//   name: string;
+//   image: string;
+// }
+
+export interface UserMsg {
+  login: string;
+  image: string;
+}
+
+export interface MsgToServer {
+  chat: string;
+  user: string;
+  msg: string;
+}
+
+export interface MsgToClient {
+  id: string;
+  chat: string;
+  user: UserMsg;
+  date: Date;
+  msg: string;
+}
+
+
+
 export interface IntraData {
   first_name: string;
   email: string;
@@ -36,9 +71,10 @@ export interface IntraData {
   lose: string;
   isTFAEnable: boolean;
   tfaValidated: boolean;
-  notify: NotifyData[]
+  notify: NotifyData[];
   friends: FriendData[];
   blockeds: BlockedData[];
+  directs: DirectData[]
 }
 
 export interface ErrResponse {

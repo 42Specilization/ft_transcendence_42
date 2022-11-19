@@ -4,49 +4,53 @@
   @include displayFlex();
   width: 100%;
   height: 100%;
-  position: fixed;
   top:0;
   left: 0;
   z-index: 2;
+  position: fixed;
   background-color: rgba(0,0,0,0.8);
 }
 
 .modal__container {
+  @include displayFlex(right, column);
   position: fixed;
   color: white;
-  width: 60%;
-  height: 60%;
-  min-width: 300px;
-  min-height: 100px;
-  max-width: 650px;
-  max-height: 250px;
+  width: 40%;
+  height: 40%;
+  min-width: 500px;
+  min-height: 250px;
+  max-width: 700px;
+  max-height: 300px;
   border-radius: 20px;
   background-size: cover;
   background-repeat: no-repeat;
   background-image: url('/background-galaxy.png');
 }
 
+.modal__container__closeButton__div {
+  @include displayFlex(right);
+  width: 100%;
+  height: 50px;
+  padding-right: 10px;
+}
+
 .modal__container__closeButton {
   @include displayFlex();
   width: 30px;
   height: 30px;
-  position: relative;
-  top: 16px;
-  right: calc(-100% + 44px);
   color: black;
   border-radius: 50%;
   background-color: red;
   &:hover {
     cursor:pointer;
-    color: rgb(72, 69, 69);
-    background-color: rgb(229, 106, 106);
+    color: rgb(70, 70, 70);
+    background-color: rgb(230, 100, 100);
   }
 }
 
 .modal__container__content {
-  @include displayFlex(space-around, column, center);
-  height: 90%;
+  @include displayFlex(space-around, column);
+  height: calc(100% - 50px);
+  width: 100%;
   padding: 20px;
-  font-size: 12px;
-  font-size: 1.3em;
 }

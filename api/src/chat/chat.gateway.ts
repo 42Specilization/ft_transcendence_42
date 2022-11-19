@@ -1,5 +1,4 @@
-/* eslint-disable quotes*/
-import { Logger, UseFilters } from "@nestjs/common";
+import { Logger, UseFilters } from '@nestjs/common';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -7,22 +6,27 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-} from "@nestjs/websockets";
+} from '@nestjs/websockets';
 
-import { Socket, Namespace } from "socket.io";
-import { WsCatchAllFilter } from "src/socket/exceptions/ws-catch-all-filter";
-import { ChatMsg } from "./chat.class";
+import { Socket, Namespace } from 'socket.io';
+import { WsCatchAllFilter } from 'src/socket/exceptions/ws-catch-all-filter';
+import { MsgToClient, MsgToServer } from './chat.class';
+import { ChatService } from './chat.service';
 
 @UseFilters(new WsCatchAllFilter())
-@WebSocketGateway({ namespace: "chat" })
+@WebSocketGateway({ namespace: 'chat' })
 export class ChatGateway
-implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
-{
+implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
+
   @WebSocketServer() server: Namespace;
+
+  constructor(private readonly chatService: ChatService) { }
+
+
   private logger: Logger = new Logger(ChatGateway.name);
 
   afterInit() {
-    this.logger.log("Chat Websocket Gateway initialized.");
+    this.logger.log('Chat Websocket Gateway initialized.');
   }
 
   handleConnection(client: Socket) {
@@ -39,9 +43,37 @@ implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
     this.logger.debug(`Number of connected chatSockets: ${sockets.size}`);
   }
 
-  @SubscribeMessage("msgToServer")
-  handleMessage(client: Socket, message: ChatMsg) {
-    this.server.emit("msgToClient", message, client.id);
-    this.logger.debug(`Client ${client.id} send message : |${message.msg}|`);
+  @SubscribeMessage('createChat')
+  async createChat(client: Socket,
+    { type, usersLogin }: { type: string, usersLogin: string[] }) {
+
+    const chat: string = await this.chatService.createChat(type, usersLogin);
+
+    this.server.to(client.id).emit('newChatCreated', chat);
+    this.logger.debug(`Client ${client.id} create chat : |${chat}|`);
+  }
+
+  @SubscribeMessage('joinChat')
+  async handleJoinChat(client: Socket, chat: string) {
+
+    client.join(chat);
+
+    this.logger.debug(`Client ${client.id} join a chat: |${chat}|`);
+  }
+
+  @SubscribeMessage('leaveChat')
+  async handleLeaveChat(client: Socket, chat: string) {
+
+    client.leave(chat);
+
+    this.logger.debug(`Client ${client.id} leave a chat: |${chat}|`);
+  }
+
+  @SubscribeMessage('msgToServer')
+  async handleMsgToServer(client: Socket, message: MsgToServer) {
+    const msgToClient: MsgToClient = await this.chatService.saveMessage(message);
+    this.server.to(message.chat).emit('msgToClient', msgToClient);
+    this.logger.debug(`Client ${client.id} send message : |${msgToClient}|`);
   }
 }
+

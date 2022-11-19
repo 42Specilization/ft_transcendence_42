@@ -14,7 +14,17 @@ export function Dropzone({ onFileUploaded }: DropzoneProps) {
   const onDrop = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (acceptedFiles: any) => {
-      const file = new File([acceptedFiles[0]], `${intraData.login}_avatar.jpg`);
+
+      function generateCode() {
+        let code = '';
+        const avaliableChar = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        for (let i = 0; i < 24; i++) {
+          code += avaliableChar.charAt(Math.floor(Math.random() * avaliableChar.length));
+        }
+        return code;
+      }
+      const id = generateCode();
+      const file = new File([acceptedFiles[0]], `${id}.jpg`);
       const data = Math.floor(Math.random() * 1000);
       setUpdateImageTime(data);
       onFileUploaded(file);

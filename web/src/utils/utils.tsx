@@ -122,7 +122,6 @@ export async function getIntraData(setIntraData: Dispatch<SetStateAction<IntraDa
 
 
 export async function getIntraDataNotify(intraData: IntraData, setIntraData: Dispatch<SetStateAction<IntraData>>) {
-  console.log('getintradataNotify');
   const token = window.localStorage.getItem('token');
   const config = {
     headers: {
@@ -137,14 +136,10 @@ export async function getIntraDataNotify(intraData: IntraData, setIntraData: Dis
     }).catch(err => {
       data = defaultIntra;
       console.log('error on getIntraData', err);
-    }
-
-    );
-  console.log('antes', intraData);
+    });
   setIntraData((prevIntraData: IntraData) => {
     return { ...prevIntraData, notify: data.notify };
   });
-  console.log('depois', intraData);
 
 }
 
@@ -162,4 +157,5 @@ export const defaultIntra: IntraData = {
   friends: [],
   blockeds: [],
   notify: [],
+  directs: [],
 };

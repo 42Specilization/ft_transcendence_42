@@ -26,16 +26,15 @@ export function createSocketStatus({
   });
 
   socket.on('connect', () => {
-    console.log('user connected', stateStatus.me?.login);
     stateStatus.socket?.emit('iAmOnline', {
       login: stateStatus.me?.login,
       image_url: stateStatus.me?.image_url
     });
   });
 
-  socket.on('loggedUsers', (friends: UserData[]) => {
-    actionsStatus.loggedUsers(friends);
-    console.log('logged users:', friends);
+  socket.on('onlineUsers', (users: UserData[]) => {
+    actionsStatus.onlineUsers(users);
+    console.log('online users:', users);
   });
 
   socket.on('updateUser', (user: UserData) => {
@@ -51,6 +50,11 @@ export function createSocketStatus({
   socket.on('updateUserLogin', (oldUser: UserData, newUser: UserData) => {
     actionsStatus.updateUserLogin(oldUser, newUser);
     console.log('update user login:', newUser);
+  });
+  
+  socket.on('updateUserImage', (oldUser: UserData, newUser: UserData) => {
+    actionsStatus.updateUserImage(oldUser, newUser);
+    console.log('update user image:', newUser);
   });
 
   socket.on('updateNotify', async () => {

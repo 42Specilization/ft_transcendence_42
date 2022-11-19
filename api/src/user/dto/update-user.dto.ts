@@ -7,6 +7,10 @@ export class UpdateUserDto {
   @MinLength(3, { message: 'The nick must have at least 3 characters!' })
   @MaxLength(15, { message: 'The nick must have less then 15 characters'})
     nick?: string;
+  // @Matches(new RegExp(/^[a-zA-Z]+?[^\\/:*?"<>|\n\r]+$/), {
+  //   message:
+  //     'Username must contains only alpha-numerics characters',
+  // })
 
   @IsOptional()
   @IsString({ message: 'Inform an image url!' })

@@ -1,19 +1,20 @@
 import './FriendsTab.scss';
 import { DotsThreeVertical, MagnifyingGlass, UserPlus, X } from 'phosphor-react';
-import { Dispatch, SetStateAction, useContext, useState } from 'react';
-import { FriendData } from '../../../Interfaces/interfaces';
-import { UserCardBlocked } from './CardBlocked';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+import { CardBlocked } from './CardBlocked';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import ReactTooltip from 'react-tooltip';
-import { UserCardFriend } from './CardFriend';
+import { CardFriend } from './CardFriend';
 import { FriendRequestModal } from './FriendsRequestModal';
-
+import { actionsStatus } from '../../../status/statusState';
 
 interface FriendTabProps {
-  setActiveFriend: Dispatch<SetStateAction<FriendData | null>>;
+  setTableSelected: Dispatch<SetStateAction<string>>;
 }
 
-export function FriendTab({ setActiveFriend }: FriendTabProps) {
+export function FriendTab(
+  { setTableSelected }: FriendTabProps
+) {
   const { intraData } = useContext(IntraDataContext);
 
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
@@ -21,6 +22,10 @@ export function FriendTab({ setActiveFriend }: FriendTabProps) {
   const [isTableSearch, setIsTableSearch] = useState(false);
   const [isTableUsers, setIsTableUsers] = useState('friends');
   const [searchInput, setSearchInput] = useState('');
+
+  useEffect(() => {
+    actionsStatus.whoIsOnline();
+  }, []);
 
   return (
     < div className='friends__tab' >
@@ -47,6 +52,7 @@ export function FriendTab({ setActiveFriend }: FriendTabProps) {
             onChange={(msg) => {
               setSearchInput(msg.target.value);
             }}
+            ref={e => { if (isTableSearch) e?.focus(); }}
           />
           <X
             className='friends__tab__header__icon'
@@ -95,15 +101,15 @@ export function FriendTab({ setActiveFriend }: FriendTabProps) {
       </div>
       <>{isTableUsers === 'friends' ?
         < div className='friends__tab__body'>
-          {intraData.friends.filter((obj) => obj.login.includes(searchInput)).map((obj) => (
-            <UserCardFriend key={Math.random()} friend={obj} setActiveFriend={setActiveFriend} />
+          {intraData.friends?.filter((obj) => obj.login.includes(searchInput)).map((obj) => (
+            <CardFriend key={Math.random()} friend={obj} setTableSelected={setTableSelected} />
           ))
           }
         </div>
         :
         <div className='friends__tab__body'>
-          {intraData.blockeds.sort((a, b) => a.login < b.login ? -1 : 1).map((obj) => (
-            <UserCardBlocked key={Math.random()} blocked={obj} />
+          {intraData.blockeds?.sort((a, b) => a.login < b.login ? -1 : 1).map((obj) => (
+            <CardBlocked key={Math.random()} blocked={obj} />
           ))
           }
         </div>

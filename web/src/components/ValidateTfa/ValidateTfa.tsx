@@ -1,14 +1,24 @@
 import './ValidateTfa.scss';
-import {  useState } from 'react';
-import { Modal } from '../Modal/Modal';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Modal } from '../Modal/Modal';
 import { TailSpin } from 'react-loader-spinner';
 
 export function ValidateTfa() {
-  const token = window.localStorage.getItem('token');
+  const [side, setSide] = useState('');
+  const [code, setCode] = useState('');
+  const [placeHolder, setPlaceHolder] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setSide('sendCode');
+    }, 1000);
+  }, []);
+
   const config = {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${window.localStorage.getItem('token')}`,
     },
   };
 
@@ -16,22 +26,11 @@ export function ValidateTfa() {
     baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
   });
 
-  const verifyCodeStyleDefault = {
-    styles: {
-      placeholder: 'Insert Code...',
-      border: '3px solid black'
-    },
-  };
-  const [verifyCodeStyle, setVerifyCodeStyle] = useState(verifyCodeStyleDefault);
-  const [isModalVerifyCodeVisible, setIsModalVerifyCodeVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isModalRequestMailVisible, setIsModalRequestMailVisible] = useState(true);
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async function turnOnTFA(body:any, config :any){
-    const updateTfa = await api.patch('/user/turn-on-tfa', body,config);
-    if (updateTfa.status === 200){
-      setIsModalVerifyCodeVisible(false);
+  async function turnOnTFA(body: any, config: any) {
+    const updateTfa = await api.patch('/user/turn-on-tfa', body, config);
+    if (updateTfa.status === 200) {
+      setSide('');
     }
   }
 
@@ -45,98 +44,81 @@ export function ValidateTfa() {
     setIsLoading(true);
     await api.patch('/user/validate-email', body, config);
     setIsLoading(false);
-    setIsModalVerifyCodeVisible(true);
-    setIsModalRequestMailVisible(false);
+    setSide('validateCode');
   }
 
-  async function handleValidateCode(){
-    const typedCode = document.querySelector('.tfaVerifyModal__input') as HTMLInputElement;
+  async function handleValidateCode() {
     const body = {
-      tfaCode: typedCode.value,
+      tfaCode: code,
       tfaValidated: false,
     };
-    try{
+    try {
       const validateCode = await api.patch('/user/validate-code', body, config);
-      if (validateCode.status === 200){
+      if (validateCode.status === 200) {
         body.tfaValidated = true;
-        setVerifyCodeStyle(verifyCodeStyleDefault);
         turnOnTFA(body, config);
         window.location.reload();
       }
     } catch (err) {
-      typedCode.value = '';
-      const errorVefify = {
-        styles: {
-          placeholder: 'Invalid Code',
-          border: '3px solid red'
-        },
-      };
-      setVerifyCodeStyle(errorVefify);
+      setPlaceHolder('Invalid Code');
     }
+    setCode('');
+  }
+
+  function handleKeyEnter(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    handleValidateCode();
   }
 
   return (
-    <div className="validateTfa">
-      {isModalRequestMailVisible &&
-        <Modal
-          id='tfaRequestModal'
-        >
-          <div className='tfaRequestModal__requestArea'>
-            <h3>Click to request a new code</h3>
-            <button
-              className='tfaRequestModal__buttonRequest'
-              onClick={sendEmail}>
-              Send Code
-            </button>
-          </div>
-          {isLoading &&
-            <div className='tfaRequestModal__loading'>
-              <strong>Wait a moment...</strong>
-              <TailSpin
-                width='30'
-                height='30'
-                color='purple'
-                ariaLabel='loading'
-              />
+    <div className="validateTfa" style={{ display: side === '' ? 'none' : '' }}>
+      <Modal>
+        <div className='validateTfa__sendCode'
+          style={{ display: side === 'sendCode' ? '' : 'none' }}>
+          <h3 className='validateTfa__title'>Click to request a new code</h3>
+          <button className='validateTfa__button__sendCode'
+            onClick={sendEmail}>
+            Send Code
+          </button>
+          <div className='validateTfa__loading'>
+            <div className='validateTfa__loading__div'
+              style={{ display: isLoading ? '' : 'none' }}>
+              <strong>Wait a moment</strong>
+              <TailSpin width='25' height='25' color='white' ariaLabel='loading' />
             </div>
-          }
-        </Modal>
-      }
-      {isModalVerifyCodeVisible &&
-        <Modal id='tfaVerifyModal'>
-          <div className='tfaVerifyModal__inputArea' >
-            <h3>Insert received code</h3>
+          </div>
+        </div>
+        <div className='validateTfa__verify__code'
+          style={{ display: side === 'validateCode' ? '' : 'none' }}>
+          <form className='validateTfa__form' onSubmit={handleKeyEnter}>
+            <h3 className='validateTfa__title'>Insert received code</h3>
             <input
-              style={{border:verifyCodeStyle.styles.border}}
-              className='tfaVerifyModal__input' type="text"
-              placeholder={verifyCodeStyle.styles.placeholder}
+              className='validateTfa__form__input'
+              value={code}
+              placeholder={placeHolder}
+              style={{ border: placeHolder !== '' ? '3px solid red' : 'none' }}
+              onChange={(code) => {
+                setCode(code.target.value);
+                setPlaceHolder('');
+              }}
+              ref={e => e?.focus()}
             />
-            <button
-              className='tfaVerifyModal__button'
-              onClick={handleValidateCode}>
+            <button className='validateTfa__button__validate'>
               Validate
             </button>
-            <button
-              className='tfaVerifyModal__buttonRecovery'
-              onClick={sendEmail}>
-                Dont receive? Click to request again
-            </button>
-            {isLoading &&
-              <div className="tfaVerify_recovery">
-                <div className='tfaVerify__loading'>
-                  <strong>Wait a moment...</strong>
-                  <TailSpin
-                    width='30'
-                    height='30'
-                    color='purple'
-                    ariaLabel='loading'
-                  />
-                </div>
-              </div>
-            }
+          </form>
+          <button onClick={sendEmail}>
+            Dont receive? Click to request again
+          </button>
+          <div className='validateTfa__loading'>
+            <div className='validateTfa__loading__div'
+              style={{ display: isLoading ? '' : 'none' }}>
+              <strong>Wait a moment</strong>
+              <TailSpin width='25' height='25' color='white' ariaLabel='loading' />
+            </div>
           </div>
-        </Modal>
-      }
+        </div>
+      </Modal>
     </div >
   );
 }
