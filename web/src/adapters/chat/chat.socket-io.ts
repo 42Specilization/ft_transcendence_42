@@ -1,5 +1,5 @@
 import { io, Socket } from 'socket.io-client';
-import { MsgToClient } from '../Interfaces/interfaces';
+import { MsgToClient } from '../../Interfaces/interfaces';
 import { AppActionsChat, AppStateChat } from './chatState';
 
 export const socketChatIOUrl = `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT
@@ -32,9 +32,6 @@ export function createSocketChat({
     actionsChat.msgToClient(message);
     console.log('msg to client:', message);
   });
-
-
-
 
   return socket;
 }

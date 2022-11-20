@@ -1,6 +1,6 @@
 import { MagnifyingGlass, X } from 'phosphor-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
-import { actionsChat } from '../../../chat/chatState';
+import { actionsChat } from '../../../adapters/chat/chatState';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { DirectData } from '../../../Interfaces/interfaces';
 import { CardDirect } from './CardDirect';
@@ -46,7 +46,7 @@ export function DirectTab() {
             onChange={(msg) => {
               setSearchInput(msg.target.value);
             }}
-            ref={e => {if (isTableSearch) e?.focus();}}
+            ref={e => { if (isTableSearch) e?.focus(); }}
           />
           <X
             className='friends__tab__header__icon'
@@ -59,7 +59,7 @@ export function DirectTab() {
         {
           directs.filter((obj) => obj.name?.includes(searchInput))
             .sort((a: DirectData, b: DirectData) => {
-              if (a.date < b.date )
+              if (a.date < b.date)
                 return 1;
               return -1;
             })

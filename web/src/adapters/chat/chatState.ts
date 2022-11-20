@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
-import { DirectChatData, DirectData, IntraData, MsgToClient, MsgToServer } from '../Interfaces/interfaces';
-import { getAccessToken } from '../utils/utils';
+import {  DirectData, IntraData, MsgToClient, MsgToServer } from '../../Interfaces/interfaces';
+import { getAccessToken } from '../../utils/utils';
 import {
   createSocketChat,
   CreateSocketChatOptions,
@@ -18,7 +18,7 @@ export interface AppStateChat {
   socket?: Socket;
   me: Me | undefined;
   accessToken?: string | null;
-  setActiveChat?: Dispatch<SetStateAction<DirectChatData | null>> | null;
+  setActiveChat?: Dispatch<SetStateAction<DirectData | null>> | null;
   setChatList?: Dispatch<SetStateAction<DirectData[] | []>> | null;
 }
 
@@ -38,7 +38,7 @@ const stateChat = proxy<AppStateChat>({
 });
 
 const actionsChat = {
-  initializeSocketChat: (setActiveChat: Dispatch<SetStateAction<DirectChatData | null>>): void => {
+  initializeSocketChat: (setActiveChat: Dispatch<SetStateAction<DirectData | null>>): void => {
     if (!stateChat.socket) {
       const createSocketOptions: CreateSocketChatOptions = {
         accessToken: getAccessToken(),
@@ -64,7 +64,7 @@ const actionsChat = {
     }
   },
 
-  setChatList(setChatList: Dispatch<SetStateAction<DirectChatData[] | []>>) {
+  setChatList(setChatList: Dispatch<SetStateAction<DirectData[] | []>>) {
     stateChat.setChatList = ref(setChatList);
   },
 
@@ -94,7 +94,7 @@ const actionsChat = {
         stateChat.setChatList((prev) => {
           if (prev){
             return prev.map((key) => {
-              if ( key.id === message.chat) 
+              if ( key.id === message.chat)
                 return { ...key, date: message.date };
               return key;
             });
