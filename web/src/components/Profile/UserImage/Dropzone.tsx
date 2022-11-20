@@ -1,7 +1,8 @@
 import { NotePencil } from 'phosphor-react';
 import { useCallback, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
+
 
 interface DropzoneProps {
   onFileUploaded: (file: File) => void;

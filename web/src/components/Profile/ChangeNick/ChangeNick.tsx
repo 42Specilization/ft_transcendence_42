@@ -1,10 +1,11 @@
 import './ChangeNick.scss';
 import axios from 'axios';
 import { useState } from 'react';
-import { Modal } from '../Modal/Modal';
+import { Modal } from '../../Modal/Modal';
 import { PaperPlaneRight } from 'phosphor-react';
 import { useSnapshot } from 'valtio';
-import { stateStatus } from '../../adapters/status/statusState';
+import { stateStatus } from '../../../adapters/status/statusState';
+
 
 interface ChangeNickProps {
   setIsModalChangeNickVisible: (arg0: boolean) => void;

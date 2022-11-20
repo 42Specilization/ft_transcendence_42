@@ -1,10 +1,10 @@
 import './UserImage.scss';
 import axios from 'axios';
-import { Dropzone } from '../../Dropzone/Dropzone';
 import { useContext, useEffect, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { useSnapshot } from 'valtio';
 import { stateStatus } from '../../../adapters/status/statusState';
+import { Dropzone } from './Dropzone';
 
 export function UserImage() {
 

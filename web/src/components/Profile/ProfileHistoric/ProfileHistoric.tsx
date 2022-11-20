@@ -1,5 +1,5 @@
 import './ProfileHistoric.scss';
-import  { HistoricMatch } from './HistoricMatch';
+import  { HistoricMatch } from '../HistoricMatch/HistoricMatch';
 import { useContext } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 

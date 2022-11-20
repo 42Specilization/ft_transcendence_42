@@ -1,8 +1,8 @@
 import './ProfileCard.scss';
-import { UserImage } from './UserImage';
+import { UserImage } from '../UserImage/UserImage';
 import { NotePencil } from 'phosphor-react';
 import { TFAButton } from '../../TFA/TFAButton/TFAButton';
-import { ChangeNick } from '../../ChangeNick/ChangeNick';
+import { ChangeNick } from '../ChangeNick/ChangeNick';
 import { useContext, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
