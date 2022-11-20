@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { ValidateTfa } from '../../components/ValidateTfa/ValidateTfa';
+import { ValidateTfa } from '../../components/TFA/ValidateTfa/ValidateTfa';
 import { IntraData } from '../Interfaces/interfaces';
 import { getInfos } from '../../pages/OAuth/OAuth';
 

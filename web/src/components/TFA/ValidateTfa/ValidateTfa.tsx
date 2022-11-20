@@ -1,7 +1,7 @@
 import './ValidateTfa.scss';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Modal } from '../Modal/Modal';
+import { Modal } from '../../Modal/Modal';
 import { TailSpin } from 'react-loader-spinner';
 
 export function ValidateTfa() {
