@@ -5,7 +5,7 @@ import { DotsThreeVertical, Prohibit, Sword, UserMinus } from 'phosphor-react';
 import ReactTooltip from 'react-tooltip';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { useSnapshot } from 'valtio';
-import { stateStatus } from '../../../status/statusState';
+import { stateStatus } from '../../../adapters/status/statusState';
 import { ChatContext } from '../../../contexts/ChatContext';
 
 interface CardFriendProps {
@@ -36,7 +36,7 @@ export function CardFriend({ friend, setTableSelected }: CardFriendProps) {
     });
     currentStateStatus.socket?.emit('deleteFriend', friend.login);
   }
-  
+
   async function handleBlockFriend() {
     await api.patch('/user/addBlocked', { nick: friend.login }, config);
     setIntraData((prevIntraData) => {

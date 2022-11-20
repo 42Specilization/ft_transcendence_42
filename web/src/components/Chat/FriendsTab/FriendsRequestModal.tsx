@@ -3,7 +3,7 @@ import axios from 'axios';
 import { PaperPlaneRight } from 'phosphor-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { stateStatus } from '../../../status/statusState';
+import { stateStatus } from '../../../adapters/status/statusState';
 import { Modal } from '../../Modal/Modal';
 
 

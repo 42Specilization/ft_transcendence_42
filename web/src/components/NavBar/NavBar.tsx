@@ -5,7 +5,7 @@ import { Bell, BellRinging, Chats, GameController, List, SignOut } from 'phospho
 import { Link } from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Notifications } from '../Notifications/Notifications';
-import { actionsStatus } from '../../status/statusState';
+import { actionsStatus } from '../../adapters/status/statusState';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 
 interface NavBarProps {

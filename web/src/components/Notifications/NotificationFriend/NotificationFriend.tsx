@@ -4,7 +4,7 @@ import { useContext, useMemo, useState } from 'react';
 import { NotifyData } from '../../../Interfaces/interfaces';
 import axios from 'axios';
 import { useSnapshot } from 'valtio';
-import { stateStatus } from '../../../status/statusState';
+import { stateStatus } from '../../../adapters/status/statusState';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
@@ -51,8 +51,8 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
       if (err.response.data.message == 'This user already is your friend'){
         removeNotify();
       }
-    } 
-    
+    }
+
   }
 
   async function handleBlock() {

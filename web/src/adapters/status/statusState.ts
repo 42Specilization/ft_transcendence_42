@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
-import { IntraData } from '../Interfaces/interfaces';
-import { getAccessToken, getUserInDb } from '../utils/utils';
+import { IntraData } from '../../Interfaces/interfaces';
+import { getAccessToken, getUserInDb } from '../../utils/utils';
 import {
   createSocketStatus,
   CreateSocketStatusOptions,

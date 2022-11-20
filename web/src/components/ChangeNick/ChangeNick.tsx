@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Modal } from '../Modal/Modal';
 import { PaperPlaneRight } from 'phosphor-react';
 import { useSnapshot } from 'valtio';
-import { stateStatus } from '../../status/statusState';
+import { stateStatus } from '../../adapters/status/statusState';
 
 interface ChangeNickProps {
   setIsModalChangeNickVisible: (arg0: boolean) => void;
@@ -54,7 +54,6 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
       }
     }
     setNick('');
-    // window.location.reload();
   }
 
   return (

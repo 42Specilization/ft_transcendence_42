@@ -8,7 +8,7 @@ import { IntraDataContext } from '../../../contexts/IntraDataContext';
 // import { stateStatus } from '../../../status/statusState';
 import axios from 'axios';
 import { useSnapshot } from 'valtio';
-import { stateStatus } from '../../../status/statusState';
+import { stateStatus } from '../../../adapters/status/statusState';
 
 interface CardBlockedProps {
   blocked: BlockedData;

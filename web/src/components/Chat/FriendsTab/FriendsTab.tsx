@@ -6,7 +6,7 @@ import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import ReactTooltip from 'react-tooltip';
 import { CardFriend } from './CardFriend';
 import { FriendRequestModal } from './FriendsRequestModal';
-import { actionsStatus } from '../../../status/statusState';
+import { actionsStatus } from '../../../adapters/status/statusState';
 
 interface FriendTabProps {
   setTableSelected: Dispatch<SetStateAction<string>>;
