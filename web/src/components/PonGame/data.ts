@@ -1,4 +1,4 @@
-import { state } from '../../game/gameState';
+import { state } from '../../adapters/game/gameState';
 import { Rect, Ball, TextCanvas } from '../Canvas/Canvas';
 
 export interface IGameData {

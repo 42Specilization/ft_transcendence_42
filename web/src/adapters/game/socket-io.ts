@@ -1,5 +1,5 @@
 import { io, Socket } from 'socket.io-client';
-import { Ball } from '../components/Canvas/Canvas';
+import { Ball } from '../../components/Canvas/Canvas';
 import { AppActions, AppState, Game, IPowerUp, Player, Score } from './gameState';
 
 export const socketIOUrl =

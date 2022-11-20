@@ -2,7 +2,7 @@ import { useSnapshot } from 'valtio';
 import { GameMenu } from '../../components/GameMenu/GameMenu';
 import { PongGame } from '../../components/PonGame/PongGame';
 import { WaitingRoom } from '../../components/WaitingRoom/WaitingRoom';
-import { state } from '../../game/gameState';
+import { state } from '../../adapters/game/gameState';
 import './Game.scss';
 
 export default function Game() {
