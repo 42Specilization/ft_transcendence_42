@@ -1,8 +1,8 @@
 /* eslint-disable indent */
 import { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
-import { Canvas, drawCircle, drawFillRect, drawNet, drawPowerUpBox, drawText, } from '../../components/Canvas/Canvas';
-import { state } from '../../adapters/game/gameState';
+import { Canvas, drawCircle, drawFillRect, drawNet, drawPowerUpBox, drawText, } from '../Canvas/Canvas';
+import { state } from '../../../adapters/game/gameState';
 import { getEndGameData, getGameData } from './data';
 import './PongGame.scss';
 

@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
-import { Ball, Rect } from '../../components/Canvas/Canvas';
+import { Ball, Rect } from '../../components/Game/Canvas/Canvas';
 import { IntraData } from '../../others/Interfaces/interfaces';
 import { getAccessToken } from '../../others/utils/utils';
 import { createSocket, CreateSocketOptions, socketIOUrl } from './socket-io';

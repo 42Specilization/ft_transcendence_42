@@ -1,7 +1,7 @@
 import './WatchGame.scss';
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
-import { actions, Game, state } from '../../adapters/game/gameState';
+import { actions, Game, state } from '../../../adapters/game/gameState';
 
 export function WatchGame() {
 
