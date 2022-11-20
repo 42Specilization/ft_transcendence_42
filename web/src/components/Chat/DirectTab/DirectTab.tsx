@@ -3,7 +3,8 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { DirectData } from '../../../others/Interfaces/interfaces';
-import { CardDirect } from './CardDirect';
+import { CardDirect } from '../CardDirect/CardDirect';
+
 import './DirectTab.scss';
 
 export function DirectTab() {

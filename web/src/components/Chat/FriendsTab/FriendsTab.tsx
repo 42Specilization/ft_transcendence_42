@@ -1,12 +1,12 @@
 import './FriendsTab.scss';
 import { DotsThreeVertical, MagnifyingGlass, UserPlus, X } from 'phosphor-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
-import { CardBlocked } from './CardBlocked';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import ReactTooltip from 'react-tooltip';
-import { CardFriend } from './CardFriend';
-import { FriendRequestModal } from './FriendsRequestModal';
 import { actionsStatus } from '../../../adapters/status/statusState';
+import { CardFriend } from '../CardFriend/CardFriend';
+import { CardBlocked } from '../CardBlocked/CardBlocked';
+import { FriendRequestModal } from '../FriendsRequestModal/FriendsRequestModal';
 
 interface FriendTabProps {
   setTableSelected: Dispatch<SetStateAction<string>>;
