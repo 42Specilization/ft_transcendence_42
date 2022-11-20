@@ -1,5 +1,5 @@
 import './NavBar.scss';
-import useAuth from '../../auth/auth';
+import { useAuth } from '../../contexts/AuthContext';
 import logoSmall from '../../assets/logo-small.png';
 import { Bell, BellRinging, Chats, GameController, List, SignOut } from 'phosphor-react';
 import { Link } from 'react-router-dom';
