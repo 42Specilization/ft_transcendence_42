@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { Dispatch, SetStateAction, createContext, useState, ReactNode, useEffect } from 'react';
 import { actionsChat } from '../adapters/chat/chatState';
-import { DirectData, FriendData } from '../Interfaces/interfaces';
+import { DirectData, FriendData } from '../others/Interfaces/interfaces';
 
 
 interface IChatContext {

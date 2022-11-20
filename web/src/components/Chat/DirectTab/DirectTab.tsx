@@ -2,7 +2,7 @@ import { MagnifyingGlass, X } from 'phosphor-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import { DirectData } from '../../../Interfaces/interfaces';
+import { DirectData } from '../../../others/Interfaces/interfaces';
 import { CardDirect } from './CardDirect';
 import './DirectTab.scss';
 

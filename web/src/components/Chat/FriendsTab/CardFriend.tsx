@@ -1,5 +1,5 @@
 import './CardFriend.scss';
-import { FriendData } from '../../../Interfaces/interfaces';
+import { FriendData } from '../../../others/Interfaces/interfaces';
 import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { DotsThreeVertical, Prohibit, Sword, UserMinus } from 'phosphor-react';
 import ReactTooltip from 'react-tooltip';

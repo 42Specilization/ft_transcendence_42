@@ -1,5 +1,5 @@
 import './ChatTalk.scss';
-import { DirectData, MsgToClient, MsgToServer } from '../../../Interfaces/interfaces';
+import { DirectData, MsgToClient, MsgToServer } from '../../../others/Interfaces/interfaces';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ArrowBendUpLeft, PaperPlaneRight } from 'phosphor-react';
 import { ChatMessage } from './ChatMessage';

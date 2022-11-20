@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { ChatContext } from '../../../contexts/ChatContext';
-import { DirectData } from '../../../Interfaces/interfaces';
+import { DirectData } from '../../../others/Interfaces/interfaces';
 import './CardDirect.scss';
 
 interface CardDirectProps {

@@ -1,4 +1,4 @@
-@import '../../../styles/global.scss';
+@import '../../../others/styles/global.scss';
 
 .card__friend {
   @include displayFlex(space-between);
@@ -56,7 +56,7 @@
   @include displayFlex();
 
  }
-   
+
 .card__friend__menu__body {
   background-color: $backgroundColor;
   top: 45px;
@@ -65,7 +65,7 @@
   border-radius: 10px ;
   padding: 0px 10px 0px 10px;
 }
-  
+
   .card__friend__menu__button {
   @include displayFlex();
   width: 100%;

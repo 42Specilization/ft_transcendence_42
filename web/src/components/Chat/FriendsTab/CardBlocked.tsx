@@ -1,5 +1,5 @@
 import './CardBlocked.scss';
-import { BlockedData } from '../../../Interfaces/interfaces';
+import { BlockedData } from '../../../others/Interfaces/interfaces';
 import { UserMinus } from 'phosphor-react';
 import { useContext, useMemo, useState } from 'react';
 import ReactTooltip from 'react-tooltip';

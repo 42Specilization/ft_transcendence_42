@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { createContext, ReactNode, useContext } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { getUserInDb } from '../utils/utils';
+import { getUserInDb } from '../others/utils/utils';
 
 interface UserType {
   login: () => Promise<unknown>;

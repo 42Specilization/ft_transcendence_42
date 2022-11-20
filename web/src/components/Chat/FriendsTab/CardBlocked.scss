@@ -1,4 +1,4 @@
-@import '../../../styles/global.scss';
+@import '../../../others/styles/global.scss';
 
 .card__blocked {
   @include displayFlex(space-between);
@@ -46,7 +46,7 @@
   @include displayFlex();
 
 }
-  
+
 .card__blocked__menu__body {
   background-color: $backgroundColor;
   top: 45px;
@@ -55,7 +55,7 @@
   border-radius: 10px ;
   padding: 0px 10px 0px 10px;
 }
-  
+
 .card__blocked__menu__button {
   @include displayFlex();
   width: 100%;

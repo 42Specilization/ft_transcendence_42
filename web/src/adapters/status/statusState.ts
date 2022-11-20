@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
-import { IntraData } from '../../Interfaces/interfaces';
-import { getAccessToken, getUserInDb } from '../../utils/utils';
+import { IntraData } from '../../others/Interfaces/interfaces';
+import { getAccessToken, getUserInDb } from '../../others/utils/utils';
 import {
   createSocketStatus,
   CreateSocketStatusOptions,
@@ -199,13 +199,15 @@ const actionsStatus = {
       const user = await getUserInDb();
       console.log(user.blockeds);
       stateStatus.setIntraData((prevIntraData) => {
-        return { ...prevIntraData, blockeds: user.blockeds.map((obj) => {
-          if (prevIntraData.blockeds.map(e => e.login).indexOf(obj.login) >= 0) {
-            const updateFriend = prevIntraData.blockeds.find(e => e.login === obj.login);
-            return typeof updateFriend !== 'undefined' ? updateFriend : obj;
-          }
-          return obj;
-        }) };
+        return {
+          ...prevIntraData, blockeds: user.blockeds.map((obj) => {
+            if (prevIntraData.blockeds.map(e => e.login).indexOf(obj.login) >= 0) {
+              const updateFriend = prevIntraData.blockeds.find(e => e.login === obj.login);
+              return typeof updateFriend !== 'undefined' ? updateFriend : obj;
+            }
+            return obj;
+          })
+        };
       });
     }
   },
@@ -214,7 +216,7 @@ const actionsStatus = {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
       stateStatus.setIntraData((prevIntraData) => {
-        return { ...prevIntraData, friends: user.friends, blockeds: user.blockeds};
+        return { ...prevIntraData, friends: user.friends, blockeds: user.blockeds };
       });
     }
   },

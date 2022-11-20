@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
-import {  DirectData, IntraData, MsgToClient, MsgToServer } from '../../Interfaces/interfaces';
-import { getAccessToken } from '../../utils/utils';
+import { DirectData, IntraData, MsgToClient, MsgToServer } from '../../others/Interfaces/interfaces';
+import { getAccessToken } from '../../others/utils/utils';
 import {
   createSocketChat,
   CreateSocketChatOptions,
@@ -86,15 +86,15 @@ const actionsChat = {
         if (prev && prev.id === message.chat) {
           if (prev.messages)
             return { ...prev, messages: [...prev.messages, message], date: message.date };
-          return { ...prev, messages: [message], date: message.date};
+          return { ...prev, messages: [message], date: message.date };
         }
         return null;
       });
-      if(stateChat.setChatList) {
+      if (stateChat.setChatList) {
         stateChat.setChatList((prev) => {
-          if (prev){
+          if (prev) {
             return prev.map((key) => {
-              if ( key.id === message.chat)
+              if (key.id === message.chat)
                 return { ...key, date: message.date };
               return key;
             });
