@@ -100,6 +100,19 @@ export class UserService {
     });
   }
 
+  async findUserGamesByNick(nick: string): Promise<User | null> {
+    return await this.usersRepository.findOne({
+      where: {
+        nick,
+      },
+      relations: [
+        'games',
+        'games.winner',
+        'games.loser',
+      ]
+    });
+  }
+
   async findUserByNickWithGames(nick: string): Promise<User | null> {
     return (await this.usersRepository.find({
       where: { nick },

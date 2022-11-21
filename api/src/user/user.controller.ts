@@ -109,79 +109,7 @@ export class UserController {
       }
       return code;
     }
-    // returnHTML(username: string, code: string) {
-    //   return (`<!DOCTYPE html>
-
-    //   <html lang="en">
-    //     <head>
-    //       <meta charset="UTF-8">
-    //       <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    //       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    //       <title>TFA Code</title>
-    //     </head>
-    //     <body>
-    //       <h3>Hello, ${username}</h3>
-    //       <p>You have requested to enable Two-Factor Authentication</p>
-    //       <p>Your activation code is:</p>
-    //       <div>
-    //         <strong>${code}</strong>
-    //       </div>
-    //     </body>
-    //   </html>
-
-    //   <style>
-
-    //   * {
-    //     margin: 0;
-    //     padding: 0;
-    //     border: none;
-    //     outline: none;
-    //     text-decoration: none;
-    //     list-style-type: none;
-    //     box-sizing: border-box;
-    //     background-color: transparent;
-    //     font-family: 'Arial';
-    //   }
-
-    //   html {
-    //     width: 100%;
-    //     height: 100%;
-    //   }
-
-    //   body {
-    //     display: flex;
-    //     align-items: center;
-    //     justify-content: center;
-    //     flex-direction: column;
-    //     width: 100%;
-    //     height: 100%;
-    //   }
-
-    //   h3 {
-    //     font-size: 30px;
-    //     margin: 50px;
-    //   }
-
-    //   p {
-    //     font-size: 25px;
-    //     margin:10px
-    //   }
-
-    //   div {
-    //     display: flex;
-    //     align-items: center;
-    //     justify-content: center;
-    //     width:250px;
-    //     height: 70px;
-    //     color: white;
-    //     margin:30px;
-    //     font-size: 50px;
-    //     background-color: #7C1CED;
-    //     border-radius: 20px;
-    //   }
-
-    //   </style>`);
-    // }
+  
     const sendedCode = generateCode();
     updateUserDto.tfaCode = sendedCode;
     const user = await this.userService.updateUser(updateUserDto, userFromJwt.email);
@@ -399,5 +327,44 @@ export class UserController {
   async getUsersWithGames(): Promise<User[]> {
     return (await this.userService.getUsersWithGames());
   }
+
+  @Patch('historic')
+  @HttpCode(HttpStatus.OK)
+  // @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: GetFriendDto })
+  async getHistoric(@Body() getFriendDto: GetFriendDto) {
+    const userValidate = await this.userService.findUserGamesByNick(getFriendDto.nick);
+    if (userValidate) {
+      const userData  = userValidate.games.map((game) => {
+        let opponent;
+        let result;
+        if (game.winner.nick != getFriendDto.nick){
+          result = `Lose ${game.winnerScore}x${game.loserScore}`;
+          opponent = game.winner;
+        } else {
+          result = `Win ${game.winnerScore}x${game.loserScore}`;
+          opponent = game.loser;
+        }
+        return {
+          date: game.createdAt,
+          opponent: {
+            imgUrl : opponent.imgUrl,
+            login: opponent.nick,
+          },
+          result: result,
+        };
+      });
+      console.log(userData);
+      return (userData);
+    }
+    throw new BadRequestException('user not found');
+
+  }
+
+
+
+
+
+
 
 }
