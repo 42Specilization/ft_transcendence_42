@@ -45,12 +45,12 @@ export function ChatTalk(
   }, [directsChat]);
 
   useEffect(() => {
-    async function getDirect() {
+    async function getFriendDirect() {
       const response = await api.patch('/chat/getFriendChat', { id: friendsChat?.login }, config);
       changeActiveChat(response.data as DirectData);
     }
     if (friendsChat) {
-      getDirect();
+      getFriendDirect();
     }
   }, [friendsChat]);
 

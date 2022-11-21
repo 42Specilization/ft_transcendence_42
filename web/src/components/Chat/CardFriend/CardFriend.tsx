@@ -50,20 +50,16 @@ export function CardFriend({ friend, setTableSelected }: CardFriendProps) {
   }
 
   return (
-    <div className='card__friend'
-      id='card__friend'
-      onClick={(e) => selectActiveFriend(e)}
+    <div id='card__friend' className='card__friend'
+     onClick={(e) => selectActiveFriend(e)}
     >
-      <div className='card__friend__div'>
-        <div
-          className='card__friend__icon'
-          style={{ backgroundImage: `url(${friend.image_url})` }}
-        >
-          <div className='card__friend__status'
-            style={{ backgroundColor: friend.status === 'online' ? 'green' : 'rgb(70, 70, 70)' }}>
-          </div>
+      <div id='card__friend' className='card__friend__div' >
+        <div id='card__friend' className='card__friend__icon'
+          style={{ backgroundImage: `url(${friend.image_url})` }}>
+          <div id='card__friend' className='card__friend__status'
+            style={{ backgroundColor: friend.status === 'online' ? 'green' : 'rgb(70, 70, 70)' }}/>
         </div>
-        <div className='card__friend__name'>{friend.login}</div>
+        <div id='card__friend' className='card__friend__name'>{friend.login}</div>
       </div>
 
       <div className='card__friend__menu'>
