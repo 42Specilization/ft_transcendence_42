@@ -26,7 +26,7 @@ import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import * as nodemailer from 'nodemailer';
 import { smtpConfig } from '../config/smtp';
-import { UserDto } from './dto/user.dto';
+import { UserDto, UserHistoricDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { FriendRequestDto } from './dto/friend-request.dto';
 // import axios from 'axios';
@@ -330,15 +330,15 @@ export class UserController {
 
   @Patch('historic')
   @HttpCode(HttpStatus.OK)
-  // @UseGuards(JwtAuthGuard)
-  @ApiBody({ type: GetFriendDto })
-  async getHistoric(@Body() getFriendDto: GetFriendDto) {
-    const userValidate = await this.userService.findUserGamesByNick(getFriendDto.nick);
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: UserHistoricDto })
+  async getHistoric(@Body() userHistoricDto: UserHistoricDto) {
+    const userValidate = await this.userService.findUserGamesByNick(userHistoricDto.login);
     if (userValidate) {
       const userData  = userValidate.games.map((game) => {
         let opponent;
         let result;
-        if (game.winner.nick != getFriendDto.nick){
+        if (game.winner.nick != userHistoricDto.login){
           result = `Lose ${game.winnerScore}x${game.loserScore}`;
           opponent = game.winner;
         } else {
@@ -360,11 +360,4 @@ export class UserController {
     throw new BadRequestException('user not found');
 
   }
-
-
-
-
-
-
-
 }

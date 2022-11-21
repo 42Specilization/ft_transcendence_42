@@ -1,4 +1,6 @@
-import { ReactElement } from 'react';
+import { ReactElement, useState } from 'react';
+import { formatDate } from '../../../others/utils/utils';
+import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import './HistoricMatch.scss';
 
 interface HistoricMatchProps {
@@ -14,32 +16,23 @@ export function HistoricMatch({
   result,
   image_url,
 }: HistoricMatchProps) {
-  
-  function formatDate(date: string): ReactElement {
-    const newDate = new Date(date);
-    return (
-      <>
-        {String(newDate.getDate()).padStart(2, '0') +
-          '/' +
-          String(newDate.getMonth() + 1).padStart(2, '0') +
-          '/' +
-          newDate.getFullYear()}
-        <br />
-        {String(newDate.getHours()).padStart(2, '0') +
-            ':' +
-            String(newDate.getMinutes()).padStart(2, '0')}{' '}
-      </>
-    );
-  }
+  const [friendProfileVisible, setFriendProfileVisible] = useState(false);
 
   return (
     <div className='historicMatch'>
-      <div className='historicMatch__player'>
+      <div 
+        className='historicMatch__player' 
+        onClick={() => setFriendProfileVisible(true)}>
         <img src={image_url} alt='user image' />
         <div className='historicMatch__player__nick'>{nick}</div>
       </div>
       <p className='historicMatch__infos'>{formatDate(date)}</p>
       <p className='historicMatch__infos'>{result}</p>
+      {friendProfileVisible &&
+        <ProfileFriendModal
+          login={nick}
+          setFriendProfileVisible={setFriendProfileVisible} />
+      }
     </div >
   );
 }

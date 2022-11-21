@@ -3,6 +3,7 @@ import { ReactElement } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import ReactTooltip from 'react-tooltip';
 import { MsgToClient } from '../../../others/Interfaces/interfaces';
+import { formatDate } from '../../../others/utils/utils';
 
 interface ChatMessageProps {
   user: string;
@@ -14,23 +15,6 @@ export function ChatMessage({ user, message }: ChatMessageProps) {
     return user === message.user.login;
   }
 
-  function formatDate(date: Date): ReactElement {
-    const newDate = new Date(date);
-    return (
-      <>
-        {String(newDate.getHours()).padStart(2, '0') +
-          ':' +
-          String(newDate.getMinutes()).padStart(2, '0')}{' '}
-        <br />
-        {String(newDate.getDate()).padStart(2, '0') +
-          '/' +
-          String(newDate.getMonth() + 1).padStart(2, '0') +
-          '/' +
-          newDate.getFullYear()}
-      </>
-    );
-  }
-
   return (
     <div className={'chat__message' + (self() ? ' self' : '')}>
       <div
@@ -39,7 +23,7 @@ export function ChatMessage({ user, message }: ChatMessageProps) {
       />
       <p
         data-html={true}
-        data-tip={ReactDOMServer.renderToString(formatDate(message.date))}
+        data-tip={ReactDOMServer.renderToString(formatDate(message.date.toString()))}
       >
         {message.msg}
       </p>

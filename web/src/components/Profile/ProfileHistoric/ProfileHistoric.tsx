@@ -2,9 +2,10 @@ import './ProfileHistoric.scss';
 import  { HistoricMatch } from '../HistoricMatch/HistoricMatch';
 import { useContext, useState, useEffect } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import { randomUUID } from 'crypto';
 
 export function ProfileHistoric() {
+  const { intraData, api, config} = useContext(IntraDataContext);
+
   const defaultHistoric = {
     date:'now',
     opponent :{ 
@@ -14,17 +15,12 @@ export function ProfileHistoric() {
     result:'result'
   };
 
-  const { intraData, api, config} = useContext(IntraDataContext);
   const [historic, setHistoric] = useState([defaultHistoric]);
 
-
-
-
-  
   useEffect(() => {
     async function getHistoric() {
       try {
-        const result = await api.patch('/user/historic', {nick: intraData.login}, config);
+        const result = await api.patch('/user/historic', {login: intraData.login}, config);
         console.log(result.data);
         setHistoric(result.data);
 

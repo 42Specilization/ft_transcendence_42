@@ -1,5 +1,7 @@
 import './FriendProfileHistoric.scss';
 import { FriendHistoricMatch } from './FriendHistoricMatch';
+import { useContext, useEffect, useState } from 'react';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
 interface FriendProfileHistoricProps {
 friendData: {
@@ -12,7 +14,30 @@ friendData: {
 }}
 
 export function FriendProfileHistoric({friendData }: FriendProfileHistoricProps) {
+  const {  api, config} = useContext(IntraDataContext);
+  const defaultHistoric = {
+    date:'now',
+    opponent :{ 
+      imgUrl:'nop',
+      login:'n',
+    },
+    result:'result'
+  };
+  const [historic, setHistoric] = useState([defaultHistoric]);
+  useEffect(() => {
+    async function getHistoric() {
+      try {
+        const result = await api.patch('/user/historic', {login: friendData.login}, config);
+        console.log(result.data);
+        setHistoric(result.data);
 
+      } catch (err){
+        console.log(err);
+      }
+    }
+    getHistoric();
+  },[]);
+  
   return (
     <div className='friendProfile__historic'>
       <div className='friendProfile__historic__header'>
@@ -21,13 +46,13 @@ export function FriendProfileHistoric({friendData }: FriendProfileHistoricProps)
         <p className='friendProfile__historic__header__item'>Result</p>
       </div>
       <div className='friendProfile__historic__body'>
-        {[...Array(20).keys()].map((index) => (
+        {historic && historic.map((index) => (
           <FriendHistoricMatch
-            key={friendData.login + index}
-            image_url={friendData.image_url}
-            nick={friendData.login}
-            date='12/12/22'
-            result='win/lose 10X1'
+            key={crypto.randomUUID()}
+            image_url={index.opponent.imgUrl}
+            nick={index.opponent.login}
+            date={index.date}
+            result={index.result}
           />
         ))}
       </div>

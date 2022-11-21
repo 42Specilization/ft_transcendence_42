@@ -15,6 +15,12 @@
 .historicMatch__player {
   @include displayFlex();
   width: 33%;
+  &:hover {
+    cursor: pointer;
+    background-color: $backgroundColor;
+    border-radius: 20px;
+    height: 85%;
+  }
 }
 .historicMatch__infos {
   @include displayFlex();

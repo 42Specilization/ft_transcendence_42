@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { ValidateTfa } from '../../components/TFA/ValidateTfa/ValidateTfa';
 import { IntraData } from '../Interfaces/interfaces';
@@ -159,3 +159,20 @@ export const defaultIntra: IntraData = {
   notify: [],
   directs: [],
 };
+
+export function formatDate(date: string): ReactElement {
+  const newDate = new Date(date);
+  return (
+    <>
+      {String(newDate.getHours()).padStart(2, '0') +
+        ':' +
+        String(newDate.getMinutes()).padStart(2, '0')}{' '}
+      <br />
+      {String(newDate.getDate()).padStart(2, '0') +
+        '/' +
+        String(newDate.getMonth() + 1).padStart(2, '0') +
+        '/' +
+        newDate.getFullYear()}
+    </>
+  );
+}
