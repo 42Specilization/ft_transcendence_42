@@ -1,5 +1,4 @@
 import './ChatMessage.scss';
-import { ReactElement } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import ReactTooltip from 'react-tooltip';
 import { MsgToClient } from '../../../others/Interfaces/interfaces';

@@ -1,4 +1,3 @@
-import { ReactElement, useState } from 'react';
 import { formatDate } from '../../../others/utils/utils';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import './HistoricMatch.scss';

@@ -1,4 +1,3 @@
-import { ReactElement } from 'react';
 import { formatDate } from '../../../others/utils/utils';
 import './FriendHistoricMatch.scss';
 
@@ -15,9 +14,6 @@ export function FriendHistoricMatch({
   result,
   image_url,
 }: FriendHistoricMatchProps) {
-
-  
-
 
   return (
     <div className='friendHistoricMatch'>

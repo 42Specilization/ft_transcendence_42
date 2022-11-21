@@ -22,5 +22,5 @@ export class UserDto {
 export class UserHistoricDto {
   @ApiProperty()
   @IsNotEmpty({ message: 'Inform a valid nick!' })
-  login: string;
+    login: string;
 }
