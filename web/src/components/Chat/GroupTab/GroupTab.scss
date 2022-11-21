@@ -1,31 +1,31 @@
 @import '../../../others/styles/global.scss';
 
-.direct__tab {
+.group__tab {
   @include displayFlex(unset, column);
   width: 100%;
   height: 100%;
 }
 
-$ChatDirectsHeaderHeight: 50px;
+$ChatGroupHeaderHeight: 50px;
 
-.direct__tab__header {
+.group__tab__header {
   @include displayFlex(space-around);
   width: 100%;
-  height: $ChatDirectsHeaderHeight;
+  height: $ChatGroupHeaderHeight;
   color: white;
   border-radius: 15px 15px 15px 15px;
   background-color: $primaryColor;
 }
 
-.direct__tab__body {
+.group__tab__body {
   width: 100%;
-  height: calc(100% - $ChatDirectsHeaderHeight);
+  height: calc(100% - $ChatGroupHeaderHeight);
   padding-top: 10px;
   @include scrollBar();
 }
 
 
-.direct__tab__header__icon {
+.group__tab__header__icon {
   @include displayFlex(center);
   padding: 4px;
   border-radius: 50%;
@@ -37,9 +37,9 @@ $ChatDirectsHeaderHeight: 50px;
   }
 }
 
-.direct__tab__header__search {
+.group__tab__header__search {
   @include displayFlex(left);
-  .direct__tab__header__icon {
+  .group__tab__header__icon {
     min-width: 40px;
     min-height: 40px;
   }
@@ -48,7 +48,7 @@ $ChatDirectsHeaderHeight: 50px;
 }
 
 
-.direct__tab__header__search__input {
+.group__tab__header__search__input {
   @include displayFlex();
   width:100%;
   text-align: center;
