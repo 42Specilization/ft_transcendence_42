@@ -1,0 +1,30 @@
+@import '../../../others/styles/global.scss';
+
+.gameMenu__withFriend {
+  @include displayFlex(center, column);
+  padding: 15px;
+  gap: 17px;
+  h2 {
+    font-weight: 400;
+    font-size: 2rem;
+  }
+}
+
+.gameMenu__withFriend__list {
+  list-style-type: none;
+
+  li {
+    margin-top: 20px;
+  }
+}
+
+@media (min-width: 900px) {
+  .gameMenu__withFriend {
+    flex-direction: column;
+    border-top: none;
+    h2 {
+      font-size: 2.3rem;
+    }
+  }
+}
+

@@ -1,10 +1,10 @@
 import './NotificationFriend.scss';
 import { CheckCircle, Prohibit, UserCircle, XCircle } from 'phosphor-react';
 import { useContext, useMemo, useState } from 'react';
-import { NotifyData } from '../../../Interfaces/interfaces';
+import { NotifyData } from '../../../others/Interfaces/interfaces';
 import axios from 'axios';
 import { useSnapshot } from 'valtio';
-import { stateStatus } from '../../../status/statusState';
+import { stateStatus } from '../../../adapters/status/statusState';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
@@ -31,7 +31,7 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
     baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
   }), []);
 
-  async function  removeNotify() {
+  async function removeNotify() {
     setIntraData((prevIntraData) => {
       return {
         ...prevIntraData,
@@ -45,14 +45,15 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
       await api.patch('/user/acceptFriend', { id: notify.id }, config);
       removeNotify();
       currentStateStatus.socket?.emit('newFriend', notify.user_source);
-      return ;
+      return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.log('result', err.response.data.message);
-      if (err.response.data.message == 'This user already is your friend'){
+      if (err.response.data.message == 'This user already is your friend') {
         removeNotify();
       }
-    } 
-    
+    }
+
   }
 
   async function handleBlock() {

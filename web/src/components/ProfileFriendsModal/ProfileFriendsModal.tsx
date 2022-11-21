@@ -4,7 +4,7 @@ import { FriendProfile } from '../../components/FriendProfile/FriendProfile';
 import './ProfileFriendsModal.scss';
 
 interface ProfileFriendModalProps {
-  login: string;
+  login: string | undefined;
   setFriendProfileVisible: Dispatch<SetStateAction<boolean>>;
 }
 

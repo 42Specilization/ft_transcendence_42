@@ -1,4 +1,4 @@
-@import '../../styles/global.scss';
+@import '../../others/styles/global.scss';
 
 .chat {
   @include displayFlex(center);
@@ -16,7 +16,7 @@
   border-radius: 50px;
   background-color: $backgroundColor;
 }
-  
+
 $ChatCommunityHeaderHeight: 35px;
 
 .chat__community__header {

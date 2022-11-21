@@ -1,8 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
 import { Dispatch, SetStateAction, createContext, useState, ReactNode, useEffect, useMemo } from 'react';
-import { IntraData } from '../Interfaces/interfaces';
-import { actionsStatus } from '../status/statusState';
-import { defaultIntra, getIntraData } from '../utils/utils';
+import { IntraData } from '../others/Interfaces/interfaces';
+import { actionsStatus } from '../adapters/status/statusState';
+import { defaultIntra, getIntraData } from '../others/utils/utils';
 
 interface IIntraDataContext {
   intraData: IntraData;
@@ -62,7 +62,7 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
   useEffect(() => {
     getIntraData(setIntraData);
     actionsStatus.initializeSocketStatus(setIntraData);
-    return; 
+    return;
   }, []);
 
   return (

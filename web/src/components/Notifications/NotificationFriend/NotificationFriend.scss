@@ -1,4 +1,4 @@
-@import '../../../styles/global.scss';
+@import '../../../others/styles/global.scss';
 
 .notificationFriend__frontSide {
   @include displayFlex(center, column);
@@ -44,6 +44,6 @@
   }
   &:hover {
     cursor: pointer;
-    background-color: $buttonColorHover;    
+    background-color: $buttonColorHover;
   }
 }

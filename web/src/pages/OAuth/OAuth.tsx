@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useEffect } from 'react';
-import useAuth from '../../auth/auth';
-import { DoubleBubble } from '../../components/DoubleBubble/DoubleBubble';
-import { ErrResponse, IntraData } from '../../Interfaces/interfaces';
+import { useAuth } from '../../contexts/AuthContext';
+import { DoubleBubble } from '../../components/Game/DoubleBubble/DoubleBubble';
+import { ErrResponse, IntraData } from '../../others/Interfaces/interfaces';
 import './OAuth.scss';
 
 export async function getInfos() {

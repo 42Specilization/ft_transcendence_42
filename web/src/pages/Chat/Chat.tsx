@@ -1,8 +1,9 @@
 import './Chat.scss';
 import { useState } from 'react';
 import { ChatTalk } from '../../components/Chat/ChatTalk/ChatTalk';
-import { FriendTab } from '../../components/Chat/FriendsTab/FriendsTab';
+import { FriendTab } from '../../components/Chat/FriendTab/FriendTab';
 import { DirectTab } from '../../components/Chat/DirectTab/DirectTab';
+import { GroupTab } from '../../components/Chat/GroupTab/GroupTab';
 
 export default function Chat() {
 
@@ -38,7 +39,7 @@ export default function Chat() {
               else if (tableSelected === 'Directs')
                 return <DirectTab />;
               else
-                return <></>;
+                return <GroupTab />;
             })()}
           </div>
           <div className='chat__community__footer' />

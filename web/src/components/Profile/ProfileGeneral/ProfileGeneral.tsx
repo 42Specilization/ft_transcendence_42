@@ -1,9 +1,9 @@
 import './ProfileGeneral.scss';
-import {ProfileCard} from './ProfileCard';
+import { ProfileCard } from '../ProfileCard/ProfileCard';
 import { useContext } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
-export  function ProfileGeneral() {
+export function ProfileGeneral() {
 
   const { intraData } = useContext(IntraDataContext);
 

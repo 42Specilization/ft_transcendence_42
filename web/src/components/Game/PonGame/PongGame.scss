@@ -1,0 +1,6 @@
+@import '../../../others/styles/global.scss';
+
+.pongGame {
+  @include displayFlex(center);
+  width: 100%;
+}

@@ -4,14 +4,15 @@ import Home from './pages/Home/Home';
 import SignIn from './pages/SignIn/SignIn';
 import NotFound from './pages/NotFound/NotFound';
 import OAuth from './pages/OAuth/OAuth';
-import { AuthProvider } from './auth/auth';
 import Profile from './pages/Profile/Profile';
 import Game from './pages/Game/Game';
-import { NavBar } from './components/NavBar/NavBar';
-import { RequireAuth, ValidadeSignin } from './utils/utils';
 import Chat from './pages/Chat/Chat';
+import { NavBar } from './components/NavBar/NavBar';
+import { RequireAuth, ValidadeSignin } from './others/utils/utils';
 import { IntraDataProvider } from './contexts/IntraDataContext';
 import { ChatProvider } from './contexts/ChatContext';
+import { AuthProvider } from './contexts/AuthContext';
+
 
 
 export default function AppRouter() {

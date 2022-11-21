@@ -4,7 +4,7 @@ import { FriendProfileGeneral } from '../../components/FriendProfile/FriendProfi
 import { FriendProfileHistoric } from '../../components/FriendProfile/FriendProfileHistoric/FriendProfileHistoric';
 import './FriendProfile.scss';
 interface FriendProfileProps {
-  login: string;
+  login: string | undefined;
 }
 
 export function FriendProfile({ login }: FriendProfileProps) {

@@ -109,7 +109,79 @@ export class UserController {
       }
       return code;
     }
+    // returnHTML(username: string, code: string) {
+    //   return (`<!DOCTYPE html>
 
+    //   <html lang="en">
+    //     <head>
+    //       <meta charset="UTF-8">
+    //       <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    //       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    //       <title>TFA Code</title>
+    //     </head>
+    //     <body>
+    //       <h3>Hello, ${username}</h3>
+    //       <p>You have requested to enable Two-Factor Authentication</p>
+    //       <p>Your activation code is:</p>
+    //       <div>
+    //         <strong>${code}</strong>
+    //       </div>
+    //     </body>
+    //   </html>
+
+    //   <style>
+
+    //   * {
+    //     margin: 0;
+    //     padding: 0;
+    //     border: none;
+    //     outline: none;
+    //     text-decoration: none;
+    //     list-style-type: none;
+    //     box-sizing: border-box;
+    //     background-color: transparent;
+    //     font-family: 'Arial';
+    //   }
+
+    //   html {
+    //     width: 100%;
+    //     height: 100%;
+    //   }
+
+    //   body {
+    //     display: flex;
+    //     align-items: center;
+    //     justify-content: center;
+    //     flex-direction: column;
+    //     width: 100%;
+    //     height: 100%;
+    //   }
+
+    //   h3 {
+    //     font-size: 30px;
+    //     margin: 50px;
+    //   }
+
+    //   p {
+    //     font-size: 25px;
+    //     margin:10px
+    //   }
+
+    //   div {
+    //     display: flex;
+    //     align-items: center;
+    //     justify-content: center;
+    //     width:250px;
+    //     height: 70px;
+    //     color: white;
+    //     margin:30px;
+    //     font-size: 50px;
+    //     background-color: #7C1CED;
+    //     border-radius: 20px;
+    //   }
+
+    //   </style>`);
+    // }
     const sendedCode = generateCode();
     updateUserDto.tfaCode = sendedCode;
     const user = await this.userService.updateUser(updateUserDto, userFromJwt.email);
@@ -128,10 +200,28 @@ export class UserController {
     });
     if (user.tfaEmail) {
       await transporter.sendMail({
-        text: `Your validation code is ${sendedCode}`,
-        subject: 'Verify Code from Transcendence',
         from: process.env['TFA_EMAIL_FROM'],
-        to: [user.tfaEmail as string]
+        to: [user.tfaEmail as string],
+        subject: 'Verify Code from Transcendence',
+        text: `Your validation code is '${sendedCode}'`,
+        html: `
+    <div style="width: 100%; heigth: 100%; font-family: 'Arial'">
+      <h3 style="font-size: 30px; margin: 30px; color: black;">
+        Hello, ${user.nick}
+      </h3>
+      <p style="font-size: 25px; margin: 40px auto; color: black; width:627px">
+        You have requested to enable Two-Factor Authentication
+      </p>
+      <p style="font-size: 25px; margin: 20px auto; color: black; width:257px">
+        Your activation code is:
+      </p>
+      <div style="color: white; font-size: 50px; font-weight: bold;
+                  margin-top: 40px; padding: 10px 42% 10px;
+                  border-radius: 20px; background-color: #7C1CED">
+        ${sendedCode}
+      </div>
+    </div>
+        `,
       });
     } else {
       throw new InternalServerErrorException('Error: Mail can\'t be empty');
@@ -177,7 +267,7 @@ export class UserController {
         image_url: userValidate.imgUrl,
         login: userValidate.nick,
         matches: userValidate.matches,
-        wins: userValidate.wins, 
+        wins: userValidate.wins,
         lose: userValidate.lose,
         name: userValidate.usual_full_name,
       };

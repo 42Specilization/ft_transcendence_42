@@ -1,9 +1,9 @@
 import './ChatTalk.scss';
-import { DirectData, MsgToServer } from '../../../Interfaces/interfaces';
+import { DirectData, MsgToClient, MsgToServer } from '../../../others/Interfaces/interfaces';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ArrowBendUpLeft, PaperPlaneRight } from 'phosphor-react';
-import { ChatMessage } from './ChatMessage';
-import { actionsChat } from '../../../chat/chatState';
+import { ChatMessage } from '../ChatMessage/ChatMessage';
+import { actionsChat } from '../../../adapters/chat/chatState';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import ReactTooltip from 'react-tooltip';
@@ -45,12 +45,12 @@ export function ChatTalk(
   }, [directsChat]);
 
   useEffect(() => {
-    async function getDirect() {
+    async function getFriendDirect() {
       const response = await api.patch('/chat/getFriendChat', { id: friendsChat?.login }, config);
       changeActiveChat(response.data as DirectData);
     }
     if (friendsChat) {
-      getDirect();
+      getFriendDirect();
     }
   }, [friendsChat]);
 
@@ -121,7 +121,7 @@ export function ChatTalk(
           <div className='chat__talk__body'
             ref={refBody}
           >
-            {activeChat.messages?.map((msg) => (
+            {activeChat.messages?.map((msg: MsgToClient) => (
               <ChatMessage key={msg.id} user={intraData.login} message={msg} />
             ))}
           </div>
@@ -135,7 +135,7 @@ export function ChatTalk(
               className='chat__talk__footer__input'
               value={message}
               onChange={(msg) => setMessage(msg.target.value)}
-              ref={e => {if (activeChat) e?.focus();}}
+              ref={e => { if (activeChat) e?.focus(); }}
             />
             <button className='chat__talk__footer__button' type='submit'>
               <PaperPlaneRight size={30} />

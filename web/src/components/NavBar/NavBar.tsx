@@ -1,11 +1,11 @@
 import './NavBar.scss';
-import useAuth from '../../auth/auth';
+import { useAuth } from '../../contexts/AuthContext';
 import logoSmall from '../../assets/logo-small.png';
 import { Bell, BellRinging, Chats, GameController, List, SignOut } from 'phosphor-react';
 import { Link } from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Notifications } from '../Notifications/Notifications';
-import { actionsStatus } from '../../status/statusState';
+import { actionsStatus } from '../../adapters/status/statusState';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 
 interface NavBarProps {
@@ -20,10 +20,7 @@ export function NavBar({ Children }: NavBarProps) {
   const [menuVisible, setMenuVisible] = useState(false);
   const [notifyVisible, setNotifyVisible] = useState(false);
 
-  //changeNick *** funcionando perfeitamente
-  //chanceImage  -- atualizar foto pro user em tempo teal
   //changeNewFriend ---
-  //changeStatus --- bug em logeedUsers que não tras os users
   //ChangeNotify  -- notificações carregadas corretamente
 
 
