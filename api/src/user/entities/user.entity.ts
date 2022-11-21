@@ -18,7 +18,7 @@ import { IsEmail } from 'class-validator';
 import { GameEntity } from 'src/game/entities/game.entity';
 import { Notify } from 'src/notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
-import { Chat } from 'src/chat/entities/chat.entity';
+import { Direct } from 'src/chat/entities/direct.entity';
 
 @Entity()
 @Unique(['email', 'nick'])
@@ -42,7 +42,7 @@ export class User extends BaseEntity {
 
   @ApiProperty()
   @Column({ nullable: false, type: 'varchar', length: 50 })
-   nick: string;
+  nick: string;
 
   @ApiProperty()
   @Column({ nullable: false, type: 'varchar' })
@@ -78,11 +78,11 @@ export class User extends BaseEntity {
 
   @ApiProperty()
   @IsEmail()
-  @Column({ nullable: true , default: null})
+  @Column({ nullable: true, default: null })
   tfaEmail?: string;
 
   @ApiProperty()
-  @Column({ nullable: true , default: null})
+  @Column({ nullable: true, default: null })
   tfaCode?: string;
 
   @ApiProperty()
@@ -95,8 +95,8 @@ export class User extends BaseEntity {
   games: GameEntity[];
 
   @JoinTable()
-  @ManyToMany(() => Chat, (chat) => chat.users)
-  chats: Chat[];
+  @ManyToMany(() => Direct, (direct) => direct.users)
+  directs: Direct[];
 
   @ApiProperty()
   @OneToMany(() => Notify, (notify) => notify.user_target, { cascade: ['insert'] })

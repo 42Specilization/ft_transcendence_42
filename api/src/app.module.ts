@@ -11,11 +11,12 @@ import { GameModule } from './game/game.module';
 import { Notify } from './notification/entities/notify.entity';
 import { StatusModule } from './status/status.module';
 import { Relations } from './relations/entity/relations.entity';
-import { Chat } from './chat/entities/chat.entity';
+import { Direct } from './chat/entities/direct.entity';
 import { ChatModule } from './chat/chat.module';
 import { Message } from './chat/entities/message.entity';
 // import { APP_GUARD } from '@nestjs/core';
 // import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { Group } from './chat/entities/group.entity';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { Message } from './chat/entities/message.entity';
       username: 'pguser',
       password: 'pgpassword',
       database: 'postgres',
-      entities: [User, Notify, Relations, Chat, GameEntity, Message],
+      entities: [User, Notify, Relations, Direct, Group, GameEntity, Message],
       synchronize: true,
       logging: false,
     }),

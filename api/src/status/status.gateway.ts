@@ -1,6 +1,8 @@
 /* eslint-disable indent */
 import { Logger, UseFilters } from '@nestjs/common';
 import {
+  ConnectedSocket,
+  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
@@ -11,22 +13,29 @@ import {
 
 import { Socket, Namespace } from 'socket.io';
 import { WsCatchAllFilter } from 'src/socket/exceptions/ws-catch-all-filter';
+import { Server } from 'socket.io';
 import { MapUserData, newUserData, UserData } from './status.class';
 
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({ namespace: 'status' })
 export class StatusGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
+
   @WebSocketServer() server: Namespace;
+  @WebSocketServer() io: Server;
+
+  // private server: Namespace;
+
   private logger: Logger = new Logger(StatusGateway.name);
 
   mapUserData: MapUserData = new MapUserData();
 
   afterInit() {
     this.logger.log('Status Websocket Gateway initialized.');
+    // this.server = this.io.of('/chat');
   }
 
-  handleConnection(client: Socket) {
+  handleConnection(@ConnectedSocket() client: Socket) {
     const sockets = this.server.sockets;
 
     this.logger.log(`WS client with id: ${client.id} connected of StatusSocket!`);
@@ -34,7 +43,7 @@ export class StatusGateway
     // this.mapUserData.debug();
   }
 
-  handleDisconnect(client: Socket) {
+  handleDisconnect(@ConnectedSocket() client: Socket) {
     const sockets = this.server.sockets;
 
     this.newUserOffline(client);
@@ -44,7 +53,7 @@ export class StatusGateway
   }
 
   @SubscribeMessage('iAmOnline')
-  newUserOnline(client: Socket, { login, image_url }: { login: string, image_url: string }) {
+  newUserOnline(@ConnectedSocket() client: Socket, @MessageBody() { login, image_url }: { login: string, image_url: string }) {
     const newUser: UserData = newUserData('online', login, image_url);
     this.mapUserData.set(client.id, newUser);
 
@@ -56,12 +65,12 @@ export class StatusGateway
   }
 
   @SubscribeMessage('whoIsOnline')
-  whoIsOnline(client: Socket) {
+  whoIsOnline(@ConnectedSocket() client: Socket) {
     client.emit('onlineUsers', Array.from(this.mapUserData.getValues()));
     this.logger.debug(`whoIsOnline => Client: ${client.id}`);
   }
 
-  newUserOffline(client: Socket) {
+  newUserOffline(@ConnectedSocket() client: Socket) {
     const user: UserData = this.mapUserData.valueOf(client.id);
     user.status = 'offline';
 
@@ -75,7 +84,7 @@ export class StatusGateway
 
 
   @SubscribeMessage('changeLogin')
-  handleChangeLogin(client: Socket, newLogin: string) {
+  handleChangeLogin(@ConnectedSocket() client: Socket, @MessageBody() newLogin: string) {
     const oldUser = this.mapUserData.valueOf(client.id);
     const newUser: UserData = newUserData(
       oldUser.status,
@@ -92,11 +101,12 @@ export class StatusGateway
       this.server.to(socketId).emit('updateUserLogin', oldUser, newUser)
     );
 
+    // this.io.of('/chat').emit('msgTeste');
     this.mapUserData.debug();
   }
 
   @SubscribeMessage('changeImage')
-  handleChangeImage(client: Socket, image_url: string) {
+  handleChangeImage(@ConnectedSocket() client: Socket, @MessageBody() image_url: string) {
     const oldUser = this.mapUserData.valueOf(client.id);
     const newUser: UserData = newUserData(
       oldUser.status,
@@ -115,7 +125,7 @@ export class StatusGateway
   }
 
   @SubscribeMessage('newNotify')
-  handleNewNotify(client: Socket, login_target: string) {
+  handleNewNotify(@ConnectedSocket() client: Socket, @MessageBody() login_target: string) {
     client;
     this.mapUserData.keyOf(login_target).forEach(socketId =>
       this.server.to(socketId).emit('updateNotify')
@@ -123,7 +133,7 @@ export class StatusGateway
   }
 
   @SubscribeMessage('newFriend')
-  handleNewFriend(client: Socket, login_target: string) {
+  handleNewFriend(@ConnectedSocket() client: Socket, login_target: string) {
     const user: UserData = this.mapUserData.valueOf(client.id);
     const socketsUser: string[] = this.mapUserData.keyOf(user.login);
 
@@ -142,7 +152,7 @@ export class StatusGateway
   }
 
   @SubscribeMessage('deleteFriend')
-  handleDeleteFriend(client: Socket, login_target: string) {
+  handleDeleteFriend(@ConnectedSocket() client: Socket, @MessageBody() login_target: string) {
     const user: UserData = this.mapUserData.valueOf(client.id);
     this.mapUserData.keyOf(user.login).forEach(socketId => {
       this.server.to(socketId).emit('updateRemove');
@@ -156,7 +166,7 @@ export class StatusGateway
   }
 
   @SubscribeMessage('newBlocked')
-  handleNewBlocked(client: Socket) {
+  handleNewBlocked(@ConnectedSocket() client: Socket) {
     const user: UserData = this.mapUserData.valueOf(client.id);
     this.mapUserData.keyOf(user.login).forEach(socketId => {
       this.server.to(socketId).emit('updateBlocked');
@@ -164,7 +174,7 @@ export class StatusGateway
   }
 
   @SubscribeMessage('removeBlocked')
-  handleRemoveBlocked(client: Socket) {
+  handleRemoveBlocked(@ConnectedSocket() client: Socket) {
     const user: UserData = this.mapUserData.valueOf(client.id);
     this.mapUserData.keyOf(user.login).forEach(socketId => {
       this.server.to(socketId).emit('updateBlocked');

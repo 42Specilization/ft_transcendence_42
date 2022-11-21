@@ -1,6 +1,7 @@
 import { formatDate } from '../../../others/utils/utils';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import './HistoricMatch.scss';
+import { useState } from 'react';
 
 interface HistoricMatchProps {
   nick: string;

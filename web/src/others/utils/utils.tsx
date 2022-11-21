@@ -4,6 +4,7 @@ import { Navigate } from 'react-router-dom';
 import { ValidateTfa } from '../../components/TFA/ValidateTfa/ValidateTfa';
 import { IntraData } from '../Interfaces/interfaces';
 import { getInfos } from '../../pages/OAuth/OAuth';
+import { useQuery } from 'react-query';
 
 export function getAccessToken() {
   return (window.localStorage.getItem('token'));
@@ -13,44 +14,43 @@ export function getAccessToken() {
 export function RequireAuth({ children }: any) {
   const token = window.localStorage.getItem('token');
   const [isTfaValid, setIsTfaValid] = useState(false);
+  const { status } = useQuery(
+    'validateTfa',
+    async () => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const api = axios.create({
+        baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
+      });
 
-  /**
-   * It checks if the user has TFA enabled, if not, it sets the isTfaValid state to true. If the user has
-   * TFA enabled, it checks if the user has validated TFA, if not, it sets the isTfaValid state to false.
-   * If the user has TFA enabled and has validated TFA, it sets the isTfaValid state to true
-   * @returns a boolean value.
-   */
-  async function validateTFA() {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    const api = axios.create({
-      baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
-    });
-
-    try {
-      const user = await api.get('/user/me', config);
-      if (
-        user.data.isTFAEnable !== undefined &&
-        user.data.isTFAEnable === false
-      ) {
+      try {
+        const user = await api.get('/user/me', config);
+        if (
+          user.data.isTFAEnable !== undefined &&
+          user.data.isTFAEnable === false
+        ) {
+          setIsTfaValid(true);
+          return;
+        }
+        if (user.data.isTFAEnable && user.data.tfaValidated !== true) {
+          setIsTfaValid(false);
+          return;
+        }
+        setIsTfaValid(true);
+      } catch (error) {
         setIsTfaValid(true);
         return;
       }
-      if (user.data.isTFAEnable && user.data.tfaValidated !== true) {
-        setIsTfaValid(false);
-        return;
-      }
-      setIsTfaValid(true);
-    } catch (error) {
-      setIsTfaValid(true);
-      return;
     }
-  }
 
-  validateTFA();
+  );
+
+  // Estilizar 
+  if (status === 'loading')
+    return <>Loading...</>;
 
   if (isTfaValid === false) {
     return (

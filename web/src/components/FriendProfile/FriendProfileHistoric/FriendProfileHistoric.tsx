@@ -1,43 +1,37 @@
 import './FriendProfileHistoric.scss';
 import { FriendHistoricMatch } from './FriendHistoricMatch';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { useQuery } from 'react-query';
 
 interface FriendProfileHistoricProps {
-friendData: {
+  friendData: {
     name: string,
     login: string,
     image_url: string,
     matches: string,
     wins: string,
     lose: string,
-}}
+  }
+}
 
-export function FriendProfileHistoric({friendData }: FriendProfileHistoricProps) {
-  const {  api, config} = useContext(IntraDataContext);
-  const defaultHistoric = {
-    date:'now',
-    opponent :{ 
-      imgUrl:'nop',
-      login:'n',
+export function FriendProfileHistoric({ friendData }: FriendProfileHistoricProps) {
+  const { api, config } = useContext(IntraDataContext);
+  const { data, status } = useQuery(
+    'friendHistoric',
+    async () => {
+      const response = await api.patch('/user/historic', { login: friendData.login }, config);
+      return response.data;
     },
-    result:'result'
-  };
-  const [historic, setHistoric] = useState([defaultHistoric]);
-  useEffect(() => {
-    async function getHistoric() {
-      try {
-        const result = await api.patch('/user/historic', {login: friendData.login}, config);
-        console.log(result.data);
-        setHistoric(result.data);
-
-      } catch (err){
-        console.log(err);
-      }
+    {
+      retry: false,
+      refetchOnWindowFocus: true,
     }
-    getHistoric();
-  },[]);
-  
+  );
+
+  if (status == 'error')
+    return <>Error loading friend historic, reload friend profile</>;
+
   return (
     <div className='friendProfile__historic'>
       <div className='friendProfile__historic__header'>
@@ -46,7 +40,7 @@ export function FriendProfileHistoric({friendData }: FriendProfileHistoricProps)
         <p className='friendProfile__historic__header__item'>Result</p>
       </div>
       <div className='friendProfile__historic__body'>
-        {historic && historic.map((index) => (
+        {data && data.map((index: any) => (
           <FriendHistoricMatch
             key={crypto.randomUUID()}
             image_url={index.opponent.imgUrl}

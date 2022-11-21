@@ -148,32 +148,32 @@ export class UserService {
       });
   }
 
-  async findUserChatsByEmail(email: string): Promise<User | null> {
+  async findUserDirectByEmail(email: string): Promise<User | null> {
     return await this.usersRepository.findOne(
       {
         where: {
           email,
         },
         relations: [
-          'chats',
-          'chats.users',
-          'chats.messages',
-          'chats.messages.sender',
+          'directs',
+          'directs.users',
+          'directs.messages',
+          'directs.messages.sender',
         ]
       });
   }
 
-  async findUserChatsByNick(nick: string): Promise<User | null> {
+  async findUserDirectByNick(nick: string): Promise<User | null> {
     return await this.usersRepository.findOne(
       {
         where: {
           nick,
         },
         relations: [
-          'chats',
-          'chats.users',
-          'chats.messages',
-          'chats.messages.sender',
+          'directs',
+          'directs.users',
+          'directs.messages',
+          'directs.messages.sender',
         ]
       });
   }
@@ -295,7 +295,7 @@ export class UserService {
     user.tfaCode = tfaCode ? bcrypt.hashSync(tfaCode, 8) : user.tfaCode;
     if (imgUrl) {
       if (user.imgUrl !== 'userDefault.png'
-       && !user.imgUrl.includes('https://')) {
+        && !user.imgUrl.includes('https://')) {
         fs.rm(
           `../web/public/${user.imgUrl}`,
           function (err) {
@@ -305,7 +305,7 @@ export class UserService {
       }
       user.imgUrl = imgUrl;
     }
-    
+
     if (tfaCode == null) {
       user.tfaCode = '';
     }
@@ -333,12 +333,12 @@ export class UserService {
 
   alreadyFriends(user: User, friend: User) {
     const alreadyFriends = friend.relations.filter((relation) => {
-      if (relation.type === 'friend' 
+      if (relation.type === 'friend'
         && relation.passive_user.nick == user.nick)
         return relation;
-      return ;
+      return;
     });
-    
+
     if (alreadyFriends.length > 0)
       return true;
     return false;
@@ -373,7 +373,7 @@ export class UserService {
     });
     if (duplicated.length > 0)
       throw new BadRequestException('This user already your order');
-      
+
     const alreadyFriends = this.alreadyFriends(user, friend);
     if (alreadyFriends)
       throw new BadRequestException('This user already is your friend');
@@ -420,18 +420,18 @@ export class UserService {
   async acceptFriend(email: string, id: string) {
     const user = await this.findUserByEmail(email) as User;
     const requestedNotify: Notify[] = user.notify.filter((notify) => notify.id === id);
-    
+
     if (!requestedNotify.at(0))
       throw new BadRequestException('friend not found');
-    
+
     console.log('apagou a notificaçao');
     const friend = await this.findUserByEmail(requestedNotify.at(0)?.user_source.email as string) as User;
     const alreadyFriends = this.alreadyFriends(user, friend);
-    if (alreadyFriends){
+    if (alreadyFriends) {
       this.popNotification(email, id);
       throw new BadRequestException('This user already is your friend');
     }
-      
+
     const relationUser = new Relations();
     const relationFriend = new Relations();
     relationUser.passive_user = friend;
@@ -440,7 +440,7 @@ export class UserService {
     relationFriend.type = 'friend';
     user.relations.push(relationUser);
     friend.relations.push(relationFriend);
-    
+
     try {
       await user.save();
       await friend.save();
@@ -580,4 +580,38 @@ export class UserService {
     }
   }
 
+
+  async getHistoric(login: string) {
+    const userValidate = await this.findUserGamesByNick(login);
+    if (userValidate) {
+      const userData = userValidate.games
+        .sort((a, b) => {
+          if (a.createdAt < b.createdAt)
+            return 1;
+          return -1;
+        })
+        .map((game) => {
+          let opponent;
+          let result;
+          if (game.winner.nick != login) {
+            result = `Lose ${game.winnerScore}x${game.loserScore}`;
+            opponent = game.winner;
+          } else {
+            result = `Win ${game.winnerScore}x${game.loserScore}`;
+            opponent = game.loser;
+          }
+          return {
+            date: game.createdAt,
+            opponent: {
+              imgUrl: opponent.imgUrl,
+              login: opponent.nick,
+            },
+            result: result,
+          };
+        });
+      console.log(userData);
+      return (userData);
+    }
+    throw new BadRequestException('user not found');
+  }
 }

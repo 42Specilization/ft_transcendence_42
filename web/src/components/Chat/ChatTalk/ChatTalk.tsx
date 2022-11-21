@@ -23,35 +23,27 @@ export function ChatTalk(
     friendsChat, setFriendsChat,
   } = useContext(ChatContext);
   const { intraData, api, config } = useContext(IntraDataContext);
-
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
   const [message, setMessage] = useState('');
 
-  function changeActiveChat(data: DirectData) {
-    if (activeChat)
-      actionsChat.leaveChat(activeChat.id);
-    setActiveChat(data);
-    actionsChat.joinChat(data.id);
+  async function getActiveChat(path: string, id: string) {
+    const response = await api.patch(path, { id: id }, config);
+    setActiveChat(response.data);
   }
 
   useEffect(() => {
-    async function getDirect() {
-      const response = await api.patch('/chat/getDirect', { id: directsChat }, config);
-      changeActiveChat(response.data as DirectData);
-    }
-    if (directsChat) {
-      getDirect();
-    }
+    if (activeChat)
+      getActiveChat('/chat/getDirect', activeChat.id);
+  }, [intraData]);
+
+  useEffect(() => {
+    if (directsChat)
+      getActiveChat('/chat/getDirect', directsChat);
   }, [directsChat]);
 
   useEffect(() => {
-    async function getFriendDirect() {
-      const response = await api.patch('/chat/getFriendChat', { id: friendsChat?.login }, config);
-      changeActiveChat(response.data as DirectData);
-    }
-    if (friendsChat) {
-      getFriendDirect();
-    }
+    if (friendsChat)
+      getActiveChat('/chat/getFriendDirect', friendsChat.login);
   }, [friendsChat]);
 
 
@@ -75,7 +67,7 @@ export function ChatTalk(
         user: intraData.login,
         msg: message,
       };
-      actionsChat.msgToServer(newMessage);
+      actionsChat.msgToServer(newMessage, activeChat.type);
     }
     setMessage('');
   }

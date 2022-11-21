@@ -76,8 +76,8 @@ const actionsChat = {
     stateChat.socket?.emit('leaveChat', id);
   },
 
-  msgToServer(message: MsgToServer) {
-    stateChat.socket?.emit('msgToServer', message);
+  msgToServer(message: MsgToServer, type: string) {
+    stateChat.socket?.emit('msgToServer', { message: message, type: type });
   },
 
   msgToClient(message: MsgToClient) {
@@ -105,8 +105,6 @@ const actionsChat = {
       }
     }
   },
-
-
 
 };
 

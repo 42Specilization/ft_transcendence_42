@@ -1,14 +1,13 @@
 import {
-  Body, Controller, Get, HttpCode, HttpStatus, Patch, Post,
+  Body, Controller, Get, Patch,
   UseGuards
 } from '@nestjs/common';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { GetUserFromJwt } from 'src/auth/decorators/get-user.decorator';
 import { UserFromJwt } from 'src/auth/dto/UserFromJwt.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
 import { DirectDto, GetDirectDto } from './dto/chat.dto';
-import { CreateDirectDto } from './dto/create-direct.dto';
 
 @Controller('chat')
 @ApiTags('chat')
@@ -17,23 +16,11 @@ export class ChatController {
 
   }
 
-  // Rota para testes durante o desenvolvimento, remover no final
-  @Post('/createDirect')
-  @HttpCode(HttpStatus.CREATED)
-  // @UseGuards(JwtAuthGuard)
-  @ApiBody({ type: CreateDirectDto })
-  createDirect(@Body() createDirectDto: CreateDirectDto): { msg: string } {
-    this.chatService.createDirect('gsilva-v@student.42sp.org.br', createDirectDto);
-    return ({
-      msg: 'success'
-    });
-  }
-
-  @Get('/getDirects')
+  @Get('/getAllDirects')
   @UseGuards(JwtAuthGuard)
   async getDirects(@GetUserFromJwt() userFromJwt: UserFromJwt): Promise<DirectDto[] | null> {
-    const result = await this.chatService.getDirects(userFromJwt.email);
-    return result; 
+    const result = await this.chatService.getAllDirects(userFromJwt.email);
+    return result;
   }
 
   @Patch('/getDirect')
@@ -45,13 +32,13 @@ export class ChatController {
     return await this.chatService.getDirect(userFromJwt.email, getDirectDto.id);
   }
 
-  @Patch('/getFriendChat')
+  @Patch('/getFriendDirect')
   @UseGuards(JwtAuthGuard)
   async getFriendChat(
     @Body() getDirectDto: GetDirectDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
   ) {
-    return await this.chatService.getFriendChat(userFromJwt.email, getDirectDto.id);
+    return await this.chatService.getFriendDirect(userFromJwt.email, getDirectDto.id);
   }
 
 

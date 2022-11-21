@@ -1,8 +1,8 @@
 import './FriendProfileGeneral.scss';
-import  { FriendCard } from './FriendCard';
+import { FriendCard } from './FriendCard';
 
 interface FriendProfileGeneralProps {
-  friendData :{
+  friendData: {
     name: string,
     login: string,
     image_url: string,
@@ -20,7 +20,7 @@ export function FriendProfileGeneral({ friendData }: FriendProfileGeneralProps) 
         name: friendData.name,
         login: friendData.login,
         image_url: friendData.image_url,
-      }}/>
+      }} />
       <div className='friendProfile__general__stats'>
         <div className='friendProfile__general__stats__title'>
           <p>Stats</p>

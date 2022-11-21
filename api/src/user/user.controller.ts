@@ -109,7 +109,7 @@ export class UserController {
       }
       return code;
     }
-  
+
     const sendedCode = generateCode();
     updateUserDto.tfaCode = sendedCode;
     const user = await this.userService.updateUser(updateUserDto, userFromJwt.email);
@@ -310,18 +310,6 @@ export class UserController {
     return { message: 'success' };
   }
 
-
-
-  // @Post('/chat')
-  // @ApiBody({ type: CreateDirectDto })
-  // @HttpCode(HttpStatus.CREATED)
-  // createChat(): { msg: string } {
-  //   // this.userService.createChat();
-  //   return ({
-  //     msg: 'success'
-  //   });
-  // }
-
   @Get('games')
   @HttpCode(HttpStatus.OK)
   async getUsersWithGames(): Promise<User[]> {
@@ -333,31 +321,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: UserHistoricDto })
   async getHistoric(@Body() userHistoricDto: UserHistoricDto) {
-    const userValidate = await this.userService.findUserGamesByNick(userHistoricDto.login);
-    if (userValidate) {
-      const userData  = userValidate.games.map((game) => {
-        let opponent;
-        let result;
-        if (game.winner.nick != userHistoricDto.login){
-          result = `Lose ${game.winnerScore}x${game.loserScore}`;
-          opponent = game.winner;
-        } else {
-          result = `Win ${game.winnerScore}x${game.loserScore}`;
-          opponent = game.loser;
-        }
-        return {
-          date: game.createdAt,
-          opponent: {
-            imgUrl : opponent.imgUrl,
-            login: opponent.nick,
-          },
-          result: result,
-        };
-      });
-      console.log(userData);
-      return (userData);
-    }
-    throw new BadRequestException('user not found');
-
+    return await this.userService.getHistoric(userHistoricDto.login);
   }
 }

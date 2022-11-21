@@ -15,21 +15,7 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
   const currentStateStatus = useSnapshot(stateStatus);
   const [side, setSide] = useState(true);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
-  const { setIntraData } = useContext(IntraDataContext);
-
-  const token = useMemo(() => window.localStorage.getItem('token'), []);
-
-  const config = useMemo(() => {
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  }, []);
-
-  const api = useMemo(() => axios.create({
-    baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
-  }), []);
+  const { api, config, setIntraData } = useContext(IntraDataContext);
 
   async function removeNotify() {
     setIntraData((prevIntraData) => {
@@ -46,14 +32,13 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
       removeNotify();
       currentStateStatus.socket?.emit('newFriend', notify.user_source);
       return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.log('result', err.response.data.message);
       if (err.response.data.message == 'This user already is your friend') {
         removeNotify();
       }
     }
-
   }
 
   async function handleBlock() {
@@ -76,7 +61,6 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
       setSide(prevSide => !prevSide);
     }
   }
-
 
   return (
     <>

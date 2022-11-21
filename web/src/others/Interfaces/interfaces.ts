@@ -27,17 +27,12 @@ export interface BlockedData {
 
 export interface DirectData {
   id: string;
+  type: string;
   name?: string;
   image?: string;
   date: Date;
   messages?: MsgToClient[];
 }
-
-// export interface DirectChatData {
-//   id: string;
-//   name: string;
-//   image: string;
-// }
 
 export interface UserMsg {
   login: string;
@@ -57,8 +52,6 @@ export interface MsgToClient {
   date: Date;
   msg: string;
 }
-
-
 
 export interface IntraData {
   first_name: string;

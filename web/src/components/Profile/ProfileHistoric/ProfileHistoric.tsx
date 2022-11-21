@@ -1,36 +1,22 @@
 import './ProfileHistoric.scss';
-import  { HistoricMatch } from '../HistoricMatch/HistoricMatch';
-import { useContext, useState, useEffect } from 'react';
+import { HistoricMatch } from '../HistoricMatch/HistoricMatch';
+import { useContext } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { useQuery } from 'react-query';
 
 export function ProfileHistoric() {
-  const { intraData, api, config} = useContext(IntraDataContext);
-
-  const defaultHistoric = {
-    date:'now',
-    opponent :{ 
-      imgUrl:'nop',
-      login:'n',
+  const { intraData, api, config } = useContext(IntraDataContext);
+  const { data } = useQuery(
+    'userHistoric',
+    async () => {
+      const response = await api.patch('/user/historic', { login: intraData.login }, config);
+      return response.data;
     },
-    result:'result'
-  };
-
-  const [historic, setHistoric] = useState([defaultHistoric]);
-
-  useEffect(() => {
-    async function getHistoric() {
-      try {
-        const result = await api.patch('/user/historic', {login: intraData.login}, config);
-        console.log(result.data);
-        setHistoric(result.data);
-
-      } catch (err){
-        console.log(err);
-      }
+    {
+      retry: false,
+      refetchOnWindowFocus: true,
     }
-    getHistoric();
-  },[]);
-
+  );
 
   return (
     <div className='profile__historic'>
@@ -40,7 +26,7 @@ export function ProfileHistoric() {
         <p className='profile__historic__header__item'>Result</p>
       </div>
       <div className='profile__historic__body'>
-        {historic && historic.map((index) => (
+        {data && data.map((index: any) => (
           <HistoricMatch
             key={crypto.randomUUID()}
             image_url={index.opponent.imgUrl}

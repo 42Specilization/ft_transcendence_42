@@ -45,7 +45,6 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
   const [intraData, setIntraData] = useState(defaultIntra);
   const [updateImageTime, setUpdateImageTime] = useState(Math.floor(Math.random() * 1000));
 
-
   const config = useMemo(() => {
     return {
       headers: {
