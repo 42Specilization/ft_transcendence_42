@@ -89,7 +89,7 @@ const actionsStatus = {
               if (b.status === 'offline')
                 return -1;
             }
-            return a.login < b.login ? -1 : 1;
+            return a.login.toLowerCase() < b.login.toLowerCase() ? -1 : 1;
           })
         };
       });
@@ -117,11 +117,8 @@ const actionsStatus = {
     if (stateStatus.setIntraData) {
       stateStatus.setIntraData((prevIntraData) => {
         return {
-          ...prevIntraData, friends: prevIntraData.friends.map(friend => {
-            if (user.login === friend.login)
-              return user;
-            return friend;
-          }),
+          ...prevIntraData, friends: prevIntraData.friends.map(friend =>
+            user.login === friend.login ? user : friend)
         };
       });
       this.sortFriends();
@@ -140,26 +137,11 @@ const actionsStatus = {
     if (stateStatus.setIntraData) {
       stateStatus.setIntraData((prevIntraData) => {
         return {
-          ...prevIntraData, friends: prevIntraData.friends.map(friend => {
-            if (oldUser.login === friend.login)
-              return newUser;
-            return friend;
-          }),
-        };
-      });
-      this.sortFriends();
-    }
-  },
-
-  updateUserImage(oldUser: UserData, newUser: UserData) {
-    if (stateStatus.setIntraData) {
-      stateStatus.setIntraData((prevIntraData) => {
-        return {
-          ...prevIntraData, friends: prevIntraData.friends.map(friend => {
-            if (oldUser.login === friend.login)
-              return newUser;
-            return friend;
-          }),
+          ...prevIntraData,
+          friends: prevIntraData.friends.map(friend =>
+            oldUser.login === friend.login ? newUser : friend),
+          blockeds: prevIntraData.blockeds.map(blocked =>
+            oldUser.login === blocked.login ? newUser : blocked),
         };
       });
       this.sortFriends();
@@ -190,24 +172,15 @@ const actionsStatus = {
           })
         };
       });
-      this.sortFriends();
+      this.whoIsOnline();
     }
   },
 
   async updateBlocked() {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
-      console.log(user.blockeds);
       stateStatus.setIntraData((prevIntraData) => {
-        return {
-          ...prevIntraData, blockeds: user.blockeds.map((obj) => {
-            if (prevIntraData.blockeds.map(e => e.login).indexOf(obj.login) >= 0) {
-              const updateFriend = prevIntraData.blockeds.find(e => e.login === obj.login);
-              return typeof updateFriend !== 'undefined' ? updateFriend : obj;
-            }
-            return obj;
-          })
-        };
+        return {...prevIntraData, blockeds: user.blockeds};
       });
     }
   },
@@ -216,8 +189,16 @@ const actionsStatus = {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
       stateStatus.setIntraData((prevIntraData) => {
-        return { ...prevIntraData, friends: user.friends, blockeds: user.blockeds };
+        return { ...prevIntraData, friends: user.friends.map((obj) => {
+          if (prevIntraData.friends.map(e => e.login).indexOf(obj.login) >= 0) {
+            const updateFriend = prevIntraData.friends.find(e => e.login === obj.login);
+            return typeof updateFriend !== 'undefined' ? updateFriend : obj;
+          }
+          return obj;
+        }),
+        blockeds: user.blockeds };
       });
+      this.sortFriends();
     }
   },
 

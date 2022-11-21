@@ -20,10 +20,7 @@ export function NavBar({ Children }: NavBarProps) {
   const [menuVisible, setMenuVisible] = useState(false);
   const [notifyVisible, setNotifyVisible] = useState(false);
 
-  //changeNick *** funcionando perfeitamente
-  //chanceImage  -- atualizar foto pro user em tempo teal
   //changeNewFriend ---
-  //changeStatus --- bug em logeedUsers que não tras os users
   //ChangeNotify  -- notificações carregadas corretamente
 
 
