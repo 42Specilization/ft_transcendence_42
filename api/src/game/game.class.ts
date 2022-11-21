@@ -6,6 +6,9 @@ import { IPlayer, IScore, IBall, IPaddle, IObjectSides, IPowerUp } from './inter
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
 const DEFAULT_PADDLE_HEIGHT = 100;
+const BIG_PADDLE = 0;
+const LITTLE_PADDLE = 1;
+const BIG_BALL = 2;
 
 export class Game {
 
@@ -142,6 +145,7 @@ export class Game {
   resetBall() {
     this.ball.x = CANVAS_WIDTH / 2;
     this.ball.y = CANVAS_HEIGHT / 2;
+    this.ball.radius = 10;
     this.ball.speed = this.ballSpeed;
     this.ball.velocityX = -this.ball.velocityX;
     if (this.isWithPowerUps) {
@@ -181,13 +185,16 @@ export class Game {
   }
 
   randomPowerUp() {
-    const player = this.ballLastHit === 1 ? this.player1 : this.player2;
+    let player = this.ballLastHit === 1 ? this.player1 : this.player2;
     const powerUp = getRandomInt(0, 1);
-    console.log('power up is ', powerUp);
-    if (powerUp === 0) {
+
+    if (powerUp === BIG_PADDLE) {
       player.paddle.h = 200;
-    } else if (powerUp === 1) {
+    } else if (powerUp === LITTLE_PADDLE) {
+      player = this.ballLastHit === 1 ? this.player2 : this.player1;
       player.paddle.h = 50;
+    } else if (powerUp === BIG_BALL) {
+      this.ball.radius = 30;
     }
   }
 

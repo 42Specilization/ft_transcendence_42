@@ -70,7 +70,8 @@ export function PongGame() {
 
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyboard);
+    document.addEventListener('keydown', handleKeyboard, true);
+    return (() => { document.removeEventListener('keydown', handleKeyboard); });
   }, []);
 
   function handleKeyboard(event: KeyboardEvent) {

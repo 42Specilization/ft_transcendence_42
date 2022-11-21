@@ -90,7 +90,7 @@ export class GameGateway
       user.join(game.room.toString());
       this.io.to(game.room.toString()).emit('update-game', game.getGameDto());
       this.logger.debug(
-        `Player one connected name: ${playerInfos.name} socket id:${user.id} Game room:${game.room}`
+        `Player one connected name: ${playerInfos.name} socket id:${user.id} Game room:${game.room}  custom ${playerInfos.isWithPowerUps}`
       );
     } else if (game.player2.socketId === '') {
       game.player2.socketId = user.id;
@@ -167,16 +167,19 @@ export class GameGateway
       return;
     }
     const strRoom = room.toString();
-    if (game.update()) {
+    const updateResult = game.update();
+    if (updateResult) {
       this.io.to(strRoom).emit('update-score', game.score);
-      this.io.to(strRoom).emit('update-powerUp', game.powerUpBox);
+      if (game.isWithPowerUps) {
+        this.io.to(strRoom).emit('update-powerUp', game.powerUpBox);
+      }
     }
     if (game.checkWinner()) {
       this.io.to(strRoom).emit('end-game', game);
     } else {
-      this.io.to(strRoom).emit('update-ball', game.ball);
+      this.io.to(strRoom).emit('update-ball', game.ball, updateResult);
     }
-    if (game.powerUpBox.updateSend) {
+    if (game.isWithPowerUps && game.powerUpBox.updateSend) {
       this.io.to(strRoom).emit('update-powerUp', game.powerUpBox);
       if (game.powerUpBox.isActive) {
         this.io.to(strRoom).emit('update-player', game.player1, game.player2);

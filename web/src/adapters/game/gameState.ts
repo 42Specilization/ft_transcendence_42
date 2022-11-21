@@ -111,6 +111,7 @@ const actions = {
     } else {
       state.ball.x = ball.x;
       state.ball.y = ball.y;
+      state.ball.radius = ball.radius;
     }
   },
   updatePlayer(player1: Player, player2: Player) {
