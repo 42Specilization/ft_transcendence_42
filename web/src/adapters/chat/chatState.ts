@@ -82,6 +82,7 @@ const actionsChat = {
 
   msgToClient(message: MsgToClient) {
     if (stateChat.setActiveChat) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       stateChat.setActiveChat((prev: any) => {
         if (prev && prev.id === message.chat) {
           if (prev.messages)

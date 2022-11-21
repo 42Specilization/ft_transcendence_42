@@ -1,5 +1,5 @@
 import { MagnifyingGlass, X } from 'phosphor-react';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';

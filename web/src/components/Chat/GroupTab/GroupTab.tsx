@@ -1,12 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import './GroupTab.scss';
 import { MagnifyingGlass, X } from 'phosphor-react';
-import { useContext, useEffect, useState } from 'react';
+import {
+  // useContext,
+  // useEffect,
+  useState
+} from 'react';
 import ReactTooltip from 'react-tooltip';
-import { actionsChat } from '../../../adapters/chat/chatState';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+// import { actionsChat } from '../../../adapters/chat/chatState';
+// import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
 export function GroupTab() {
-  const { api, config } = useContext(IntraDataContext);
+  // const { api, config } = useContext(IntraDataContext);
   const [isTableSearch, setIsTableSearch] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const [groups, setGroups] = useState<[]>([]);
@@ -56,14 +61,14 @@ export function GroupTab() {
       </div>
       < div className='group__tab__body'>
         {
-          groups.filter((obj:any) => obj.name?.includes(searchInput))
+          groups.filter((obj :any) => obj.name?.includes(searchInput))
             .sort((a: any, b: any) => {
               if (a.date < b.date)
                 return 1;
               return -1;
             })
-            .map((obj) => (
-              <p key={Math.random()}> 'group' </p>
+            .map(() => (
+              <p key={Math.random()}> group </p>
             ))
         }
       </div>

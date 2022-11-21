@@ -51,7 +51,7 @@ export function CardFriend({ friend, setTableSelected }: CardFriendProps) {
 
   return (
     <div id='card__friend' className='card__friend'
-     onClick={(e) => selectActiveFriend(e)}
+      onClick={(e) => selectActiveFriend(e)}
     >
       <div id='card__friend' className='card__friend__div' >
         <div id='card__friend' className='card__friend__icon'

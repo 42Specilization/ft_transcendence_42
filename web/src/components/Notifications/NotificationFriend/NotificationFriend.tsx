@@ -46,6 +46,7 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
       removeNotify();
       currentStateStatus.socket?.emit('newFriend', notify.user_source);
       return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.log('result', err.response.data.message);
       if (err.response.data.message == 'This user already is your friend') {
