@@ -24,7 +24,7 @@ export class Direct extends BaseEntity {
   users: User[];
 
   @ApiProperty()
-  @OneToMany(() => Message, (message: Message) => message.direct, { cascade: ['insert'] })
+  @OneToMany(() => Message, (message: Message) => message.direct, { cascade: ['insert', 'update'] })
   messages: Message[];
 
   @ApiProperty()

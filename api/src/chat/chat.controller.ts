@@ -41,5 +41,14 @@ export class ChatController {
     return await this.chatService.getFriendDirect(userFromJwt.email, getDirectDto.id);
   }
 
+  @Patch('/setBreakpoint')
+  @UseGuards(JwtAuthGuard)
+  async setBreakpoint(
+    @Body() { chatId, type }: { chatId: string, type: string },
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ) {
+    return await this.chatService.setBreakpointController(userFromJwt.email, chatId, type);
+  }
+
 
 }

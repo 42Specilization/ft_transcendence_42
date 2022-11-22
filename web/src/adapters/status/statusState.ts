@@ -90,7 +90,6 @@ const actionsStatus = {
           directs: user.directs,
         };
       });
-      // this.sortFriends();
     }
   },
 
@@ -263,7 +262,7 @@ const actionsStatus = {
           ...prevIntraData,
           directs: prevIntraData.directs.map((key) => {
             if (key.id === message.chat) {
-              return { ...key, newMessages: key.newMessages ? key.newMessages + 1 : 1 };
+              return { ...key, newMessages: key.newMessages + 1 };
             }
             return key;
           }),

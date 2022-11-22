@@ -36,5 +36,9 @@ export class Message extends BaseEntity {
   @ApiProperty()
   @Column({ nullable: false })
   msg: string;
+ 
+  @ApiProperty()
+  @Column({ default: false })
+  breakproint: boolean;
 
 }

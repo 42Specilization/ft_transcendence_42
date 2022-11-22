@@ -9,6 +9,7 @@ import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModa
 import ReactTooltip from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
+import { randomUUID } from 'crypto';
 
 // interface ChatTalkProps {
 
@@ -28,43 +29,61 @@ export function ChatTalk(
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
   const [message, setMessage] = useState('');
 
-  async function getActiveChat(path: string, id: string) {
-    const response = await api.patch(path, { id: id }, config);
-    if (activeChat) {
-      setIntraData(prev => {
-        return {
-          ...prev,
-          directs: prev.directs.map(key => {
-            if (key.id === activeChat.id)
-              return { ...key, newMessages: undefined };
-            return key;
-          })
-        };
-      });
-    }
-    setActiveChat(response.data);
+  useEffect(() => {
+    return () => {
+      if (activeChat)
+        api.patch('/chat/setBreakpoint', { chatId: activeChat.id, type: activeChat.type }, config);
+    };
+  }, []);
+
+  async function exitActiveChat() {
+    api.patch('/chat/setBreakpoint', { chatId: activeChat?.id, type: activeChat?.type }, config);
+    setIntraData(prev => {
+      return {
+        ...prev,
+        directs: prev.directs.map(key => {
+          if (key.id === activeChat?.id) {
+            console.log('entro no if');
+            return { ...key, newMessages: 0 };
+          }
+          return key;
+        })
+      };
+    });
+    setActiveChat(null);
     setDirectsChat(null);
     setFriendsChat(null);
     setGroupsChat(null);
-    if (path == '/chat/getFriendDirect') {
-      actionsChat.joinChat(response.data.id);
-      await actionsStatus.newDirect(response.data.name, response.data.id);
+  }
+
+  async function setActiveChatWithDirect(id: string) {
+    const response = await api.patch('/chat/getDirect', { id: id }, config);
+    if (activeChat) {
+      exitActiveChat();
+    }
+    setActiveChat(response.data);
+  }
+
+  async function setActiveChatWithFriend(id: string) {
+    const response = await api.patch('/chat/getFriendDirect', { id: id }, config);
+    if (activeChat) {
+      exitActiveChat();
+    }
+    setActiveChat(response.data.directDto);
+    if (response.data.created) {
+      actionsChat.joinChat(response.data.directDto.id);
+      await actionsStatus.newDirect(response.data.directDto.name, response.data.directDto.id);
     }
   }
 
-  // useEffect(() => {
-  //   if (activeChat)
-  //     getActiveChat('/chat/getDirect', activeChat.id);
-  // }, [intraData]);
-
   useEffect(() => {
     if (directsChat)
-      getActiveChat('/chat/getDirect', directsChat);
+      setActiveChatWithDirect(directsChat);
   }, [directsChat]);
 
   useEffect(() => {
     if (friendsChat)
-      getActiveChat('/chat/getFriendDirect', friendsChat.login);
+      setActiveChatWithFriend(friendsChat.login);
   }, [friendsChat]);
 
 
@@ -88,6 +107,14 @@ export function ChatTalk(
         user: intraData.login,
         msg: message,
       };
+      setActiveChat(prev => {
+        if (prev) {
+          return {
+            ...prev, messages: prev.messages.filter(msg => msg.breakpoint !== true)
+          };
+        }
+        return prev;
+      });
       actionsChat.msgToServer(newMessage, activeChat.type);
     }
     setMessage('');
@@ -109,14 +136,7 @@ export function ChatTalk(
       {activeChat != null &&
         <>
           <div className='chat__talk__header'>
-            <ArrowBendUpLeft size={32} onClick={() => {
-              setActiveChat(null);
-              setDirectsChat(null);
-              setFriendsChat(null);
-              setGroupsChat(null);
-              actionsChat.leaveChat(activeChat.id);
-            }}
-            />
+            <ArrowBendUpLeft size={32} onClick={exitActiveChat} />
             <div
               className='chat__talk__header__user'
               onClick={() => setFriendProfileVisible(true)}
@@ -135,9 +155,12 @@ export function ChatTalk(
           <div className='chat__talk__body'
             ref={refBody}
           >
-            {activeChat.messages?.sort((a, b) => a.date < b.date ? -1 : 1).map((msg: MsgToClient) => (
-              <ChatMessage key={msg.id} user={intraData.login} message={msg} />
-            ))}
+            {activeChat.messages?.sort((a, b) => a.date < b.date ? -1 : 1).map((msg: MsgToClient, index: number) => {
+              if (msg.breakpoint)
+                return <p style={{ display: index !== activeChat.messages?.length - 1 ? '' : 'none' }} key={crypto.randomUUID()}>breakpoint de {msg.user.login} na posição = {index}</p>;
+              return <ChatMessage key={crypto.randomUUID()} user={intraData.login} message={msg} />;
+            }
+            )}
           </div>
           {friendProfileVisible &&
             <ProfileFriendModal

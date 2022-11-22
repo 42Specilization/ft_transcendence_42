@@ -13,8 +13,8 @@ import {
 
 import { Socket, Namespace } from 'socket.io';
 import { WsCatchAllFilter } from 'src/socket/exceptions/ws-catch-all-filter';
-import { Server } from 'socket.io';
 import { MapUserData, newUserData, UserData } from './status.class';
+// import { ChatService } from 'src/chat/chat.service';
 
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({ namespace: 'status' })
@@ -22,9 +22,8 @@ export class StatusGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
 
   @WebSocketServer() server: Namespace;
-  @WebSocketServer() io: Server;
 
-  // private server: Namespace;
+  // constructor(private readonly chatService: ChatService) { }
 
   private logger: Logger = new Logger(StatusGateway.name);
 
@@ -32,7 +31,6 @@ export class StatusGateway
 
   afterInit() {
     this.logger.log('Status Websocket Gateway initialized.');
-    // this.server = this.io.of('/chat');
   }
 
   handleConnection(@ConnectedSocket() client: Socket) {
@@ -77,6 +75,9 @@ export class StatusGateway
     if (this.mapUserData.keyOf(user.login).length == 1) {
       this.server.emit('updateUser', this.mapUserData.valueOf(client.id));
     }
+
+    // this.chatService.setBreakpoint(user.login);
+
     this.mapUserData.delete(client.id);
 
     this.logger.debug(`iAmOffine => Client: ${client.id}, email: |${user.login}|`);

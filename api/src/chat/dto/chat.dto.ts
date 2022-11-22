@@ -8,9 +8,10 @@ export class DirectDto {
   image?: string;
   messages?: MsgToClient[];
   date: Date;
+  newMessages: number;
 }
 
 export class GetDirectDto {
   @IsNotEmpty({ message: 'Insert an valid id' })
-    id: string;
+  id: string;
 }

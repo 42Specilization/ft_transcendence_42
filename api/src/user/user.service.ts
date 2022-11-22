@@ -28,6 +28,14 @@ export class UserService {
 
   ) { }
 
+  async save(user: User) {
+    try {
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new InternalServerErrorException('save: Error to save a user!');
+    }
+  }
+
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const { email, imgUrl, first_name, usual_full_name, nick, token } =
       createUserDto;

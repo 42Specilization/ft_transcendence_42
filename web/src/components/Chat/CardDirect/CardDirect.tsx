@@ -17,7 +17,7 @@ export function CardDirect({ chat }: CardDirectProps) {
 
   function newMessagesVisible() {
     if ((activeChat && activeChat.id === chat.id)
-      || (typeof chat.newMessages === 'undefined'))
+      || (chat.newMessages === 0))
       return false;
     return true;
   }
@@ -30,10 +30,7 @@ export function CardDirect({ chat }: CardDirectProps) {
           style={{ backgroundImage: `url(${chat.image})` }}>
           <div className='card__direct_count'
             style={{ display: newMessagesVisible() ? '' : 'none' }}>
-            {
-              typeof chat.newMessages !== 'undefined' &&
-                chat.newMessages > 9 ? '+9' : chat.newMessages
-            }
+            {chat.newMessages > 9 ? '+9' : chat.newMessages}
           </div>
         </div>
         <div className='card__direct__name'>{chat.name}</div>

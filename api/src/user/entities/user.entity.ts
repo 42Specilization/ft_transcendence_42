@@ -95,7 +95,7 @@ export class User extends BaseEntity {
   games: GameEntity[];
 
   @JoinTable()
-  @ManyToMany(() => Direct, (direct) => direct.users)
+  @ManyToMany(() => Direct, (direct) => direct.users, { cascade: ['update'] })
   directs: Direct[];
 
   @ApiProperty()

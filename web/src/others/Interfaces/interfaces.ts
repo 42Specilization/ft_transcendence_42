@@ -31,8 +31,8 @@ export interface DirectData {
   name?: string;
   image?: string;
   date: Date;
-  messages?: MsgToClient[];
-  newMessages?: number;
+  messages: MsgToClient[];
+  newMessages: number;
 }
 
 export interface UserMsg {
@@ -52,6 +52,7 @@ export interface MsgToClient {
   user: UserMsg;
   date: Date;
   msg: string;
+  breakpoint: boolean;
 }
 
 export interface IntraData {
