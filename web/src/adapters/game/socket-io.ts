@@ -32,7 +32,7 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
     actions.updateGame(game);
     actions.setIsPlayer();
     updateBallEmit();
-    setTimeout(() => { syncBall = setInterval(updateBallEmit, 1000 / FPS); console.log('caiu'); }, 1000);
+    setTimeout(() => { syncBall = setInterval(updateBallEmit, 1000 / FPS); }, 1000);
   });
 
 
@@ -48,7 +48,7 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
   socket.on('update-ball', (ball: Ball, updateResult: boolean) => {
     if (updateResult) {
       clearInterval(syncBall);
-      setTimeout(() => { syncBall = setInterval(updateBallEmit, 1000 / FPS); console.log('caiu'); }, 1000);
+      setTimeout(() => { syncBall = setInterval(updateBallEmit, 1000 / FPS); }, 1000);
     }
     actions.updateBall(ball);
   });
@@ -74,9 +74,7 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
   });
 
   socket.on('connect_error', () => {
-    console.log('some error ocurred!');
-    window.location.reload();
-    //handle socket errors
+    actions.updateServerError(true);
   });
 
   function updateBallEmit() {

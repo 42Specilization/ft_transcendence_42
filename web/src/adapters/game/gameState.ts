@@ -59,6 +59,7 @@ export interface AppState {
   player2?: Player;
   score?: Score;
   powerUp?: IPowerUp;
+  serverError?: boolean;
 }
 
 const state = proxy<AppState>({
@@ -135,7 +136,10 @@ const actions = {
     }
   },
   leaveGame() {
-    state.game = undefined;
+    if (state.game) {
+      state.game.hasEnded = true;
+      state.game.msgEndGame = 'You have been disconnected!';
+    }
     this.disconnectSocket();
   },
   setIsPlayer() {
@@ -149,6 +153,10 @@ const actions = {
     } else {
       state.isPlayer = false;
     }
+  },
+  updateServerError(serverError: boolean) {
+    state.serverError = serverError;
+    this.leaveGame();
   },
 };
 

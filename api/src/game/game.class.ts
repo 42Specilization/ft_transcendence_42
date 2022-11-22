@@ -186,7 +186,7 @@ export class Game {
 
   randomPowerUp() {
     let player = this.ballLastHit === 1 ? this.player1 : this.player2;
-    const powerUp = getRandomInt(0, 1);
+    const powerUp = getRandomInt(0, 2);
 
     if (powerUp === BIG_PADDLE) {
       player.paddle.h = 200;
@@ -194,7 +194,7 @@ export class Game {
       player = this.ballLastHit === 1 ? this.player2 : this.player1;
       player.paddle.h = 50;
     } else if (powerUp === BIG_BALL) {
-      this.ball.radius = 30;
+      this.ball.radius = 40;
     }
   }
 
@@ -206,7 +206,6 @@ export class Game {
       this.powerUpBox.itsDrawn = false;
       this.powerUpBox.updateSend = true;
       this.powerUpBox.isActive = true;
-      console.log('collision with power up');
       this.randomPowerUp();
     }
   }
