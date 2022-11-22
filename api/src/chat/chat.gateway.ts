@@ -44,6 +44,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.logger.debug(`Number of connected chatSockets: ${sockets.size}`);
   }
 
+  @SubscribeMessage('joinAll')
+  async handleJoinAll(@ConnectedSocket() client: Socket, @MessageBody() login: string) {
+    (await this.chatService.getAllChats(login))
+      .forEach((socketId) => client.join(socketId));
+    this.logger.debug(`Client ${client.id} join all chats: |${login}|`);
+  }
+
   @SubscribeMessage('joinChat')
   async handleJoinChat(@ConnectedSocket() client: Socket, @MessageBody() chat: string) {
 

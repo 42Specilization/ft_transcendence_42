@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { DirectData } from '../../../others/Interfaces/interfaces';
 import './CardDirect.scss';
@@ -9,10 +9,17 @@ interface CardDirectProps {
 }
 
 export function CardDirect({ chat }: CardDirectProps) {
-  const { setDirectsChat } = useContext(ChatContext);
+  const { setDirectsChat, activeChat } = useContext(ChatContext);
 
   function setChat(chat: DirectData) {
     setDirectsChat(chat.id);
+  }
+
+  function newMessagesVisible() {
+    if ((activeChat && activeChat.id === chat.id)
+      || (typeof chat.newMessages === 'undefined'))
+      return false;
+    return true;
   }
 
   return (
@@ -21,6 +28,13 @@ export function CardDirect({ chat }: CardDirectProps) {
         <div
           className='card__direct__icon'
           style={{ backgroundImage: `url(${chat.image})` }}>
+          <div className='card__direct_count'
+            style={{ display: newMessagesVisible() ? '' : 'none' }}>
+            {
+              typeof chat.newMessages !== 'undefined' &&
+                chat.newMessages > 9 ? '+9' : chat.newMessages
+            }
+          </div>
         </div>
         <div className='card__direct__name'>{chat.name}</div>
       </div>

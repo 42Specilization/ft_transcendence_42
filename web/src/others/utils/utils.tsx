@@ -2,9 +2,10 @@ import axios from 'axios';
 import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { ValidateTfa } from '../../components/TFA/ValidateTfa/ValidateTfa';
-import { IntraData } from '../Interfaces/interfaces';
+import { DirectData, IntraData } from '../Interfaces/interfaces';
 import { getInfos } from '../../pages/OAuth/OAuth';
 import { useQuery } from 'react-query';
+import { DoubleBubble } from '../../components/DoubleBubble/DoubleBubble';
 
 export function getAccessToken() {
   return (window.localStorage.getItem('token'));
@@ -45,12 +46,10 @@ export function RequireAuth({ children }: any) {
         return;
       }
     }
-
   );
 
-  // Estilizar 
   if (status === 'loading')
-    return <>Loading...</>;
+    return <DoubleBubble speed={5} customText='Loading...'></DoubleBubble>;
 
   if (isTfaValid === false) {
     return (
@@ -105,6 +104,9 @@ export async function getUserInDb(): Promise<IntraData> {
   try {
     const response = await axios(`http://${import.meta.env.VITE_API_HOST}:3000/auth/me`, config);
     const user: IntraData = response.data as IntraData;
+    const responseDirects = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/chat/getAllDirects`, config);
+    user.directs = responseDirects.data as DirectData[];
+    console.log(user.directs);
     return (user);
   } catch (err) {
     console.log('erro no utils getUserInDb', err);
@@ -146,7 +148,7 @@ export async function getIntraDataNotify(intraData: IntraData, setIntraData: Dis
 export const defaultIntra: IntraData = {
   email: 'ft_transcendence@gmail.com',
   first_name: 'ft',
-  image_url: 'nop',
+  image_url: 'userDefault.png',
   login: 'PingPong',
   usual_full_name: 'ft_transcendence',
   matches: '0',

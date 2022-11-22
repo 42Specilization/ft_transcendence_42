@@ -10,26 +10,26 @@ export class UpdateUserDto {
   //   message:
   //     'Username must contain only alpha-numerics characters',
   // })
-  nick?: string;
+    nick?: string;
 
   @IsOptional()
   @IsString({ message: 'Inform an image url!' })
-  imgUrl?: string;
+    imgUrl?: string;
 
   @IsOptional()
   @IsBoolean({ message: 'Value need be true of false' })
-  isTFAEnable?: boolean;
+    isTFAEnable?: boolean;
 
   @IsOptional()
   @IsBoolean({ message: 'Value need be true of false' })
-  tfaValidated?: boolean;
+    tfaValidated?: boolean;
 
   @IsOptional()
   @IsEmail({ message: 'Inform a valid email' })
-  tfaEmail?: string;
+    tfaEmail?: string;
 
   @IsOptional()
   @IsString({ message: 'Inform a valid code' })
-  tfaCode?: string;
+    tfaCode?: string;
 
 }

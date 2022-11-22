@@ -1,5 +1,5 @@
 import './ChatTalk.scss';
-import { DirectData, MsgToClient, MsgToServer } from '../../../others/Interfaces/interfaces';
+import { MsgToClient, MsgToServer } from '../../../others/Interfaces/interfaces';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ArrowBendUpLeft, PaperPlaneRight } from 'phosphor-react';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
@@ -8,6 +8,7 @@ import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import ReactTooltip from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
+import { actionsStatus } from '../../../adapters/status/statusState';
 
 // interface ChatTalkProps {
 
@@ -16,25 +17,45 @@ import { ChatContext } from '../../../contexts/ChatContext';
 export function ChatTalk(
   // { }: ChatTalkProps
 ) {
-
   const {
     activeChat, setActiveChat,
-    directsChat, setDirectsChat,
     friendsChat, setFriendsChat,
+    directsChat, setDirectsChat,
+    groupsChat, setGroupsChat
   } = useContext(ChatContext);
-  const { intraData, api, config } = useContext(IntraDataContext);
+
+  const { intraData, setIntraData, api, config } = useContext(IntraDataContext);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
   const [message, setMessage] = useState('');
 
   async function getActiveChat(path: string, id: string) {
     const response = await api.patch(path, { id: id }, config);
+    if (activeChat) {
+      setIntraData(prev => {
+        return {
+          ...prev,
+          directs: prev.directs.map(key => {
+            if (key.id === activeChat.id)
+              return { ...key, newMessages: undefined };
+            return key;
+          })
+        };
+      });
+    }
     setActiveChat(response.data);
+    setDirectsChat(null);
+    setFriendsChat(null);
+    setGroupsChat(null);
+    if (path == '/chat/getFriendDirect') {
+      actionsChat.joinChat(response.data.id);
+      await actionsStatus.newDirect(response.data.name, response.data.id);
+    }
   }
 
-  useEffect(() => {
-    if (activeChat)
-      getActiveChat('/chat/getDirect', activeChat.id);
-  }, [intraData]);
+  // useEffect(() => {
+  //   if (activeChat)
+  //     getActiveChat('/chat/getDirect', activeChat.id);
+  // }, [intraData]);
 
   useEffect(() => {
     if (directsChat)
@@ -92,6 +113,7 @@ export function ChatTalk(
               setActiveChat(null);
               setDirectsChat(null);
               setFriendsChat(null);
+              setGroupsChat(null);
               actionsChat.leaveChat(activeChat.id);
             }}
             />
@@ -113,7 +135,7 @@ export function ChatTalk(
           <div className='chat__talk__body'
             ref={refBody}
           >
-            {activeChat.messages?.map((msg: MsgToClient) => (
+            {activeChat.messages?.sort((a, b) => a.date < b.date ? -1 : 1).map((msg: MsgToClient) => (
               <ChatMessage key={msg.id} user={intraData.login} message={msg} />
             ))}
           </div>

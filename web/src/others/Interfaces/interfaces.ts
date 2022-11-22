@@ -32,6 +32,7 @@ export interface DirectData {
   image?: string;
   date: Date;
   messages?: MsgToClient[];
+  newMessages?: number;
 }
 
 export interface UserMsg {

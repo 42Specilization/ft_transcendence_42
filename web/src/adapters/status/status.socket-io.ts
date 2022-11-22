@@ -72,6 +72,11 @@ export function createSocketStatus({
     console.log('update Remove:');
   });
 
+  socket.on('updateDirect', async (chat: string) => {
+    actionsStatus.updateDirect(chat);
+    console.log('update Direct:');
+  });
+
   return socket;
 
 }

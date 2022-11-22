@@ -3,6 +3,8 @@ import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
 import { IntraData } from '../../others/Interfaces/interfaces';
 import { getAccessToken, getUserInDb } from '../../others/utils/utils';
+import { actionsChat } from '../chat/chatState';
+import { MsgToClient } from '../../../../api/dist/chat/chat.class';
 import {
   createSocketStatus,
   CreateSocketStatusOptions,
@@ -78,6 +80,20 @@ const actionsStatus = {
     stateStatus.socket?.emit('whoIsOnline');
   },
 
+  async newDirect(name: string, chat: string) {
+    stateStatus.socket?.emit('newDirect', { name: name, chat: chat });
+    if (stateStatus.setIntraData) {
+      const user = await getUserInDb();
+      stateStatus.setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData,
+          directs: user.directs,
+        };
+      });
+      // this.sortFriends();
+    }
+  },
+
   sortFriends() {
     if (stateStatus.setIntraData) {
       stateStatus.setIntraData((prevIntraData) => {
@@ -117,8 +133,11 @@ const actionsStatus = {
     if (stateStatus.setIntraData) {
       stateStatus.setIntraData((prevIntraData) => {
         return {
-          ...prevIntraData, friends: prevIntraData.friends.map(friend =>
-            user.login === friend.login ? user : friend)
+          ...prevIntraData,
+          friends: prevIntraData.friends.map(friend =>
+            user.login === friend.login ? user : friend),
+          directs: prevIntraData.directs.map(direct =>
+            user.login === direct.name ? { ...direct, image: user.image_url } : direct)
         };
       });
       this.sortFriends();
@@ -142,7 +161,11 @@ const actionsStatus = {
             oldUser.login === friend.login ? newUser : friend),
           blockeds: prevIntraData.blockeds.map(blocked =>
             oldUser.login === blocked.login ? newUser : blocked),
+          directs: prevIntraData.directs.map(direct =>
+            oldUser.login === direct.name ? { ...direct, name: newUser.login } : direct)
+
         };
+
       });
       this.sortFriends();
     }
@@ -180,7 +203,7 @@ const actionsStatus = {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
       stateStatus.setIntraData((prevIntraData) => {
-        return {...prevIntraData, blockeds: user.blockeds};
+        return { ...prevIntraData, blockeds: user.blockeds };
       });
     }
   },
@@ -189,18 +212,65 @@ const actionsStatus = {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
       stateStatus.setIntraData((prevIntraData) => {
-        return { ...prevIntraData, friends: user.friends.map((obj) => {
-          if (prevIntraData.friends.map(e => e.login).indexOf(obj.login) >= 0) {
-            const updateFriend = prevIntraData.friends.find(e => e.login === obj.login);
-            return typeof updateFriend !== 'undefined' ? updateFriend : obj;
-          }
-          return obj;
-        }),
-        blockeds: user.blockeds };
+        return {
+          ...prevIntraData, friends: user.friends.map((obj) => {
+            if (prevIntraData.friends.map(e => e.login).indexOf(obj.login) >= 0) {
+              const updateFriend = prevIntraData.friends.find(e => e.login === obj.login);
+              return typeof updateFriend !== 'undefined' ? updateFriend : obj;
+            }
+            return obj;
+          }),
+          blockeds: user.blockeds
+        };
       });
       this.sortFriends();
     }
   },
+
+  async updateDirect(chat: string) {
+    actionsChat.updateDirect(chat);
+    if (stateStatus.setIntraData) {
+      const user = await getUserInDb();
+      stateStatus.setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData,
+          directs: user.directs,
+        };
+      });
+    }
+  },
+
+  updateMessageTime(message: MsgToClient) {
+    if (stateStatus.setIntraData) {
+      stateStatus.setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData,
+          directs: prevIntraData.directs.map((key) => {
+            if (key.id === message.chat) {
+              return { ...key, date: message.date };
+            }
+            return key;
+          }),
+        };
+      });
+    }
+  },
+
+  updateNewMessages(message: MsgToClient) {
+    if (stateStatus.setIntraData) {
+      stateStatus.setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData,
+          directs: prevIntraData.directs.map((key) => {
+            if (key.id === message.chat) {
+              return { ...key, newMessages: key.newMessages ? key.newMessages + 1 : 1 };
+            }
+            return key;
+          }),
+        };
+      });
+    }
+  }
 
 };
 

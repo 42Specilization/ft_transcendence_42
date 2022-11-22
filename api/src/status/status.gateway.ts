@@ -181,4 +181,13 @@ export class StatusGateway
     });
   }
 
+  @SubscribeMessage('newDirect')
+  handleNewDirect(@ConnectedSocket() client: Socket, @MessageBody() { name, chat }: { name: string, chat: string }) {
+    client;
+    if (this.mapUserData.hasValue(name)) {
+      this.mapUserData.keyOf(name).forEach(socketId => {
+        this.server.to(socketId).emit('updateDirect', chat);
+      });
+    }
+  }
 }

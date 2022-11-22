@@ -49,6 +49,19 @@ export class ChatService {
     return group;
   }
 
+  async getAllChats(login: string) {
+    const user = await this.userService.findUserDirectByNick(login);
+    if (!user)
+      throw new BadRequestException('User Not Found getDirects');
+    // const directs: DirectDto[] = user.directs.map((direct) => {
+    //   const friend = direct.users.filter((key) => key.nick != user.nick).at(0);
+    //   return this.createDirectDto(direct, friend);
+    // });
+    const chats = [...user.directs];
+    return chats.map((chat) => chat.id);
+  }
+
+
   async saveMessage(msgServer: MsgToServer, type: string): Promise<MsgToClient> {
     const user: User = await this.userService.findUserByNick(msgServer.user) as User;
 

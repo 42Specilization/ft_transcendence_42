@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { useEffect, useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { useQuery } from 'react-query';
 import { FriendProfileGeneral } from '../../components/FriendProfile/FriendProfileGeneral/FriendProfileGeneral';
 import { FriendProfileHistoric } from '../../components/FriendProfile/FriendProfileHistoric/FriendProfileHistoric';
@@ -34,14 +33,14 @@ export function FriendProfile({ login }: FriendProfileProps) {
         <ul className='friendProfile__header__list'>
           <li className={`friendProfile__header__list__item
           ${tableSelected === 'General' ?
-              'friendProfile__header__list__item__selected' : ''}`}>
+      'friendProfile__header__list__item__selected' : ''}`}>
             <button onClick={() => setTableSelected('General')}>
               General
             </button>
           </li>
           <li className={`friendProfile__header__list__item
           ${tableSelected === 'Historic' ?
-              'friendProfile__header__list__item__selected' : ''}`}>
+      'friendProfile__header__list__item__selected' : ''}`}>
             <button onClick={() => setTableSelected('Historic')}>
               Historic
             </button>

@@ -3,7 +3,6 @@ import { Dispatch, SetStateAction, createContext, useState, ReactNode, useEffect
 import { actionsChat } from '../adapters/chat/chatState';
 import { DirectData, FriendData } from '../others/Interfaces/interfaces';
 
-
 interface IChatContext {
   activeChat: DirectData | null;
   groupsChat: string | null;
@@ -37,9 +36,11 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
   const [friendsChat, setFriendsChat] = useState<FriendData | null>(null);
   const [groupsChat, setGroupsChat] = useState<string | null>(null);
 
+  function getActiveChat(): DirectData | null {
+    return activeChat;
+  }
   useEffect(() => {
-
-    actionsChat.initializeSocketChat(setActiveChat);
+    actionsChat.initializeSocketChat(getActiveChat, setActiveChat);
     return () => {
       actionsChat.disconnectSocketChat();
     };

@@ -8,7 +8,7 @@ import { Dropzone } from './Dropzone';
 
 export function UserImage() {
 
-  const { intraData, updateImageTime } = useContext(IntraDataContext);
+  const { intraData } = useContext(IntraDataContext);
   const [selectedFile, setSelectedFile] = useState<File>();
   const currentStateStatus = useSnapshot(stateStatus);
   async function handleSubmit() {
@@ -38,7 +38,7 @@ export function UserImage() {
 
   return (
     <div className='userImage__image'>
-      <img src={`${intraData.image_url}?${updateImageTime}`} alt='User Image' />
+      <img src={`${intraData.image_url}`} alt='User Image' />
       <div className='userImage__button_text'>
         <Dropzone onFileUploaded={setSelectedFile} />
       </div>
