@@ -36,11 +36,11 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
   const [friendsChat, setFriendsChat] = useState<FriendData | null>(null);
   const [groupsChat, setGroupsChat] = useState<string | null>(null);
 
-  function getActiveChat(): DirectData | null {
-    return activeChat;
-  }
+  // function getActiveChat(): DirectData | null {
+  //   return activeChat;
+  // }
   useEffect(() => {
-    actionsChat.initializeSocketChat(getActiveChat, setActiveChat);
+    actionsChat.initializeSocketChat(setActiveChat);
     return () => {
       actionsChat.disconnectSocketChat();
     };

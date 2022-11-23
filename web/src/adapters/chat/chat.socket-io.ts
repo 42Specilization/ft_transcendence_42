@@ -31,7 +31,7 @@ export function createSocketChat({
 
   socket.on('msgToClient', (message: MsgToClient) => {
     actionsChat.msgToClient(message);
-    console.log('msg to client:', message);
+    // console.log('msg to client:', message);
   });
 
   return socket;

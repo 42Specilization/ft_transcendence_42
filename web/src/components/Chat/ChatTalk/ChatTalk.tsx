@@ -155,23 +155,24 @@ export function ChatTalk(
           <div className='chat__talk__body'
             ref={refBody}
           >
-            {activeChat.messages.sort((a, b) => a.date < b.date ? -1 : 1)
-            .map((msg: MsgToClient, index: number) => {
-              if (msg.breakpoint) {
-                const len = activeChat.messages?.length - 1;
-                return (
-                  <div className='chat__talk__unread__message'
-                        style={{ display: index !== len ? '' : 'none' }}
-                        key={crypto.randomUUID()}
-                  >
-                    <div/><p>unread message: {len - index}</p><div/>
-                  </div>);
+            {activeChat.messages
+              .sort((a, b) => a.date < b.date ? -1 : 1)
+              .map((msg: MsgToClient, index: number) => {
+                if (msg.breakpoint) {
+                  const len = activeChat.messages?.length - 1;
+                  return (
+                    <div className='chat__talk__unread__message'
+                      style={{ display: index !== len ? '' : 'none' }}
+                      key={crypto.randomUUID()}
+                    >
+                      <div/><p>unread message: {len - index}</p><div/>
+                    </div>);
                 }
-              return <ChatMessage key={crypto.randomUUID()}
-                                  user={intraData.login}
-                                  message={msg} />;
-            }
-            )}
+                return <ChatMessage key={crypto.randomUUID()}
+                  user={intraData.login}
+                  message={msg} />;
+              }
+              )}
           </div>
           {friendProfileVisible &&
             <ProfileFriendModal

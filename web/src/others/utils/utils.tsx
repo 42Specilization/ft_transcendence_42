@@ -106,8 +106,8 @@ export async function getUserInDb(): Promise<IntraData> {
     const user: IntraData = response.data as IntraData;
     const responseDirects = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/chat/getAllDirects`, config);
     user.directs = responseDirects.data as DirectData[];
-    console.log('result', responseDirects);
-    console.log('user Directs', user.directs);
+    // console.log('result', responseDirects);
+    // console.log('user Directs', user.directs);
     return (user);
   } catch (err) {
     console.log('erro no utils getUserInDb', err);

@@ -19,9 +19,12 @@ const stateChat = proxy<AppStateChat>({});
 
 const actionsChat = {
   initializeSocketChat: (setActiveChat:
-    Dispatch<SetStateAction<DirectData | null>>): void => {
+    Dispatch<SetStateAction<DirectData | null>>
+  ): void => {
+
     if (!stateChat.socket) {
       const createSocketOptions: CreateSocketChatOptions = {
+        accessToken: getAccessToken(),
         socketChatIOUrl: socketChatIOUrl,
         actionsChat: actionsChat,
         stateChat: stateChat,
@@ -30,7 +33,6 @@ const actionsChat = {
       stateChat.setActiveChat = ref(setActiveChat);
       return;
     }
-
     if (!stateChat.socket.connected) {
       stateChat.socket.connect();
       stateChat.setActiveChat = ref(setActiveChat);

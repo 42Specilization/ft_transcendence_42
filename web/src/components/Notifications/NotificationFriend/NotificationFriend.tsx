@@ -30,7 +30,7 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
       removeNotify();
       actionsStatus.newFriend(notify.user_source);
     } catch (err: any) {
-      console.log('result', err.response.data.message);
+      // console.log('result', err.response.data.message);
       if (err.response.data.message == 'This user already is your friend') {
         removeNotify();
       }

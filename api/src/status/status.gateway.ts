@@ -35,7 +35,7 @@ export class StatusGateway
 
     this.logger.log(`WS client with id: ${client.id} connected of StatusSocket!`);
     this.logger.debug(`Number of connected StatusSockets: ${sockets.size}`);
-    this.mapUserData.debug();
+    // this.mapUserData.debug();
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
@@ -44,7 +44,7 @@ export class StatusGateway
     this.newUserOffline(client);
     this.logger.log(`Disconnected of StatusSocket the socket id: ${client.id}`);
     this.logger.debug(`Number of connected StatusSockets: ${sockets.size}`);
-    this.mapUserData.debug();
+    // this.mapUserData.debug();
   }
 
   @SubscribeMessage('iAmOnline')
@@ -57,7 +57,7 @@ export class StatusGateway
     }
 
     this.logger.debug(`iAmOnline => Client: ${client.id}, email: |${newUser.login}|`);
-    this.mapUserData.debug();
+    // this.mapUserData.debug();
   }
 
   @SubscribeMessage('whoIsOnline')
@@ -98,7 +98,7 @@ export class StatusGateway
       this.server.to(socketId).emit('updateUserLogin', oldUser, newUser)
     );
 
-    this.mapUserData.debug();
+    // this.mapUserData.debug();
   }
 
   @SubscribeMessage('changeImage')
