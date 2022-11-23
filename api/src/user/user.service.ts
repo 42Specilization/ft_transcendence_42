@@ -71,7 +71,6 @@ export class UserService {
       user.games = [];
     }
     user.games.push(game);
-
     if (nick === game.winner.nick) {
       user.wins = this.incrementStat(user.wins);
     } else {
@@ -282,7 +281,7 @@ export class UserService {
     user.tfaCode = tfaCode ? bcrypt.hashSync(tfaCode, 8) : user.tfaCode;
     if (imgUrl) {
       if (user.imgUrl !== 'userDefault.png'
-       && !user.imgUrl.includes('https://')) {
+        && !user.imgUrl.includes('https://')) {
         fs.rm(
           `../web/public/${user.imgUrl}`,
           function (err) {
@@ -292,7 +291,7 @@ export class UserService {
       }
       user.imgUrl = imgUrl;
     }
-    
+
     if (tfaCode == null) {
       user.tfaCode = '';
     }
@@ -320,12 +319,12 @@ export class UserService {
 
   alreadyFriends(user: User, friend: User) {
     const alreadyFriends = friend.relations.filter((relation) => {
-      if (relation.type === 'friend' 
+      if (relation.type === 'friend'
         && relation.passive_user.nick == user.nick)
         return relation;
-      return ;
+      return;
     });
-    
+
     if (alreadyFriends.length > 0)
       return true;
     return false;
@@ -360,7 +359,7 @@ export class UserService {
     });
     if (duplicated.length > 0)
       throw new BadRequestException('This user already your order');
-      
+
     const alreadyFriends = this.alreadyFriends(user, friend);
     if (alreadyFriends)
       throw new BadRequestException('This user already is your friend');
@@ -407,18 +406,18 @@ export class UserService {
   async acceptFriend(email: string, id: string) {
     const user = await this.findUserByEmail(email) as User;
     const requestedNotify: Notify[] = user.notify.filter((notify) => notify.id === id);
-    
+
     if (!requestedNotify.at(0))
       throw new BadRequestException('friend not found');
-    
+
     console.log('apagou a notificaçao');
     const friend = await this.findUserByEmail(requestedNotify.at(0)?.user_source.email as string) as User;
     const alreadyFriends = this.alreadyFriends(user, friend);
-    if (alreadyFriends){
+    if (alreadyFriends) {
       this.popNotification(email, id);
       throw new BadRequestException('This user already is your friend');
     }
-      
+
     const relationUser = new Relations();
     const relationFriend = new Relations();
     relationUser.passive_user = friend;
@@ -427,7 +426,7 @@ export class UserService {
     relationFriend.type = 'friend';
     user.relations.push(relationUser);
     friend.relations.push(relationFriend);
-    
+
     try {
       await user.save();
       await friend.save();

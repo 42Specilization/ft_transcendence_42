@@ -75,10 +75,16 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
 
   socket.on('connect_error', () => {
     actions.updateServerError(true);
+    setTimeout(() => window.location.reload(), 10000);
+  });
+
+  socket.on('user-already-on-connected', () => {
+    actions.updateServerError(true);
+    setTimeout(() => window.location.reload(), 10000);
   });
 
   function updateBallEmit() {
-    if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.player1?.socketId === state.me?.id) {
+    if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.player1?.socketId === state.socket?.id) {
       state.socket?.emit('update-ball', state.game?.room);
     }
   }

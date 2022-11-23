@@ -22,6 +22,7 @@ export function WaitingRoom() {
     <div className='waiting-room'>
       <h1>Waiting for another player!</h1>
       <Loader />
+      <p>Press Q to Leave!</p>
     </div>
   );
 }
