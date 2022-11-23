@@ -1,6 +1,6 @@
 @import '../../../others/styles/global.scss';
 
-.gameMenu__withFriend {
+.gameMenu__Instructions {
   @include displayFlex(center, column);
   padding: 15px;
   gap: 17px;
@@ -10,7 +10,7 @@
   }
 }
 
-.gameMenu__withFriend__list {
+.gameMenu__Instructions__list {
   list-style-type: none;
 
   li {
@@ -19,7 +19,7 @@
 }
 
 @media (min-width: 900px) {
-  .gameMenu__withFriend {
+  .gameMenu__Instructions {
     flex-direction: column;
     border-top: none;
     h2 {

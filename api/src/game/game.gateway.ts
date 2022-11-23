@@ -81,8 +81,11 @@ export class GameGateway
    */
   @SubscribeMessage('join-game')
   async joinGame(@ConnectedSocket() user: Socket, @MessageBody() playerInfos: IPlayerInfos) {
-    const index = this.checkGameArray(playerInfos.isWithPowerUps);
-
+    const index = this.checkGameArray(playerInfos);
+    if (index === -1) {
+      user.emit('user-already-on-connected');
+      user.disconnect();
+    }
     const game = this.queue[index];
     if (game.player1.socketId === '') {
       game.player1.socketId = user.id;
@@ -90,7 +93,7 @@ export class GameGateway
       user.join(game.room.toString());
       this.io.to(game.room.toString()).emit('update-game', game.getGameDto());
       this.logger.debug(
-        `Player one connected name: ${playerInfos.name} socket id:${user.id} Game room:${game.room}`
+        `Player one connected name: ${playerInfos.name} socket id:${user.id} Game room:${game.room}  custom ${playerInfos.isWithPowerUps}`
       );
     } else if (game.player2.socketId === '') {
       game.player2.socketId = user.id;
@@ -167,16 +170,19 @@ export class GameGateway
       return;
     }
     const strRoom = room.toString();
-    if (game.update()) {
+    const updateResult = game.update();
+    if (updateResult) {
       this.io.to(strRoom).emit('update-score', game.score);
-      this.io.to(strRoom).emit('update-powerUp', game.powerUpBox);
+      if (game.isWithPowerUps) {
+        this.io.to(strRoom).emit('update-powerUp', game.powerUpBox);
+      }
     }
     if (game.checkWinner()) {
       this.io.to(strRoom).emit('end-game', game);
     } else {
-      this.io.to(strRoom).emit('update-ball', game.ball);
+      this.io.to(strRoom).emit('update-ball', game.ball, updateResult);
     }
-    if (game.powerUpBox.updateSend) {
+    if (game.isWithPowerUps && game.powerUpBox.updateSend) {
       this.io.to(strRoom).emit('update-powerUp', game.powerUpBox);
       if (game.powerUpBox.isActive) {
         this.io.to(strRoom).emit('update-player', game.player1, game.player2);
@@ -349,13 +355,16 @@ export class GameGateway
    * Otherwise another instance of game will be create on queue and this player will stay there waiting for another player.
    * @returns index of the game on queue array.
    */
-  checkGameArray(isWithPowerUps: boolean): number {
+  checkGameArray(player: IPlayerInfos): number {
     if (this.queue.length > 0) {
       for (let i = 0; i < this.queue.length; i++) {
+        if (this.queue[i].player1.name === player.name) {
+          return (-1);
+        }
         if (
           (this.queue[i].player1.socketId === '' ||
             this.queue[i].player2.socketId === '') &&
-          !this.queue[i].hasEnded && this.queue[i].isWithPowerUps === isWithPowerUps
+          !this.queue[i].hasEnded && this.queue[i].isWithPowerUps === player.isWithPowerUps
         )
           return i;
       }
@@ -364,7 +373,7 @@ export class GameGateway
       new Game(
         this.checkGameRoom(randomInt(100)),
         this.queue.length - 1 > 0 ? this.queue.length - 1 : this.queue.length,
-        isWithPowerUps
+        player.isWithPowerUps
       )
     );
     return this.queue.length - 1;

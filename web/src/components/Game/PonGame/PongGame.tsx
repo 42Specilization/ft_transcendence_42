@@ -2,7 +2,7 @@
 import { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import { Canvas, drawCircle, drawFillRect, drawNet, drawPowerUpBox, drawText, } from '../Canvas/Canvas';
-import { state } from '../../../adapters/game/gameState';
+import { actions, state } from '../../../adapters/game/gameState';
 import { getEndGameData, getGameData } from './data';
 import './PongGame.scss';
 
@@ -49,15 +49,11 @@ export function PongGame() {
       drawPowerUpBox(context, currentState.powerUp.position.x, currentState.powerUp.position.y, img);
     }
 
-    if (currentState.game?.hasEnded) {
+    if (currentState.game?.hasEnded && !currentState.serverError) {
       if (!context) {
         return;
       }
-      const endGameData = getEndGameData(context);
-      if (!endGameData) {
-        return;
-      }
-      const { endMessage, quitHelp } = endGameData;
+      const { endMessage, quitHelp } = getEndGameData(context, currentState.game.msgEndGame);
       drawText(context, endMessage);
       drawText(context, quitHelp);
       return;
@@ -68,34 +64,49 @@ export function PongGame() {
     drawGame();
   }, [currentState.game, currentState.ball, currentState.player1, currentState.player2, currentState.score]);
 
+  //Check with the team if is better the modal ou draw on canvas to show error on socket.
+  useEffect(() => {
+    if (!context) {
+      return;
+    }
+    const { endMessage, quitHelp } = getEndGameData(context, 'Server Error!');
+    drawText(context, endMessage);
+    drawText(context, quitHelp);
+  }, [currentState.serverError]);
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyboard);
+    window.onkeydown = function handleKeyboard(event: KeyboardEvent) {
+      switch (event.key) {
+        case 'ArrowUp':
+        case 'w':
+        case 'W':
+          move('up');
+          break;
+
+        case 'ArrowDown':
+        case 's':
+        case 'S':
+          move('down');
+          break;
+
+        case 'q':
+        case 'Escape':
+          window.location.reload();
+          break;
+
+        default:
+          break;
+      }
+    };
   }, []);
 
-  function handleKeyboard(event: KeyboardEvent) {
-    switch (event.key) {
-      case 'ArrowUp':
-      case 'w':
-      case 'W':
-        move('up');
-        break;
-
-      case 'ArrowDown':
-      case 's':
-      case 'S':
-        move('down');
-        break;
-
-      case 'q':
-      case 'Escape':
-        window.location.reload();
-        break;
-
-      default:
-        break;
-    }
-  }
+  useEffect(() => {
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        actions.leaveGame();
+      }
+    });
+  }, []);
 
   return (
     <div className='pongGame'>

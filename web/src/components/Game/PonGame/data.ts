@@ -80,15 +80,12 @@ interface IEndGameData {
   quitHelp: TextCanvas;
 }
 
-export function getEndGameData(context: CanvasRenderingContext2D): IEndGameData | undefined {
-  if (!state.game) {
-    return;
-  }
+export function getEndGameData(context: CanvasRenderingContext2D, msgEndGame: string): IEndGameData {
   const endMessage: TextCanvas = {
     x: 2 * context.canvas.width / 4,
     y: context.canvas.height / 2,
     color: 'WHITE',
-    msg: state.game.msgEndGame,
+    msg: msgEndGame,
     fontSize: '50'
   };
   const quitHelp: TextCanvas = {
