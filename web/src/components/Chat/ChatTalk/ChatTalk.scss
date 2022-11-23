@@ -53,6 +53,25 @@
   @include scrollBar();
 }
 
+.chat__talk__unread__message {
+  @include displayFlex();
+
+  div {
+    width:30%;
+    height: 5px;
+    background-color: $primaryColor;
+    border-radius: 20px;
+  }
+
+  p {
+    @include displayFlex();
+    background-color: $primaryColor;
+    padding: 0px 30px 0px 30px;
+    border-radius: 20px;
+  }
+}
+
+
 .chat__talk__footer {
   @include displayFlex(space-between);
   width: 100%;

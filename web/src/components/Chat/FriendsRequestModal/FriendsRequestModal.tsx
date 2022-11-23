@@ -1,12 +1,9 @@
 import './FriendsRequestModal.scss';
-import axios from 'axios';
 import { PaperPlaneRight } from 'phosphor-react';
-import { Dispatch, SetStateAction, useState } from 'react';
-import { useSnapshot } from 'valtio';
-import { stateStatus } from '../../../adapters/status/statusState';
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
+import { actionsStatus } from '../../../adapters/status/statusState';
 import { Modal } from '../../Modal/Modal';
-
-
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
 interface FriendsRequestModalProps {
   setIsAddFriendModalVisible: Dispatch<SetStateAction<boolean>>;
@@ -14,10 +11,9 @@ interface FriendsRequestModalProps {
 
 export function FriendRequestModal({ setIsAddFriendModalVisible }: FriendsRequestModalProps) {
 
-  const currentStateStatus = useSnapshot(stateStatus);
+  const { api, config } = useContext(IntraDataContext);
   const [placeHolder, setPlaceHolder] = useState('');
   const [userTarget, setUserTarget] = useState('');
-
 
   function handleKeyEnter(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -25,30 +21,16 @@ export function FriendRequestModal({ setIsAddFriendModalVisible }: FriendsReques
   }
 
   async function sendFriendRequest() {
-    const token = window.localStorage.getItem('token');
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
-    };
     try {
-      await axios.patch(
-        `http://${import.meta.env.VITE_API_HOST}:3000/user/sendFriendRequest`,
-        { nick: userTarget },
-        config
-      );
+      await api.patch('/user/sendFriendRequest', { nick: userTarget }, config);
       setIsAddFriendModalVisible(false);
       setPlaceHolder('');
-      currentStateStatus.socket?.emit('newNotify', userTarget);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      actionsStatus.newNotify(userTarget);
     } catch (err : any) {
-      console.log(err);
       setPlaceHolder(err.response.data.message);
-
     }
     setUserTarget('');
   }
-
 
   return (
     <Modal

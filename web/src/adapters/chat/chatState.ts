@@ -12,33 +12,27 @@ import {
 
 export interface AppStateChat {
   socket?: Socket;
-  accessToken?: string | null;
-  getActiveChat?: () => DirectData | null;
   setActiveChat?: Dispatch<SetStateAction<DirectData | null>> | null;
 }
 
 const stateChat = proxy<AppStateChat>({});
 
 const actionsChat = {
-  initializeSocketChat: (getActiveChat: () => DirectData | null,
-    setActiveChat: Dispatch<SetStateAction<DirectData | null>>): void => {
+  initializeSocketChat: (setActiveChat:
+    Dispatch<SetStateAction<DirectData | null>>): void => {
     if (!stateChat.socket) {
       const createSocketOptions: CreateSocketChatOptions = {
-        accessToken: getAccessToken(),
         socketChatIOUrl: socketChatIOUrl,
         actionsChat: actionsChat,
         stateChat: stateChat,
-
       };
       stateChat.socket = ref(createSocketChat(createSocketOptions));
-      stateChat.getActiveChat = ref(getActiveChat);
       stateChat.setActiveChat = ref(setActiveChat);
       return;
     }
 
     if (!stateChat.socket.connected) {
       stateChat.socket.connect();
-      stateChat.getActiveChat = ref(getActiveChat);
       stateChat.setActiveChat = ref(setActiveChat);
       return;
     }
@@ -78,14 +72,8 @@ const actionsChat = {
         return prev;
       });
     }
-    actionsStatus.updateMessageTime(message);
-    actionsStatus.updateNewMessages(message);
+    actionsStatus.updateDirectInfos(message);
   },
-
-  async updateDirect(chat: string) {
-    actionsChat.joinChat(chat);
-  },
-
 };
 
 export type AppActionsChat = typeof actionsChat;

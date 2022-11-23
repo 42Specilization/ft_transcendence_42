@@ -76,8 +76,6 @@ export class ChatService {
     msgDb.date = new Date(Date.now());
     msgDb.msg = msgServer.msg;
 
-    if (chat.messages && chat.messages.length === 0)
-      chat.messages = [];
     chat.messages.push(msgDb);
     chat.date = msgDb.date;
 

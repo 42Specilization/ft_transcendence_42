@@ -1,11 +1,10 @@
 import './CardFriend.scss';
+import ReactTooltip from 'react-tooltip';
 import { FriendData } from '../../../others/Interfaces/interfaces';
 import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { DotsThreeVertical, Prohibit, Sword, UserMinus } from 'phosphor-react';
-import ReactTooltip from 'react-tooltip';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import { useSnapshot } from 'valtio';
-import { stateStatus } from '../../../adapters/status/statusState';
+import { actionsStatus } from '../../../adapters/status/statusState';
 import { ChatContext } from '../../../contexts/ChatContext';
 
 interface CardFriendProps {
@@ -16,7 +15,6 @@ interface CardFriendProps {
 export function CardFriend({ friend, setTableSelected }: CardFriendProps) {
   const { setFriendsChat } = useContext(ChatContext);
   const [isTableFriendUsersMenu, setIsTableFriendUsersMenu] = useState(false);
-  const currentStateStatus = useSnapshot(stateStatus);
   const { setIntraData, api, config } = useContext(IntraDataContext);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function selectActiveFriend(e: any) {
@@ -34,7 +32,7 @@ export function CardFriend({ friend, setTableSelected }: CardFriendProps) {
         friends: prevIntraData.friends.filter((key) => key.login != friend.login)
       };
     });
-    currentStateStatus.socket?.emit('deleteFriend', friend.login);
+    actionsStatus.removeFriend(friend.login);
   }
 
   async function handleBlockFriend() {
@@ -46,7 +44,7 @@ export function CardFriend({ friend, setTableSelected }: CardFriendProps) {
         friends: prevIntraData.friends.filter((key) => key.login != friend.login),
       };
     });
-    currentStateStatus.socket?.emit('deleteFriend', friend.login);
+    actionsStatus.blockFriend(friend.login);
   }
 
   return (

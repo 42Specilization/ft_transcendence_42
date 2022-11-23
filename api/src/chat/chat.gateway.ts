@@ -68,7 +68,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   }
 
   @SubscribeMessage('msgToServer')
-  async handleMsgToServer(@ConnectedSocket() client: Socket, @MessageBody() { message, type }: { message: MsgToServer, type: string }) {
+  async handleMsgToServer(@ConnectedSocket() client: Socket,
+    @MessageBody() { message, type }: { message: MsgToServer, type: string }) {
     const msgToClient: MsgToClient = await this.chatService.saveMessage(message, type);
     this.server.to(message.chat).emit('msgToClient', msgToClient);
     this.logger.debug(`Client ${client.id} send message : |${msgToClient}|`);

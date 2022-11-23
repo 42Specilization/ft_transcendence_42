@@ -25,11 +25,8 @@ export function createSocketStatus({
     transports: ['websocket', 'polling'],
   });
 
-  socket.on('connect', () => {
-    stateStatus.socket?.emit('iAmOnline', {
-      login: stateStatus.me?.login,
-      image_url: stateStatus.me?.image_url
-    });
+  socket.on('connect', async () => {
+    actionsStatus.iAmOnline();
   });
 
   socket.on('onlineUsers', (users: UserData[]) => {
@@ -37,19 +34,24 @@ export function createSocketStatus({
     console.log('online users:', users);
   });
 
-  socket.on('updateUser', (user: UserData) => {
-    actionsStatus.updateUser(user);
-    console.log('user update:', user);
-  });
-
   socket.on('updateYourself', (user: UserData) => {
     actionsStatus.updateYourSelf(user);
     console.log('update yourself:', user);
   });
 
+  socket.on('updateUserStatus', (user: UserData) => {
+    actionsStatus.updateUserStatus(user);
+    console.log('update user status:', user);
+  });
+
   socket.on('updateUserLogin', (oldUser: UserData, newUser: UserData) => {
     actionsStatus.updateUserLogin(oldUser, newUser);
-    console.log('update user login:', newUser);
+    console.log('update user login:', oldUser.login, '-> ',newUser.login);
+  });
+
+  socket.on('updateUserImage', (user: UserData) => {
+    actionsStatus.updateUserImage(user);
+    console.log('update user status:', user);
   });
 
   socket.on('updateNotify', async () => {
@@ -64,17 +66,17 @@ export function createSocketStatus({
 
   socket.on('updateBlocked', async () => {
     actionsStatus.updateBlocked();
-    console.log('update Blocked:');
+    console.log('update blocked:');
   });
 
-  socket.on('updateRemove', async () => {
-    actionsStatus.updateRemove();
-    console.log('update Remove:');
+  socket.on('updateFriendBlocked', async () => {
+    actionsStatus.updateFriendBlocked();
+    console.log('remove friend, add blocked:');
   });
 
   socket.on('updateDirect', async (chat: string) => {
-    actionsStatus.updateDirect(chat);
-    console.log('update Direct:');
+    actionsStatus.updateDirects(chat);
+    console.log('update direct:');
   });
 
   return socket;

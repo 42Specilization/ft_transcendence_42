@@ -13,7 +13,7 @@ $ChatDirectsHeaderHeight: 50px;
   width: 100%;
   height: $ChatDirectsHeaderHeight;
   color: white;
-  border-radius: 15px 15px 15px 15px;
+  border-radius: 15px;
   background-color: $primaryColor;
 }
 
@@ -23,7 +23,6 @@ $ChatDirectsHeaderHeight: 50px;
   padding-top: 10px;
   @include scrollBar();
 }
-
 
 .direct__tab__header__icon {
   @include displayFlex(center);

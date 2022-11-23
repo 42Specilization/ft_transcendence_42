@@ -43,7 +43,6 @@ export function ChatTalk(
         ...prev,
         directs: prev.directs.map(key => {
           if (key.id === activeChat?.id) {
-            console.log('entro no if');
             return { ...key, newMessages: 0 };
           }
           return key;
@@ -110,7 +109,8 @@ export function ChatTalk(
       setActiveChat(prev => {
         if (prev) {
           return {
-            ...prev, messages: prev.messages.filter(msg => msg.breakpoint !== true)
+            ...prev,
+            messages: prev.messages.filter(msg => msg.breakpoint !== true)
           };
         }
         return prev;
@@ -155,10 +155,21 @@ export function ChatTalk(
           <div className='chat__talk__body'
             ref={refBody}
           >
-            {activeChat.messages?.sort((a, b) => a.date < b.date ? -1 : 1).map((msg: MsgToClient, index: number) => {
-              if (msg.breakpoint)
-                return <p style={{ display: index !== activeChat.messages?.length - 1 ? '' : 'none' }} key={crypto.randomUUID()}>breakpoint de {msg.user.login} na posição = {index}</p>;
-              return <ChatMessage key={crypto.randomUUID()} user={intraData.login} message={msg} />;
+            {activeChat.messages.sort((a, b) => a.date < b.date ? -1 : 1)
+            .map((msg: MsgToClient, index: number) => {
+              if (msg.breakpoint) {
+                const len = activeChat.messages?.length - 1;
+                return (
+                  <div className='chat__talk__unread__message'
+                        style={{ display: index !== len ? '' : 'none' }}
+                        key={crypto.randomUUID()}
+                  >
+                    <div/><p>unread message: {len - index}</p><div/>
+                  </div>);
+                }
+              return <ChatMessage key={crypto.randomUUID()}
+                                  user={intraData.login}
+                                  message={msg} />;
             }
             )}
           </div>

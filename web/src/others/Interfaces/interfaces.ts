@@ -1,11 +1,3 @@
-export interface NotificationData {
-  id: string;
-  viewed: boolean;
-  type: string;
-  target_nick: string;
-  source_nick: string;
-}
-
 export interface NotifyData {
   id: string;
   type: string;

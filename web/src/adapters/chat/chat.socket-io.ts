@@ -16,7 +16,6 @@ export function createSocketChat({
   accessToken,
   socketChatIOUrl,
   actionsChat,
-  // stateChat,
 }: CreateSocketChatOptions): Socket {
   const socket = io(socketChatIOUrl, {
     auth: {

@@ -14,7 +14,6 @@ import {
 import { Socket, Namespace } from 'socket.io';
 import { WsCatchAllFilter } from 'src/socket/exceptions/ws-catch-all-filter';
 import { MapUserData, newUserData, UserData } from './status.class';
-// import { ChatService } from 'src/chat/chat.service';
 
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({ namespace: 'status' })
@@ -22,8 +21,6 @@ export class StatusGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
 
   @WebSocketServer() server: Namespace;
-
-  // constructor(private readonly chatService: ChatService) { }
 
   private logger: Logger = new Logger(StatusGateway.name);
 
@@ -38,7 +35,7 @@ export class StatusGateway
 
     this.logger.log(`WS client with id: ${client.id} connected of StatusSocket!`);
     this.logger.debug(`Number of connected StatusSockets: ${sockets.size}`);
-    // this.mapUserData.debug();
+    this.mapUserData.debug();
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
@@ -56,8 +53,9 @@ export class StatusGateway
     this.mapUserData.set(client.id, newUser);
 
     if (this.mapUserData.keyOf(newUser.login).length == 1) {
-      client.broadcast.emit('updateUser', newUser);
+      client.broadcast.emit('updateUserStatus', newUser);
     }
+
     this.logger.debug(`iAmOnline => Client: ${client.id}, email: |${newUser.login}|`);
     this.mapUserData.debug();
   }
@@ -73,11 +71,8 @@ export class StatusGateway
     user.status = 'offline';
 
     if (this.mapUserData.keyOf(user.login).length == 1) {
-      this.server.emit('updateUser', this.mapUserData.valueOf(client.id));
+      this.server.emit('updateUserStatus', this.mapUserData.valueOf(client.id));
     }
-
-    // this.chatService.setBreakpoint(user.login);
-
     this.mapUserData.delete(client.id);
 
     this.logger.debug(`iAmOffine => Client: ${client.id}, email: |${user.login}|`);
@@ -85,7 +80,8 @@ export class StatusGateway
 
 
   @SubscribeMessage('changeLogin')
-  handleChangeLogin(@ConnectedSocket() client: Socket, @MessageBody() newLogin: string) {
+  handleChangeLogin(@ConnectedSocket() client: Socket,
+    @MessageBody() newLogin: string) {
     const oldUser = this.mapUserData.valueOf(client.id);
     const newUser: UserData = newUserData(
       oldUser.status,
@@ -102,12 +98,12 @@ export class StatusGateway
       this.server.to(socketId).emit('updateUserLogin', oldUser, newUser)
     );
 
-    // this.io.of('/chat').emit('msgTeste');
     this.mapUserData.debug();
   }
 
   @SubscribeMessage('changeImage')
-  handleChangeImage(@ConnectedSocket() client: Socket, @MessageBody() image_url: string) {
+  handleChangeImage(@ConnectedSocket() client: Socket,
+    @MessageBody() image_url: string) {
     const oldUser = this.mapUserData.valueOf(client.id);
     const newUser: UserData = newUserData(
       oldUser.status,
@@ -121,13 +117,12 @@ export class StatusGateway
       this.server.to(socketId).emit('updateYourself', newUser)
     );
     this.mapUserData.keyNotOf(newUser.login).forEach(socketId =>
-      this.server.to(socketId).emit('updateUser', newUser)
+      this.server.to(socketId).emit('updateUserImage', newUser)
     );
   }
 
   @SubscribeMessage('newNotify')
-  handleNewNotify(@ConnectedSocket() client: Socket, @MessageBody() login_target: string) {
-    client;
+  handleNewNotify(@MessageBody() login_target: string) {
     this.mapUserData.keyOf(login_target).forEach(socketId =>
       this.server.to(socketId).emit('updateNotify')
     );
@@ -152,30 +147,38 @@ export class StatusGateway
     }
   }
 
-  @SubscribeMessage('deleteFriend')
-  handleDeleteFriend(@ConnectedSocket() client: Socket, @MessageBody() login_target: string) {
+  @SubscribeMessage('removeFriend')
+  handleDeleteFriend(@ConnectedSocket() client: Socket,
+    @MessageBody() login_target: string) {
     const user: UserData = this.mapUserData.valueOf(client.id);
     this.mapUserData.keyOf(user.login).forEach(socketId => {
-      this.server.to(socketId).emit('updateRemove');
+      this.server.to(socketId).emit('updateFriend');
     });
 
     if (this.mapUserData.hasValue(login_target)) {
       this.mapUserData.keyOf(login_target).forEach(socketId => {
-        this.server.to(socketId).emit('updateRemove');
+        this.server.to(socketId).emit('updateFriend');
       });
     }
   }
 
-  @SubscribeMessage('newBlocked')
-  handleNewBlocked(@ConnectedSocket() client: Socket) {
+  @SubscribeMessage('blockFriend')
+  handleBlockFriend(@ConnectedSocket() client: Socket,
+    @MessageBody() login_target: string) {
     const user: UserData = this.mapUserData.valueOf(client.id);
     this.mapUserData.keyOf(user.login).forEach(socketId => {
-      this.server.to(socketId).emit('updateBlocked');
+      this.server.to(socketId).emit('updateFriendBlocked');
     });
+
+    if (this.mapUserData.hasValue(login_target)) {
+      this.mapUserData.keyOf(login_target).forEach(socketId => {
+        this.server.to(socketId).emit('updateFriend');
+      });
+    }
   }
 
-  @SubscribeMessage('removeBlocked')
-  handleRemoveBlocked(@ConnectedSocket() client: Socket) {
+  @SubscribeMessage('updateBlocked')
+  handleUpdateBlocked(@ConnectedSocket() client: Socket) {
     const user: UserData = this.mapUserData.valueOf(client.id);
     this.mapUserData.keyOf(user.login).forEach(socketId => {
       this.server.to(socketId).emit('updateBlocked');
@@ -183,8 +186,7 @@ export class StatusGateway
   }
 
   @SubscribeMessage('newDirect')
-  handleNewDirect(@ConnectedSocket() client: Socket, @MessageBody() { name, chat }: { name: string, chat: string }) {
-    client;
+  handleNewDirect(@MessageBody() { name, chat }: { name: string, chat: string }) {
     if (this.mapUserData.hasValue(name)) {
       this.mapUserData.keyOf(name).forEach(socketId => {
         this.server.to(socketId).emit('updateDirect', chat);

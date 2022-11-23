@@ -1,9 +1,9 @@
 import './NotificationMessage.scss';
 import { TelegramLogo } from 'phosphor-react';
-import { NotificationData } from '../../../others/Interfaces/interfaces';
+import { NotifyData } from '../../../others/Interfaces/interfaces';
 
 interface NotificationMessageProps {
-  notify: NotificationData;
+  notify: NotifyData;
 }
 
 export function NotificationMessage({
