@@ -2,7 +2,7 @@
 # BUILD FOR PRODUCTION #
 ########################
 
-FROM node:16.17-alpine3.15 as builder
+FROM node:19-alpine as builder
 
 ENV NODE_ENV build
 
@@ -21,7 +21,7 @@ RUN npm run build \
 #      PRODUCTION      #
 ########################
 
-FROM node:16.17-alpine3.15 as production
+FROM node:19-alpine as production
 
 ENV NODE_ENV production
 

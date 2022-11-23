@@ -2,7 +2,7 @@
 # BUILD FOR PRODUCTION #
 ########################
 
-FROM node:16.17-alpine3.15 as builder
+FROM node:19-alpine3.17 as builder
 
 ENV NODE_ENV build
 
@@ -10,7 +10,7 @@ WORKDIR /app/
 
 COPY package*.json ./
 
-RUN npm i
+RUN npm ci
 
 COPY . .
 
@@ -21,7 +21,7 @@ RUN npm run build \
 #      PRODUCTION      #
 ########################
 
-FROM node:16.17-alpine3.15 as production
+FROM node:19-alpine3.17 as production
 
 EXPOSE 80
 
