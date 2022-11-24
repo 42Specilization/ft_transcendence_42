@@ -9,6 +9,7 @@ import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModa
 import ReactTooltip from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
+import { TailSpin } from 'react-loader-spinner';
 
 // interface ChatTalkProps {
 
@@ -58,6 +59,24 @@ export function ChatTalk(
     setGroupsChat(null);
   }
 
+
+
+
+
+
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    if (loading) setTimeout(() => setLoading(false), 500);
+  }, [loading]);
+
+  useEffect(() => {
+    if (loading === false) {
+      const body = refBody.current;
+      if (body && body.scrollHeight > body.offsetHeight) {
+        body.scrollTop = body.scrollHeight / 2;
+      }
+    }
+  }, [loading]);
 
 
 
@@ -138,72 +157,50 @@ export function ChatTalk(
     if (!activeChat || activeChat.blocks === 1)
       return;
 
-    const current = activeChat.currentBlock;
-    const blocks = activeChat.blocks;
-    const len = activeChat.historicMsg.length;
+    const residue = activeChat.historicMsg.length % 20;
+    let current = activeChat.currentBlock;
 
-    console.log(current, blocks, len);
-    const changeBlock = (start: number | null, size: number, newCurrent: number) => {
+    const changeBlock = (start: number, size: number, newCurrent: number) => {
       setActiveChat(prev => {
         if (!prev)
           return prev;
-        // console.log(prev.historicMsg);
-        // console.log('caso 1', prev.historicMsg);
-        console.log(start, size);
-        if (start) {
-          console.log('caso 1', prev.historicMsg.slice(start, size));
-        }
-        // else
-        //   console.log('caso 2', prev.historicMsg.slice(size));
         return {
           ...prev,
           chat: {
             ...prev.chat,
-            messages: start !== null ?
-              prev.historicMsg.slice(start, size) :
-              prev.historicMsg.slice(size)
+            messages: prev.historicMsg.slice(start, size)
           },
           currentBlock: newCurrent,
         };
       });
-      // const body = refBody.current;
-      // if (body && body.scrollHeight > body.offsetHeight) {
-      //   body.scrollTop = body.scrollHeight / 2;
-      // }
     };
 
-    if (direction === 'up') {
+    if (direction === 'up' && current !== -1) {
+      setLoading(true);
       if (current === 0)
-        changeBlock(0, 20 + len % 20, 0);
-      else if (current === 1)
-        changeBlock(0, 40 + len % 20, current - 1);
-      else if (current + 1 === blocks)
-        changeBlock(null, -40, current - 1);
+        changeBlock(0, 40 + residue, -1);
       else {
-        const start = (current - 1) * 20 + len % 20;
+        const start = (current - 1) * 20 + residue;
         changeBlock(start, start + 40, current - 1);
       }
-
     }
-    //  else {
-    //   if current block === 1
-    //   slice(0, 40)
-
-    //   if (currentBlock === blocks)
-    //   faz nada
-    //   if (currentBlock === blocks - 1)
-    //     slice(-20)
-    // }
+    if (direction === 'down' && current !== activeChat.blocks - 1) {
+      setLoading(true);
+      if (current === -1)
+        current = 0;
+      const start = current * 20 + residue;
+      changeBlock(start, start + 40, current + 1);
+    }
   }
 
   async function handleScroll(e: any) {
     if (e.target.scrollTop === 0) {
       changeBlockMessages('up');
     }
-    if (e.target.scrollHeight - e.target.scrollTop < e.target.clientHeight)
+    if (e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight) {
       changeBlockMessages('down');
+    }
   }
-
 
 
 
@@ -239,8 +236,6 @@ export function ChatTalk(
 
 
 
-
-
   return (
     <div className='chat__talk'>
       {activeChat != null &&
@@ -262,10 +257,17 @@ export function ChatTalk(
               </div>
             </div>
           </div>
-          <div id='chat__talk__body' className='chat__talk__body'
+          <div id='chat__talk__body'
+            className='chat__talk__body'
             onScroll={(e) => handleScroll(e)}
             ref={refBody}
           >
+            <div className='chat__talk__loading'
+              style={{ display: loading ? '' : 'none' }}
+            >
+              <strong>Wait a moment</strong>
+              <TailSpin width='25' height='25' color='white' ariaLabel='loading' />
+            </div>
             {activeChat.chat?.messages
               .map((msg: MsgToClient, index: number) => {
                 const len = activeChat.chat?.messages?.length - 1;
@@ -278,11 +280,15 @@ export function ChatTalk(
                       <div /><p>unread message: {len - index}</p><div />
                     </div>);
                 }
-                return <div key={crypto.randomUUID()}>
-                  < ChatMessage key={crypto.randomUUID()}
+                return <div
+                  style={{ display: loading ? 'none' : '' }}
+                  key={crypto.randomUUID()}>
+                  < ChatMessage
+
+                    key={crypto.randomUUID()}
                     user={intraData.login}
                     message={msg} />
-                  --{index}
+                  {/* --{index} */}
                 </div>;
               })
             }
@@ -309,3 +315,4 @@ export function ChatTalk(
     </div >
   );
 }
+

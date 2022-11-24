@@ -79,7 +79,7 @@ const actionsChat = {
             newMessage: true,
             historicMsg: messages,
             blocks: blocks,
-            currentBlock: blocks,
+            currentBlock: blocks - 1,
           };
         }
         return prev;
