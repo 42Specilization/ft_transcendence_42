@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
-import { DirectData, MsgToClient, MsgToServer } from '../../others/Interfaces/interfaces';
+import { ActiveChatData } from '../../contexts/ChatContext';
+import { MsgToClient, MsgToServer } from '../../others/Interfaces/interfaces';
 import { getAccessToken, getUserInDb } from '../../others/utils/utils';
 import { actionsStatus } from '../status/statusState';
 import {
@@ -12,14 +13,14 @@ import {
 
 export interface AppStateChat {
   socket?: Socket;
-  setActiveChat?: Dispatch<SetStateAction<DirectData | null>> | null;
+  setActiveChat?: Dispatch<SetStateAction<ActiveChatData | null>> | null;
 }
 
 const stateChat = proxy<AppStateChat>({});
 
 const actionsChat = {
-  initializeSocketChat: (setActiveChat:
-    Dispatch<SetStateAction<DirectData | null>>
+  initializeSocketChat: (
+    setActiveChat: Dispatch<SetStateAction<ActiveChatData | null>>
   ): void => {
 
     if (!stateChat.socket) {
@@ -65,11 +66,21 @@ const actionsChat = {
 
   async msgToClient(message: MsgToClient) {
     if (stateChat.setActiveChat) {
-      stateChat.setActiveChat((prev: DirectData | null) => {
-        if (prev && prev.id === message.chat) {
-          if (prev.messages)
-            return { ...prev, messages: [...prev.messages, message], date: message.date };
-          return { ...prev, messages: [message], date: message.date };
+      stateChat.setActiveChat((prev: ActiveChatData | null) => {
+        if (prev && prev.chat.id === message.chat) {
+          const messages: MsgToClient[] = [...prev.historicMsg, message];
+          const blocks = Math.floor(messages.length / 20);
+          return {
+            chat: {
+              ...prev.chat,
+              messages: messages.slice(-20),
+              date: message.date
+            },
+            newMessage: true,
+            historicMsg: messages,
+            blocks: blocks,
+            currentBlock: blocks,
+          };
         }
         return prev;
       });

@@ -32,6 +32,7 @@ export class ChatController {
     return await this.chatService.getDirect(userFromJwt.email, getDirectDto.id);
   }
 
+
   @Patch('/getFriendDirect')
   @UseGuards(JwtAuthGuard)
   async getFriendChat(

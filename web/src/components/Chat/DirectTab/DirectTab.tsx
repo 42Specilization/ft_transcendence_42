@@ -2,7 +2,6 @@ import { MagnifyingGlass, X } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import { DirectData } from '../../../others/Interfaces/interfaces';
 import { CardDirect } from '../CardDirect/CardDirect';
 import './DirectTab.scss';
 
@@ -10,7 +9,6 @@ export function DirectTab() {
   const { intraData } = useContext(IntraDataContext);
   const [isTableSearch, setIsTableSearch] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-
 
   return (
     < div className='direct__tab' >
@@ -46,12 +44,8 @@ export function DirectTab() {
       </div>
       < div className='direct__tab__body'>
         {
-          intraData.directs.filter((obj) => obj.name?.includes(searchInput))
-            .sort((a: DirectData, b: DirectData) => {
-              if (a.date < b.date)
-                return 1;
-              return -1;
-            })
+          intraData.directs
+            .filter((obj) => obj.name?.includes(searchInput))
             .map((obj) => (
               <CardDirect key={Math.random()} chat={obj} />
             ))

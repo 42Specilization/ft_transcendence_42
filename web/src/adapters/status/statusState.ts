@@ -95,9 +95,6 @@ const actionsStatus = {
     stateStatus.socket?.emit('blockFriend', friend);
   },
 
-
-
-
   async newDirect(name: string, chat: string) {
     stateStatus.socket?.emit('newDirect', { name: name, chat: chat });
     if (stateStatus.setIntraData) {
@@ -278,10 +275,22 @@ const actionsStatus = {
               return {
                 ...key,
                 date: message.date,
-                newMessages: key.newMessages + 1 };
+                newMessages: key.newMessages + 1
+              };
             }
             return key;
           }),
+        };
+      });
+      stateStatus.setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData,
+          directs: prevIntraData.directs
+            .sort((a, b) => {
+              if (a.date < b.date)
+                return 1;
+              return -1;
+            })
         };
       });
     }

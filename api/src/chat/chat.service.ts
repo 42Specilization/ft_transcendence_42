@@ -28,7 +28,11 @@ export class ChatService {
         'messages',
         'messages.direct',
         'messages.sender',
-      ]
+      ], order: {
+        messages: {
+          date: 'asc'
+        }
+      }
     });
     if (!direct)
       throw new NotFoundException('Direct not found');
@@ -41,7 +45,7 @@ export class ChatService {
       relations: [
         'users',
         'messages',
-        'messages.group',
+        // 'messages.group',
         'messages.sender',
       ]
     });
@@ -84,7 +88,7 @@ export class ChatService {
         await this.directRepository.save(chat);
       else
         await this.groupRepository.save(chat);
-      this.setBreakpoint(user, chat, type);
+      await this.setBreakpoint(user, chat, type);
       const msgClient: MsgToClient = {
         id: msgDb.id,
         chat: chat.id,
@@ -108,6 +112,7 @@ export class ChatService {
     const chat: Direct | Group = type === 'direct' ?
       await this.findDirectById(chatId) :
       await this.findGroupById(chatId);
+   /* Setting the breakpoint for the user. */
     this.setBreakpoint(user, chat, type);
   }
 
@@ -128,6 +133,7 @@ export class ChatService {
     } catch (err) {
       throw new InternalServerErrorException(err);
     }
+
   }
 
 
@@ -190,6 +196,11 @@ export class ChatService {
       const friend = direct.users.filter((key) => key.nick !== owner.nick).at(0);
       return await this.createDirectDto(direct, owner, friend, 'cardDirect');
     }));
+    // directs.sort((a, b) => {
+    //   if (a.date < b.date)
+    //     return 1;
+    //   return -1;
+    // });
     return directs;
   }
 

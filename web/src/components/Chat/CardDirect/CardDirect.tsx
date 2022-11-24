@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { DirectData } from '../../../others/Interfaces/interfaces';
 import './CardDirect.scss';
@@ -16,7 +16,7 @@ export function CardDirect({ chat }: CardDirectProps) {
   }
 
   function newMessagesVisible() {
-    if ((activeChat && activeChat.id === chat.id)
+    if ((activeChat && activeChat.chat && activeChat.chat.id === chat.id)
       || (chat.newMessages === 0))
       return false;
     return true;
@@ -35,22 +35,6 @@ export function CardDirect({ chat }: CardDirectProps) {
         </div>
         <div className='card__direct__name'>{chat.name}</div>
       </div>
-      {/*
-      <div className="card__blocked__menu">
-        <div
-          className="card__blocked__menu__body"
-        >
-          <button
-            className='card__blocked__menu__button'
-            onClick={handleUnblock}
-            data-html={true}
-            data-tip={'Unblock'}
-          >
-            <UserMinus size={32} />
-          </button>
-        </div>
-      </div>
-      <ReactTooltip className='chat__friends__header__icon__tip' delayShow={50} /> */}
     </div>
   );
 }

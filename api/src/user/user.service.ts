@@ -117,7 +117,12 @@ export class UserService {
         'games',
         'games.winner',
         'games.loser',
-      ]
+      ],
+      order: {
+        games: {
+          createdAt: 'desc'
+        }
+      }
     });
   }
 
@@ -167,7 +172,12 @@ export class UserService {
           'directs.users',
           'directs.messages',
           'directs.messages.sender',
-        ]
+        ],
+        order: {
+          directs: {
+            date: 'desc'
+          }
+        }
       });
   }
 
@@ -182,7 +192,12 @@ export class UserService {
           'directs.users',
           'directs.messages',
           'directs.messages.sender',
-        ]
+        ],
+        order: {
+          directs: {
+            date: 'desc'
+          }
+        }
       });
   }
 
@@ -593,11 +608,11 @@ export class UserService {
     const userValidate = await this.findUserGamesByNick(login);
     if (userValidate) {
       const userData = userValidate.games
-        .sort((a, b) => {
-          if (a.createdAt < b.createdAt)
-            return 1;
-          return -1;
-        })
+        // .sort((a, b) => {
+        //   if (a.createdAt < b.createdAt)
+        //     return 1;
+        //   return -1;
+        // })
         .map((game) => {
           let opponent;
           let result;
