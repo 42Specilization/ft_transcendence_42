@@ -310,17 +310,18 @@ export class UserController {
     return { message: 'success' };
   }
 
-  @Get('games')
-  @HttpCode(HttpStatus.OK)
-  async getUsersWithGames(): Promise<User[]> {
-    return (await this.userService.getUsersWithGames());
-  }
-
   @Patch('historic')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: UserHistoricDto })
   async getHistoric(@Body() userHistoricDto: UserHistoricDto) {
     return await this.userService.getHistoric(userHistoricDto.login);
+  }
+
+  @Get('getCommunty')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  async getCommunty(@GetUserFromJwt() userFromJwt: UserFromJwt) {
+    return (await this.userService.getCommunty(userFromJwt.email));
   }
 }

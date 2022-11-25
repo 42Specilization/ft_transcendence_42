@@ -9,7 +9,6 @@ import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModa
 import ReactTooltip from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
-import { TailSpin } from 'react-loader-spinner';
 
 // interface ChatTalkProps {
 
@@ -58,25 +57,6 @@ export function ChatTalk(
     setFriendsChat(null);
     setGroupsChat(null);
   }
-
-
-
-
-
-
-  const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    if (loading) setTimeout(() => setLoading(false), 500);
-  }, [loading]);
-
-  useEffect(() => {
-    if (loading === false) {
-      const body = refBody.current;
-      if (body && body.scrollHeight > body.offsetHeight) {
-        body.scrollTop = body.scrollHeight / 2;
-      }
-    }
-  }, [loading]);
 
 
 
@@ -151,32 +131,35 @@ export function ChatTalk(
 
 
 
+  function changeBlock(start: number, size: number, newCurrent: number) {
+    setActiveChat(prev => {
+      if (!prev)
+        return prev;
+      return {
+        ...prev,
+        chat: {
+          ...prev.chat,
+          messages: prev.historicMsg.slice(start, size)
+        },
+        currentBlock: newCurrent,
+      };
+    });
+    setTimeout(() => {
+      const body = refBody.current;
+      if (body && body.scrollHeight > body.offsetHeight) {
+        body.scrollTop = body.scrollHeight / 2;
+      }
+    }, 500);
+  }
 
-
-  function changeBlockMessages(direction: string) {
-    if (!activeChat || activeChat.blocks === 1)
+  async function handleScroll(e: any) {
+    if (!activeChat || activeChat.historicMsg.length <= 20)
       return;
 
     const residue = activeChat.historicMsg.length % 20;
     let current = activeChat.currentBlock;
 
-    const changeBlock = (start: number, size: number, newCurrent: number) => {
-      setActiveChat(prev => {
-        if (!prev)
-          return prev;
-        return {
-          ...prev,
-          chat: {
-            ...prev.chat,
-            messages: prev.historicMsg.slice(start, size)
-          },
-          currentBlock: newCurrent,
-        };
-      });
-    };
-
-    if (direction === 'up' && current !== -1) {
-      setLoading(true);
+    if (e.target.scrollTop === 0 && current !== -1) {
       if (current === 0)
         changeBlock(0, 40 + residue, -1);
       else {
@@ -184,21 +167,13 @@ export function ChatTalk(
         changeBlock(start, start + 40, current - 1);
       }
     }
-    if (direction === 'down' && current !== activeChat.blocks - 1) {
-      setLoading(true);
+    console.log(e.target.scrollHeight - e.target.scrollTop, e.target.clientHeight)
+    if (e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 1
+      && current !== activeChat.blocks - 1) {
       if (current === -1)
         current = 0;
       const start = current * 20 + residue;
       changeBlock(start, start + 40, current + 1);
-    }
-  }
-
-  async function handleScroll(e: any) {
-    if (e.target.scrollTop === 0) {
-      changeBlockMessages('up');
-    }
-    if (e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight) {
-      changeBlockMessages('down');
     }
   }
 
@@ -262,12 +237,6 @@ export function ChatTalk(
             onScroll={(e) => handleScroll(e)}
             ref={refBody}
           >
-            <div className='chat__talk__loading'
-              style={{ display: loading ? '' : 'none' }}
-            >
-              <strong>Wait a moment</strong>
-              <TailSpin width='25' height='25' color='white' ariaLabel='loading' />
-            </div>
             {activeChat.chat?.messages
               .map((msg: MsgToClient, index: number) => {
                 const len = activeChat.chat?.messages?.length - 1;
@@ -280,16 +249,10 @@ export function ChatTalk(
                       <div /><p>unread message: {len - index}</p><div />
                     </div>);
                 }
-                return <div
-                  style={{ display: loading ? 'none' : '' }}
-                  key={crypto.randomUUID()}>
-                  < ChatMessage
-
-                    key={crypto.randomUUID()}
-                    user={intraData.login}
-                    message={msg} />
-                  {/* --{index} */}
-                </div>;
+                return < ChatMessage
+                  key={crypto.randomUUID()}
+                  user={intraData.login}
+                  message={msg} />;
               })
             }
           </div>

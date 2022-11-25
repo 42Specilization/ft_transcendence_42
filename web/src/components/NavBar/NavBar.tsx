@@ -1,7 +1,7 @@
 import './NavBar.scss';
 import { useAuth } from '../../contexts/AuthContext';
 import logoSmall from '../../assets/logo-small.png';
-import { Bell, BellRinging, Chats, GameController, List, SignOut } from 'phosphor-react';
+import { Bell, BellRinging, Chats, GameController, List, SignOut, UsersThree } from 'phosphor-react';
 import { Link } from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Notifications } from '../Notifications/Notifications';
@@ -9,7 +9,6 @@ import { actionsStatus } from '../../adapters/status/statusState';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 
 interface NavBarProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Children: any;
 }
 
@@ -46,7 +45,6 @@ export function NavBar({ Children }: NavBarProps) {
     };
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClickOutside = (event: any) => {
     if (menuRef.current && !menuRef.current.contains(event.target)
       && event.target.id !== 'navBar__menu__icon') {
@@ -58,7 +56,6 @@ export function NavBar({ Children }: NavBarProps) {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClickInside = (event: any) => {
     if (event.target.id === 'navBar__menu__icon') {
       setMenuVisible((prevMenuVisible) => !prevMenuVisible);
@@ -91,7 +88,7 @@ export function NavBar({ Children }: NavBarProps) {
               <List id='navBar__menu__icon' size={40} className='navBar__icons' />
             </div>
             <nav ref={menuRef} className='navBar__menu'
-              style={{ top: (menuVisible ? '97px' : '-165px') }}>
+              style={{ top: (menuVisible ? '97px' : '-280px') }}>
               <Link to='/game' className='navBar__icons'>
                 <GameController size={32} />
                 Game
@@ -99,6 +96,10 @@ export function NavBar({ Children }: NavBarProps) {
               <Link to='/chat' className='navBar__icons'>
                 <Chats size={32} />
                 <p>Chats</p>
+              </Link>
+              <Link to='/community' className='navBar__icons'>
+                <UsersThree size={32} />
+                <p>Community</p>
               </Link>
             </nav>
           </li>

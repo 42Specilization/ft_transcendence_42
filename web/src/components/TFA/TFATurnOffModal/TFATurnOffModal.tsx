@@ -3,7 +3,6 @@ import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { Modal } from '../../Modal/Modal';
 import './TFATurnOffModal.scss';
 interface TFATurnOffModalProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setTfaModal: (arg0: string) => void;
   setTfaEnable: (arg0: boolean) => void;
 }

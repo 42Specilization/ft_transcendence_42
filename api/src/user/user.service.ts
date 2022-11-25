@@ -14,7 +14,7 @@ import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { CredentialsDto } from './dto/credentials.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserDto } from './dto/user.dto';
+import { CommunityDto, UserDto } from './dto/user.dto';
 import * as fs from 'fs';
 import { GameEntity } from 'src/game/entities/game.entity';
 import { Notify } from '../notification/entities/notify.entity';
@@ -603,16 +603,34 @@ export class UserService {
     }
   }
 
+  async getCommunty(user_email:string) {
+    const users = await this.usersRepository.find();
+    const usersToReturn: CommunityDto[] = users.filter((user)=>{
+      if (user.email === user_email)
+        return;
+      return user;
+    }).map((user) => {
+      return {
+        image_url: user.imgUrl,
+        login: user.nick,
+        ratio: ((
+          Number(user.wins) /
+          (Number(user.lose) > 0 ? Number(user.lose) : 1)
+        ).toFixed(2)).toString()
+      };
+    }).sort((a,b)=>{
+      if (a.ratio > b.ratio)
+        return -1;
+      return 1;
+    });
+    return usersToReturn;
+  }
+
 
   async getHistoric(login: string) {
     const userValidate = await this.findUserGamesByNick(login);
     if (userValidate) {
       const userData = userValidate.games
-        // .sort((a, b) => {
-        //   if (a.createdAt < b.createdAt)
-        //     return 1;
-        //   return -1;
-        // })
         .map((game) => {
           let opponent;
           let result;

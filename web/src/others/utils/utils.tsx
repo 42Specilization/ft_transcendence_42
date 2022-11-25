@@ -11,7 +11,6 @@ export function getAccessToken() {
   return (window.localStorage.getItem('token'));
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function RequireAuth({ children }: any) {
   const token = window.localStorage.getItem('token');
   const [isTfaValid, setIsTfaValid] = useState(false);
@@ -66,7 +65,6 @@ export function RequireAuth({ children }: any) {
  * If the token is null, then render the children, otherwise redirect to the home page.
  * @param {any}  - any
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function ValidadeSignin({ children }: any) {
   const token = window.localStorage.getItem('token');
   return token === null ? children : <Navigate to="/" replace />;

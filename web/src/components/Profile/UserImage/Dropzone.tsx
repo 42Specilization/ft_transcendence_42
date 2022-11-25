@@ -13,7 +13,6 @@ export function Dropzone({ onFileUploaded }: DropzoneProps) {
   const { intraData } = useContext(IntraDataContext);
 
   const onDrop = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (acceptedFiles: any) => {
 
       function generateCode() {

@@ -16,7 +16,6 @@ export function CardFriend({ friend, setTableSelected }: CardFriendProps) {
   const { setFriendsChat } = useContext(ChatContext);
   const [isTableFriendUsersMenu, setIsTableFriendUsersMenu] = useState(false);
   const { setIntraData, api, config } = useContext(IntraDataContext);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function selectActiveFriend(e: any) {
     if (e.target.id === 'card__friend') {
       setFriendsChat(friend);

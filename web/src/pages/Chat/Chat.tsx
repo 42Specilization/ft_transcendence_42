@@ -12,27 +12,27 @@ export default function Chat() {
   return (
     <div className='body'>
       <div className='chat'>
-        <div className='chat__community'>
-          <nav className='chat__community__header'>
-            <ul className='chat__community__header__list'>
-              <li className={`chat__community__header__list__item ${tableSelected === 'Friends' ? 'chat__community__header__list__item__selected' : ''}`}>
+        <div className='chat__cards'>
+          <nav className='chat__cards__header'>
+            <ul className='chat__cards__header__list'>
+              <li className={`chat__cards__header__list__item ${tableSelected === 'Friends' ? 'chat__cards__header__list__item__selected' : ''}`}>
                 <button onClick={() => setTableSelected('Friends')}>
                   Friends
                 </button>
               </li>
-              <li className={`chat__community__header__list__item ${tableSelected === 'Directs' ? 'chat__community__header__list__item__selected' : ''}`}>
+              <li className={`chat__cards__header__list__item ${tableSelected === 'Directs' ? 'chat__cards__header__list__item__selected' : ''}`}>
                 <button onClick={() => setTableSelected('Directs')}>
                   Directs
                 </button>
               </li>
-              <li className={`chat__community__header__list__item ${tableSelected === 'Groups' ? 'chat__community__header__list__item__selected' : ''}`}>
+              <li className={`chat__cards__header__list__item ${tableSelected === 'Groups' ? 'chat__cards__header__list__item__selected' : ''}`}>
                 <button onClick={() => setTableSelected('Groups')}>
                   Groups
                 </button>
               </li>
             </ul>
           </nav>
-          <div className='chat__community__body'>
+          <div className='chat__cards__body'>
             {(() => {
               if (tableSelected === 'Friends')
                 return <FriendTab setTableSelected={setTableSelected} />;
@@ -42,7 +42,7 @@ export default function Chat() {
                 return <GroupTab />;
             })()}
           </div>
-          <div className='chat__community__footer' />
+          <div className='chat__cards__footer' />
         </div>
         <ChatTalk />
       </div>

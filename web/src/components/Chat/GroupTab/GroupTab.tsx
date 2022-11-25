@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import './GroupTab.scss';
 import { MagnifyingGlass, X } from 'phosphor-react';
 import {

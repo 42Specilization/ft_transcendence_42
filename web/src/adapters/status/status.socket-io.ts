@@ -16,7 +16,6 @@ export function createSocketStatus({
   accessToken,
   socketStatusIOUrl,
   actionsStatus,
-  stateStatus,
 }: CreateSocketStatusOptions): Socket {
   const socket = io(socketStatusIOUrl, {
     auth: {
@@ -46,7 +45,7 @@ export function createSocketStatus({
 
   socket.on('updateUserLogin', (oldUser: UserData, newUser: UserData) => {
     actionsStatus.updateUserLogin(oldUser, newUser);
-    console.log('update user login:', oldUser.login, '-> ',newUser.login);
+    console.log('update user login:', oldUser.login, '-> ', newUser.login);
   });
 
   socket.on('updateUserImage', (user: UserData) => {

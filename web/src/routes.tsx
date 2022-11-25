@@ -13,6 +13,7 @@ import { IntraDataProvider } from './contexts/IntraDataContext';
 import { ChatProvider } from './contexts/ChatContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { Community } from './components/Community/Community';
 
 export default function AppRouter() {
   const queryClient = new QueryClient();
@@ -56,6 +57,16 @@ export default function AppRouter() {
                   <RequireAuth>
                     <IntraDataProvider>
                       <NavBar Children={Chat} />
+                    </IntraDataProvider>
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/community"
+                element={
+                  <RequireAuth>
+                    <IntraDataProvider>
+                      <NavBar Children={Community} />
                     </IntraDataProvider>
                   </RequireAuth>
                 }

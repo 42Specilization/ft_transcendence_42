@@ -112,7 +112,6 @@ export class ChatService {
     const chat: Direct | Group = type === 'direct' ?
       await this.findDirectById(chatId) :
       await this.findGroupById(chatId);
-   /* Setting the breakpoint for the user. */
     this.setBreakpoint(user, chat, type);
   }
 

@@ -19,6 +19,12 @@ export class UserDto {
   blockeds: BlockedDto[];
 }
 
+export class CommunityDto {
+  image_url: string;
+  login: string;
+  ratio: string;
+}
+
 export class UserHistoricDto {
   @ApiProperty()
   @IsNotEmpty({ message: 'Inform a valid nick!' })

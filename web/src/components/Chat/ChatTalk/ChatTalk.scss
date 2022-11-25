@@ -50,17 +50,8 @@
   width: 100%;
   height: calc(100% - 130px);
   padding: 0px 10px 0px 10px;
+  scroll-behavior: smooth;
   @include scrollBar();
-}
-
-.chat__talk__loading {
-  @include displayFlex();
-  width: 100%;
-  height: 100%;
-  strong {
-    padding-right: 20px;
-    font-size:20px;
-  }
 }
 
 .chat__talk__unread__message {
