@@ -27,11 +27,11 @@ jobs:
         with:
           context: ./api
           push: true
-          tags: mavinici/api:latest
+          tags: transcendence42/api:latest
       -
         name: Build and push web
         uses: docker/build-push-action@v3
         with:
           context: ./web
           push: true
-          tags: mavinici/web:latest
+          tags: transcendence42/web:latest
