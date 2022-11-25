@@ -60,6 +60,7 @@ export function createSocketStatus({
 
   socket.on('updateFriend', async () => {
     actionsStatus.updateFriend();
+    
     console.log('update friend:');
   });
 

@@ -28,6 +28,7 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
     try {
       await api.patch('/user/acceptFriend', { id: notify.id }, config);
       removeNotify();
+      console.log('Aceitou a notificação', notify.user_source)
       actionsStatus.newFriend(notify.user_source);
     } catch (err: any) {
       // console.log('result', err.response.data.message);

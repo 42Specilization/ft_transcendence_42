@@ -103,6 +103,7 @@ export class UserService {
       relations: [
         'notify',
         'directs',
+        'directs.users',
         'notify.user_source',
         'relations',
         'relations.passive_user',
@@ -157,6 +158,7 @@ export class UserService {
         relations: [
           'notify',
           'directs',
+          'directs.users',
           'notify.user_source',
           'relations',
           'relations.passive_user',
@@ -565,6 +567,19 @@ export class UserService {
       if (relation.type === 'friend' && relation.passive_user.nick == user.nick)
         return;
       return relation;
+    });
+    
+
+    user.directs = user.directs.filter((direct) => {
+      if (direct.users[0].email === friend.email || direct.users[1].email === friend.email)
+        return ;
+      return direct;
+    });
+
+    friend.directs = friend.directs.filter((direct) => {
+      if (direct.users[0].email === user.email || direct.users[1].email === user.email)
+        return ;
+      return direct;
     });
 
     const relationUser = new Relations();

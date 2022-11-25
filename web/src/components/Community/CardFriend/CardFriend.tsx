@@ -6,6 +6,7 @@ import { DotsThreeVertical, Prohibit, Sword, UserMinus } from 'phosphor-react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { ChatContext } from '../../../contexts/ChatContext';
+import { Link } from 'react-router-dom';
 
 interface CardFriendProps {
   friend: FriendData;
@@ -47,17 +48,17 @@ export function CardFriend({ friend }: CardFriendProps) {
   }
 
   return (
-    <div id='card__friend' className='card__friend'
+    <div  id='card__friend' className='card__friend'
       onClick={(e) => selectActiveFriend(e)}
     >
-      <div id='card__friend' className='card__friend__div' >
+      <Link to='/chat' id='card__friend' className='card__friend__div' >
         <div id='card__friend' className='card__friend__icon'
           style={{ backgroundImage: `url(${friend.image_url})` }}>
           <div id='card__friend' className='card__friend__status'
             style={{ backgroundColor: friend.status === 'online' ? 'green' : 'rgb(70, 70, 70)' }} />
         </div>
         <div id='card__friend' className='card__friend__name'>{friend.login}</div>
-      </div>
+      </Link>
 
       <div className='card__friend__menu'>
         <div id='card__friend__menu__body' className='card__friend__menu__body'

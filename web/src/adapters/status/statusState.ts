@@ -73,6 +73,8 @@ const actionsStatus = {
   },
 
   newFriend(userSource: string) {
+    console.log('no newFriend', userSource, stateStatus.socket);
+    
     stateStatus.socket?.emit('newFriend', userSource);
   },
 

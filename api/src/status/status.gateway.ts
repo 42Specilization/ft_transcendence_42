@@ -132,6 +132,7 @@ export class StatusGateway
   handleNewFriend(@ConnectedSocket() client: Socket, login_target: string) {
     const user: UserData = this.mapUserData.valueOf(client.id);
     const socketsUser: string[] = this.mapUserData.keyOf(user.login);
+    console.log('new Friend', user.login, login_target)
 
     socketsUser.forEach(socketId => {
       this.server.to(socketId).emit('updateFriend');
@@ -141,8 +142,10 @@ export class StatusGateway
     if (this.mapUserData.hasValue(login_target)) {
       const socketsFriends: string[] = this.mapUserData.keyOf(login_target);
 
-      socketsFriends.forEach(socketId =>
+      socketsFriends.forEach(socketId =>{
+
         this.server.to(socketId).emit('updateFriend')
+      }
       );
     }
   }
