@@ -1,14 +1,14 @@
 import './NotificationChallenge.scss';
 import { CheckCircle, XCircle } from 'phosphor-react';
-import { NotifyData } from '../../../others/Interfaces/interfaces';
+// import { NotifyData } from '../../../others/Interfaces/interfaces';
 
-interface NotificationChallengeProps {
-  notify: NotifyData;
-}
+// interface NotificationChallengeProps {
+//   notify: NotifyData;
+// }
 
-export function NotificationChallenge({
-  notify
-}: NotificationChallengeProps) {
+export function NotificationChallenge(
+  // {  notify}: NotificationChallengeProps
+) {
   return (
 
     <div className='notificationChallenge'>

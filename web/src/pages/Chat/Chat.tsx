@@ -1,5 +1,5 @@
 import './Chat.scss';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { ChatTalk } from '../../components/Chat/ChatTalk/ChatTalk';
 import { DirectTab } from '../../components/Chat/DirectTab/DirectTab';
 import { GroupTab } from '../../components/Chat/GroupTab/GroupTab';
@@ -9,7 +9,7 @@ import { ChatContext } from '../../contexts/ChatContext';
 export default function Chat() {
 
   const { activeChat } = useContext(ChatContext);
-  const { intraData } = useContext(IntraDataContext);
+  const { intraData,setIntraData, api, config } = useContext(IntraDataContext);
   const [tableSelected, setTableSelected] = useState('Directs');
 
   function newMessages() {
@@ -20,8 +20,27 @@ export default function Chat() {
     }, 0);
   }
 
-  // Criar metodo para apagar as notificações de mensagens se entrar no chat por conta propria
-  
+  async function removeNotify(notify:any) {
+    setIntraData((prevIntraData) => {
+      return {
+        ...prevIntraData,
+        notify: prevIntraData.notify.filter((key) => key.id != notify.id)
+      };
+    });
+  }
+
+  async function clearNotifyMessages (){
+    intraData.notify.forEach(async (notify)=> {
+      if (notify.type === 'message'){
+        await api.patch('/user/removeNotify', { id: notify.id }, config);
+        removeNotify(notify);
+      }
+    });
+  }
+
+  useEffect(()=> {
+    clearNotifyMessages();
+  }, []);
 
   return (
     <div className='body'>
@@ -36,7 +55,6 @@ export default function Chat() {
                     < div className='chat__cards__header__list__item__count' >
                       {newMessages()}
                     </div>
-
                   }
                 </div>
               </li>

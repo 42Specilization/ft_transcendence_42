@@ -17,28 +17,28 @@ export default function Community() {
         <ul className='community__header__list'>
           <li className={`community__header__list__item
         ${tableSelected === 'Friends' ?
-              'community__header__list__item__selected' : ''}`}>
+      'community__header__list__item__selected' : ''}`}>
             <button onClick={() => setTableSelected('Friends')}>
               Friends
             </button>
           </li>
           <li className={`community__header__list__item
         ${tableSelected === 'Global' ?
-              'community__header__list__item__selected' : ''}`}>
+      'community__header__list__item__selected' : ''}`}>
             <button onClick={() => setTableSelected('Global')}>
               Global
             </button>
           </li>
           <li className={`community__header__list__item
         ${tableSelected === 'Groups' ?
-              'community__header__list__item__selected' : ''}`}>
+      'community__header__list__item__selected' : ''}`}>
             <button onClick={() => setTableSelected('Groups')}>
               Groups
             </button>
           </li>
           <li className={`community__header__list__item
       ${tableSelected === 'Blockeds' ?
-              'community__header__list__item__selected' : ''}`}>
+      'community__header__list__item__selected' : ''}`}>
             <button onClick={() => setTableSelected('Blockeds')}>
               Blockeds
             </button>

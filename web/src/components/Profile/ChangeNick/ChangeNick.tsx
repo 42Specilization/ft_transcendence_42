@@ -27,7 +27,7 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
 
       if (result.status === 200) {
         setIsModalChangeNickVisible(false);
-        actionsStatus.changeLogin(nick)
+        actionsStatus.changeLogin(nick);
         setPlaceHolder('');
       }
     } catch (e: any) {
