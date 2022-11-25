@@ -1,0 +1,37 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - 'main'
+      
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Set up Docker Buildx
+        uses: dokcer/setup-buildx-actions@v2
+      -
+        name: Login to Docker Hub
+        uses: docker/login-actions@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push api
+        uses: docker/build-push-action@v3
+        with:
+          context: ./api
+          push: true
+          tags: latest
+      -
+        name: Build and push web
+        uses: docker/build-push-action@v3
+        with:
+          context: ./web
+          push: true
+          tags: latest
