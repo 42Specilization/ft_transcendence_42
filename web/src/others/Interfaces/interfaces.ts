@@ -2,7 +2,7 @@ export interface NotifyData {
   id: string;
   type: string;
   user_source: string;
-  addtions_info: string;
+  additional_info: string;
   date: Date;
 }
 

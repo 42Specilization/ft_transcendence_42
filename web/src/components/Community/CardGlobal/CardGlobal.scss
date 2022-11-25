@@ -1,8 +1,8 @@
 @import '../../../others/styles/global.scss';
 
-.cardCommunity{
+.cardGlobal{
   @include displayFlex(space-between, row);
-  width: 90%;
+  width: 100%;
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 50px;
@@ -15,7 +15,7 @@
   }
 }
 
-.cardCommunity__icon {
+.cardGlobal__icon {
   @include displayFlex(flex-end, row, flex-end);
   width: 60px;
   height: 60px;
@@ -28,25 +28,25 @@
   background-position: 50% 50%;
 }
 
-.cardCommunity__name {
+.cardGlobal__name {
   @include truncText();
   font-size: x-large;
   margin-left: 10px;
   width: 100%;
 }
 
-.cardCommunity__ratio{
+.cardGlobal__ratio{
   width: 20%;
   color: rgb(243, 243, 243);
 }
 
 
-.cardCommunity__menu {
+.cardGlobal__menu {
   @include displayFlex();
 
 }
 
-.cardCommunity__menu__body {
+.cardGlobal__menu__body {
   background-color: $backgroundColor;
   top: 45px;
   transition: height 0.6s, width 0.6s;
@@ -55,11 +55,11 @@
   padding: 0px 10px 0px 10px;
 }
 
-.cardCommunity__error {
+.cardGlobal__error {
   font-size: 2.5em;
 }
 
-.cardCommunity__menu__button {
+.cardGlobal__menu__button {
   @include displayFlex();
   width: 100%;
   height: 35px;

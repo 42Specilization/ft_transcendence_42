@@ -19,18 +19,14 @@ export function ChatTalk(
 ) {
   const {
     activeChat, setActiveChat,
-    friendsChat, setFriendsChat,
+    peopleChat, setPeopleChat,
     directsChat, setDirectsChat,
-    groupsChat, setGroupsChat,
+    // groupsChat, 
+    setGroupsChat,
   } = useContext(ChatContext);
 
   const { intraData, setIntraData, api, config } = useContext(IntraDataContext);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
-
-
-
-
-
 
   useEffect(() => {
     return () => {
@@ -54,13 +50,9 @@ export function ChatTalk(
     });
     setActiveChat(null);
     setDirectsChat(null);
-    setFriendsChat(null);
+    setPeopleChat(null);
     setGroupsChat(null);
   }
-
-
-
-
 
   function initActiveChat(chat: DirectData) {
     const messages: MsgToClient[] = chat.messages;
@@ -100,15 +92,9 @@ export function ChatTalk(
   }, [directsChat]);
 
   useEffect(() => {
-    if (friendsChat)
-      setActiveChatWithFriend(friendsChat.login);
-  }, [friendsChat]);
-
-
-
-
-
-
+    if (peopleChat)
+      setActiveChatWithFriend(peopleChat.login);
+  }, [peopleChat]);
 
   function handleKeyEnter(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -126,10 +112,6 @@ export function ChatTalk(
     }
     event.target[0].value = '';
   }
-
-
-
-
 
   function changeBlock(start: number, size: number, newCurrent: number) {
     setActiveChat(prev => {
@@ -167,7 +149,6 @@ export function ChatTalk(
         changeBlock(start, start + 40, current - 1);
       }
     }
-    console.log(e.target.scrollHeight - e.target.scrollTop, e.target.clientHeight)
     if (e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 1
       && current !== activeChat.blocks - 1) {
       if (current === -1)
@@ -176,11 +157,6 @@ export function ChatTalk(
       changeBlock(start, start + 40, current + 1);
     }
   }
-
-
-
-
-
 
   const refBody: React.RefObject<HTMLDivElement> = useRef(null);
 
@@ -200,16 +176,6 @@ export function ChatTalk(
       });
     }
   }, [activeChat]);
-
-
-
-
-
-
-
-
-
-
 
   return (
     <div className='chat__talk'>

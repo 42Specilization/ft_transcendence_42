@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
@@ -60,8 +61,18 @@ const actionsChat = {
     stateChat.socket?.emit('leaveChat', id);
   },
 
-  msgToServer(message: MsgToServer, type: string) {
+  async msgToServer(message: MsgToServer, type: string) {
     stateChat.socket?.emit('msgToServer', { message: message, type: type });
+    // if (!window.location.pathname.includes('/chat')) {
+    //   const token = window.localStorage.getItem('token');
+    //   const config = {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`
+    //     }
+    //   };
+    // await axios.patch(`http://${import.meta.env.VITE_API_HOST}:3000/user/notifyMessage`, { id: message.chat, chatName: message.user, add_info: 'is a direct' }, config);
+    //   statusState.updateNotify();
+    // }
   },
 
   async msgToClient(message: MsgToClient) {

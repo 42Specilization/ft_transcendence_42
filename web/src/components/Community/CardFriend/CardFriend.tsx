@@ -1,7 +1,7 @@
 import './CardFriend.scss';
 import ReactTooltip from 'react-tooltip';
 import { FriendData } from '../../../others/Interfaces/interfaces';
-import { Dispatch, SetStateAction, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { DotsThreeVertical, Prohibit, Sword, UserMinus } from 'phosphor-react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
@@ -9,17 +9,17 @@ import { ChatContext } from '../../../contexts/ChatContext';
 
 interface CardFriendProps {
   friend: FriendData;
-  setTableSelected: Dispatch<SetStateAction<string>>;
 }
 
-export function CardFriend({ friend, setTableSelected }: CardFriendProps) {
-  const { setFriendsChat } = useContext(ChatContext);
+export function CardFriend({ friend }: CardFriendProps) {
+
+  const { setPeopleChat } = useContext(ChatContext);
   const [isTableFriendUsersMenu, setIsTableFriendUsersMenu] = useState(false);
   const { setIntraData, api, config } = useContext(IntraDataContext);
+
   function selectActiveFriend(e: any) {
     if (e.target.id === 'card__friend') {
-      setFriendsChat(friend);
-      setTableSelected('Directs');
+      setPeopleChat(friend);
     }
   }
 
@@ -54,7 +54,7 @@ export function CardFriend({ friend, setTableSelected }: CardFriendProps) {
         <div id='card__friend' className='card__friend__icon'
           style={{ backgroundImage: `url(${friend.image_url})` }}>
           <div id='card__friend' className='card__friend__status'
-            style={{ backgroundColor: friend.status === 'online' ? 'green' : 'rgb(70, 70, 70)' }}/>
+            style={{ backgroundColor: friend.status === 'online' ? 'green' : 'rgb(70, 70, 70)' }} />
         </div>
         <div id='card__friend' className='card__friend__name'>{friend.login}</div>
       </div>

@@ -1,27 +1,46 @@
 @import '../../../others/styles/global.scss';
 
-
-.notificationMessage{
-  @include displayFlex(space-around, column);
-  margin-top: 10px;
+.notificationMessage__frontSide {
+  @include displayFlex(center, column);
   height: 70px;
-  width: 100%;
-  // background-color: $primaryColorHover;
-  border-radius: 10px;
-  text-align: center;
-  strong  {
-    font-size: 18px;
-  }
+  overflow: hidden;
+  position: absolute;
+  transition: width 1s;
 }
 
-.notificationMessage__button{
+.notificationMessage__frontSide__nick {
+  font-size: 25px;
+  @include truncText();
+}
+
+.notificationMessage__frontSide__text {
+  font-size: 20px;
+  @include truncText();
+}
+
+.notificationMessage__backSide {
+  @include displayFlex();
+  height: 70px;
+  border-radius: 10px;
+  overflow: hidden;
+  position:absolute;
+  transition: width 1s;
+}
+
+.notificationMessage__backSide__button {
   @include displayFlex(space-around);
-  text-align: center;
-  width: 100px;
-  font-size: 15px;
+  @include truncText();
+  width: 200px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-radius: 20px;
+  background-color: $buttonColor;
+  p {
+    color: white;
+    @include displayFlex(space-around);
+  }
   &:hover {
     cursor: pointer;
-    color: gray;
+    background-color: $buttonColorHover;
   }
 }
-

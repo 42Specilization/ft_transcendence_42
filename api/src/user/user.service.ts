@@ -20,6 +20,7 @@ import { GameEntity } from 'src/game/entities/game.entity';
 import { Notify } from '../notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
 // import { Chat } from 'src/chat/entities/chat.entity';
+import { NewNotifyDto } from '../notification/dto/notify-dto';
 
 @Injectable()
 export class UserService {
@@ -101,6 +102,7 @@ export class UserService {
       },
       relations: [
         'notify',
+        'directs',
         'notify.user_source',
         'relations',
         'relations.passive_user',
@@ -154,6 +156,7 @@ export class UserService {
         },
         relations: [
           'notify',
+          'directs',
           'notify.user_source',
           'relations',
           'relations.passive_user',
@@ -603,9 +606,9 @@ export class UserService {
     }
   }
 
-  async getCommunty(user_email:string) {
+  async getCommunty(user_email: string) {
     const users = await this.usersRepository.find();
-    const usersToReturn: CommunityDto[] = users.filter((user)=>{
+    const usersToReturn: CommunityDto[] = users.filter((user) => {
       if (user.email === user_email)
         return;
       return user;
@@ -618,7 +621,7 @@ export class UserService {
           (Number(user.lose) > 0 ? Number(user.lose) : 1)
         ).toFixed(2)).toString()
       };
-    }).sort((a,b)=>{
+    }).sort((a, b) => {
       if (a.ratio > b.ratio)
         return -1;
       return 1;
@@ -655,4 +658,35 @@ export class UserService {
     }
     throw new BadRequestException('user not found');
   }
+
+  async notifyMessage(user_email: string, receivedNotify: NewNotifyDto) {
+    const user = await this.findUserByEmail(user_email);
+    const sender = await this.findUserByNick(receivedNotify.chatName);
+    if (!user || !sender)
+      throw new BadRequestException('User not found notifyMessage');
+
+
+    const newNotify = new Notify();
+    newNotify.type = 'message';
+    newNotify.user_source = sender;
+    newNotify.additional_info = receivedNotify.add_info;
+    newNotify.date = new Date(Date.now());
+    if (user.notify?.length === 0) {
+      user.notify = [];
+    }
+
+    user.notify = user.notify.filter((notify) => {
+      if (notify.type === 'message')
+        return;
+      return notify;
+    });
+    user.notify?.push(newNotify);
+
+    try {
+      await user.save();
+    } catch (err) {
+      throw new InternalServerErrorException('Error saving datas in db notifyMessage');
+    }
+  }
+
 }

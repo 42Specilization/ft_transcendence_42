@@ -1,9 +1,9 @@
-import './Community.scss';
+import { MagnifyingGlass, X } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import { useQuery } from 'react-query';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
-import { MagnifyingGlass, X } from 'phosphor-react';
-import { CardCommunity } from './CardCommunity/CardCommunity';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { CardGlobal } from '../CardGlobal/CardGlobal';
+import './GlobalTab.scss';
 
 interface CommunityUser {
   image_url: string;
@@ -11,7 +11,7 @@ interface CommunityUser {
   ratio: string;
 }
 
-export function Community() {
+export function GlobalTab() {
   const { api, config } = useContext(IntraDataContext);
   const [isTableSearch, setIsTableSearch] = useState(false);
   const [searchInput, setSearchInput] = useState('');
@@ -28,11 +28,11 @@ export function Community() {
   );
 
   return (
-    <div className='community'>
-      <div className='community__header'>
-        <div className='community__header__search'
+    <div className='global__tab'>
+      <div className='global__tab__header'>
+        <div className='global__tab__header__search'
           style={{ width: isTableSearch ? '70%' : '40px' }}>
-          < MagnifyingGlass className='community__header__icon'
+          < MagnifyingGlass className='global__tab__header__icon'
             size={40}
             data-html={true}
             data-tip={'Search User'}
@@ -43,7 +43,7 @@ export function Community() {
           />
 
           <input
-            className='community__header__search__input'
+            className='global__tab__header__search__input'
             maxLength={15}
             value={searchInput}
             onChange={(msg) => {
@@ -52,21 +52,20 @@ export function Community() {
             ref={e => { if (isTableSearch) e?.focus(); }}
           />
           <X
-            className='community__header__icon'
+            className='global__tab__header__icon'
             size={40}
             onClick={() => {
-              setIsTableSearch(false);
               setSearchInput('');
             }}
           />
         </div>
       </div>
-      <div className='community__body'>
+      <div className='global__tab__body'>
         {
           data && data
             .filter((obj: CommunityUser) => obj.login.includes(searchInput))
             .map((index: CommunityUser) => (
-              <CardCommunity
+              <CardGlobal
                 key={crypto.randomUUID()}
                 image_url={index.image_url}
                 login={index.login}

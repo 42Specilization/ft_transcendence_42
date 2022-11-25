@@ -10,6 +10,7 @@ import {
   CreateSocketStatusOptions,
   socketStatusIOUrl,
 } from './status.socket-io';
+import axios from 'axios';
 
 export interface UserData {
   status: string;
@@ -265,7 +266,7 @@ const actionsStatus = {
     }
   },
 
-  updateDirectInfos(message: MsgToClient) {
+  async updateDirectInfos(message: MsgToClient) {
     if (stateStatus.setIntraData) {
       stateStatus.setIntraData((prevIntraData) => {
         return {
@@ -293,8 +294,20 @@ const actionsStatus = {
             })
         };
       });
+      if (!window.location.pathname.includes('/chat')) {
+        const token = window.localStorage.getItem('token');
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        };
+        console.log('aqui');
+        await axios.patch(`http://${import.meta.env.VITE_API_HOST}:3000/user/notifyMessage`, { id: message.chat, chatName: message.user.login, add_info: 'direct' }, config);
+        this.updateNotify();
+      }
     }
   },
+
 
 };
 

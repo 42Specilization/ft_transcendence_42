@@ -1,13 +1,27 @@
 import './Chat.scss';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { ChatTalk } from '../../components/Chat/ChatTalk/ChatTalk';
-import { FriendTab } from '../../components/Chat/FriendTab/FriendTab';
 import { DirectTab } from '../../components/Chat/DirectTab/DirectTab';
 import { GroupTab } from '../../components/Chat/GroupTab/GroupTab';
+import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { ChatContext } from '../../contexts/ChatContext';
 
 export default function Chat() {
 
-  const [tableSelected, setTableSelected] = useState('Friends');
+  const { activeChat } = useContext(ChatContext);
+  const { intraData } = useContext(IntraDataContext);
+  const [tableSelected, setTableSelected] = useState('Directs');
+
+  function newMessages() {
+    return intraData.directs.reduce((acc, direct) => {
+      if (activeChat && direct.id === activeChat.chat.id)
+        return acc;
+      return acc + direct.newMessages;
+    }, 0);
+  }
+
+  // Criar metodo para apagar as notificações de mensagens se entrar no chat por conta propria
+  
 
   return (
     <div className='body'>
@@ -15,30 +29,34 @@ export default function Chat() {
         <div className='chat__cards'>
           <nav className='chat__cards__header'>
             <ul className='chat__cards__header__list'>
-              <li className={`chat__cards__header__list__item ${tableSelected === 'Friends' ? 'chat__cards__header__list__item__selected' : ''}`}>
-                <button onClick={() => setTableSelected('Friends')}>
-                  Friends
-                </button>
-              </li>
               <li className={`chat__cards__header__list__item ${tableSelected === 'Directs' ? 'chat__cards__header__list__item__selected' : ''}`}>
-                <button onClick={() => setTableSelected('Directs')}>
-                  Directs
-                </button>
+                <div onClick={() => setTableSelected('Directs')}>
+                  <p>Directs</p>
+                  {newMessages() > 0 &&
+                    < div className='chat__cards__header__list__item__count' >
+                      {newMessages()}
+                    </div>
+
+                  }
+                </div>
               </li>
               <li className={`chat__cards__header__list__item ${tableSelected === 'Groups' ? 'chat__cards__header__list__item__selected' : ''}`}>
-                <button onClick={() => setTableSelected('Groups')}>
-                  Groups
-                </button>
+                <div onClick={() => setTableSelected('Groups')}>
+                  <p>Groups</p>
+                  {newMessages() > 0 &&
+                    < div className='chat__cards__header__list__item__count' >
+                      {newMessages()}
+                    </div>
+                  }
+                </div>
               </li>
             </ul>
           </nav>
           <div className='chat__cards__body'>
             {(() => {
-              if (tableSelected === 'Friends')
-                return <FriendTab setTableSelected={setTableSelected} />;
-              else if (tableSelected === 'Directs')
+              if (tableSelected === 'Directs')
                 return <DirectTab />;
-              else
+              if (tableSelected === 'Groups')
                 return <GroupTab />;
             })()}
           </div>
@@ -46,6 +64,6 @@ export default function Chat() {
         </div>
         <ChatTalk />
       </div>
-    </div>
+    </div >
   );
 }

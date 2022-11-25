@@ -7,13 +7,13 @@ import OAuth from './pages/OAuth/OAuth';
 import Profile from './pages/Profile/Profile';
 import Game from './pages/Game/Game';
 import Chat from './pages/Chat/Chat';
+import Community from './pages/Community/Community';
 import { NavBar } from './components/NavBar/NavBar';
 import { RequireAuth, ValidadeSignin } from './others/utils/utils';
 import { IntraDataProvider } from './contexts/IntraDataContext';
 import { ChatProvider } from './contexts/ChatContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { Community } from './components/Community/Community';
 
 export default function AppRouter() {
   const queryClient = new QueryClient();

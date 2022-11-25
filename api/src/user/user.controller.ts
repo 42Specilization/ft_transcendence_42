@@ -22,7 +22,6 @@ import { UserFromJwt } from 'src/auth/dto/UserFromJwt.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import * as nodemailer from 'nodemailer';
 import { smtpConfig } from '../config/smtp';
@@ -31,7 +30,7 @@ import * as bcrypt from 'bcrypt';
 import { FriendRequestDto } from './dto/friend-request.dto';
 // import axios from 'axios';
 import { GetFriendDto } from './dto/get-friend.dto';
-import { NotifyHandlerDto } from 'src/notification/dto/notify-dto';
+import { NewNotifyDto, NotifyHandlerDto } from 'src/notification/dto/notify-dto';
 // import { NotificationService } from 'src/notification/notification.service';
 
 @Controller('user')
@@ -170,11 +169,6 @@ export class UserController {
     return { message: 'success' };
   }
 
-  @Get()
-  @HttpCode(HttpStatus.OK)
-  async getUsers(): Promise<User[]> {
-    return (await this.userService.getUsers());
-  }
 
   /* This method is used to get the user's information. */
   @Get('me')
@@ -323,5 +317,16 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async getCommunty(@GetUserFromJwt() userFromJwt: UserFromJwt) {
     return (await this.userService.getCommunty(userFromJwt.email));
+  }
+
+  @Patch('/notifyMessage')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: NewNotifyDto })
+  async notifyMessage(
+    @Body(ValidationPipe) newNotifyDto: NewNotifyDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.userService.notifyMessage(userFromJwt.email, newNotifyDto);
+    return { message: 'success' };
   }
 }

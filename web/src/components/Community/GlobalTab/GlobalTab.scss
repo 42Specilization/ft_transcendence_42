@@ -1,64 +1,69 @@
-@import '../../others/styles/global.scss';
+@import '../../../others/styles/global.scss';
 
-.community {
+
+.global__tab {
   @include displayFlex(unset, column);
-  width: 80%;
-  height: 80%;
+  width: 100%;
+  height: 100%;
   padding: 20px 60px 50px 60px;
-  border-radius: 0px 0px 50px 50px;
+  border-radius: 0 0 50px 50px;
   background-color: $backgroundColor;
   color: white;
 }
 
-.community__header{
+.global__tab__header {
   @include displayFlex(center);
   width: 100%;
   font-size: 1.2em;
   padding-bottom: 20px;
 }
 
-.community__header__item {
+.global__tab__header__item {
   @include displayFlex();
   width: 33%;
 }
 
-.community__body{
+.global__tab__body {
   width: 70%;
   padding-left: 10px;
   @include scrollBar(10px, 20px);
 }
 
 
-.community__header__icon {
+.global__tab__header__icon {
   @include displayFlex(center);
   padding: 4px;
   border-radius: 50%;
   background-color: $buttonColor;
   transition: width 0.6s, padding 0.6s;
-  &:hover  {
+
+  &:hover {
     cursor: pointer;
     background-color: $buttonColorHover;
   }
 }
 
-.community__header__search {
+.global__tab__header__search {
   @include displayFlex(left);
-  .community__header__icon {
+
+  .global__tab__header__icon {
     min-width: 40px;
     min-height: 40px;
   }
+
   overflow: hidden;
-  transition: width 0.6s, padding 0.6s;
+  transition: width 0.6s,
+  padding 0.6s;
 }
 
 
-.community__header__search__input {
+.global__tab__header__search__input {
   @include displayFlex();
-  width:100%;
+  width: 100%;
   text-align: center;
   color: white;
   height: 40px;
-  font-size:20px;
+  font-size: 20px;
   margin-left: 10px;
   margin-right: 10px;
   border-radius: 20px;
@@ -74,11 +79,11 @@
 
 
 @media (min-width:1200px) {
-  .community {
+  .global__tab {
     padding: 20px 100px 50px 100px;
   }
 
-  .community__header {
+  .global__tab__header {
     font-size: 1.5em;
   }
 }
