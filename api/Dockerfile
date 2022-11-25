@@ -2,7 +2,7 @@
 # BUILD FOR PRODUCTION #
 ########################
 
-FROM node:19-alpine as builder
+FROM node:18.12.1-alpine as builder
 
 ENV NODE_ENV build
 
@@ -21,9 +21,10 @@ RUN npm run build \
 #      PRODUCTION      #
 ########################
 
-FROM node:19-alpine as production
+FROM node:18.12.1-alpine as production
 
 ENV NODE_ENV production
+EXPOSE 3000
 
 WORKDIR /app/
 
