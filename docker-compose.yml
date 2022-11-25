@@ -1,21 +1,6 @@
 version: '3'
 
 services:
-  web:
-    depends_on:
-      - api
-    build: ./web
-    image: web
-    container_name: web
-    networks:
-      - transcendence-network
-    restart: unless-stopped
-    ports:
-      - "80:80"
-    environment:
-      - VITE_API_HOST=api
-    env_file:
-      - ./web/.env
 
   api:
     depends_on:
@@ -31,7 +16,24 @@ services:
     environment:
       - DATABASE_HOST=pgsql
     env_file:
-      - ./api/.env
+      - ./.production.env
+
+  web:
+    depends_on:
+      - api
+    build: ./web
+    image: web
+    container_name: web
+    networks:
+      - transcendence-network
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      - VITE_API_HOST=api
+    env_file:
+      - ./.production.env
+
     
   pgsql:
     image: postgres:alpine
