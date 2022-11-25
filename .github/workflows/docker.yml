@@ -1,4 +1,4 @@
-name: ci
+name: docker
 
 on:
   push:
@@ -36,7 +36,7 @@ jobs:
           envkey_VITE_API_PORT: ${{ secrets.VITE_API_PORT }}
           envkey_VITE_GAME_NAMESPACE: ${{ secrets.VITE_GAME_NAMESPACE }}
           envkey_VITE_REDIRECT_LOGIN_URL: ${{ secrets.VITE_REDIRECT_LOGIN_URL }}
-          directory: /web
+          directory: /github/web
           
         
       -
