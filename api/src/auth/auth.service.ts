@@ -98,7 +98,7 @@ export class AuthService {
           first_name: response.data.first_name,
           email: response.data.email,
           usual_full_name: response.data.usual_full_name,
-          image_url: response.data.image_url,
+          image_url: response.data.image.link,
           login: response.data.login,
           matches: response.data.matches,
           wins: response.data.wins,
