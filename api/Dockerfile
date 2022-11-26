@@ -33,6 +33,3 @@ COPY --from=builder /app/node_modules/ /app/node_modules/
 COPY --from=builder /app/dist/ /app/dist/
 
 CMD [ "node", "dist/main.js" ]
-
-
-

@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { jwtConstants } from './constants/constants';
+import { HttpModule } from '@nestjs/axios';
 
 
 @Module({
@@ -19,6 +20,11 @@ import { jwtConstants } from './constants/constants';
       signOptions: {
         expiresIn: '30d'
       }
+    }),
+    HttpModule.registerAsync({
+      useFactory: () => ({
+        timeout: 5000
+      })
     })
   ]
 
