@@ -1,6 +1,5 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import axios from 'axios';
 import { User } from '../user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { AccessTokenResponse } from './dto/AccessTokenResponse.dto';
@@ -9,6 +8,7 @@ import { UserFromJwt } from './dto/UserFromJwt.dto';
 import { UserPayload } from './dto/UserPayload.dto';
 import { UpdateUserDto } from 'src/user/dto/update-user.dto';
 import { UserDto } from 'src/user/dto/user.dto';
+import { HttpService } from '@nestjs/axios';
 @Injectable()
 export class AuthService {
 
@@ -16,7 +16,8 @@ export class AuthService {
 
   constructor(
     private readonly userService: UserService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly httpService: HttpService
   ) { }
 
   /**
@@ -29,8 +30,8 @@ export class AuthService {
   async getToken(code: string): Promise<AccessTokenResponse> {
     const url = `${process.env['ACCESS_TOKEN_URI']}?grant_type=authorization_code&client_id=${process.env['CLIENT_ID']}&client_secret=${process.env['CLIENT_SECRET']}&redirect_uri=${process.env['REDIRECT_URI']}&code=${code}`;
     return (
-      await axios.post(url).then((response) => {
-        return response.data as AccessTokenResponse;
+      await this.httpService.axiosRef.post(url).then((res) => {
+        return res.data as AccessTokenResponse;
       }).catch(() => {
         throw new InternalServerErrorException('getToken: Fail to request access token to intra!');
       })
@@ -91,7 +92,8 @@ export class AuthService {
     const urlMe = `${process.env['URL_ME']}`;
 
     return (
-      await axios(urlMe, config).then(response => {
+      await this.httpService.axiosRef(urlMe, config).then(response => {
+        this.logger.debug('sucesso from intra');
         return ({
           first_name: response.data.first_name,
           email: response.data.email,
@@ -106,9 +108,11 @@ export class AuthService {
           notify: [],
           friends: [],
           blockeds: [],
-          directs:[],
+          directs: [],
         });
       }).catch(err => {
+        this.logger.debug('errrooooo from intra');
+
         if (err.code == 'ERR_BAD_REQUEST')
           throw new UnauthorizedException('getData: Token invalid!');
         else
@@ -130,6 +134,7 @@ export class AuthService {
   async checkIfIsSignInOrSignUp(code: string): Promise<UserDto> {
 
     const token: AccessTokenResponse = await this.getToken(code);
+    console.log(token);
     const data: UserDto = await this.getDataFromIntra(token.access_token);
     const user: User | null = await this.userService.findUserByEmail(data.email);
 

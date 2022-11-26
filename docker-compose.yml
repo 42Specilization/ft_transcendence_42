@@ -1,23 +1,6 @@
 version: '3'
 
 services:
-
-  api:
-    depends_on:
-      - pgsql
-    build: ./api
-    image: api
-    container_name: api
-    networks:
-      - transcendence-network
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    environment:
-      - DATABASE_HOST=pgsql
-    env_file:
-      - ./.production.env
-
   web:
     depends_on:
       - api
@@ -34,6 +17,21 @@ services:
     env_file:
       - ./.production.env
 
+  api:
+    depends_on:
+      - pgsql
+    build: ./api
+    image: api
+    container_name: api
+    networks:
+      - transcendence-network
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_HOST=pgsql
+    env_file:
+      - ./.production.env
     
   pgsql:
     image: postgres:alpine
