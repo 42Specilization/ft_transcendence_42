@@ -48,6 +48,7 @@ jobs:
           tags: transcendence42/web:latest
 
   continuous-deployment:
+    needs: [continuous-integration]
     runs-on: ubuntu-latest
 
     steps:
