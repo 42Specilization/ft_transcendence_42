@@ -1,4 +1,4 @@
-name: docker
+name: CI/CD Pipeline
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - 'main'
       
 jobs:
-  docker:
+  continuous-integration:
     runs-on: ubuntu-latest
     steps:
       -
@@ -46,3 +46,25 @@ jobs:
           context: ./web
           push: true
           tags: transcendence42/web:latest
+
+  continuous-deployment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: AWS SSM Send-Command
+        uses: peterkimzz/aws-ssm-send-command@master
+        id: ssm
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY }}
+          instance-ids: ${{ secrets.INSTANCE_ID }}
+
+          working-directory: /home/ubuntu/pong
+          command: bash production.sh
+
+      # Catch SSM outputs
+      - name: Get the outputs
+        run: echo "THe command id is ${{ steps.ssm.outputs.command-id }}"
