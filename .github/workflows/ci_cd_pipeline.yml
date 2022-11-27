@@ -62,7 +62,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           instance-ids: ${{ secrets.INSTANCE_ID }}
 
-          working-directory: /home/ubuntu/pong
+          working-directory: /home/ubuntu/app
           command: bash production.sh
 
       # Catch SSM outputs

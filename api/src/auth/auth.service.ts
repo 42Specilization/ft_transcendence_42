@@ -93,7 +93,6 @@ export class AuthService {
 
     return (
       await this.httpService.axiosRef(urlMe, config).then(response => {
-        this.logger.debug('sucesso from intra');
         return ({
           first_name: response.data.first_name,
           email: response.data.email,
@@ -111,8 +110,6 @@ export class AuthService {
           directs: [],
         });
       }).catch(err => {
-        this.logger.debug('errrooooo from intra');
-
         if (err.code == 'ERR_BAD_REQUEST')
           throw new UnauthorizedException('getData: Token invalid!');
         else
@@ -134,7 +131,6 @@ export class AuthService {
   async checkIfIsSignInOrSignUp(code: string): Promise<UserDto> {
 
     const token: AccessTokenResponse = await this.getToken(code);
-    console.log(token);
     const data: UserDto = await this.getDataFromIntra(token.access_token);
     const user: User | null = await this.userService.findUserByEmail(data.email);
 
