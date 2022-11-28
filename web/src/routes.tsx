@@ -13,7 +13,7 @@ import { RequireAuth, ValidadeSignin } from './others/utils/utils';
 import { IntraDataProvider } from './contexts/IntraDataContext';
 import { ChatProvider } from './contexts/ChatContext';
 import { AuthProvider } from './contexts/AuthContext';
-mport { useEffect } from 'react';
+import { useEffect } from 'react';
 import { state } from './adapters/game/gameState';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
