@@ -13,10 +13,19 @@ import { RequireAuth, ValidadeSignin } from './others/utils/utils';
 import { IntraDataProvider } from './contexts/IntraDataContext';
 import { ChatProvider } from './contexts/ChatContext';
 import { AuthProvider } from './contexts/AuthContext';
+mport { useEffect } from 'react';
+import { state } from './adapters/game/gameState';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 export default function AppRouter() {
   const queryClient = new QueryClient();
+    useEffect(() => {
+    window.onpopstate = () => {
+      if (state.socket || state.game) {
+        window.location.reload();
+      }
+    };
+  }, []);
   return (
     <Router>
       <AuthProvider>
@@ -44,13 +53,15 @@ export default function AppRouter() {
                 }
               />
               <Route
-                path="/game"
-                element={
-                  <RequireAuth>
-                    <Game />
-                  </RequireAuth>
-                }
-              />
+             path="/game"
+            element={
+            <RequireAuth>
+              <IntraDataProvider>
+                  <Game />
+              </IntraDataProvider>
+            </RequireAuth>
+            }
+          />
               <Route
                 path="/chat"
                 element={

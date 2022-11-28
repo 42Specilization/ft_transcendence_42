@@ -8,9 +8,14 @@
   border: 2px solid $primaryColor;
   background-color: rgba(42, 38, 52, 0.46);
   color: white;
-
+  position: relative;
   h1 {
     font-weight: 400;
     margin-bottom: 10px;
+  }
+
+  p {
+    position: absolute;
+    bottom: 20px;
   }
 }

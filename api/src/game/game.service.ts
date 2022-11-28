@@ -1,6 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { CreateGameDto } from './dto/createGame.dto';
@@ -18,8 +17,13 @@ export class GameService {
 
     game.loserScore = loserScore;
     game.winnerScore = winnerScore;
-    game.winner = await this.userService.findUserByNick(winner) as User;
-    game.loser = await this.userService.findUserByNick(loser) as User;
+    const userWinner = await this.userService.findUserByNick(winner);
+    const userLoser = await this.userService.findUserByNick(loser);
+    if (!userWinner || !userLoser) {
+      return;
+    }
+    game.winner = userWinner;
+    game.loser = userLoser;
     game.reasonEndGame = reasonEndGame;
 
     try {

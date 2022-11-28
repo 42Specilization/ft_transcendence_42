@@ -1,14 +1,8 @@
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
 import { Ball, Rect } from '../../components/Game/Canvas/Canvas';
-import { IntraData } from '../../others/Interfaces/interfaces';
 import { getAccessToken } from '../../others/utils/utils';
 import { createSocket, CreateSocketOptions, socketIOUrl } from './socket-io';
-
-interface Me {
-  name: string;
-  id: string;
-}
 
 export interface Score {
   player1: number;
@@ -50,7 +44,7 @@ export interface Game {
 
 export interface AppState {
   socket?: Socket;
-  me: Me | undefined;
+  name?: string;
   accessToken?: string | null;
   isPlayer?: boolean;
   game?: Game;
@@ -59,28 +53,20 @@ export interface AppState {
   player2?: Player;
   score?: Score;
   powerUp?: IPowerUp;
+  serverError?: boolean;
+  errorToConnect?: boolean;
 }
 
-const state = proxy<AppState>({
-  get me() {
-    const localStore = window.localStorage.getItem('userData');
-    if (!localStore) {
-      return undefined;
-    }
-    const data: IntraData = JSON.parse(localStore);
-    const myData = {
-      name: data.login,
-      id: this.socket?.id,
-    };
-    return myData;
-  },
-});
+const state = proxy<AppState>();
 
 const actions = {
   initializeGame: (isWithPowerUps: boolean): void => {
+    if (state.errorToConnect !== undefined && !state.errorToConnect) {
+      return;
+    }
     const playerInfos: IPlayerInfos = {
       isWithPowerUps: isWithPowerUps,
-      name: state.me?.name as string
+      name: state.name as string
     };
     state.socket?.emit('join-game', playerInfos);
   },
@@ -93,7 +79,6 @@ const actions = {
         state: state,
       };
       state.socket = ref(createSocket(createSocketOptions));
-
       return;
     }
 
@@ -111,6 +96,7 @@ const actions = {
     } else {
       state.ball.x = ball.x;
       state.ball.y = ball.y;
+      state.ball.radius = ball.radius;
     }
   },
   updatePlayer(player1: Player, player2: Player) {
@@ -134,7 +120,10 @@ const actions = {
     }
   },
   leaveGame() {
-    state.game = undefined;
+    if (state.game) {
+      state.game.hasEnded = true;
+      state.game.msgEndGame = 'You have been disconnected!';
+    }
     this.disconnectSocket();
   },
   setIsPlayer() {
@@ -149,6 +138,13 @@ const actions = {
       state.isPlayer = false;
     }
   },
+  updateServerError(serverError: boolean) {
+    state.serverError = serverError;
+    this.leaveGame();
+  },
+  updateName(name: string) {
+    state.name = name;
+  }
 };
 
 export type AppActions = typeof actions;

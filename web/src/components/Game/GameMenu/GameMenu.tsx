@@ -3,10 +3,10 @@ import {
   actions,
   // state
 } from '../../../adapters/game/gameState';
-import { Checkbox } from '../Checkbox/Checkbox';
+import { Checkbox } from '../../Checkbox/Checkbox';
 import { Commands } from '../Commands/Commands';
 import { WatchGame } from '../WatchGame/WatchGame';
-import { WithFriend } from '../WithFriend/WithFriend';
+import { Instructions } from '../Instructions/Instructions';
 import './GameMenu.scss';
 
 export function GameMenu() {
@@ -25,7 +25,7 @@ export function GameMenu() {
     setWatch(false);
   };
 
-  const handleWithFriend = () => {
+  const handleInstructions = () => {
     setCommands(false);
     setWatch(false);
   };
@@ -51,12 +51,6 @@ export function GameMenu() {
         </button>
         <button
           className='gameMenu__buttons__button'
-          onClick={handleWithFriend}
-        >
-          Play with a friend
-        </button>
-        <button
-          className='gameMenu__buttons__button'
           onClick={handleWatchGame}
         >
           Watch a game
@@ -66,6 +60,12 @@ export function GameMenu() {
           onClick={handleCommands}
         >
           Commands
+        </button>
+        <button
+          className='gameMenu__buttons__button'
+          onClick={handleInstructions}
+        >
+          Instructions
         </button>
         <button
           className='gameMenu__buttons__button'
@@ -81,7 +81,7 @@ export function GameMenu() {
         </div>
       </div>
       <div className='gameMenu__options'>
-        {commands === true ? <Commands /> : (watch === true ? <WatchGame /> : <WithFriend />)}
+        {commands === true ? <Commands /> : (watch === true ? <WatchGame /> : <Instructions />)}
       </div>
     </div>
   );

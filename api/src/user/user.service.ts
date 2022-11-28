@@ -80,7 +80,6 @@ export class UserService {
       user.games = [];
     }
     user.games.push(game);
-
     if (nick === game.winner.nick) {
       user.wins = this.incrementStat(user.wins);
     } else {
