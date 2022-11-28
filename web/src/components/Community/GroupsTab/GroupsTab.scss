@@ -8,10 +8,19 @@
   border-radius: 0 0 50px 50px;
   background-color: $backgroundColor;
   color: white;
+  .modal__container__content {
+    padding-top: 0;
+  }
+  .modal__container {
+    top: 100px;
+    width: 80%;
+    height: 85%;
+    max-height: 1000px;
+  }
 }
 
 .groups__tab__header {
-  @include displayFlex();
+  @include displayFlex(space-around);
   width: 100%;
   font-size: 1.2em;
   padding-bottom: 20px;

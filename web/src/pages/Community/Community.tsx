@@ -9,7 +9,7 @@ import { GroupsTab } from '../../components/Community/GroupsTab/GroupsTab';
 
 export default function Community() {
 
-  const [tableSelected, setTableSelected] = useState('Global');
+  const [tableSelected, setTableSelected] = useState('Groups');
 
   return (
     <div className='body'>

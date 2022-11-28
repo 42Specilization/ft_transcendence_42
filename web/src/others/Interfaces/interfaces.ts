@@ -6,6 +6,15 @@ export interface NotifyData {
   date: Date;
 }
 
+export interface CreateGroupData {
+  type: string;
+  name: string;
+  password?: string;
+  confirmPassword?: string;
+  image?: string;
+  owner: string;
+}
+
 export interface FriendData {
   status: string;
   login: string;

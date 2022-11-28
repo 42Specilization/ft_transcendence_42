@@ -29,8 +29,10 @@ export function GroupTab() {
   return (
     < div className='group__tab' >
       <div className='group__tab__header'>
+
         <div className='group__tab__header__search'
           style={{ width: isTableSearch ? '100%' : '40px', padding: isTableSearch ? '10px' : '0px' }}>
+
           < MagnifyingGlass
             className='group__tab__header__icon'
             size={40}
@@ -57,10 +59,11 @@ export function GroupTab() {
             onClick={() => setSearchInput('')}
           />
         </div>
+
       </div>
       < div className='group__tab__body'>
         {
-          groups.filter((obj :any) => obj.name?.includes(searchInput))
+          groups.filter((obj: any) => obj.name?.includes(searchInput))
             .sort((a: any, b: any) => {
               if (a.date < b.date)
                 return 1;
