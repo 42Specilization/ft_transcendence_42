@@ -19,7 +19,7 @@ export function NotificationMessage({
   function changeSide(event: any) {
     if (event.target.id === 'front_side' || event.target.id === 'back_side') {
       setSide(prevSide => !prevSide);
-      console.log('fd', notify);
+      // console.log('fd', notify);
     }
   }
   async function removeNotify() {

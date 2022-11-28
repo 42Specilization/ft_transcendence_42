@@ -17,6 +17,7 @@ import { Message } from './chat/entities/message.entity';
 // import { APP_GUARD } from '@nestjs/core';
 // import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { Group } from './chat/entities/group.entity';
+import { GroupController } from './chat/entities/groupController.entity';
 
 @Module({
   imports: [
@@ -27,7 +28,15 @@ import { Group } from './chat/entities/group.entity';
       username: 'pguser',
       password: 'pgpassword',
       database: 'postgres',
-      entities: [User, Notify, Relations, Direct, Group, GameEntity, Message],
+      entities: [
+        User,
+        Notify,
+        Relations,
+        Direct,
+        Group,
+        GroupController,
+        GameEntity,
+        Message],
       synchronize: true,
       logging: false,
     }),

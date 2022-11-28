@@ -95,7 +95,7 @@ export class User extends BaseEntity {
   games: GameEntity[];
 
   @JoinTable()
-  @ManyToMany(() => Direct, (direct) => direct.users, { cascade: ['update'] })
+  @ManyToMany(() => Direct, (direct) => direct.users, { cascade: ['update', 'remove'] })
   directs: Direct[];
 
   @ApiProperty()
@@ -105,7 +105,6 @@ export class User extends BaseEntity {
   @ApiProperty()
   @OneToMany(() => Relations, (relations) => relations.active_user, { cascade: ['insert', 'update'] })
   relations: Relations[];
-
 
   async checkToken(token: string): Promise<boolean> {
     try {

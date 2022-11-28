@@ -7,7 +7,7 @@ import { GetUserFromJwt } from 'src/auth/decorators/get-user.decorator';
 import { UserFromJwt } from 'src/auth/dto/UserFromJwt.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
-import { DirectDto, GetDirectDto } from './dto/chat.dto';
+import { DirectDto, GetDirectDto, DeleteDirectDto } from './dto/chat.dto';
 
 @Controller('chat')
 @ApiTags('chat')
@@ -50,6 +50,26 @@ export class ChatController {
   ) {
     return await this.chatService.setBreakpointController(userFromJwt.email, chatId, type);
   }
+
+
+  @Get('/devGetDirects')
+  async devGetDirects() {
+    const result = await this.chatService.getAllChats();
+    return result;
+  }
+
+  @Patch('/deleteDirect')
+  @UseGuards(JwtAuthGuard)
+  async devDeleteDirectById(
+    @Body() deleteDirectDto: DeleteDirectDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ) {
+    console.log(deleteDirectDto.friend_login);
+    await this.chatService.deleteDirectById(userFromJwt.email, deleteDirectDto.friend_login);
+    return { message: 'success' };
+  }
+
+
 
 
 }

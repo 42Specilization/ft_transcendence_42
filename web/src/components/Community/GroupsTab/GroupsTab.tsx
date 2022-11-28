@@ -1,13 +1,15 @@
 import './GroupsTab.scss';
 import { MagnifyingGlass, X } from 'phosphor-react';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import ReactTooltip from 'react-tooltip';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { CardGroup } from '../CardGroup/CardGroup';
 
 export function GroupsTab() {
 
   const [isTableSearch, setIsTableSearch] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-
+  const {intraData} = useContext(IntraDataContext);
   return (
     < div className='groups__tab' >
       <div
@@ -41,10 +43,13 @@ export function GroupsTab() {
         <ReactTooltip delayShow={50} />
       </div>
       <div className='groups__tab__body'>
-        {/* {
-          intraData.blockeds?.sort((a, b) => a.login < b.login ? -1 : 1)
-            .map((obj) => <CardBlocked key={Math.random()} blocked={obj} />)
-        } */}
+        {
+          intraData.friends?.sort((a, b) => a.login < b.login ? -1 : 1)
+            .map(() => <CardGroup key={Math.random()} group={{
+              name:'mock',
+              image_url:'userDefault.png',
+            }} />)
+        }
       </div>
     </div >);
 }

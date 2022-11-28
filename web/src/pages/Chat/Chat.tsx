@@ -9,7 +9,7 @@ import { ChatContext } from '../../contexts/ChatContext';
 export default function Chat() {
 
   const { activeChat } = useContext(ChatContext);
-  const { intraData,setIntraData, api, config } = useContext(IntraDataContext);
+  const { intraData, setIntraData, api, config } = useContext(IntraDataContext);
   const [tableSelected, setTableSelected] = useState('Directs');
 
   function newMessages() {
@@ -20,7 +20,7 @@ export default function Chat() {
     }, 0);
   }
 
-  async function removeNotify(notify:any) {
+  async function removeNotify(notify: any) {
     setIntraData((prevIntraData) => {
       return {
         ...prevIntraData,
@@ -29,18 +29,23 @@ export default function Chat() {
     });
   }
 
-  async function clearNotifyMessages (){
-    intraData.notify.forEach(async (notify)=> {
-      if (notify.type === 'message'){
+  async function clearNotifyMessages() {
+    intraData.notify.forEach(async (notify) => {
+      if (notify.type === 'message') {
         await api.patch('/user/removeNotify', { id: notify.id }, config);
         removeNotify(notify);
       }
     });
   }
 
-  useEffect(()=> {
+  useEffect(() => {
     clearNotifyMessages();
   }, []);
+
+  useEffect(() => {
+    if (activeChat)
+      clearNotifyMessages();
+  }, [activeChat]);
 
   return (
     <div className='body'>

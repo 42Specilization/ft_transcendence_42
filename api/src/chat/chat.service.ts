@@ -19,6 +19,55 @@ export class ChatService {
 
   }
 
+  async getAllChats() {
+    return await this.directRepository.find({
+      relations: [
+        'users',
+        'messages',
+        // 'messages.direct',
+        // 'messages.sender',
+      ],
+    });
+  }
+
+  async deleteDirectById(user_email: string, friend_login: string) {
+    const user = await this.userService.findUserDirectByEmail(user_email);
+    const friend = await this.userService.findUserDirectByNick(friend_login);
+
+    if (!user || !friend)
+      throw new InternalServerErrorException('User Not Found deleteDirectById');
+
+    const direct = user.directs.filter((key: Direct) => {
+      if (key.users.map((u) => u.nick).indexOf(friend.nick) >= 0)
+        return key;
+      return;
+    }).at(0);
+
+    if (!direct)
+      return;
+
+    user.directs = user.directs.filter((key) => {
+      if (key.id === direct.id)
+        return;
+      return key;
+    });
+
+    friend.directs = friend.directs.filter((key) => {
+      if (key.id === direct.id)
+        return;
+      return key;
+    });
+
+    try {
+      await user.save();
+      await friend.save();
+      await this.directRepository.delete(direct.id);
+    } catch (err) {
+      throw new InternalServerErrorException('Error saving data in db DeleteDirectById', err);
+    }
+
+  }
+
 
   async findDirectById(id: string): Promise<Direct> {
     const direct: Direct | null = await this.directRepository.findOne({
@@ -104,6 +153,7 @@ export class ChatService {
 
   }
 
+  // Proteger pra quando o usuario for bloqueado ou o chat nao existir mais
   async setBreakpointController(email: string, chatId: string, type: string) {
     const user = await this.userService.findUserDirectByEmail(email);
     if (!user)
@@ -112,6 +162,8 @@ export class ChatService {
     const chat: Direct | Group = type === 'direct' ?
       await this.findDirectById(chatId) :
       await this.findGroupById(chatId);
+    if (!chat)
+      return;
     this.setBreakpoint(user, chat, type);
   }
 
@@ -215,14 +267,17 @@ export class ChatService {
     return this.createDirectDto(direct, owner, friend, 'activeDirect');
   }
 
-  async getFriendDirect(owner_email: string, friend_login: string):
-    Promise<{ directDto: DirectDto, created: boolean }> {
+  // Impedir a criação de chats com pessoas bloqueadas
+  async getFriendDirect(owner_email: string, friend_login: string) {
 
     const owner = await this.userService.findUserDirectByEmail(owner_email);
     const friend = await this.userService.findUserDirectByNick(friend_login);
 
     if (!owner || !friend)
       throw new BadRequestException('User Not Found getFrienddirect');
+
+    if (this.userService.isBlocked(owner, friend) || this.userService.isBlocked(friend, owner))
+      return;
 
     const directs: Direct[] = owner.directs.filter((key: Direct) => {
       if (key.users.map((u: User) => u.nick).indexOf(friend.nick) >= 0)

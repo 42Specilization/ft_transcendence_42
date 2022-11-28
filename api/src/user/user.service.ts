@@ -104,10 +104,11 @@ export class UserService {
         'notify',
         'directs',
         'directs.users',
+
         'notify.user_source',
         'relations',
         'relations.passive_user',
-      ]
+      ],
     });
   }
 
@@ -177,6 +178,8 @@ export class UserService {
           'directs.users',
           'directs.messages',
           'directs.messages.sender',
+          'relations',
+          'relations.passive_user',
         ],
         order: {
           directs: {
@@ -197,6 +200,8 @@ export class UserService {
           'directs.users',
           'directs.messages',
           'directs.messages.sender',
+          'relations',
+          'relations.passive_user',
         ],
         order: {
           directs: {
@@ -211,6 +216,7 @@ export class UserService {
       where: {
         id,
       },
+
     });
     if (!user) throw new NotFoundException('User Not Found FindUserByID');
     return user;
@@ -240,14 +246,7 @@ export class UserService {
   }
 
   async getUsers(): Promise<User[]> {
-    return await this.usersRepository.find({
-      relations: [
-        'notify',
-        'relations',
-        'chats',
-        'chats.users',
-      ]
-    });
+    return await this.usersRepository.find();
   }
 
   async getUserDTO(email: string): Promise<UserDto> {
@@ -348,6 +347,7 @@ export class UserService {
 
 
   isBlocked(user_passive: User, user_active: User) {
+
     const blocked = user_active.relations.filter((friendRelation) => {
       if (friendRelation.type == 'blocked' && friendRelation.passive_user.nick == user_passive.nick)
         return friendRelation;
@@ -407,7 +407,7 @@ export class UserService {
       throw new BadRequestException('This user already is your friend');
 
 
-    if (this.isBlocked(user, friend) == true)
+    if (this.isBlocked(user, friend) || this.isBlocked(friend, user))
       return;
 
     friend.notify?.push(newNotify);
@@ -568,19 +568,7 @@ export class UserService {
         return;
       return relation;
     });
-    
 
-    user.directs = user.directs.filter((direct) => {
-      if (direct.users[0].email === friend.email || direct.users[1].email === friend.email)
-        return ;
-      return direct;
-    });
-
-    friend.directs = friend.directs.filter((direct) => {
-      if (direct.users[0].email === user.email || direct.users[1].email === user.email)
-        return ;
-      return direct;
-    });
 
     const relationUser = new Relations();
 
@@ -676,29 +664,29 @@ export class UserService {
 
   async notifyMessage(user_email: string, receivedNotify: NewNotifyDto) {
     const user = await this.findUserByEmail(user_email);
-    const sender = await this.findUserByNick(receivedNotify.chatName);
-    if (!user || !sender)
+    const target = await this.findUserByNick(receivedNotify.target);
+    if (!user || !target)
       throw new BadRequestException('User not found notifyMessage');
 
 
     const newNotify = new Notify();
     newNotify.type = 'message';
-    newNotify.user_source = sender;
+    newNotify.user_source = user;
     newNotify.additional_info = receivedNotify.add_info;
     newNotify.date = new Date(Date.now());
-    if (user.notify?.length === 0) {
-      user.notify = [];
+    if (target.notify?.length === 0) {
+      target.notify = [];
     }
 
-    user.notify = user.notify.filter((notify) => {
+    target.notify = target.notify.filter((notify) => {
       if (notify.type === 'message')
         return;
       return notify;
     });
-    user.notify?.push(newNotify);
+    target.notify?.push(newNotify);
 
     try {
-      await user.save();
+      await target.save();
     } catch (err) {
       throw new InternalServerErrorException('Error saving datas in db notifyMessage');
     }

@@ -122,17 +122,16 @@ export class StatusGateway
   }
 
   @SubscribeMessage('newNotify')
-  handleNewNotify(@MessageBody() login_target: string) {
+  handleNewNotify(@MessageBody() { login_target, type }: { login_target: string, type: string }) {
     this.mapUserData.keyOf(login_target).forEach(socketId =>
-      this.server.to(socketId).emit('updateNotify')
+      this.server.to(socketId).emit('updateNotify', type)
     );
   }
 
   @SubscribeMessage('newFriend')
-  handleNewFriend(@ConnectedSocket() client: Socket, login_target: string) {
+  handleNewFriend(@ConnectedSocket() client: Socket, @MessageBody() login_target: string) {
     const user: UserData = this.mapUserData.valueOf(client.id);
     const socketsUser: string[] = this.mapUserData.keyOf(user.login);
-    console.log('new Friend', user.login, login_target)
 
     socketsUser.forEach(socketId => {
       this.server.to(socketId).emit('updateFriend');
@@ -142,9 +141,9 @@ export class StatusGateway
     if (this.mapUserData.hasValue(login_target)) {
       const socketsFriends: string[] = this.mapUserData.keyOf(login_target);
 
-      socketsFriends.forEach(socketId =>{
+      socketsFriends.forEach(socketId => {
 
-        this.server.to(socketId).emit('updateFriend')
+        this.server.to(socketId).emit('updateFriend');
       }
       );
     }

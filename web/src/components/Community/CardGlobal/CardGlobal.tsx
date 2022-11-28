@@ -27,7 +27,7 @@ export function CardGlobal({ image_url, login, ratio }: CardGlobalProps) {
   async function sendFriendRequest() {
     try {
       await api.patch('/user/sendFriendRequest', { nick: login }, config);
-      actionsStatus.newNotify(login);
+      actionsStatus.newNotify(login, 'friend');
     } catch (err: unknown) {
       setModalErrorVisible(true);
     }

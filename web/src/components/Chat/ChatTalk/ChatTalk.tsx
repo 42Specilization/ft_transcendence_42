@@ -101,7 +101,7 @@ export function ChatTalk(
     submitMessage(event);
   }
 
-  function submitMessage(event: any) {
+  async function submitMessage(event: any) {
     if (event.target[0].value.trim() && activeChat) {
       const newMessage: MsgToServer = {
         chat: activeChat?.chat.id,
@@ -109,9 +109,12 @@ export function ChatTalk(
         msg: event.target[0].value,
       };
       actionsChat.msgToServer(newMessage, activeChat.chat.type);
+      await api.patch('/user/notifyMessage', { id: activeChat?.chat.id, target: activeChat?.chat.name, add_info: 'direct' }, config);
+      actionsStatus.newNotify(activeChat?.chat.name as string, 'message');
     }
     event.target[0].value = '';
   }
+
 
   function changeBlock(start: number, size: number, newCurrent: number) {
     setActiveChat(prev => {

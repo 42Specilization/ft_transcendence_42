@@ -37,10 +37,13 @@ export function CardFriend({ friend }: CardFriendProps) {
 
   async function handleBlockFriend() {
     await api.patch('/user/addBlocked', { nick: friend.login }, config);
+    await api.patch('/chat/deleteDirect', { friend_login: friend.login }, config);
+
     setIntraData((prevIntraData) => {
       prevIntraData.blockeds.push(friend);
       return {
         ...prevIntraData,
+        directs: prevIntraData.directs.filter((key) => key.name != friend.login),
         friends: prevIntraData.friends.filter((key) => key.login != friend.login),
       };
     });
@@ -48,7 +51,7 @@ export function CardFriend({ friend }: CardFriendProps) {
   }
 
   return (
-    <div  id='card__friend' className='card__friend'
+    <div id='card__friend' className='card__friend'
       onClick={(e) => selectActiveFriend(e)}
     >
       <Link to='/chat' id='card__friend' className='card__friend__div' >

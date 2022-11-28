@@ -13,5 +13,11 @@ export class DirectDto {
 
 export class GetDirectDto {
   @IsNotEmpty({ message: 'Insert an valid id' })
-    id: string;
+  id: string;
+}
+
+
+export class DeleteDirectDto {
+  @IsNotEmpty({ message: 'Insert an valid id' })
+  friend_login: string;
 }

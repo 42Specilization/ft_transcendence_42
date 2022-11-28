@@ -18,7 +18,7 @@ export class Message extends BaseEntity {
   id: string;
 
   @ApiProperty()
-  @ManyToOne(() => Direct, (direct: Direct) => direct.messages, { orphanedRowAction: 'delete' })
+  @ManyToOne(() => Direct, (direct: Direct) => direct.messages, { onDelete: 'CASCADE', orphanedRowAction: 'delete' })
   direct?: Direct;
 
   // @ApiProperty()
@@ -36,7 +36,7 @@ export class Message extends BaseEntity {
   @ApiProperty()
   @Column({ nullable: false })
   msg: string;
- 
+
   @ApiProperty()
   @Column({ default: false })
   breakproint: boolean;

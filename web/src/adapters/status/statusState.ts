@@ -10,7 +10,6 @@ import {
   CreateSocketStatusOptions,
   socketStatusIOUrl,
 } from './status.socket-io';
-import axios from 'axios';
 
 export interface UserData {
   status: string;
@@ -73,8 +72,7 @@ const actionsStatus = {
   },
 
   newFriend(userSource: string) {
-    console.log('no newFriend', userSource, stateStatus.socket);
-    
+    // console.log('no newFriend', userSource, stateStatus.socket);
     stateStatus.socket?.emit('newFriend', userSource);
   },
 
@@ -82,12 +80,13 @@ const actionsStatus = {
     stateStatus.socket?.emit('newBlocked');
   },
 
-  newNotify(userTarget: string) {
-    stateStatus.socket?.emit('newNotify', userTarget);
+  newNotify(userTarget: string, type: string) {
+    stateStatus.socket?.emit('newNotify', { login_target: userTarget, type: type });
   },
 
   removeFriend(friend: string) {
-    stateStatus.socket?.emit('deleteFriend', friend);
+    // console.log(friend);
+    stateStatus.socket?.emit('removeFriend', friend);
   },
 
   removeBlocked(blocked: string) {
@@ -199,8 +198,10 @@ const actionsStatus = {
     }
   },
 
-  async updateNotify() {
+  async updateNotify(type: string) {
     if (stateStatus.setIntraData) {
+      if (type === 'message' && window.location.pathname.includes('/chat'))
+        return;
       const user = await getUserInDb();
       stateStatus.setIntraData((prevIntraData) => {
         return { ...prevIntraData, notify: user.notify };
@@ -211,17 +212,20 @@ const actionsStatus = {
   async updateFriend() {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
+      // console.log(user.friends);
       stateStatus.setIntraData((prevIntraData) => {
         return {
           ...prevIntraData,
           friends: user.friends.map((obj) => {
+
             if (prevIntraData.friends.map(e => e.login).indexOf(obj.login) >= 0) {
               const updateFriend = prevIntraData.friends.find(e => e.login === obj.login);
               if (updateFriend)
                 return updateFriend;
             }
             return obj;
-          })
+          }),
+          directs: user.directs
         };
       });
       this.whoIsOnline();
@@ -251,7 +255,8 @@ const actionsStatus = {
             }
             return obj;
           }),
-          blockeds: user.blockeds
+          blockeds: user.blockeds,
+          directs: user.directs
         };
       });
       this.sortFriends();
@@ -296,17 +301,6 @@ const actionsStatus = {
             })
         };
       });
-      if (!window.location.pathname.includes('/chat')) {
-        const token = window.localStorage.getItem('token');
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        };
-        console.log('aqui');
-        await axios.patch(`http://${import.meta.env.VITE_API_HOST}:3000/user/notifyMessage`, { id: message.chat, chatName: message.user.login, add_info: 'direct' }, config);
-        this.updateNotify();
-      }
     }
   },
 

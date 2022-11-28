@@ -10,15 +10,15 @@ export class NotifyDto {
 
 export class NewNotifyDto {
   @IsNotEmpty({ message: 'Inform a valid id' })
-    id: string;
+  id: string;
   @IsNotEmpty({ message: 'Inform a valid chat name' })
-    chatName: string;
+  target: string;
 
   @IsNotEmpty({ message: 'Inform a valid add Info' })
-    add_info: string;
+  add_info: string;
 }
 
 export class NotifyHandlerDto {
   @IsNotEmpty({ message: 'Inform a valid id' })
-    id: string;
+  id: string;
 }

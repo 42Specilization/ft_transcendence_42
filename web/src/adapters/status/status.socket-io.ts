@@ -53,14 +53,13 @@ export function createSocketStatus({
     console.log('update user status:', user);
   });
 
-  socket.on('updateNotify', async () => {
-    actionsStatus.updateNotify();
+  socket.on('updateNotify', async (type: string) => {
+    actionsStatus.updateNotify(type);
     console.log('update notify:');
   });
 
   socket.on('updateFriend', async () => {
     actionsStatus.updateFriend();
-    
     console.log('update friend:');
   });
 

@@ -20,11 +20,11 @@ export class Direct extends BaseEntity {
   id: string;
 
   @ApiProperty()
-  @ManyToMany(() => User, (user) => user.directs)
+  @ManyToMany(() => User, (user) => user.directs, { orphanedRowAction: 'delete' })
   users: User[];
 
   @ApiProperty()
-  @OneToMany(() => Message, (message: Message) => message.direct, { cascade: ['insert', 'update'] })
+  @OneToMany(() => Message, (message: Message) => message.direct, { cascade: ['insert', 'update', 'remove'] })
   messages: Message[];
 
   @ApiProperty()
