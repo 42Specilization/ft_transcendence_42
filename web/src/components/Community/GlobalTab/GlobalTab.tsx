@@ -26,6 +26,7 @@ export function GlobalTab() {
       refetchOnWindowFocus: true,
     }
   );
+  console.log(data);
 
   return (
     <div className='global__tab'>

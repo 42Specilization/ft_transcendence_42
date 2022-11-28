@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { Dispatch, SetStateAction, createContext, useState, ReactNode, useEffect } from 'react';
 import { actionsChat } from '../adapters/chat/chatState';
-import { DirectData, FriendData, MsgToClient } from '../others/Interfaces/interfaces';
+import { DirectData, FriendData, GroupData, MsgToClient } from '../others/Interfaces/interfaces';
 
 export interface ActiveChatData {
-  chat: DirectData;
+  chat: DirectData | GroupData;
   newMessage: boolean;
   historicMsg: MsgToClient[];
   blocks: number;

@@ -1,34 +1,24 @@
 @import '../../../others/styles/global.scss';
 
-.card__group__community {
+.card__group {
   @include displayFlex(space-between);
-  width: 100%;
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 50px;
   background-color: $backgroundColor;
   overflow: hidden;
-
-  &:hover {
+  &:hover  {
     cursor: pointer;
     background-color: $primaryColorHover;
   }
 }
 
-.card__group__community__div {
-  display: grid;
-  grid-template-columns: 0.1fr 1fr;
-  align-items: center;
-  justify-items: left;
-  color: white;
-}
-
-.card__group__community__icon {
+.card__group__icon {
   @include displayFlex(flex-end, row, flex-end);
-  width: 60px;
-  height: 60px;
-  min-width: 60px;
-  min-height: 60px;
+  width:45px;
+  height:45px;
+  min-width: 45px;
+  min-height: 45px;
   border: solid 2px;
   border-radius: 50%;
   background-repeat: none;
@@ -36,39 +26,49 @@
   background-position: 50% 50%;
 }
 
-.card__group__community__name {
-  @include truncText();
+.card__group__name {
   font-size: x-large;
   margin-left: 10px;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   width: 100%;
 }
 
-
-.card__group__community__status {
+.card__group_count {
+  @include displayFlex();
   position: relative;
-  transform: translate(15%, 15%);
-  width: 35%;
-  height: 35%;
+  transform: translate(40%, 40%);
+  width: 70%;
+  height: 70%;
   border: 2px solid;
   border-radius: 50%;
+  background-color: $buttonColor;
 }
 
 
-.card__group__community__menu {
+.card__group__div {
+  display:grid;
+  grid-template-columns: 0.1fr 1fr;
+  align-items: center;
+  justify-items: left;
+}
+
+.card__group__menu {
   @include displayFlex();
 
 }
 
-.card__group__community__menu__body {
+.card__group__menu__body {
   background-color: $backgroundColor;
   top: 45px;
   transition: height 0.6s, width 0.6s;
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: 10px ;
   padding: 0px 10px 0px 10px;
 }
 
-.card__group__community__menu__button {
+.card__group__menu__button {
   @include displayFlex();
   width: 100%;
   height: 35px;
@@ -78,8 +78,7 @@
   margin-top: 10px;
   background-color: rgb(92, 19, 144);
   border-radius: 10px;
-
-  &:hover {
+  &:hover{
     background-color: rgb(64, 13, 100);
     cursor: pointer;
   }

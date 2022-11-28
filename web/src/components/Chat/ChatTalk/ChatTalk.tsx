@@ -1,6 +1,6 @@
 import './ChatTalk.scss';
 import { DirectData, MsgToClient, MsgToServer } from '../../../others/Interfaces/interfaces';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react';
 import { ArrowBendUpLeft, PaperPlaneRight } from 'phosphor-react';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { actionsChat } from '../../../adapters/chat/chatState';
@@ -10,19 +10,18 @@ import ReactTooltip from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 
-// interface ChatTalkProps {
-
-// }
+interface ChatTalkProps {
+  setTableSelected: Dispatch<SetStateAction<string>>;
+}
 
 export function ChatTalk(
-  // { }: ChatTalkProps
+  { setTableSelected }: ChatTalkProps
 ) {
   const {
     activeChat, setActiveChat,
     peopleChat, setPeopleChat,
     directsChat, setDirectsChat,
-    // groupsChat, 
-    setGroupsChat,
+    groupsChat, setGroupsChat,
   } = useContext(ChatContext);
 
   const { intraData, setIntraData, api, config } = useContext(IntraDataContext);
@@ -66,11 +65,21 @@ export function ChatTalk(
     });
   }
 
+  async function setActiveChatWithGroup(id: string) {
+    const response = await api.patch('/chat/getGroup', { id: id }, config);
+    if (activeChat) {
+      exitActiveChat();
+    }
+    initActiveChat(response.data);
+    setTableSelected('Groups');
+  }
+
   async function setActiveChatWithDirect(id: string) {
     const response = await api.patch('/chat/getDirect', { id: id }, config);
     if (activeChat) {
       exitActiveChat();
     }
+    setTableSelected('Directs');
     initActiveChat(response.data);
   }
 
@@ -79,12 +88,18 @@ export function ChatTalk(
     if (activeChat) {
       exitActiveChat();
     }
+    setTableSelected('Directs');
     initActiveChat(response.data.directDto);
     if (response.data.created) {
       actionsChat.joinChat(response.data.directDto.id);
       await actionsStatus.newDirect(response.data.directDto.name, response.data.directDto.id);
     }
   }
+
+  useEffect(() => {
+    if (groupsChat)
+      setActiveChatWithGroup(groupsChat);
+  }, [groupsChat]);
 
   useEffect(() => {
     if (directsChat)
@@ -109,8 +124,8 @@ export function ChatTalk(
         msg: event.target[0].value,
       };
       actionsChat.msgToServer(newMessage, activeChat.chat.type);
-      await api.patch('/user/notifyMessage', { id: activeChat?.chat.id, target: activeChat?.chat.name, add_info: 'direct' }, config);
-      actionsStatus.newNotify(activeChat?.chat.name as string, 'message');
+      // await api.patch('/user/notifyMessage', { id: activeChat?.chat.id, target: activeChat?.chat.name, add_info: 'direct' }, config);
+      // actionsStatus.newNotify(activeChat?.chat.name as string, 'message');
     }
     event.target[0].value = '';
   }

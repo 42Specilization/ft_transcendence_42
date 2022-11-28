@@ -62,16 +62,7 @@ const actionsChat = {
 
   async msgToServer(message: MsgToServer, type: string) {
     stateChat.socket?.emit('msgToServer', { message: message, type: type });
-    // if (!window.location.pathname.includes('/chat')) {
-    //   const token = window.localStorage.getItem('token');
-    //   const config = {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`
-    //     }
-    //   };
-    // await axios.patch(`http://${import.meta.env.VITE_API_HOST}:3000/user/notifyMessage`, { id: message.chat, chatName: message.user, add_info: 'is a direct' }, config);
-    //   statusState.updateNotify();
-    // }
+
   },
 
   async msgToClient(message: MsgToClient) {

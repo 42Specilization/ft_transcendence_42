@@ -6,6 +6,10 @@ import { Dropzone } from '../../../Profile/UserImage/Dropzone';
 import { CheckSquare, Image } from 'phosphor-react';
 import { CreateGroupData } from '../../../../others/Interfaces/interfaces';
 import { Checkbox } from '../../../Checkbox/Checkbox';
+import { response } from 'express';
+import { actionsChat } from '../../../../adapters/chat/chatState';
+import { ChatContext } from '../../../../contexts/ChatContext';
+import { useNavigate } from 'react-router-dom';
 
 interface CreateGroupProps {
   setCreateGroupModal: Dispatch<SetStateAction<boolean>>
@@ -13,10 +17,15 @@ interface CreateGroupProps {
 
 export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
   const { api, config, intraData } = useContext(IntraDataContext);
+  const { setGroupsChat } = useContext(ChatContext);
   const [selectedFile, setSelectedFile] = useState<File>();
   const [privateGroup, setPrivateGroup] = useState<boolean>(false);
   const [placeHolder, setPlaceHolder] = useState('Group Name');
-  const [password, setPassword] = useState('Password');
+  const [password, setPassword] = useState('Password (Optional)');
+
+  useEffect(() => {
+    console.log(window.location, document.title);
+  }, []);
 
   async function handleSubmit(groupData: CreateGroupData) {
     const data = new FormData();
@@ -31,12 +40,16 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
     }
     console.log(groupData);
     await api.post('/chat/createGroup', groupData, config)
-      .catch((err) => {
-        // console.log(err.response.data.message);
+      .then((response) => {
+        console.log(response);
+        if (response.status === 201) {
+          setCreateGroupModal(false);
+          actionsChat.joinChat(response.data.id);
+          setGroupsChat(response.data.id);
+        }
+      }).catch((err) => {
         setPassword(err.response.data.message);
       });
-
-    // actionsStatus.changeImage(selectedFile?.name);
   }
 
   function handleKeyEnter(event: any) {
@@ -62,7 +75,7 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
     handleSubmit(groupData);
     event.target[1].value = '';
     event.target[2].value = '';
-    // setCreateGroupModal(false);
+
   }
 
   return (
@@ -86,7 +99,7 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
           type="text"
           name="groupPassword"
           placeholder={password}
-          style={{ border: password !== 'Password' ? '3px solid red' : 'none' }}
+          style={{ border: password !== 'Password (Optional)' ? '3px solid red' : 'none' }}
         />
         <input
           className='createGroup__groupPassword'

@@ -5,16 +5,30 @@ import ReactTooltip from 'react-tooltip';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { CardGroup } from '../CardGroup/CardGroup';
 import { Modal } from '../../Modal/Modal';
-import Dropzone from 'react-dropzone';
 import { CreateGroup } from './CreateGroup/CreateGroup';
+import { useQuery } from 'react-query';
 
 export function GroupsTab() {
 
   const [isTableSearch, setIsTableSearch] = useState(false);
-  const [createGroupModal, setCreateGroupModal] = useState(true);
+  const [createGroupModal, setCreateGroupModal] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-  const { intraData } = useContext(IntraDataContext);
+  const { intraData, api, config } = useContext(IntraDataContext);
 
+  const { data, status } = useQuery(
+    'getCommunityGroups',
+    async () => {
+      const response = await api.get('/chat/getCommunityGroups', config);
+      return response.data;
+    },
+    {
+      retry: false,
+      refetchOnWindowFocus: true,
+    }
+  );
+  console.log(data);
+  if (status === 'loading')
+    return <></>;
   return (
     < div className='groups__tab' >
       <div
@@ -45,27 +59,23 @@ export function GroupsTab() {
             onClick={() => setSearchInput('')}
           />
         </div>
-        <Plus 
-          size={40} 
-          style={{ display: isTableSearch ? 'none' : '' }} 
-          className='groups__tab__header__icon' 
-          onClick={()=> setCreateGroupModal(true)}
+        <Plus
+          size={40}
+          style={{ display: isTableSearch ? 'none' : '' }}
+          className='groups__tab__header__icon'
+          onClick={() => setCreateGroupModal(true)}
         />
         <ReactTooltip delayShow={50} />
       </div>
       <div className='groups__tab__body'>
         {
-          intraData.friends?.sort((a, b) => a.login < b.login ? -1 : 1)
-            .map(() => <CardGroup key={Math.random()} group={{
-              name: 'mock',
-              image_url: 'userDefault.png',
-            }} />)
+          data.map((key: any) => <CardGroup key={Math.random()} group={key} />)
         }
       </div>
-      {createGroupModal && 
-      <Modal id='createGroupModal' onClose={()=>(setCreateGroupModal(false))}>
-        <CreateGroup setCreateGroupModal={setCreateGroupModal} />
-      </Modal>
+      {createGroupModal &&
+        <Modal id='createGroupModal' onClose={() => (setCreateGroupModal(false))}>
+          <CreateGroup setCreateGroupModal={setCreateGroupModal} />
+        </Modal>
       }
     </div >);
 }

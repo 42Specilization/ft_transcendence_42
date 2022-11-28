@@ -26,6 +26,16 @@ export interface BlockedData {
   image_url: string;
 }
 
+export interface GroupData {
+  id: string;
+  type: string;
+  name?: string;
+  image?: string;
+  date: Date;
+  messages: MsgToClient[];
+  newMessages: number;
+}
+
 export interface DirectData {
   id: string;
   type: string;
@@ -70,7 +80,8 @@ export interface IntraData {
   notify: NotifyData[];
   friends: FriendData[];
   blockeds: BlockedData[];
-  directs: DirectData[]
+  directs: DirectData[];
+  groups: GroupData[];
 }
 
 export interface ErrResponse {

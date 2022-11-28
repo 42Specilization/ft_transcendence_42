@@ -85,7 +85,7 @@ export default function Chat() {
           </div>
           <div className='chat__cards__footer' />
         </div>
-        <ChatTalk />
+        <ChatTalk setTableSelected={setTableSelected} />
       </div>
     </div >
   );

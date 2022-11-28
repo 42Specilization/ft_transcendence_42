@@ -37,7 +37,7 @@ export function CardFriend({ friend }: CardFriendProps) {
 
   async function handleBlockFriend() {
     await api.patch('/user/addBlocked', { nick: friend.login }, config);
-    await api.patch('/chat/deleteDirect', { friend_login: friend.login }, config);
+    await api.patch('/chat/deleteDirect', { friend_lo: friend.login }, config);
 
     setIntraData((prevIntraData) => {
       prevIntraData.blockeds.push(friend);

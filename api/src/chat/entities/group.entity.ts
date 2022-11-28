@@ -1,8 +1,8 @@
 /* eslint-disable indent */
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/user/entities/user.entity';
-import { Message } from './message.entity';
 import { GroupController } from './groupController.entity';
+// import { MessageGroup } from './messageGroup.entity';
 
 import {
   BaseEntity,
@@ -10,8 +10,11 @@ import {
   Column,
   ManyToMany,
   OneToMany,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinTable
 } from 'typeorm';
+import { Message } from './message.entity';
 
 @Entity()
 export class Group extends BaseEntity {
@@ -25,19 +28,32 @@ export class Group extends BaseEntity {
   type: string;
 
   @ApiProperty()
-  @Column({ nullable: true, type: 'varchar' })
-  password: string;
+  @Column({ nullable: false, type: 'varchar' })
+  name: string;
 
   @ApiProperty()
-  @ManyToMany(() => User, (user) => user.directs)
+  @Column({ nullable: false, type: 'varchar' })
+  image: string;
+
+  @ApiProperty()
+  @Column({ nullable: true, type: 'varchar' })
+  password: string | null;
+
+  @ApiProperty()
+  @ManyToOne(() => User)
+  owner: User;
+
+  @ApiProperty()
+  @ManyToMany(() => User, (user) => user.groups)
   users: User[];
 
   @ApiProperty()
   @ManyToMany(() => User)
+  @JoinTable()
   admins: User[];
 
   @ApiProperty()
-  @OneToMany(() => Message, (message: Message) => message.direct, { cascade: ['insert', 'update'] })
+  @OneToMany(() => Message, (message: Message) => message.group, { cascade: ['insert', 'update'] })
   messages: Message[];
 
   @ApiProperty()

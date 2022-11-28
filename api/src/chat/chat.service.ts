@@ -4,30 +4,19 @@ import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { MsgToClient, MsgToServer } from './chat.class';
-import { DirectDto } from './dto/chat.dto';
+import { CreateGroupDto, DirectDto, GroupDto } from './dto/chat.dto';
 import { Direct } from './entities/direct.entity';
 import { Group } from './entities/group.entity';
 import { Message } from './entities/message.entity';
-
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class ChatService {
   constructor(
     @InjectRepository(Direct) private directRepository: Repository<Direct>,
-    @InjectRepository(Direct) private groupRepository: Repository<Group>,
+    @InjectRepository(Group) private groupRepository: Repository<Group>,
     private userService: UserService,
   ) {
 
-  }
-
-  async getAllChats() {
-    return await this.directRepository.find({
-      relations: [
-        'users',
-        'messages',
-        // 'messages.direct',
-        // 'messages.sender',
-      ],
-    });
   }
 
   async deleteDirectById(user_email: string, friend_login: string) {
@@ -94,7 +83,7 @@ export class ChatService {
       relations: [
         'users',
         'messages',
-        // 'messages.group',
+        'messages.group',
         'messages.sender',
       ]
     });
@@ -104,14 +93,10 @@ export class ChatService {
   }
 
   async getAllChatsId(login: string) {
-    const user = await this.userService.findUserDirectByNick(login);
+    const user = await this.userService.findAllChats(login);
     if (!user)
       throw new BadRequestException('User Not Found getDirects');
-    // const directs: DirectDto[] = user.directs.map((direct) => {
-    //   const friend = direct.users.filter((key) => key.nick != user.nick).at(0);
-    //   return this.createDirectDto(direct, friend);
-    // });
-    const chats = [...user.directs];
+    const chats = [...user.directs, ...user.groups];
     return chats.map((chat) => chat.id);
   }
 
@@ -174,6 +159,7 @@ export class ChatService {
         index = i;
     });
 
+
     chat.messages[index].date = new Date(Date.now());
 
     try {
@@ -203,7 +189,6 @@ export class ChatService {
 
 
   async createDirectDto(direct: Direct, owner: User | undefined, friend: User | undefined, type: string): Promise<DirectDto> {
-    owner;
     const directDto: DirectDto = {
       id: direct.id,
       type: 'direct',
@@ -247,11 +232,6 @@ export class ChatService {
       const friend = direct.users.filter((key) => key.nick !== owner.nick).at(0);
       return await this.createDirectDto(direct, owner, friend, 'cardDirect');
     }));
-    // directs.sort((a, b) => {
-    //   if (a.date < b.date)
-    //     return 1;
-    //   return -1;
-    // });
     return directs;
   }
 
@@ -311,6 +291,7 @@ export class ChatService {
         await this.directRepository.save(newDirect);
         direct = newDirect;
       } catch (err) {
+
         throw new InternalServerErrorException('Error saving direct in db');
       }
     } else {
@@ -323,5 +304,136 @@ export class ChatService {
       created: created,
     };
 
+  }
+
+  async createGroupDto(group: Group, owner: User | undefined, type: string) {
+    const groupDto: GroupDto = {
+      id: group.id,
+      type: group.type,
+      name: group.name,
+      image: group.image,
+      date: group.date,
+      newMessages: 0
+    };
+
+    const messages: MsgToClient[] = group.messages
+      .filter(msg => msg.breakproint === false
+        || (msg.breakproint === true && msg.sender.nick === owner?.nick))
+      .map((message: Message) => {
+        return {
+          id: message.id,
+          chat: group.id,
+          user: {
+            login: message.sender.nick,
+            image: message.sender.imgUrl,
+          },
+          date: message.date,
+          msg: message.msg,
+          breakpoint: message.breakproint,
+        };
+      });
+
+    if (type === 'activeGroup') {
+      groupDto.messages = messages;
+      // groupDto.owner = {
+      //   name: group.owner.nick,
+      //   image: group.owner.imgUrl
+      // };
+      // groupDto.admins = group.admins.map((user: User) => {
+      //   return {
+      //     name: user.nick,
+      //     image: user.imgUrl,
+      //   };
+      // });
+      // groupDto.members = group.users.map((user: User) => {
+      //   return {
+      //     name: user.nick,
+      //     image: user.imgUrl,
+      //   };
+      // });
+    }
+
+    groupDto.newMessages = await this.getBreakpoint(messages);
+
+    return groupDto;
+  }
+
+  async createGroup(group: CreateGroupDto) {
+
+    const owner = await this.userService.findUserGroupByNick(group.owner);
+
+    if (!owner)
+      throw new BadRequestException('User Not Found getFriendDirect');
+
+    const newGroup = new Group();
+
+    const ownerBreakpoint = new Message();
+    ownerBreakpoint.sender = owner;
+    ownerBreakpoint.date = new Date(Date.now());
+    ownerBreakpoint.msg = '';
+    ownerBreakpoint.breakproint = true;
+
+    newGroup.type = group.type;
+    newGroup.name = group.name;
+    newGroup.password = group.password ? bcrypt.hashSync(group.password, 8) : null;
+    newGroup.image = group.image ? group.image : 'userDefault.png';
+
+    newGroup.owner = owner;
+    newGroup.users = [owner];
+    newGroup.admins = [];
+    newGroup.messages = [ownerBreakpoint];
+    newGroup.groupController = [];
+    newGroup.date = new Date(Date.now());
+
+    try {
+      await this.groupRepository.save(newGroup);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Error saving group in db');
+    }
+
+    return await this.createGroupDto(newGroup, owner, 'activeGroup');
+  }
+
+  async getGroup(owner_email: string, id: string) {
+    const group = await this.findGroupById(id);
+    if (!group)
+      throw new BadRequestException('Invalid group GetGroup');
+    const owner = group.users.filter((key: User) => key.email === owner_email).at(0);
+    if (!owner)
+      throw new BadRequestException('Invalid user GetGroup');
+    return this.createGroupDto(group, owner, 'activeGroup');
+  }
+
+  async getAllGroups(user_email: string) {
+    const owner = await this.userService.findUserGroupByEmail(user_email);
+    if (!owner)
+      throw new BadRequestException('User Not Found getDirects');
+    const groups: GroupDto[] = await Promise.all(owner.groups.map(async (group) => {
+      return await this.createGroupDto(group, owner, 'cardGroup');
+    }));
+    return groups;
+  }
+
+  async getCommunityGroups() {
+    const groups = await this.groupRepository.find({
+      relations: [
+        'users',
+      ]
+    });
+    if (!groups)
+      return;
+    const groupsDto: GroupDto[] = groups.filter(group => group.type !== 'private')
+      .sort((a, b) => a.users.length < b.users.length ? -1 : 1).map((group) => {
+        return {
+          id: group.id,
+          type: group.type,
+          name: group.name,
+          image: group.image,
+          date: group.date,
+          newMessages: 0
+        };
+      });
+    return groupsDto;
   }
 }

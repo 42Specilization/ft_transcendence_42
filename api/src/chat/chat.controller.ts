@@ -12,7 +12,7 @@ import { GetUserFromJwt } from 'src/auth/decorators/get-user.decorator';
 import { UserFromJwt } from 'src/auth/dto/UserFromJwt.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
-import { DirectDto, GetDirectDto, DeleteDirectDto, CreateGroupDto } from './dto/chat.dto';
+import { DirectDto, GetDirectDto, DeleteDirectDto, CreateGroupDto, GetGroupDto } from './dto/chat.dto';
 import { BadRequestException } from '@nestjs/common';
 
 @Controller('chat')
@@ -26,6 +26,20 @@ export class ChatController {
   @UseGuards(JwtAuthGuard)
   async getDirects(@GetUserFromJwt() userFromJwt: UserFromJwt): Promise<DirectDto[] | null> {
     const result = await this.chatService.getAllDirects(userFromJwt.email);
+    return result;
+  }
+
+  @Get('/getAllGroups')
+  @UseGuards(JwtAuthGuard)
+  async getGroups(@GetUserFromJwt() userFromJwt: UserFromJwt) {
+    const result = await this.chatService.getAllGroups(userFromJwt.email);
+    return result;
+  }
+
+  @Get('/getCommunityGroups')
+  @UseGuards(JwtAuthGuard)
+  async getCommunityGroups() {
+    const result = await this.chatService.getCommunityGroups();
     return result;
   }
 
@@ -57,16 +71,9 @@ export class ChatController {
     return await this.chatService.setBreakpointController(userFromJwt.email, chatId, type);
   }
 
-
-  @Get('/devGetDirects')
-  async devGetDirects() {
-    const result = await this.chatService.getAllChats();
-    return result;
-  }
-
   @Patch('/deleteDirect')
   @UseGuards(JwtAuthGuard)
-  async devDeleteDirectById(
+  async deleteDirectById(
     @Body() deleteDirectDto: DeleteDirectDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
   ) {
@@ -75,15 +82,13 @@ export class ChatController {
     return { message: 'success' };
   }
 
-
   @Post('/updateGroupImage')
   @ApiConsumes('multipart/form-data')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
-      // Destination storage path details
       destination: (req, file, cb) => {
-        const uploadPath = './data';
+        const uploadPath = '../web/public';
         req;
         file;
         cb(null, uploadPath);
@@ -109,17 +114,22 @@ export class ChatController {
   @UseGuards(JwtAuthGuard)
   async createGroup(
     @Body() createGroupDto: CreateGroupDto,
-    // @GetUserFromJwt() userFromJwt: UserFromJwt
   ) {
     console.log(createGroupDto);
     if (createGroupDto.password !== createGroupDto.confirmPassword)
       throw new BadRequestException('Passwords must be equals');
-
-    // const updateUserDto: UpdateUserDto = { imgUrl: file.originalname };
-    // this.userService.updateUser(updateUserDto, userFromJwt.email);
-    return { message: 'success' };
+    return await this.chatService.createGroup(createGroupDto);
   }
 
+
+  @Patch('/getGroup')
+  @UseGuards(JwtAuthGuard)
+  async getGroup(
+    @Body() getGroupDto: GetGroupDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ) {
+    return await this.chatService.getGroup(userFromJwt.email, getGroupDto.id);
+  }
 
 
 }

@@ -19,6 +19,7 @@ import { GameEntity } from 'src/game/entities/game.entity';
 import { Notify } from 'src/notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
 import { Direct } from 'src/chat/entities/direct.entity';
+import { Group } from '../../chat/entities/group.entity';
 
 @Entity()
 @Unique(['email', 'nick'])
@@ -97,6 +98,10 @@ export class User extends BaseEntity {
   @JoinTable()
   @ManyToMany(() => Direct, (direct) => direct.users, { cascade: ['update', 'remove'] })
   directs: Direct[];
+
+  @JoinTable()
+  @ManyToMany(() => Group, (group) => group.users, { cascade: ['update', 'remove'] })
+  groups: Group[];
 
   @ApiProperty()
   @OneToMany(() => Notify, (notify) => notify.user_target, { cascade: ['insert'] })

@@ -1,30 +1,18 @@
 import './GroupTab.scss';
 import { MagnifyingGlass, X } from 'phosphor-react';
 import {
-  // useContext,
-  // useEffect,
+  useContext,
   useState
 } from 'react';
 import ReactTooltip from 'react-tooltip';
-// import { actionsChat } from '../../../adapters/chat/chatState';
-// import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GroupData } from '../../../others/Interfaces/interfaces';
+import { CardGroup } from '../CardGroup/CardGroup';
 
 export function GroupTab() {
-  // const { api, config } = useContext(IntraDataContext);
+  const { intraData } = useContext(IntraDataContext);
   const [isTableSearch, setIsTableSearch] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-  const [groups, setGroups] = useState<[]>([]);
-
-  // useEffect(() => {
-  //   async function getDirects() {
-  //     const result = await api.get('/chat/getGroups', config);
-  //     setGroups(result.data);
-  //     console.log(result.data);
-  //     return result;
-  //   }
-  //   getDirects();
-  //   actionsChat.setChatList(setGroups);
-  // }, [actionsChat]);
 
   return (
     < div className='group__tab' >
@@ -63,14 +51,14 @@ export function GroupTab() {
       </div>
       < div className='group__tab__body'>
         {
-          groups.filter((obj: any) => obj.name?.includes(searchInput))
+          intraData.groups.filter((obj: GroupData) => obj.name?.includes(searchInput))
             .sort((a: any, b: any) => {
               if (a.date < b.date)
                 return 1;
               return -1;
             })
-            .map(() => (
-              <p key={Math.random()}> group </p>
+            .map((obj: GroupData) => (
+              <CardGroup key={crypto.randomUUID()} chat={obj} />
             ))
         }
       </div>

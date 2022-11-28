@@ -210,6 +210,55 @@ export class UserService {
       });
   }
 
+  async findUserGroupByNick(nick: string): Promise<User | null> {
+    return await this.usersRepository.findOne(
+      {
+        where: {
+          nick,
+        },
+        relations: [
+          'groups',
+          'groups.users',
+          'groups.admins',
+          'groups.messages',
+          'groups.messages.sender',
+          'relations',
+          'relations.passive_user',
+        ],
+      });
+  }
+
+  async findUserGroupByEmail(email: string): Promise<User | null> {
+    return await this.usersRepository.findOne(
+      {
+        where: {
+          email,
+        },
+        relations: [
+          'groups',
+          'groups.users',
+          'groups.admins',
+          'groups.messages',
+          'groups.messages.sender',
+          'relations',
+          'relations.passive_user',
+        ],
+      });
+  }
+  async findAllChats(nick: string): Promise<User | null> {
+    return await this.usersRepository.findOne(
+      {
+        where: {
+          nick,
+        },
+        relations: [
+          'groups',
+          'directs'
+        ]
+      
+      });
+  }
+
   async findUserById(id: string): Promise<User> {
     const user = await this.usersRepository.findOne({
       where: {
@@ -323,7 +372,7 @@ export class UserService {
       if (user.imgUrl !== 'userDefault.png'
         && !user.imgUrl.includes('https://')) {
         fs.rm(
-          `./data/${user.imgUrl}`,
+          `../web/public/${user.imgUrl}`,
           function (err) {
             if (err) throw err;
           }

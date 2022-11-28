@@ -207,7 +207,7 @@ export class UserController {
     storage: diskStorage({
       // Destination storage path details
       destination: (req, file, cb) => {
-        const uploadPath = './data/';
+        const uploadPath = '../web/public';
         req;
         file;
         cb(null, uploadPath);

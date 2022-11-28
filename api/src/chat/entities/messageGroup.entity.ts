@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/user/entities/user.entity';
-import { Direct } from './direct.entity';
+import { Group } from './group.entity';
 import {
   BaseEntity,
   Column,
@@ -9,18 +9,17 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn
 } from 'typeorm';
-import { Group } from './group.entity';
 
 @Entity()
-export class Message extends BaseEntity {
+export class MessageGroup extends BaseEntity {
 
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ApiProperty()
-  @ManyToOne(() => Direct, (direct: Direct) => direct.messages, { onDelete: 'CASCADE', orphanedRowAction: 'delete' })
-  direct?: Direct;
+  // @ApiProperty()
+  // @ManyToOne(() => Direct, (direct: Direct) => direct.messages, { onDelete: 'CASCADE', orphanedRowAction: 'delete' })
+  // direct?: Direct;
 
   @ApiProperty()
   @ManyToOne(() => Group, (group: Group) => group.messages, { onDelete: 'CASCADE', orphanedRowAction: 'delete' })
