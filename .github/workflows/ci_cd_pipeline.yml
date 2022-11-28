@@ -36,6 +36,8 @@ jobs:
           envkey_VITE_API_PORT: ${{ secrets.VITE_API_PORT }}
           envkey_VITE_GAME_NAMESPACE: ${{ secrets.VITE_GAME_NAMESPACE }}
           envkey_VITE_REDIRECT_LOGIN_URL: ${{ secrets.VITE_REDIRECT_LOGIN_URL }}
+          envkey_VITE_STATUS_NAMESPACE: ${{ secrets.VITE_STATUS_NAMESPACE }}
+          envkey_VITE_CHAT_NAMESPACE: ${{ secrets.VITE_CHAT_NAMESPACE }}
           directory: ./web
           
         
