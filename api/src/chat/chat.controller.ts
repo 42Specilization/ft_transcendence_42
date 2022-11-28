@@ -83,7 +83,7 @@ export class ChatController {
     storage: diskStorage({
       // Destination storage path details
       destination: (req, file, cb) => {
-        const uploadPath = '../web/public';
+        const uploadPath = './data';
         req;
         file;
         cb(null, uploadPath);
@@ -108,7 +108,7 @@ export class ChatController {
   @Post('/createGroup')
   @UseGuards(JwtAuthGuard)
   async createGroup(
-    @Body() createGroupDto : CreateGroupDto,
+    @Body() createGroupDto: CreateGroupDto,
     // @GetUserFromJwt() userFromJwt: UserFromJwt
   ) {
     console.log(createGroupDto);
@@ -120,6 +120,6 @@ export class ChatController {
     return { message: 'success' };
   }
 
-  
+
 
 }

@@ -4,9 +4,9 @@ import { actionsStatus } from '../../../../adapters/status/statusState';
 import { IntraDataContext } from '../../../../contexts/IntraDataContext';
 import { Dropzone } from '../../../Profile/UserImage/Dropzone';
 import { CheckSquare, Image } from 'phosphor-react';
-import { Group } from '../../../../../../api/src/chat/entities/group.entity';
 import { CreateGroupData } from '../../../../others/Interfaces/interfaces';
 import { Checkbox } from '../../../Checkbox/Checkbox';
+
 interface CreateGroupProps {
   setCreateGroupModal: Dispatch<SetStateAction<boolean>>
 }

@@ -28,6 +28,7 @@ EXPOSE 80
 ENV NODE_ENV production
 
 WORKDIR /app/
+RUN mkdir data
 
 COPY --from=builder /app/package*.json /app/
 COPY --from=builder /app/node_modules/ /app/node_modules/

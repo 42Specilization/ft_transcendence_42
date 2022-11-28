@@ -27,6 +27,7 @@ ENV NODE_ENV production
 EXPOSE 3000
 
 WORKDIR /app/
+RUN mkdir data
 
 COPY --from=builder /app/package*.json /app/
 COPY --from=builder /app/node_modules/ /app/node_modules/

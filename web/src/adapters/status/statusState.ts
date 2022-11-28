@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
-import { IntraData } from '../../others/Interfaces/interfaces';
+import { IntraData, MsgToClient } from '../../others/Interfaces/interfaces';
 import { getUserInDb } from '../../others/utils/utils';
 import { actionsChat } from '../chat/chatState';
-import { MsgToClient } from '../../../../api/dist/chat/chat.class';
+
 import {
   createSocketStatus,
   CreateSocketStatusOptions,
