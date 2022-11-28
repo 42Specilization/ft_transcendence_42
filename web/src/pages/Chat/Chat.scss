@@ -8,7 +8,7 @@
   border-radius: 0px 0px 50px 50px;
 }
 
-.chat__community {
+.chat__cards {
   @include displayFlex(center, column);
   width: 35%;
   height: calc(100% - 20px);
@@ -19,27 +19,31 @@
 
 $ChatCommunityHeaderHeight: 35px;
 
-.chat__community__header {
+.chat__cards__header {
   @include displayFlex();
   width: 100%;
   height: $ChatCommunityHeaderHeight;
   border-radius: 50px 50px 0px 0px;
 }
 
-.chat__community__header__list {
+.chat__cards__header__list {
   @include displayFlex(space-between);
   width: 90%;
   }
 
-.chat__community__header__list__item {
+.chat__cards__header__list__item {
   @include displayFlex();
-  width: 30%;
+  width: 50%;
   height: $ChatCommunityHeaderHeight;
   border-radius: 15px 15px 0px 0px;
   padding: 10px;
   background-color: transparent;
 
-  button {
+  div {
+    @include displayFlex();
+  }
+  
+  p {
     @include truncText();
     font-size: 1.3em;
     color: white;
@@ -50,7 +54,16 @@ $ChatCommunityHeaderHeight: 35px;
   }
 }
 
-.chat__community__header__list__item__selected {
+.chat__cards__header__list__item__count {
+  @include displayFlex();
+  margin: 5px;
+  width: 25px;
+  height: 25px;
+  border: 2px solid;
+  border-radius: 50%;
+  background-color: $buttonColor;
+}
+.chat__cards__header__list__item__selected {
   background-color: $primaryColor;
 
   button {
@@ -61,14 +74,14 @@ $ChatCommunityHeaderHeight: 35px;
   }
 }
 
-.chat__community__body {
+.chat__cards__body {
   @include displayFlex();
   width: 90%;
   height: calc(85% - $ChatCommunityHeaderHeight);
   overflow: hidden;
 }
 
-.chat__community__footer {
+.chat__cards__footer {
   width: 100%;
   height: 30px;
 }

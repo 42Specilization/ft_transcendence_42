@@ -5,34 +5,30 @@ import { Message } from './message.entity';
 
 import {
   BaseEntity,
-  Column,
   Entity,
+  Column,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn
 } from 'typeorm';
 
 @Entity()
-export class Chat extends BaseEntity {
+export class Direct extends BaseEntity {
 
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ApiProperty()
-  @Column({ nullable: false })
-  type: string;
-
-  // @ApiProperty()
-  // // @Column({ nullable: false })
-  // admins: string[];
-
-  @ApiProperty()
-  @ManyToMany(() => User, (user) => user.chats)
+  @ManyToMany(() => User, (user) => user.directs, { orphanedRowAction: 'delete' })
   users: User[];
 
   @ApiProperty()
-  @OneToMany(() => Message, (message: Message) => message.chat, { cascade: ['insert'] })
+  @OneToMany(() => Message, (message: Message) => message.direct, { cascade: ['insert', 'update', 'remove'] })
   messages: Message[];
+
+  @ApiProperty()
+  @Column({ nullable: false })
+  date: Date;
 
 }

@@ -1,28 +1,26 @@
 import './CardFriend.scss';
-import { FriendData } from '../../../others/Interfaces/interfaces';
-import { Dispatch, SetStateAction, useContext, useState } from 'react';
-import { DotsThreeVertical, Prohibit, Sword, UserMinus } from 'phosphor-react';
 import ReactTooltip from 'react-tooltip';
+import { FriendData } from '../../../others/Interfaces/interfaces';
+import { useContext, useState } from 'react';
+import { DotsThreeVertical, Prohibit, Sword, UserMinus } from 'phosphor-react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import { useSnapshot } from 'valtio';
-import { stateStatus } from '../../../adapters/status/statusState';
+import { actionsStatus } from '../../../adapters/status/statusState';
 import { ChatContext } from '../../../contexts/ChatContext';
+import { Link } from 'react-router-dom';
 
 interface CardFriendProps {
   friend: FriendData;
-  setTableSelected: Dispatch<SetStateAction<string>>;
 }
 
-export function CardFriend({ friend, setTableSelected }: CardFriendProps) {
-  const { setFriendsChat } = useContext(ChatContext);
+export function CardFriend({ friend }: CardFriendProps) {
+
+  const { setPeopleChat } = useContext(ChatContext);
   const [isTableFriendUsersMenu, setIsTableFriendUsersMenu] = useState(false);
-  const currentStateStatus = useSnapshot(stateStatus);
   const { setIntraData, api, config } = useContext(IntraDataContext);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   function selectActiveFriend(e: any) {
     if (e.target.id === 'card__friend') {
-      setFriendsChat(friend);
-      setTableSelected('Directs');
+      setPeopleChat(friend);
     }
   }
 
@@ -34,33 +32,36 @@ export function CardFriend({ friend, setTableSelected }: CardFriendProps) {
         friends: prevIntraData.friends.filter((key) => key.login != friend.login)
       };
     });
-    currentStateStatus.socket?.emit('deleteFriend', friend.login);
+    actionsStatus.removeFriend(friend.login);
   }
 
   async function handleBlockFriend() {
     await api.patch('/user/addBlocked', { nick: friend.login }, config);
+    await api.patch('/chat/deleteDirect', { friend_login: friend.login }, config);
+
     setIntraData((prevIntraData) => {
       prevIntraData.blockeds.push(friend);
       return {
         ...prevIntraData,
+        directs: prevIntraData.directs.filter((key) => key.name != friend.login),
         friends: prevIntraData.friends.filter((key) => key.login != friend.login),
       };
     });
-    currentStateStatus.socket?.emit('deleteFriend', friend.login);
+    actionsStatus.blockFriend(friend.login);
   }
 
   return (
     <div id='card__friend' className='card__friend'
       onClick={(e) => selectActiveFriend(e)}
     >
-      <div id='card__friend' className='card__friend__div' >
+      <Link to='/chat' id='card__friend' className='card__friend__div' >
         <div id='card__friend' className='card__friend__icon'
           style={{ backgroundImage: `url(${friend.image_url})` }}>
           <div id='card__friend' className='card__friend__status'
-            style={{ backgroundColor: friend.status === 'online' ? 'green' : 'rgb(70, 70, 70)' }}/>
+            style={{ backgroundColor: friend.status === 'online' ? 'green' : 'rgb(70, 70, 70)' }} />
         </div>
         <div id='card__friend' className='card__friend__name'>{friend.login}</div>
-      </div>
+      </Link>
 
       <div className='card__friend__menu'>
         <div id='card__friend__menu__body' className='card__friend__menu__body'

@@ -10,6 +10,7 @@ export function ProfileCard() {
   const { intraData } = useContext(IntraDataContext);
   const [isModalChangeNickVisible, setIsModalChangeNickVisible] = useState(false);
 
+
   return (
     <div className='profileCard'>
       <UserImage />

@@ -10,10 +10,9 @@ interface DropzoneProps {
 
 export function Dropzone({ onFileUploaded }: DropzoneProps) {
 
-  const { intraData, setUpdateImageTime } = useContext(IntraDataContext);
+  const { intraData } = useContext(IntraDataContext);
 
   const onDrop = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (acceptedFiles: any) => {
 
       function generateCode() {
@@ -26,8 +25,6 @@ export function Dropzone({ onFileUploaded }: DropzoneProps) {
       }
       const id = generateCode();
       const file = new File([acceptedFiles[0]], `${id}.jpg`);
-      const data = Math.floor(Math.random() * 1000);
-      setUpdateImageTime(data);
       onFileUploaded(file);
     },
     [onFileUploaded, intraData]

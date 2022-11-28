@@ -14,12 +14,13 @@ import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { CredentialsDto } from './dto/credentials.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserDto } from './dto/user.dto';
+import { CommunityDto, UserDto } from './dto/user.dto';
 import * as fs from 'fs';
 import { GameEntity } from 'src/game/entities/game.entity';
 import { Notify } from '../notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
 // import { Chat } from 'src/chat/entities/chat.entity';
+import { NewNotifyDto } from '../notification/dto/notify-dto';
 
 @Injectable()
 export class UserService {
@@ -27,6 +28,14 @@ export class UserService {
     @InjectRepository(User) private usersRepository: Repository<User>,
 
   ) { }
+
+  async save(user: User) {
+    try {
+      await this.usersRepository.save(user);
+    } catch (error) {
+      throw new InternalServerErrorException('save: Error to save a user!');
+    }
+  }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const { email, imgUrl, first_name, usual_full_name, nick, token } =
@@ -92,10 +101,31 @@ export class UserService {
       },
       relations: [
         'notify',
+        'directs',
+        'directs.users',
+
         'notify.user_source',
         'relations',
         'relations.passive_user',
-      ]
+      ],
+    });
+  }
+
+  async findUserGamesByNick(nick: string): Promise<User | null> {
+    return await this.usersRepository.findOne({
+      where: {
+        nick,
+      },
+      relations: [
+        'games',
+        'games.winner',
+        'games.loser',
+      ],
+      order: {
+        games: {
+          createdAt: 'desc'
+        }
+      }
     });
   }
 
@@ -127,6 +157,8 @@ export class UserService {
         },
         relations: [
           'notify',
+          'directs',
+          'directs.users',
           'notify.user_source',
           'relations',
           'relations.passive_user',
@@ -134,33 +166,47 @@ export class UserService {
       });
   }
 
-  async findUserChatsByEmail(email: string): Promise<User | null> {
+  async findUserDirectByEmail(email: string): Promise<User | null> {
     return await this.usersRepository.findOne(
       {
         where: {
           email,
         },
         relations: [
-          'chats',
-          'chats.users',
-          'chats.messages',
-          'chats.messages.sender',
-        ]
+          'directs',
+          'directs.users',
+          'directs.messages',
+          'directs.messages.sender',
+          'relations',
+          'relations.passive_user',
+        ],
+        order: {
+          directs: {
+            date: 'desc'
+          }
+        }
       });
   }
 
-  async findUserChatsByNick(nick: string): Promise<User | null> {
+  async findUserDirectByNick(nick: string): Promise<User | null> {
     return await this.usersRepository.findOne(
       {
         where: {
           nick,
         },
         relations: [
-          'chats',
-          'chats.users',
-          'chats.messages',
-          'chats.messages.sender',
-        ]
+          'directs',
+          'directs.users',
+          'directs.messages',
+          'directs.messages.sender',
+          'relations',
+          'relations.passive_user',
+        ],
+        order: {
+          directs: {
+            date: 'desc'
+          }
+        }
       });
   }
 
@@ -169,6 +215,7 @@ export class UserService {
       where: {
         id,
       },
+
     });
     if (!user) throw new NotFoundException('User Not Found FindUserByID');
     return user;
@@ -198,14 +245,7 @@ export class UserService {
   }
 
   async getUsers(): Promise<User[]> {
-    return await this.usersRepository.find({
-      relations: [
-        'notify',
-        'relations',
-        'chats',
-        'chats.users',
-      ]
-    });
+    return await this.usersRepository.find();
   }
 
   async getUserDTO(email: string): Promise<UserDto> {
@@ -306,6 +346,7 @@ export class UserService {
 
 
   isBlocked(user_passive: User, user_active: User) {
+
     const blocked = user_active.relations.filter((friendRelation) => {
       if (friendRelation.type == 'blocked' && friendRelation.passive_user.nick == user_passive.nick)
         return friendRelation;
@@ -365,7 +406,7 @@ export class UserService {
       throw new BadRequestException('This user already is your friend');
 
 
-    if (this.isBlocked(user, friend) == true)
+    if (this.isBlocked(user, friend) || this.isBlocked(friend, user))
       return;
 
     friend.notify?.push(newNotify);
@@ -527,6 +568,7 @@ export class UserService {
       return relation;
     });
 
+
     const relationUser = new Relations();
 
     relationUser.passive_user = friend;
@@ -563,6 +605,89 @@ export class UserService {
       return;
     } catch (err) {
       throw new InternalServerErrorException('erro salvando notificacao');
+    }
+  }
+
+  async getCommunty(user_email: string) {
+    const users = await this.usersRepository.find();
+    const usersToReturn: CommunityDto[] = users.filter((user) => {
+      if (user.email === user_email)
+        return;
+      return user;
+    }).map((user) => {
+      return {
+        image_url: user.imgUrl,
+        login: user.nick,
+        ratio: ((
+          Number(user.wins) /
+          (Number(user.lose) > 0 ? Number(user.lose) : 1)
+        ).toFixed(2)).toString()
+      };
+    }).sort((a, b) => {
+      if (a.ratio > b.ratio)
+        return -1;
+      return 1;
+    });
+    return usersToReturn;
+  }
+
+
+  async getHistoric(login: string) {
+    const userValidate = await this.findUserGamesByNick(login);
+    if (userValidate) {
+      const userData = userValidate.games
+        .map((game) => {
+          let opponent;
+          let result;
+          if (game.winner.nick != login) {
+            result = `Lose ${game.winnerScore}x${game.loserScore}`;
+            opponent = game.winner;
+          } else {
+            result = `Win ${game.winnerScore}x${game.loserScore}`;
+            opponent = game.loser;
+          }
+          return {
+            date: game.createdAt,
+            opponent: {
+              imgUrl: opponent.imgUrl,
+              login: opponent.nick,
+            },
+            result: result,
+          };
+        });
+      console.log(userData);
+      return (userData);
+    }
+    throw new BadRequestException('user not found');
+  }
+
+  async notifyMessage(user_email: string, receivedNotify: NewNotifyDto) {
+    const user = await this.findUserByEmail(user_email);
+    const target = await this.findUserByNick(receivedNotify.target);
+    if (!user || !target)
+      throw new BadRequestException('User not found notifyMessage');
+
+
+    const newNotify = new Notify();
+    newNotify.type = 'message';
+    newNotify.user_source = user;
+    newNotify.additional_info = receivedNotify.add_info;
+    newNotify.date = new Date(Date.now());
+    if (target.notify?.length === 0) {
+      target.notify = [];
+    }
+
+    target.notify = target.notify.filter((notify) => {
+      if (notify.type === 'message')
+        return;
+      return notify;
+    });
+    target.notify?.push(newNotify);
+
+    try {
+      await target.save();
+    } catch (err) {
+      throw new InternalServerErrorException('Error saving datas in db notifyMessage');
     }
   }
 

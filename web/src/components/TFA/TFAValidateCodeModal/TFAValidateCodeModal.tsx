@@ -21,7 +21,6 @@ export function TFAValidateCodeModal({
   const [code, setCode] = useState('');
   const [placeHolder, setPlaceHolder] = useState('');
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function turnOnTFA(body: any, config: any) {
     const updateTfa = await api.patch('/user/turn-on-tfa', body, config);
     if (updateTfa.status === 200) {

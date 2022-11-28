@@ -1,42 +1,31 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState, useContext } from 'react';
+import { useQuery } from 'react-query';
 import { FriendProfileGeneral } from '../../components/FriendProfile/FriendProfileGeneral/FriendProfileGeneral';
 import { FriendProfileHistoric } from '../../components/FriendProfile/FriendProfileHistoric/FriendProfileHistoric';
 import './FriendProfile.scss';
+import { IntraDataContext } from '../../contexts/IntraDataContext';
 interface FriendProfileProps {
   login: string | undefined;
 }
 
 export function FriendProfile({ login }: FriendProfileProps) {
   const [tableSelected, setTableSelected] = useState('General');
+  const { api, config } = useContext(IntraDataContext);
 
-  const defaultFriend = {
-    image_url: 'default',
-    wins: '0',
-    name: 'default',
-    login: 'default',
-    lose: '0',
-    matches: '0',
-  };
-  const [friend, setFriend] = useState(defaultFriend);
+  const { data, status } = useQuery(
+    'friend',
+    async () => {
+      const response = await api.patch('/user/friend', { nick: login }, config);
+      return response.data;
+    },
+    {
+      retry: false,
+      refetchOnWindowFocus: true,
+    }
+  );
 
-  async function getFriend() {
-    const token = window.localStorage.getItem('token');
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    const api = axios.create({
-      baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
-    });
-    const response = await api.patch('/user/friend', { nick: login }, config);
-    setFriend(response.data);
-  }
-
-  useEffect(() => {
-    getFriend();
-  }, [login]);
+  if (status == 'loading')
+    return <></>;
 
   return (
     <>
@@ -61,9 +50,9 @@ export function FriendProfile({ login }: FriendProfileProps) {
       <div className='friendProfile__body'>
         {(() => {
           if (tableSelected === 'General')
-            return <FriendProfileGeneral friendData={friend} />;
+            return <FriendProfileGeneral friendData={data} />;
           if (tableSelected === 'Historic')
-            return <FriendProfileHistoric friendData={friend} />;
+            return <FriendProfileHistoric friendData={data} />;
 
         })()}
       </div>

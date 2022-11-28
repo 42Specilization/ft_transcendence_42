@@ -4,95 +4,124 @@ import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { MsgToClient, MsgToServer } from './chat.class';
-import {  DirectDto } from './dto/chat.dto';
-import { CreateDirectDto } from './dto/create-direct.dto';
-import { Chat } from './entities/chat.entity';
+import { DirectDto } from './dto/chat.dto';
+import { Direct } from './entities/direct.entity';
+import { Group } from './entities/group.entity';
 import { Message } from './entities/message.entity';
 
 @Injectable()
 export class ChatService {
   constructor(
-    @InjectRepository(Chat) private chatRepository: Repository<Chat>,
+    @InjectRepository(Direct) private directRepository: Repository<Direct>,
+    @InjectRepository(Direct) private groupRepository: Repository<Group>,
     private userService: UserService,
   ) {
 
   }
 
-  async createDirect(owner_email: string, chat_infos: CreateDirectDto) {
-    const chat = new Chat();
-    const owner = await this.userService.findUserByEmail(owner_email);
-    const friend = await this.userService.findUserByNick(chat_infos.friend_login);
+  async getAllChats() {
+    return await this.directRepository.find({
+      relations: [
+        'users',
+        'messages',
+        // 'messages.direct',
+        // 'messages.sender',
+      ],
+    });
+  }
 
-    if (!owner || !friend) {
-      throw new BadRequestException('User not found creating chat');
-    }
-    chat.users = [];
-    chat.type = 'direct';
-    chat.users.push(owner);
-    chat.users.push(friend);
+  async deleteDirectById(user_email: string, friend_login: string) {
+    const user = await this.userService.findUserDirectByEmail(user_email);
+    const friend = await this.userService.findUserDirectByNick(friend_login);
+
+    if (!user || !friend)
+      throw new InternalServerErrorException('User Not Found deleteDirectById');
+
+    const direct = user.directs.filter((key: Direct) => {
+      if (key.users.map((u) => u.nick).indexOf(friend.nick) >= 0)
+        return key;
+      return;
+    }).at(0);
+
+    if (!direct)
+      return;
+
+    user.directs = user.directs.filter((key) => {
+      if (key.id === direct.id)
+        return;
+      return key;
+    });
+
+    friend.directs = friend.directs.filter((key) => {
+      if (key.id === direct.id)
+        return;
+      return key;
+    });
+
     try {
-      await this.chatRepository.save(chat);
+      await user.save();
+      await friend.save();
+      await this.directRepository.delete(direct.id);
     } catch (err) {
-      console.log(err);
+      throw new InternalServerErrorException('Error saving data in db DeleteDirectById', err);
     }
+
   }
 
 
-  async save(chat: Chat) {
-    try {
-      this.chatRepository.save(chat);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async getDirects(user_email: string) {
-    const user = await this.userService.findUserChatsByEmail(user_email);
-    if (!user)
-      throw new BadRequestException('User Not Found getDirects');
-    const directs: DirectDto[] = user.chats.filter((chat) => chat.type == 'direct')
-      .map((chat) => {
-        const friend = chat.users.filter((key) => key.nick != user.nick).at(0);
-        return this. createDirectDto(chat, friend);
-      });
-    return directs;
-  }
-
-  async findChatById(id: string): Promise<Chat> {
-    const chat: Chat | null = await this.chatRepository.findOne({
+  async findDirectById(id: string): Promise<Direct> {
+    const direct: Direct | null = await this.directRepository.findOne({
       where: { id: id },
       relations: [
         'users',
         'messages',
-        'messages.chat',
+        'messages.direct',
+        'messages.sender',
+      ], order: {
+        messages: {
+          date: 'asc'
+        }
+      }
+    });
+    if (!direct)
+      throw new NotFoundException('Direct not found');
+    return direct;
+  }
+
+  async findGroupById(id: string): Promise<Group> {
+    const group: Group | null = await this.groupRepository.findOne({
+      where: { id: id },
+      relations: [
+        'users',
+        'messages',
+        // 'messages.group',
         'messages.sender',
       ]
     });
-    if (!chat)
-      throw new NotFoundException('Chat not found');
-    return chat;
+    if (!group)
+      throw new NotFoundException('Group not found');
+    return group;
   }
 
-  async createChat(type: string, usersLogin: string[]): Promise<string> {
-    const users: User[] = await Promise.all(usersLogin.map(async (e) =>
-      await this.userService.findUserByNick(e))
-    ) as User[];
-
-    const chat = new Chat();
-    chat.type = type;
-    chat.users = users;
-
-    try {
-      this.chatRepository.save(chat);
-      return chat.id;
-    } catch (err) {
-      throw new InternalServerErrorException('Error saving chat in db');
-    }
+  async getAllChatsId(login: string) {
+    const user = await this.userService.findUserDirectByNick(login);
+    if (!user)
+      throw new BadRequestException('User Not Found getDirects');
+    // const directs: DirectDto[] = user.directs.map((direct) => {
+    //   const friend = direct.users.filter((key) => key.nick != user.nick).at(0);
+    //   return this.createDirectDto(direct, friend);
+    // });
+    const chats = [...user.directs];
+    return chats.map((chat) => chat.id);
   }
 
-  async saveMessage(msgServer: MsgToServer): Promise<MsgToClient> {
+
+  async saveMessage(msgServer: MsgToServer, type: string): Promise<MsgToClient> {
     const user: User = await this.userService.findUserByNick(msgServer.user) as User;
-    const chat: Chat = await this.findChatById(msgServer.chat);
+
+    const chat: Direct | Group = type === 'direct' ?
+      await this.findDirectById(msgServer.chat) :
+      await this.findGroupById(msgServer.chat);
 
     const msgDb = new Message();
 
@@ -100,91 +129,199 @@ export class ChatService {
     msgDb.date = new Date(Date.now());
     msgDb.msg = msgServer.msg;
 
-    if (chat.messages && chat.messages.length === 0)
-      chat.messages = [];
     chat.messages.push(msgDb);
+    chat.date = msgDb.date;
 
     try {
-      await this.chatRepository.save(chat);
+      if (type === 'direct')
+        await this.directRepository.save(chat);
+      else
+        await this.groupRepository.save(chat);
+      await this.setBreakpoint(user, chat, type);
       const msgClient: MsgToClient = {
         id: msgDb.id,
         chat: chat.id,
         user: { login: user.nick, image: user.imgUrl },
         date: msgDb.date,
         msg: msgDb.msg,
+        breakpoint: false,
       };
       return msgClient;
     } catch (err) {
       throw new InternalServerErrorException('Error saving message in db');
     }
+
   }
 
-  createDirectDto(chat: Chat, user: User | undefined): DirectDto {
+  // Proteger pra quando o usuario for bloqueado ou o chat nao existir mais
+  async setBreakpointController(email: string, chatId: string, type: string) {
+    const user = await this.userService.findUserDirectByEmail(email);
+    if (!user)
+      throw new BadRequestException('User Not Found setBreakpoints');
+
+    const chat: Direct | Group = type === 'direct' ?
+      await this.findDirectById(chatId) :
+      await this.findGroupById(chatId);
+    if (!chat)
+      return;
+    this.setBreakpoint(user, chat, type);
+  }
+
+  async setBreakpoint(user: User, chat: Direct | Group, type: string) {
+    let index = 0;
+    chat.messages.forEach((msg, i) => {
+      if (msg.breakproint === true && msg.sender.nick === user?.nick)
+        index = i;
+    });
+
+    chat.messages[index].date = new Date(Date.now());
+
+    try {
+      if (type === 'direct')
+        await this.directRepository.save(chat);
+      else
+        await this.groupRepository.save(chat);
+    } catch (err) {
+      throw new InternalServerErrorException(err);
+    }
+
+  }
+
+
+  async getBreakpoint(messages: MsgToClient[] | undefined): Promise<number> {
+
+    let newMessages = 0;
+    const breakpoint: Date | undefined = messages?.filter((msg) => msg.breakpoint === true).at(0)?.date;
+    if (breakpoint) {
+      messages?.forEach(msg => {
+        if (msg.date > breakpoint)
+          newMessages++;
+      });
+    }
+    return newMessages;
+  }
+
+
+  async createDirectDto(direct: Direct, owner: User | undefined, friend: User | undefined, type: string): Promise<DirectDto> {
+    owner;
     const directDto: DirectDto = {
-      id: chat.id,
-      name: user?.nick,
-      image: user?.imgUrl,
-      date: chat.messages?.sort((a, b) => a.date < b.date ? -1 : 1).at(-1)?.date,
-      messages: chat.messages?.map((message) => {
+      id: direct.id,
+      type: 'direct',
+      name: friend?.nick,
+      image: friend?.imgUrl,
+      date: direct.date,
+      newMessages: 0
+    };
+
+    const messages: MsgToClient[] = direct.messages
+      .filter(msg => msg.breakproint === false
+        || (msg.breakproint === true && msg.sender.nick === owner?.nick))
+      .map((message: Message) => {
         return {
           id: message.id,
-          chat: chat.id,
+          chat: direct.id,
           user: {
             login: message.sender.nick,
             image: message.sender.imgUrl,
           },
           date: message.date,
           msg: message.msg,
+          breakpoint: message.breakproint,
         };
-      }),
-    };
-    
+      });
+
+    if (type === 'activeDirect') {
+      directDto.messages = messages;
+    }
+
+    directDto.newMessages = await this.getBreakpoint(messages);
+
     return directDto;
   }
 
+  async getAllDirects(user_email: string) {
+    const owner = await this.userService.findUserDirectByEmail(user_email);
+    if (!owner)
+      throw new BadRequestException('User Not Found getDirects');
+    const directs: DirectDto[] = await Promise.all(owner.directs.map(async (direct) => {
+      const friend = direct.users.filter((key) => key.nick !== owner.nick).at(0);
+      return await this.createDirectDto(direct, owner, friend, 'cardDirect');
+    }));
+    // directs.sort((a, b) => {
+    //   if (a.date < b.date)
+    //     return 1;
+    //   return -1;
+    // });
+    return directs;
+  }
+
+
   async getDirect(owner_email: string, id: string): Promise<DirectDto> {
-    const chat = await this.findChatById(id);
-    if (!chat)
-      throw new BadRequestException('Invalid chat GetDirect');
-    const user = chat.users.filter((key) => key.email != owner_email).at(0);
-    if (!user)
+    const direct = await this.findDirectById(id);
+    if (!direct)
+      throw new BadRequestException('Invalid direct GetDirect');
+    const owner = direct.users.filter((key: User) => key.email === owner_email).at(0);
+    const friend = direct.users.filter((key: User) => key.email !== owner_email).at(0);
+    if (!owner && !friend)
       throw new BadRequestException('Invalid user GetDirect');
-
-    return this.createDirectDto(chat, user);
+    return this.createDirectDto(direct, owner, friend, 'activeDirect');
   }
 
-  async createDirectUser(users: User[]): Promise<Chat> {
-    const chat = new Chat();
-    chat.type = 'direct';
-    chat.users = users;
+  // Impedir a criação de chats com pessoas bloqueadas
+  async getFriendDirect(owner_email: string, friend_login: string) {
 
-    try {
-      await this.chatRepository.save(chat);
-      return chat;
-    } catch (err) {
-      throw new InternalServerErrorException('Error saving chat in db');
-    }
-  }
+    const owner = await this.userService.findUserDirectByEmail(owner_email);
+    const friend = await this.userService.findUserDirectByNick(friend_login);
 
-  async getFriendChat(owner_email: string, friend_login: string): Promise<DirectDto> {
-    const owner = await this.userService.findUserChatsByEmail(owner_email);
-    const friend = await this.userService.findUserChatsByNick(friend_login);
     if (!owner || !friend)
-      throw new BadRequestException('User Not Found getFriendChat');
+      throw new BadRequestException('User Not Found getFrienddirect');
 
-    const chats: Chat[] = owner.chats.filter(key => {
-      if (key.type === 'direct' && key.users.map(u => u.nick).indexOf(friend.nick) >= 0)
+    if (this.userService.isBlocked(owner, friend) || this.userService.isBlocked(friend, owner))
+      return;
+
+    const directs: Direct[] = owner.directs.filter((key: Direct) => {
+      if (key.users.map((u: User) => u.nick).indexOf(friend.nick) >= 0)
         return key;
       return;
     });
 
     let direct;
-    if (chats.length < 1) {
-      direct = await this.createDirectUser([owner, friend]);
+    let created: boolean;
+
+    if (directs.length < 1) {
+      created = true;
+      const newDirect = new Direct();
+      newDirect.users = [owner, friend];
+      newDirect.date = new Date(Date.now());
+
+      const ownerBreakpoint = new Message();
+      ownerBreakpoint.sender = owner;
+      ownerBreakpoint.date = new Date(Date.now());
+      ownerBreakpoint.msg = '';
+      ownerBreakpoint.breakproint = true;
+
+      const friendBreakpoint = new Message();
+      friendBreakpoint.sender = friend;
+      friendBreakpoint.date = new Date(Date.now());
+      friendBreakpoint.msg = '';
+      friendBreakpoint.breakproint = true;
+
+      newDirect.messages = [friendBreakpoint, ownerBreakpoint];
+      try {
+        await this.directRepository.save(newDirect);
+        direct = newDirect;
+      } catch (err) {
+        throw new InternalServerErrorException('Error saving direct in db');
+      }
     } else {
-      direct = await this.findChatById(chats[0].id);
+      created = false;
+      direct = await this.findDirectById(directs[0].id);
     }
 
-    return this.createDirectDto(direct, friend);
+    return {
+      directDto: await this.createDirectDto(direct, owner, friend, 'activeDirect'),
+      created: created,
+    };
+
   }
 }

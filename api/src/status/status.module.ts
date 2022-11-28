@@ -7,3 +7,4 @@ import { StatusGateway } from './status.gateway';
   providers: [StatusGateway],
 })
 export class StatusModule { }
+

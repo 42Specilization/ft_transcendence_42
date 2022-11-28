@@ -7,8 +7,6 @@ import { defaultIntra, getIntraData } from '../others/utils/utils';
 interface IIntraDataContext {
   intraData: IntraData;
   setIntraData: Dispatch<SetStateAction<IntraData>>;
-  updateImageTime: number;
-  setUpdateImageTime: Dispatch<SetStateAction<number>>;
   config: {
     headers: {
       Authorization: string
@@ -21,9 +19,6 @@ export const IntraDataContext = createContext<IIntraDataContext>({
   intraData: defaultIntra,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setIntraData: () => { },
-  updateImageTime: 0,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  setUpdateImageTime: () => { },
   config: {
     headers: {
       Authorization: ''
@@ -43,8 +38,6 @@ interface IntraDataProviderProps {
 export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
 
   const [intraData, setIntraData] = useState(defaultIntra);
-  const [updateImageTime, setUpdateImageTime] = useState(Math.floor(Math.random() * 1000));
-
 
   const config = useMemo(() => {
     return {
@@ -62,11 +55,10 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
   useEffect(() => {
     getIntraData(setIntraData);
     actionsStatus.initializeSocketStatus(setIntraData);
-    return;
   }, []);
 
   return (
-    <IntraDataContext.Provider value={{ intraData, setIntraData, updateImageTime, setUpdateImageTime, api, config }}>
+    <IntraDataContext.Provider value={{ intraData, setIntraData, api, config }}>
       {children}
     </IntraDataContext.Provider>
   );

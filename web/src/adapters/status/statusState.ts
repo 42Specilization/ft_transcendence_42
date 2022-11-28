@@ -2,19 +2,14 @@ import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
 import { IntraData } from '../../others/Interfaces/interfaces';
-import { getAccessToken, getUserInDb } from '../../others/utils/utils';
+import { getUserInDb } from '../../others/utils/utils';
+import { actionsChat } from '../chat/chatState';
+import { MsgToClient } from '../../../../api/dist/chat/chat.class';
 import {
   createSocketStatus,
   CreateSocketStatusOptions,
   socketStatusIOUrl,
 } from './status.socket-io';
-
-interface Me {
-  id: string;
-  login: string;
-  email: string;
-  image_url: string;
-}
 
 export interface UserData {
   status: string;
@@ -24,34 +19,16 @@ export interface UserData {
 
 export interface AppStateStatus {
   socket?: Socket;
-  me: Me | undefined;
-  accessToken?: string | null;
   setIntraData?: Dispatch<SetStateAction<IntraData>> | null;
 }
 
-const stateStatus = proxy<AppStateStatus>({
-  get me() {
-    const localStore = window.localStorage.getItem('userData');
-    if (!localStore) {
-      return undefined;
-    }
-    const data: IntraData = JSON.parse(localStore);
-    const myData: Me = {
-      id: this.socket ? this.socket.id : '',
-      login: data.login,
-      email: data.email,
-      image_url: data.image_url,
-    };
-    return myData;
-  },
-});
+const stateStatus = proxy<AppStateStatus>({});
 
 const actionsStatus = {
 
   initializeSocketStatus: (setIntraData: Dispatch<SetStateAction<IntraData>>): void => {
     if (!stateStatus.socket) {
       const createSocketOptions: CreateSocketStatusOptions = {
-        accessToken: getAccessToken(),
         socketStatusIOUrl: socketStatusIOUrl,
         actionsStatus: actionsStatus,
         stateStatus: stateStatus,
@@ -74,8 +51,63 @@ const actionsStatus = {
     }
   },
 
+  async iAmOnline() {
+    const user = await getUserInDb();
+    stateStatus.socket?.emit('iAmOnline', {
+      login: user.login,
+      image_url: user.image_url
+    });
+  },
+
   whoIsOnline() {
     stateStatus.socket?.emit('whoIsOnline');
+  },
+
+  changeLogin(login: string) {
+    stateStatus.socket?.emit('changeLogin', login);
+  },
+
+  changeImage(image_url: string | undefined) {
+    stateStatus.socket?.emit('changeImage', image_url);
+  },
+
+  newFriend(userSource: string) {
+    // console.log('no newFriend', userSource, stateStatus.socket);
+    stateStatus.socket?.emit('newFriend', userSource);
+  },
+
+  newBlocked() {
+    stateStatus.socket?.emit('newBlocked');
+  },
+
+  newNotify(userTarget: string, type: string) {
+    stateStatus.socket?.emit('newNotify', { login_target: userTarget, type: type });
+  },
+
+  removeFriend(friend: string) {
+    // console.log(friend);
+    stateStatus.socket?.emit('removeFriend', friend);
+  },
+
+  removeBlocked(blocked: string) {
+    stateStatus.socket?.emit('removeBlocked', blocked);
+  },
+
+  blockFriend(friend: string) {
+    stateStatus.socket?.emit('blockFriend', friend);
+  },
+
+  async newDirect(name: string, chat: string) {
+    stateStatus.socket?.emit('newDirect', { name: name, chat: chat });
+    if (stateStatus.setIntraData) {
+      const user = await getUserInDb();
+      stateStatus.setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData,
+          directs: user.directs,
+        };
+      });
+    }
   },
 
   sortFriends() {
@@ -103,22 +135,11 @@ const actionsStatus = {
           ...prevIntraData, friends: prevIntraData.friends.map(friend => {
             if (onlineUsers.map(e => e.login).indexOf(friend.login) >= 0) {
               const updateFriend = onlineUsers.find(e => e.login === friend.login);
-              return typeof updateFriend !== 'undefined' ? updateFriend : friend;
+              if (updateFriend)
+                return updateFriend;
             }
             return friend;
           }),
-        };
-      });
-      this.sortFriends();
-    }
-  },
-
-  updateUser(user: UserData) {
-    if (stateStatus.setIntraData) {
-      stateStatus.setIntraData((prevIntraData) => {
-        return {
-          ...prevIntraData, friends: prevIntraData.friends.map(friend =>
-            user.login === friend.login ? user : friend)
         };
       });
       this.sortFriends();
@@ -133,6 +154,19 @@ const actionsStatus = {
     }
   },
 
+  updateUserStatus(user: UserData) {
+    if (stateStatus.setIntraData) {
+      stateStatus.setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData,
+          friends: prevIntraData.friends.map(friend =>
+            user.login === friend.login ? user : friend)
+        };
+      });
+      this.sortFriends();
+    }
+  },
+
   updateUserLogin(oldUser: UserData, newUser: UserData) {
     if (stateStatus.setIntraData) {
       stateStatus.setIntraData((prevIntraData) => {
@@ -142,14 +176,32 @@ const actionsStatus = {
             oldUser.login === friend.login ? newUser : friend),
           blockeds: prevIntraData.blockeds.map(blocked =>
             oldUser.login === blocked.login ? newUser : blocked),
+          directs: prevIntraData.directs.map(direct =>
+            oldUser.login === direct.name ? { ...direct, name: newUser.login } : direct)
         };
       });
       this.sortFriends();
     }
   },
 
-  async updateNotify() {
+  updateUserImage(user: UserData) {
     if (stateStatus.setIntraData) {
+      stateStatus.setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData,
+          friends: prevIntraData.friends.map(friend =>
+            user.login === friend.login ? user : friend),
+          directs: prevIntraData.directs.map(direct =>
+            user.login === direct.name ? { ...direct, image: user.image_url } : direct)
+        };
+      });
+    }
+  },
+
+  async updateNotify(type: string) {
+    if (stateStatus.setIntraData) {
+      if (type === 'message' && window.location.pathname.includes('/chat'))
+        return;
       const user = await getUserInDb();
       stateStatus.setIntraData((prevIntraData) => {
         return { ...prevIntraData, notify: user.notify };
@@ -160,16 +212,20 @@ const actionsStatus = {
   async updateFriend() {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
+      // console.log(user.friends);
       stateStatus.setIntraData((prevIntraData) => {
         return {
           ...prevIntraData,
           friends: user.friends.map((obj) => {
+
             if (prevIntraData.friends.map(e => e.login).indexOf(obj.login) >= 0) {
               const updateFriend = prevIntraData.friends.find(e => e.login === obj.login);
-              return typeof updateFriend !== 'undefined' ? updateFriend : obj;
+              if (updateFriend)
+                return updateFriend;
             }
             return obj;
-          })
+          }),
+          directs: user.directs
         };
       });
       this.whoIsOnline();
@@ -180,27 +236,74 @@ const actionsStatus = {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
       stateStatus.setIntraData((prevIntraData) => {
-        return {...prevIntraData, blockeds: user.blockeds};
+        return { ...prevIntraData, blockeds: user.blockeds };
       });
     }
   },
 
-  async updateRemove() {
+  async updateFriendBlocked() {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
       stateStatus.setIntraData((prevIntraData) => {
-        return { ...prevIntraData, friends: user.friends.map((obj) => {
-          if (prevIntraData.friends.map(e => e.login).indexOf(obj.login) >= 0) {
-            const updateFriend = prevIntraData.friends.find(e => e.login === obj.login);
-            return typeof updateFriend !== 'undefined' ? updateFriend : obj;
-          }
-          return obj;
-        }),
-        blockeds: user.blockeds };
+        return {
+          ...prevIntraData,
+          friends: user.friends.map((obj) => {
+            if (prevIntraData.friends.map(e => e.login).indexOf(obj.login) >= 0) {
+              const updateFriend = prevIntraData.friends.find(e => e.login === obj.login);
+              if (updateFriend)
+                return updateFriend;
+            }
+            return obj;
+          }),
+          blockeds: user.blockeds,
+          directs: user.directs
+        };
       });
       this.sortFriends();
     }
   },
+
+  async updateDirects(chat: string) {
+    actionsChat.joinChat(chat);
+    if (stateStatus.setIntraData) {
+      const user = await getUserInDb();
+      stateStatus.setIntraData((prevIntraData) => {
+        return { ...prevIntraData, directs: user.directs };
+      });
+    }
+  },
+
+  async updateDirectInfos(message: MsgToClient) {
+    if (stateStatus.setIntraData) {
+      stateStatus.setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData,
+          directs: prevIntraData.directs.map((key) => {
+            if (key.id === message.chat) {
+              return {
+                ...key,
+                date: message.date,
+                newMessages: key.newMessages + 1
+              };
+            }
+            return key;
+          }),
+        };
+      });
+      stateStatus.setIntraData((prevIntraData) => {
+        return {
+          ...prevIntraData,
+          directs: prevIntraData.directs
+            .sort((a, b) => {
+              if (a.date < b.date)
+                return 1;
+              return -1;
+            })
+        };
+      });
+    }
+  },
+
 
 };
 

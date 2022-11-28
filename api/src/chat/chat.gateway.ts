@@ -1,5 +1,7 @@
 import { Logger, UseFilters } from '@nestjs/common';
 import {
+  ConnectedSocket,
+  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
@@ -15,8 +17,7 @@ import { ChatService } from './chat.service';
 
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({ namespace: 'chat' })
-export class ChatGateway
-implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
+export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
 
   @WebSocketServer() server: Namespace;
 
@@ -36,25 +37,22 @@ implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
     this.logger.debug(`Number of connected chatSockets: ${sockets.size}`);
   }
 
-  handleDisconnect(client: Socket) {
+  handleDisconnect(@ConnectedSocket() client: Socket) {
     const sockets = this.server.sockets;
 
     this.logger.log(`Disconnected of chatSocket the socket id: ${client.id}`);
     this.logger.debug(`Number of connected chatSockets: ${sockets.size}`);
   }
 
-  @SubscribeMessage('createChat')
-  async createChat(client: Socket,
-    { type, usersLogin }: { type: string, usersLogin: string[] }) {
-
-    const chat: string = await this.chatService.createChat(type, usersLogin);
-
-    this.server.to(client.id).emit('newChatCreated', chat);
-    this.logger.debug(`Client ${client.id} create chat : |${chat}|`);
+  @SubscribeMessage('joinAll')
+  async handleJoinAll(@ConnectedSocket() client: Socket, @MessageBody() login: string) {
+    (await this.chatService.getAllChatsId(login))
+      .forEach((socketId) => client.join(socketId));
+    this.logger.debug(`Client ${client.id} join all chats: |${login}|`);
   }
 
   @SubscribeMessage('joinChat')
-  async handleJoinChat(client: Socket, chat: string) {
+  async handleJoinChat(@ConnectedSocket() client: Socket, @MessageBody() chat: string) {
 
     client.join(chat);
 
@@ -62,7 +60,7 @@ implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
   }
 
   @SubscribeMessage('leaveChat')
-  async handleLeaveChat(client: Socket, chat: string) {
+  async handleLeaveChat(@ConnectedSocket() client: Socket, @MessageBody() chat: string) {
 
     client.leave(chat);
 
@@ -70,8 +68,9 @@ implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
   }
 
   @SubscribeMessage('msgToServer')
-  async handleMsgToServer(client: Socket, message: MsgToServer) {
-    const msgToClient: MsgToClient = await this.chatService.saveMessage(message);
+  async handleMsgToServer(@ConnectedSocket() client: Socket,
+    @MessageBody() { message, type }: { message: MsgToServer, type: string }) {
+    const msgToClient: MsgToClient = await this.chatService.saveMessage(message, type);
     this.server.to(message.chat).emit('msgToClient', msgToClient);
     this.logger.debug(`Client ${client.id} send message : |${msgToClient}|`);
   }

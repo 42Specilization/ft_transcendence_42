@@ -7,6 +7,7 @@ import OAuth from './pages/OAuth/OAuth';
 import Profile from './pages/Profile/Profile';
 import Game from './pages/Game/Game';
 import Chat from './pages/Chat/Chat';
+import Community from './pages/Community/Community';
 import { NavBar } from './components/NavBar/NavBar';
 import { RequireAuth, ValidadeSignin } from './others/utils/utils';
 import { IntraDataProvider } from './contexts/IntraDataContext';
@@ -14,11 +15,10 @@ import { ChatProvider } from './contexts/ChatContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { useEffect } from 'react';
 import { state } from './adapters/game/gameState';
-
-
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 export default function AppRouter() {
-
+  const queryClient = new QueryClient();
   useEffect(() => {
     window.onpopstate = () => {
       if (state.socket || state.game) {
@@ -26,64 +26,75 @@ export default function AppRouter() {
       }
     };
   }, []);
-
   return (
     <Router>
       <AuthProvider>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <IntraDataProvider>
-                <RequireAuth>
-                  <NavBar Children={Home} />
-                </RequireAuth>
-              </IntraDataProvider>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <IntraDataProvider>
-                <RequireAuth>
-                  <NavBar Children={Profile} />
-                </RequireAuth>
-              </IntraDataProvider>
-            }
-          />
-          <Route
-            path="/game"
-            element={
-              <IntraDataProvider>
-                <RequireAuth>
-                  <Game />
-                </RequireAuth>
-              </IntraDataProvider>
-            }
-          />
-          <Route
-            path="/chat"
-            element={
-              <IntraDataProvider>
-                <RequireAuth>
-                  <ChatProvider>
-                    <NavBar Children={Chat} />
-                  </ChatProvider>
-                </RequireAuth>
-              </IntraDataProvider>
-            }
-          />
-          <Route path="/oauth" element={<OAuth />} />
-          <Route
-            path="/signin"
-            element={
-              <ValidadeSignin >
-                <SignIn />
-              </ValidadeSignin>
-            } />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <ChatProvider>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <RequireAuth>
+                    <IntraDataProvider>
+                      <NavBar Children={Home} />
+                    </IntraDataProvider>
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <RequireAuth>
+                    <IntraDataProvider>
+                      <NavBar Children={Profile} />
+                    </IntraDataProvider>
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/game"
+                element={
+                  <RequireAuth>
+                    <IntraDataProvider>
+                      <Game />
+                    </IntraDataProvider>
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/chat"
+                element={
+                  <RequireAuth>
+                    <IntraDataProvider>
+                      <NavBar Children={Chat} />
+                    </IntraDataProvider>
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/community"
+                element={
+                  <RequireAuth>
+                    <IntraDataProvider>
+                      <NavBar Children={Community} />
+                    </IntraDataProvider>
+                  </RequireAuth>
+                }
+              />
+              <Route path="/oauth" element={<OAuth />} />
+              <Route
+                path="/signin"
+                element={
+                  <ValidadeSignin >
+                    <SignIn />
+                  </ValidadeSignin>
+                } />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </ChatProvider>
+        </QueryClientProvider>
+      </AuthProvider >
     </Router >
   );
 }

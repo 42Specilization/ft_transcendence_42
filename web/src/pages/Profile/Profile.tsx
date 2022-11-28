@@ -1,7 +1,7 @@
 import './Profile.scss';
 import { useState } from 'react';
-import{ ProfileGeneral } from '../../components/Profile/ProfileGeneral/ProfileGeneral';
-import { ProfileHistoric} from '../../components/Profile/ProfileHistoric/ProfileHistoric';
+import { ProfileGeneral } from '../../components/Profile/ProfileGeneral/ProfileGeneral';
+import { ProfileHistoric } from '../../components/Profile/ProfileHistoric/ProfileHistoric';
 import ProfileAchiviements from '../../components/Profile/ProfileAchiviements/ProfileAchiviements';
 
 export default function Profile() {
@@ -26,13 +26,13 @@ export default function Profile() {
               Historic
             </button>
           </li>
-          <li className={`profile__header__list__item
+          {/* <li className={`profile__header__list__item
           ${tableSelected === 'Achiviements' ?
       'profile__header__list__item__selected' : ''}`}>
             <button onClick={() => setTableSelected('Achiviements')}>
               Achiviements
             </button>
-          </li>
+          </li> */}
         </ul>
       </nav>
       <div className='profile__body'>

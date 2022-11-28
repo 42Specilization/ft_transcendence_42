@@ -1,44 +1,28 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
-import { DirectData, IntraData, MsgToClient, MsgToServer } from '../../others/Interfaces/interfaces';
-import { getAccessToken } from '../../others/utils/utils';
+import { ActiveChatData } from '../../contexts/ChatContext';
+import { MsgToClient, MsgToServer } from '../../others/Interfaces/interfaces';
+import { getAccessToken, getUserInDb } from '../../others/utils/utils';
+import { actionsStatus } from '../status/statusState';
 import {
   createSocketChat,
   CreateSocketChatOptions,
   socketChatIOUrl,
 } from './chat.socket-io';
 
-interface Me {
-  id: string | undefined;
-  name: string;
-}
-
 export interface AppStateChat {
   socket?: Socket;
-  me: Me | undefined;
-  accessToken?: string | null;
-  setActiveChat?: Dispatch<SetStateAction<DirectData | null>> | null;
-  setChatList?: Dispatch<SetStateAction<DirectData[] | []>> | null;
+  setActiveChat?: Dispatch<SetStateAction<ActiveChatData | null>> | null;
 }
 
-const stateChat = proxy<AppStateChat>({
-  get me() {
-    const localStore = window.localStorage.getItem('userData');
-    if (!localStore) {
-      return undefined;
-    }
-    const data: IntraData = JSON.parse(localStore);
-    const myData: Me = {
-      id: this.socket?.id,
-      name: data.login,
-    };
-    return myData;
-  },
-});
+const stateChat = proxy<AppStateChat>({});
 
 const actionsChat = {
-  initializeSocketChat: (setActiveChat: Dispatch<SetStateAction<DirectData | null>>): void => {
+  initializeSocketChat: (
+    setActiveChat: Dispatch<SetStateAction<ActiveChatData | null>>
+  ): void => {
+
     if (!stateChat.socket) {
       const createSocketOptions: CreateSocketChatOptions = {
         accessToken: getAccessToken(),
@@ -50,7 +34,6 @@ const actionsChat = {
       stateChat.setActiveChat = ref(setActiveChat);
       return;
     }
-
     if (!stateChat.socket.connected) {
       stateChat.socket.connect();
       stateChat.setActiveChat = ref(setActiveChat);
@@ -64,8 +47,9 @@ const actionsChat = {
     }
   },
 
-  setChatList(setChatList: Dispatch<SetStateAction<DirectData[] | []>>) {
-    stateChat.setChatList = ref(setChatList);
+  async joinAll() {
+    const user = await getUserInDb();
+    stateChat.socket?.emit('joinAll', user.login);
   },
 
   joinChat(id: string) {
@@ -76,38 +60,43 @@ const actionsChat = {
     stateChat.socket?.emit('leaveChat', id);
   },
 
-  msgToServer(message: MsgToServer) {
-    stateChat.socket?.emit('msgToServer', message);
+  async msgToServer(message: MsgToServer, type: string) {
+    stateChat.socket?.emit('msgToServer', { message: message, type: type });
+    // if (!window.location.pathname.includes('/chat')) {
+    //   const token = window.localStorage.getItem('token');
+    //   const config = {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`
+    //     }
+    //   };
+    // await axios.patch(`http://${import.meta.env.VITE_API_HOST}:3000/user/notifyMessage`, { id: message.chat, chatName: message.user, add_info: 'is a direct' }, config);
+    //   statusState.updateNotify();
+    // }
   },
 
-  msgToClient(message: MsgToClient) {
+  async msgToClient(message: MsgToClient) {
     if (stateChat.setActiveChat) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stateChat.setActiveChat((prev: any) => {
-        if (prev && prev.id === message.chat) {
-          if (prev.messages)
-            return { ...prev, messages: [...prev.messages, message], date: message.date };
-          return { ...prev, messages: [message], date: message.date };
+      stateChat.setActiveChat((prev: ActiveChatData | null) => {
+        if (prev && prev.chat.id === message.chat) {
+          const messages: MsgToClient[] = [...prev.historicMsg, message];
+          const blocks = Math.floor(messages.length / 20);
+          return {
+            chat: {
+              ...prev.chat,
+              messages: messages.slice(-20),
+              date: message.date
+            },
+            newMessage: true,
+            historicMsg: messages,
+            blocks: blocks,
+            currentBlock: blocks - 1,
+          };
         }
-        return null;
+        return prev;
       });
-      if (stateChat.setChatList) {
-        stateChat.setChatList((prev) => {
-          if (prev) {
-            return prev.map((key) => {
-              if (key.id === message.chat)
-                return { ...key, date: message.date };
-              return key;
-            });
-          }
-          return [];
-        });
-      }
     }
+    actionsStatus.updateDirectInfos(message);
   },
-
-
-
 };
 
 export type AppActionsChat = typeof actionsChat;

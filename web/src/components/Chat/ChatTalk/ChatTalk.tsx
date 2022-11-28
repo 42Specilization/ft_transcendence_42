@@ -8,6 +8,7 @@ import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import ReactTooltip from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
+import { actionsStatus } from '../../../adapters/status/statusState';
 
 // interface ChatTalkProps {
 
@@ -16,78 +17,166 @@ import { ChatContext } from '../../../contexts/ChatContext';
 export function ChatTalk(
   // { }: ChatTalkProps
 ) {
-
   const {
     activeChat, setActiveChat,
+    peopleChat, setPeopleChat,
     directsChat, setDirectsChat,
-    friendsChat, setFriendsChat,
+    // groupsChat, 
+    setGroupsChat,
   } = useContext(ChatContext);
-  const { intraData, api, config } = useContext(IntraDataContext);
 
+  const { intraData, setIntraData, api, config } = useContext(IntraDataContext);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
-  const [message, setMessage] = useState('');
 
-  function changeActiveChat(data: DirectData) {
-    if (activeChat)
-      actionsChat.leaveChat(activeChat.id);
-    setActiveChat(data);
-    actionsChat.joinChat(data.id);
+  useEffect(() => {
+    return () => {
+      if (activeChat)
+        api.patch('/chat/setBreakpoint', { chatId: activeChat.chat.id, type: activeChat.chat.type }, config);
+    };
+  }, []);
+
+  async function exitActiveChat() {
+    api.patch('/chat/setBreakpoint', { chatId: activeChat?.chat.id, type: activeChat?.chat.type }, config);
+    setIntraData(prev => {
+      return {
+        ...prev,
+        directs: prev.directs.map(key => {
+          if (key.id === activeChat?.chat.id) {
+            return { ...key, newMessages: 0 };
+          }
+          return key;
+        })
+      };
+    });
+    setActiveChat(null);
+    setDirectsChat(null);
+    setPeopleChat(null);
+    setGroupsChat(null);
+  }
+
+  function initActiveChat(chat: DirectData) {
+    const messages: MsgToClient[] = chat.messages;
+    const blocks = Math.floor((messages.length - 1) / 20);
+    setActiveChat({
+      chat: { ...chat, messages: messages.slice(-20) },
+      newMessage: true,
+      historicMsg: messages.filter((msg: any) => msg.breakpoint !== true),
+      blocks: blocks,
+      currentBlock: blocks - 1
+    });
+  }
+
+  async function setActiveChatWithDirect(id: string) {
+    const response = await api.patch('/chat/getDirect', { id: id }, config);
+    if (activeChat) {
+      exitActiveChat();
+    }
+    initActiveChat(response.data);
+  }
+
+  async function setActiveChatWithFriend(id: string) {
+    const response = await api.patch('/chat/getFriendDirect', { id: id }, config);
+    if (activeChat) {
+      exitActiveChat();
+    }
+    initActiveChat(response.data.directDto);
+    if (response.data.created) {
+      actionsChat.joinChat(response.data.directDto.id);
+      await actionsStatus.newDirect(response.data.directDto.name, response.data.directDto.id);
+    }
   }
 
   useEffect(() => {
-    async function getDirect() {
-      const response = await api.patch('/chat/getDirect', { id: directsChat }, config);
-      changeActiveChat(response.data as DirectData);
-    }
-    if (directsChat) {
-      getDirect();
-    }
+    if (directsChat)
+      setActiveChatWithDirect(directsChat);
   }, [directsChat]);
 
   useEffect(() => {
-    async function getFriendDirect() {
-      const response = await api.patch('/chat/getFriendChat', { id: friendsChat?.login }, config);
-      changeActiveChat(response.data as DirectData);
-    }
-    if (friendsChat) {
-      getFriendDirect();
-    }
-  }, [friendsChat]);
+    if (peopleChat)
+      setActiveChatWithFriend(peopleChat.login);
+  }, [peopleChat]);
 
-
-  /**
-   * The function takes an event as an argument, and then calls the preventDefault() method on the
-   * event
-   * @param event - React.FormEvent<HTMLFormElement>
-   */
   function handleKeyEnter(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    submitMessage();
+    submitMessage(event);
   }
 
-  /**
-   * It sends a message to the server if the message is not empty
-   */
-  function submitMessage() {
-    if (message.trim() && activeChat) {
+  async function submitMessage(event: any) {
+    if (event.target[0].value.trim() && activeChat) {
       const newMessage: MsgToServer = {
-        chat: activeChat?.id,
+        chat: activeChat?.chat.id,
         user: intraData.login,
-        msg: message,
+        msg: event.target[0].value,
       };
-      actionsChat.msgToServer(newMessage);
+      actionsChat.msgToServer(newMessage, activeChat.chat.type);
+      await api.patch('/user/notifyMessage', { id: activeChat?.chat.id, target: activeChat?.chat.name, add_info: 'direct' }, config);
+      actionsStatus.newNotify(activeChat?.chat.name as string, 'message');
     }
-    setMessage('');
+    event.target[0].value = '';
+  }
+
+
+  function changeBlock(start: number, size: number, newCurrent: number) {
+    setActiveChat(prev => {
+      if (!prev)
+        return prev;
+      return {
+        ...prev,
+        chat: {
+          ...prev.chat,
+          messages: prev.historicMsg.slice(start, size)
+        },
+        currentBlock: newCurrent,
+      };
+    });
+    setTimeout(() => {
+      const body = refBody.current;
+      if (body && body.scrollHeight > body.offsetHeight) {
+        body.scrollTop = body.scrollHeight / 2;
+      }
+    }, 500);
+  }
+
+  async function handleScroll(e: any) {
+    if (!activeChat || activeChat.historicMsg.length <= 20)
+      return;
+
+    const residue = activeChat.historicMsg.length % 20;
+    let current = activeChat.currentBlock;
+
+    if (e.target.scrollTop === 0 && current !== -1) {
+      if (current === 0)
+        changeBlock(0, 40 + residue, -1);
+      else {
+        const start = (current - 1) * 20 + residue;
+        changeBlock(start, start + 40, current - 1);
+      }
+    }
+    if (e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 1
+      && current !== activeChat.blocks - 1) {
+      if (current === -1)
+        current = 0;
+      const start = current * 20 + residue;
+      changeBlock(start, start + 40, current + 1);
+    }
   }
 
   const refBody: React.RefObject<HTMLDivElement> = useRef(null);
+
   useEffect(() => {
-    if (
-      refBody.current &&
-      refBody.current.scrollHeight > refBody.current.offsetHeight
-    ) {
-      refBody.current.scrollTop =
-        refBody.current.scrollHeight - refBody.current.offsetHeight;
+    if (activeChat?.newMessage) {
+      const body = refBody.current;
+      if (body && body.scrollHeight > body.offsetHeight) {
+        body.scrollTop = body.scrollHeight - body.offsetHeight;
+      }
+      setActiveChat(prev => {
+        if (!prev)
+          return prev;
+        return {
+          ...prev,
+          newMessage: false
+        };
+      });
     }
   }, [activeChat]);
 
@@ -96,48 +185,59 @@ export function ChatTalk(
       {activeChat != null &&
         <>
           <div className='chat__talk__header'>
-            <ArrowBendUpLeft size={32} onClick={() => {
-              setActiveChat(null);
-              setDirectsChat(null);
-              setFriendsChat(null);
-              actionsChat.leaveChat(activeChat.id);
-            }}
-            />
+            <ArrowBendUpLeft size={32} onClick={exitActiveChat} />
             <div
               className='chat__talk__header__user'
               onClick={() => setFriendProfileVisible(true)}
               data-html={true}
-              data-tip={`${activeChat.name} profile`}
+              data-tip={`${activeChat.chat?.name} profile`}
             >
               <div
                 className='chat__talk__header__user__icon'
-                style={{ backgroundImage: `url(${activeChat.image})` }}
+                style={{ backgroundImage: `url(${activeChat.chat?.image})` }}
               />
               <div className='chat__talk__header__user__name'>
-                {activeChat.name}
+                {activeChat.chat?.name}
               </div>
             </div>
           </div>
-          <div className='chat__talk__body'
+          <div id='chat__talk__body'
+            className='chat__talk__body'
+            onScroll={(e) => handleScroll(e)}
             ref={refBody}
           >
-            {activeChat.messages?.map((msg: MsgToClient) => (
-              <ChatMessage key={msg.id} user={intraData.login} message={msg} />
-            ))}
+            {activeChat.chat?.messages
+              .map((msg: MsgToClient, index: number) => {
+                const len = activeChat.chat?.messages?.length - 1;
+                if (msg.breakpoint) {
+                  return (
+                    <div className='chat__talk__unread__message'
+                      style={{ display: index !== len ? '' : 'none' }}
+                      key={crypto.randomUUID()}
+                    >
+                      <div /><p>unread message: {len - index}</p><div />
+                    </div>);
+                }
+                return < ChatMessage
+                  key={crypto.randomUUID()}
+                  user={intraData.login}
+                  message={msg} />;
+              })
+            }
           </div>
           {friendProfileVisible &&
             <ProfileFriendModal
-              login={activeChat.name}
+              login={activeChat.chat.name}
               setFriendProfileVisible={setFriendProfileVisible} />
           }
-          <form className='chat__talk__footer' onSubmit={handleKeyEnter}>
+          <form autoComplete='off' className='chat__talk__footer' onSubmit={handleKeyEnter}>
             <input
               className='chat__talk__footer__input'
-              value={message}
-              onChange={(msg) => setMessage(msg.target.value)}
               ref={e => { if (activeChat) e?.focus(); }}
             />
-            <button className='chat__talk__footer__button' type='submit'>
+            <button
+              className='chat__talk__footer__button'
+              type='submit'>
               <PaperPlaneRight size={30} />
             </button>
           </form>
@@ -147,3 +247,4 @@ export function ChatTalk(
     </div >
   );
 }
+

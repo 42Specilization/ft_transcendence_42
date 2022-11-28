@@ -15,5 +15,6 @@ export interface MsgToClient {
   chat: string;
   user: UserMsg;
   date: Date;
-  msg:string;
+  msg: string;
+  breakpoint: boolean;
 }

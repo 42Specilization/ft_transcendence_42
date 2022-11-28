@@ -22,16 +22,15 @@ import { UserFromJwt } from 'src/auth/dto/UserFromJwt.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import * as nodemailer from 'nodemailer';
 import { smtpConfig } from '../config/smtp';
-import { UserDto } from './dto/user.dto';
+import { UserDto, UserHistoricDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { FriendRequestDto } from './dto/friend-request.dto';
 // import axios from 'axios';
 import { GetFriendDto } from './dto/get-friend.dto';
-import { NotifyHandlerDto } from 'src/notification/dto/notify-dto';
+import { NewNotifyDto, NotifyHandlerDto } from 'src/notification/dto/notify-dto';
 // import { NotificationService } from 'src/notification/notification.service';
 
 @Controller('user')
@@ -109,79 +108,7 @@ export class UserController {
       }
       return code;
     }
-    // returnHTML(username: string, code: string) {
-    //   return (`<!DOCTYPE html>
 
-    //   <html lang="en">
-    //     <head>
-    //       <meta charset="UTF-8">
-    //       <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    //       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    //       <title>TFA Code</title>
-    //     </head>
-    //     <body>
-    //       <h3>Hello, ${username}</h3>
-    //       <p>You have requested to enable Two-Factor Authentication</p>
-    //       <p>Your activation code is:</p>
-    //       <div>
-    //         <strong>${code}</strong>
-    //       </div>
-    //     </body>
-    //   </html>
-
-    //   <style>
-
-    //   * {
-    //     margin: 0;
-    //     padding: 0;
-    //     border: none;
-    //     outline: none;
-    //     text-decoration: none;
-    //     list-style-type: none;
-    //     box-sizing: border-box;
-    //     background-color: transparent;
-    //     font-family: 'Arial';
-    //   }
-
-    //   html {
-    //     width: 100%;
-    //     height: 100%;
-    //   }
-
-    //   body {
-    //     display: flex;
-    //     align-items: center;
-    //     justify-content: center;
-    //     flex-direction: column;
-    //     width: 100%;
-    //     height: 100%;
-    //   }
-
-    //   h3 {
-    //     font-size: 30px;
-    //     margin: 50px;
-    //   }
-
-    //   p {
-    //     font-size: 25px;
-    //     margin:10px
-    //   }
-
-    //   div {
-    //     display: flex;
-    //     align-items: center;
-    //     justify-content: center;
-    //     width:250px;
-    //     height: 70px;
-    //     color: white;
-    //     margin:30px;
-    //     font-size: 50px;
-    //     background-color: #7C1CED;
-    //     border-radius: 20px;
-    //   }
-
-    //   </style>`);
-    // }
     const sendedCode = generateCode();
     updateUserDto.tfaCode = sendedCode;
     const user = await this.userService.updateUser(updateUserDto, userFromJwt.email);
@@ -242,11 +169,6 @@ export class UserController {
     return { message: 'success' };
   }
 
-  @Get()
-  @HttpCode(HttpStatus.OK)
-  async getUsers(): Promise<User[]> {
-    return (await this.userService.getUsers());
-  }
 
   /* This method is used to get the user's information. */
   @Get('me')
@@ -382,22 +304,29 @@ export class UserController {
     return { message: 'success' };
   }
 
-
-
-  // @Post('/chat')
-  // @ApiBody({ type: CreateDirectDto })
-  // @HttpCode(HttpStatus.CREATED)
-  // createChat(): { msg: string } {
-  //   // this.userService.createChat();
-  //   return ({
-  //     msg: 'success'
-  //   });
-  // }
-
-  @Get('games')
+  @Patch('historic')
   @HttpCode(HttpStatus.OK)
-  async getUsersWithGames(): Promise<User[]> {
-    return (await this.userService.getUsersWithGames());
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: UserHistoricDto })
+  async getHistoric(@Body() userHistoricDto: UserHistoricDto) {
+    return await this.userService.getHistoric(userHistoricDto.login);
   }
 
+  @Get('getCommunty')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  async getCommunty(@GetUserFromJwt() userFromJwt: UserFromJwt) {
+    return (await this.userService.getCommunty(userFromJwt.email));
+  }
+
+  @Patch('/notifyMessage')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: NewNotifyDto })
+  async notifyMessage(
+    @Body(ValidationPipe) newNotifyDto: NewNotifyDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.userService.notifyMessage(userFromJwt.email, newNotifyDto);
+    return { message: 'success' };
+  }
 }

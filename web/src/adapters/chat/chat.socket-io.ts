@@ -16,7 +16,6 @@ export function createSocketChat({
   accessToken,
   socketChatIOUrl,
   actionsChat,
-  // stateChat,
 }: CreateSocketChatOptions): Socket {
   const socket = io(socketChatIOUrl, {
     auth: {
@@ -25,12 +24,13 @@ export function createSocketChat({
     transports: ['websocket', 'polling'],
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  socket.on('connect', () => { });
+  socket.on('connect', async () => {
+    actionsChat.joinAll();
+  });
 
   socket.on('msgToClient', (message: MsgToClient) => {
     actionsChat.msgToClient(message);
-    console.log('msg to client:', message);
+    // console.log('msg to client:', message);
   });
 
   return socket;

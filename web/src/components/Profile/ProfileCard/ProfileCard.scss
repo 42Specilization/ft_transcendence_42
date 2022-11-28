@@ -3,6 +3,7 @@
 .profileCard {
   @include displayFlex(space, column);
   font-size: 1.5em;
+  min-width: 320px;
 }
 
 .profileCard__infos {

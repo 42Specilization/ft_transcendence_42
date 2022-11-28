@@ -4,26 +4,25 @@
   @include displayFlex(unset, column);
   width: 100%;
   height: 100%;
+  padding: 20px 60px 50px 60px;
+  border-radius: 0 0 50px 50px;
+  background-color: $backgroundColor;
+  color: white;
 }
 
-$ChatFriendsHeaderHeight: 50px;
-
 .friend__tab__header {
-  @include displayFlex(space-around);
+  @include displayFlex();
   width: 100%;
-  height: $ChatFriendsHeaderHeight;
-  color: white;
-  border-radius: 0px 15px 15px 15px;
-  background-color: $primaryColor;
+  font-size: 1.2em;
+  padding-bottom: 20px;
+  transition: justify-content 6s;
 }
 
 .friend__tab__body {
-  width: 100%;
-  height: calc(100% - $ChatFriendsHeaderHeight);
-  padding-top: 10px;
-  @include scrollBar();
+  width: 70%;
+  padding-left: 10px;
+  @include scrollBar(10px, 20px);
 }
-
 
 .friend__tab__header__icon {
   @include displayFlex(center);
@@ -47,7 +46,6 @@ $ChatFriendsHeaderHeight: 50px;
   transition: width 0.6s, padding 0.6s;
 }
 
-
 .friend__tab__header__search__input {
   @include displayFlex();
   width:100%;
@@ -67,34 +65,12 @@ $ChatFriendsHeaderHeight: 50px;
   padding: 0px;
 }
 
-.friend__tab__header__menu {
-  @include displayFlex();
-  position: relative;
-}
+@media (min-width:1200px) {
+  .friend__tab {
+    padding: 20px 100px 50px 100px;
+  }
 
-.friend__tab__header__menu__body {
-  position: absolute;
-  width: 100px;
-  background-color:  $primaryColor;
-  top: 45px;
-  transition: height 0.6s;
-  overflow: hidden;
-  border-radius: 10px ;
-  padding: 0px 10px 0px 10px;
-}
-
-.friend__tab__header__menu__button {
-  @include displayFlex();
-  width: 100%;
-  height: 30px;
-  font-size: 20px;
-  color: white;
-  text-align: center;
-  margin-top: 10px;
-  background-color: $buttonColor;
-  border-radius: 10px;
-  &:hover{
-    background-color: $buttonColorHover;
-    cursor: pointer;
+  .friend__tab__header {
+    font-size: 1.5em;
   }
 }

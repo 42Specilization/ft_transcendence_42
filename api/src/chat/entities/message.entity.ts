@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/user/entities/user.entity';
-import { Chat } from './chat.entity';
+import { Direct } from './direct.entity';
 import {
   BaseEntity,
   Column,
@@ -18,8 +18,12 @@ export class Message extends BaseEntity {
   id: string;
 
   @ApiProperty()
-  @ManyToOne(() => Chat, (chat: Chat) => chat.messages, { orphanedRowAction: 'delete' })
-  chat: Chat;
+  @ManyToOne(() => Direct, (direct: Direct) => direct.messages, { onDelete: 'CASCADE', orphanedRowAction: 'delete' })
+  direct?: Direct;
+
+  // @ApiProperty()
+  // @ManyToOne(() => Chat, (chat: Chat) => chat.messages, { orphanedRowAction: 'delete' })
+  // group?: Chat;
 
   @ApiProperty()
   @ManyToOne(() => User)
@@ -32,5 +36,9 @@ export class Message extends BaseEntity {
   @ApiProperty()
   @Column({ nullable: false })
   msg: string;
+
+  @ApiProperty()
+  @Column({ default: false })
+  breakproint: boolean;
 
 }

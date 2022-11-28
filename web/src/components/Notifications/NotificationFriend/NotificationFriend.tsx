@@ -1,10 +1,8 @@
 import './NotificationFriend.scss';
 import { CheckCircle, Prohibit, UserCircle, XCircle } from 'phosphor-react';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useState } from 'react';
 import { NotifyData } from '../../../others/Interfaces/interfaces';
-import axios from 'axios';
-import { useSnapshot } from 'valtio';
-import { stateStatus } from '../../../adapters/status/statusState';
+import { actionsStatus } from '../../../adapters/status/statusState';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
@@ -12,24 +10,10 @@ interface NotificationFriendProps {
   notify: NotifyData;
 }
 export function NotificationFriend({ notify }: NotificationFriendProps) {
-  const currentStateStatus = useSnapshot(stateStatus);
+
   const [side, setSide] = useState(true);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
-  const { setIntraData } = useContext(IntraDataContext);
-
-  const token = useMemo(() => window.localStorage.getItem('token'), []);
-
-  const config = useMemo(() => {
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  }, []);
-
-  const api = useMemo(() => axios.create({
-    baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
-  }), []);
+  const { api, config, setIntraData } = useContext(IntraDataContext);
 
   async function removeNotify() {
     setIntraData((prevIntraData) => {
@@ -44,39 +28,32 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
     try {
       await api.patch('/user/acceptFriend', { id: notify.id }, config);
       removeNotify();
-      currentStateStatus.socket?.emit('newFriend', notify.user_source);
-      return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      console.log('Aceitou a notificação', notify.user_source);
+      actionsStatus.newFriend(notify.user_source);
     } catch (err: any) {
-      console.log('result', err.response.data.message);
       if (err.response.data.message == 'This user already is your friend') {
         removeNotify();
       }
     }
-
   }
 
   async function handleBlock() {
-
     await api.patch('/user/blockUserByNotification', { id: notify.id }, config);
     removeNotify();
-    currentStateStatus.socket?.emit('newBlocked');
+    actionsStatus.newBlocked();
   }
 
   async function handleReject() {
     // Talvez colocar uma validação de confirmação
     await api.patch('/user/removeNotify', { id: notify.id }, config);
     removeNotify();
-    // currentStateStatus.socket?.emit('newNotify', intraData.login);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function changeSide(event: any) {
     if (event.target.id === 'front_side' || event.target.id === 'back_side') {
       setSide(prevSide => !prevSide);
     }
   }
-
 
   return (
     <>

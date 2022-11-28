@@ -1,17 +1,18 @@
-export interface NotificationData {
-  id: string;
-  viewed: boolean;
-  type: string;
-  target_nick: string;
-  source_nick: string;
-}
-
 export interface NotifyData {
   id: string;
   type: string;
   user_source: string;
-  addtions_info: string;
+  additional_info: string;
   date: Date;
+}
+
+export interface CreateGroupData {
+  type: string;
+  name: string;
+  password?: string;
+  confirmPassword?: string;
+  image?: string;
+  owner: string;
 }
 
 export interface FriendData {
@@ -27,17 +28,13 @@ export interface BlockedData {
 
 export interface DirectData {
   id: string;
+  type: string;
   name?: string;
   image?: string;
   date: Date;
-  messages?: MsgToClient[];
+  messages: MsgToClient[];
+  newMessages: number;
 }
-
-// export interface DirectChatData {
-//   id: string;
-//   name: string;
-//   image: string;
-// }
 
 export interface UserMsg {
   login: string;
@@ -56,9 +53,8 @@ export interface MsgToClient {
   user: UserMsg;
   date: Date;
   msg: string;
+  breakpoint: boolean;
 }
-
-
 
 export interface IntraData {
   first_name: string;

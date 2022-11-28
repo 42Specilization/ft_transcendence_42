@@ -1,10 +1,9 @@
 import './ChangeNick.scss';
-import axios from 'axios';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Modal } from '../../Modal/Modal';
 import { PaperPlaneRight } from 'phosphor-react';
-import { useSnapshot } from 'valtio';
-import { stateStatus } from '../../../adapters/status/statusState';
+import { actionsStatus } from '../../../adapters/status/statusState';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
 
 interface ChangeNickProps {
@@ -13,7 +12,7 @@ interface ChangeNickProps {
 
 export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
 
-  const currentStateStatus = useSnapshot(stateStatus);
+  const { api, config } = useContext(IntraDataContext);
   const [nick, setNick] = useState<string>('');
   const [placeHolder, setPlaceHolder] = useState('');
 
@@ -23,26 +22,14 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
   }
 
   async function handleChangeNick() {
-    const token = window.localStorage.getItem('token');
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-
     try {
-      const result = await axios.patch(
-        `http://${import.meta.env.VITE_API_HOST}:3000/user/updateNick`,
-        { nick: nick },
-        config
-      );
+      const result = await api.patch('/user/updateNick', { nick: nick }, config);
 
       if (result.status === 200) {
         setIsModalChangeNickVisible(false);
-        currentStateStatus.socket?.emit('changeLogin', nick);
+        actionsStatus.changeLogin(nick);
         setPlaceHolder('');
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       if (e && e.response) {
         if (e.response.data.statusCode === 403) {

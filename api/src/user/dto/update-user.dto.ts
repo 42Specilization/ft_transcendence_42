@@ -1,16 +1,16 @@
-import {  IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength, NotContains } from 'class-validator';
+import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength, NotContains } from 'class-validator';
 
 export class UpdateUserDto {
   @IsOptional()
   @IsNotEmpty({ message: 'Inform a name!' })
   @NotContains(',')
   @MinLength(3, { message: 'The nick must have at least 3 characters!' })
-  @MaxLength(15, { message: 'The nick must have less then 15 characters'})
-    nick?: string;
-  // @Matches(new RegExp(/^[a-zA-Z]+?[^\\/:*?"<>|\n\r]+$/), {
+  @MaxLength(15, { message: 'The nick must have less then 15 characters' })
+  // @Matches(/[^!@#$%¨&*()].*/, {
   //   message:
-  //     'Username must contains only alpha-numerics characters',
+  //     'Username must contain only alpha-numerics characters',
   // })
+    nick?: string;
 
   @IsOptional()
   @IsString({ message: 'Inform an image url!' })
@@ -25,7 +25,7 @@ export class UpdateUserDto {
     tfaValidated?: boolean;
 
   @IsOptional()
-  @IsEmail({message: 'Inform a valid email'})
+  @IsEmail({ message: 'Inform a valid email' })
     tfaEmail?: string;
 
   @IsOptional()

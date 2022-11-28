@@ -9,10 +9,17 @@ interface CardDirectProps {
 }
 
 export function CardDirect({ chat }: CardDirectProps) {
-  const { setDirectsChat } = useContext(ChatContext);
+  const { setDirectsChat, activeChat } = useContext(ChatContext);
 
   function setChat(chat: DirectData) {
     setDirectsChat(chat.id);
+  }
+
+  function newMessagesVisible() {
+    if ((activeChat && activeChat.chat && activeChat.chat.id === chat.id)
+      || (chat.newMessages === 0))
+      return false;
+    return true;
   }
 
   return (
@@ -21,25 +28,13 @@ export function CardDirect({ chat }: CardDirectProps) {
         <div
           className='card__direct__icon'
           style={{ backgroundImage: `url(${chat.image})` }}>
+          <div className='card__direct_count'
+            style={{ display: newMessagesVisible() ? '' : 'none' }}>
+            {chat.newMessages > 9 ? '+9' : chat.newMessages}
+          </div>
         </div>
         <div className='card__direct__name'>{chat.name}</div>
       </div>
-      {/*
-      <div className="card__blocked__menu">
-        <div
-          className="card__blocked__menu__body"
-        >
-          <button
-            className='card__blocked__menu__button'
-            onClick={handleUnblock}
-            data-html={true}
-            data-tip={'Unblock'}
-          >
-            <UserMinus size={32} />
-          </button>
-        </div>
-      </div>
-      <ReactTooltip className='chat__friends__header__icon__tip' delayShow={50} /> */}
     </div>
   );
 }

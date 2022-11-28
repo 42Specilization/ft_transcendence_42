@@ -1,0 +1,76 @@
+@import '../../../../others/styles/global.scss';
+.createGroup__image {
+  @include displayFlex(center);
+  margin-top: 0px;
+  margin-bottom: 10px;
+  .createGroup__image__icon {
+    width: 225px;
+    height: 225px;
+    padding: 10px;
+    border-radius: 50%;
+    background-color: $primaryColor;
+  }
+
+  .createGroup__button_text {
+      display: none;
+  }
+
+  &:hover {
+    filter: grayscale(0.8);
+    cursor: pointer;
+    .createGroup__button_text {
+      @include displayFlex(center);
+      position: absolute;
+    }
+  }
+}
+
+.createGroup {
+  @include displayFlex(center,column);
+  width: 100%;
+  height: 80%;
+}
+.createGroup__form{
+  @include displayFlex(center,column);
+  width: 60%;
+  height: 80%;
+  text-align: center;
+}
+
+
+.createGroup__groupName, 
+.createGroup__groupPassword {
+  @include displayFlex();
+  &::placeholder{
+    color: rgba(255, 255, 255, 0.739);
+  }
+  color: white;
+  text-align: center;
+  background-color: $primaryColorHover;
+  width:80%;
+  height: 35px;
+  font-size: 20px;
+  border-radius: 20px;
+  margin: 15px;
+}
+
+.createGroup__createButton{
+  color: white;
+  background-color: $buttonColor;
+  width: 80%;
+  height: 35px;
+  font-size: 15px;
+  margin-top: 20px;
+  border-radius: 20px;
+  &:hover {
+    background-color: $buttonColorHover;
+    color: rgb(165, 143, 143);
+    cursor: pointer;
+  }
+}
+
+.createGroup__private{
+  @include displayFlex(space-around);
+  width: 40%;
+  
+}
