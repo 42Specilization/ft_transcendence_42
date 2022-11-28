@@ -19,7 +19,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 export default function AppRouter() {
   const queryClient = new QueryClient();
-    useEffect(() => {
+  useEffect(() => {
     window.onpopstate = () => {
       if (state.socket || state.game) {
         window.location.reload();
@@ -53,15 +53,15 @@ export default function AppRouter() {
                 }
               />
               <Route
-             path="/game"
-            element={
-            <RequireAuth>
-              <IntraDataProvider>
-                  <Game />
-              </IntraDataProvider>
-            </RequireAuth>
-            }
-          />
+                path="/game"
+                element={
+                  <RequireAuth>
+                    <IntraDataProvider>
+                      <Game />
+                    </IntraDataProvider>
+                  </RequireAuth>
+                }
+              />
               <Route
                 path="/chat"
                 element={
