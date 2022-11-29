@@ -1,38 +1,32 @@
-import './CardMember.scss';
+import './CardAdmin.scss';
 import ReactTooltip from 'react-tooltip';
 import { MemberData } from '../../others/Interfaces/interfaces';
-import { useState } from 'react';
 
-interface CardMemberProps {
+interface CardAdminProps {
   member: MemberData
 }
 
-export function CardMember({ member }: CardMemberProps) {
-
-  const [activeMenu, setActiveMenu] = useState(false);
-
-
-
+export function CardAdmin({ member }: CardAdminProps) {
   return (
-    <div className='card__member'
+    <div className='card__admin'
     //  onClick={() => setActiveMenu(prev => !prev)}
     >
 
-      <div className="card__member__div">
+      <div className="card__admin__div">
         <div
-          className='card__member__icon'
+          className='card__admin__icon'
           style={{ backgroundImage: `url(${member.image})` }}>
         </div>
-        <div className='card__member__name'>{member.name}</div>
+        <div className='card__admin__name'>{member.name}</div>
       </div>
 
-      {/* <div className="card__member__menu">
+      {/* <div className="card__admin__menu">
         <div
-          className="card__member__menu__body"
+          className="card__admin__menu__body"
           style={{ height: activeMenu ? '55px' : '0px', width: activeMenu ? '90px' : '0px' }}
         >
           <button
-            className='card__member__menu__button'
+            className='card__admin__menu__button'
             onClick={() => console.log('clicou')}
             data-html={true}
             data-tip={'Unblock'}

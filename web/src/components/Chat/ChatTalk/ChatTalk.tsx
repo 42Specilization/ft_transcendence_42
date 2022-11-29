@@ -9,7 +9,7 @@ import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModa
 import ReactTooltip from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
-import { GroupInfoModal } from '../../GroupInfoModal/GroupInfoModal';
+import { GroupConfigModal } from '../../GroupConfigModal/GroupConfigModal';
 
 interface ChatTalkProps {
   setTableSelected: Dispatch<SetStateAction<string>>;
@@ -258,9 +258,9 @@ export function ChatTalk(
               setFriendProfileVisible={setFriendProfileVisible} />
           }
           {groupInfoVisible &&
-            <GroupInfoModal
+            <GroupConfigModal
               id={activeChat.chat.id}
-              setGroupInfoVisible={setGroupInfoVisible} />
+              setGroupConfigVisible={setGroupInfoVisible} />
           }
           <form autoComplete='off' className='chat__talk__footer' onSubmit={handleKeyEnter}>
             <input

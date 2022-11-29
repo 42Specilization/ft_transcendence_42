@@ -1,6 +1,6 @@
 @import '../../others/styles/global.scss';
 
-.groupInfo__modal {
+.groupInfos__modal {
   @include displayFlex();
   position: fixed;
   width: 100%;
@@ -11,7 +11,7 @@
   background-color: rgba(0,0,0,0.8);
 }
 
-.groupInfo__modal__container {
+.groupInfos__modal__container {
   @include displayFlex(space-between);
   position: fixed;
   color: white;
@@ -23,14 +23,14 @@
   background-image: url('/background-galaxy.png');
 }
 
-.groupInfo__modal__container__closeButton__div {
+.groupInfos__modal__container__closeButton__div {
   @include displayFlex(space-between, column, flex-start);
   height: 100%;
   padding-top: 10px;
   padding-right: 10px;
 }
 
-.groupInfo__modal__container__closeButton {
+.groupInfos__modal__container__closeButton {
   @include displayFlex();
   width: 30px;
   height: 30px;
@@ -44,7 +44,7 @@
   }
 }
 
-.groupInfo__modal__container__content {
+.groupInfos__modal__container__content {
   @include displayFlex(center, column);
   width:100%;
   height: 100%;

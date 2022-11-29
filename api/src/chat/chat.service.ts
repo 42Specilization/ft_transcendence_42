@@ -4,7 +4,7 @@ import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { MsgToClient, MsgToServer } from './chat.class';
-import { CreateGroupDto, DirectDto, GroupDto, UpdateGroupDto, GroupInfoDto, GroupCommunityDto } from './dto/chat.dto';
+import { CreateGroupDto, DirectDto, GroupDto, UpdateGroupDto, GroupInfoDto, GroupCommunityDto, RemoveMemberDto } from './dto/chat.dto';
 import { Direct } from './entities/direct.entity';
 import { Group } from './entities/group.entity';
 import { Message } from './entities/message.entity';
@@ -82,6 +82,7 @@ export class ChatService {
       where: { id: id },
       relations: [
         'users',
+        'owner',
         'messages',
         'messages.group',
         'messages.sender',
@@ -559,6 +560,28 @@ export class ChatService {
 
     group.users = group.users.filter((key) => {
       if (key.email === user.email)
+        return;
+      return key;
+    });
+
+    try {
+      group.save();
+    } catch (err) {
+      throw new InternalServerErrorException('Error sabing group joinGroup');
+    }
+  }
+  
+  async removeMember(user_email: string, removeMemberDto: RemoveMemberDto) {
+    const user = await this.userService.findUserGroupByEmail(user_email);
+    const group = await this.findGroupById(removeMemberDto.id);
+    if (!group)
+      throw new BadRequestException('Group not found joinGroup');
+    
+    if (!user || user.nick !== group.owner.nick)
+      throw new UnauthorizedException('Permission denied');
+
+    group.users = group.users.filter((key) => {
+      if (key.nick === removeMemberDto.name)
         return;
       return key;
     });

@@ -27,6 +27,9 @@ export function GroupsTab() {
     }
   );
 
+
+
+
   if (status === 'loading')
     return (<div className='groups__tab' />);
 
@@ -68,7 +71,7 @@ export function GroupsTab() {
         <ReactTooltip delayShow={50} />
       </div>
       <div className='groups__tab__body'>
-        {
+        {data &&
           data.map((key: any) => <CardGroup key={Math.random()} group={key} />)
         }
       </div>

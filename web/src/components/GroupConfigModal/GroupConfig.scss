@@ -1,18 +1,18 @@
 @import '../../others/styles/global.scss';
 
-.groupInfo {
+.groupConfig {
   @include displayFlex(space-around);
   width: 100%;
   height: 100%;
 }
 
-.groupInfo__infos {
+.groupConfig__infos {
   @include displayFlex(space-around, column);
   width: 40%;
   height: 80%;
   font-size: 35px;
 }
-.groupInfo__changeSecurity {
+.groupConfig__changeSecurity {
   @include displayFlex(space-around, column);
   height:  100%;
   width: 100%;
@@ -20,7 +20,7 @@
 }
 
 
-.groupInfo__changeSecurity__input {
+.groupConfig__changeSecurity__input {
   width: 60%;
   height: 20px;
   border-radius: 10px;
@@ -31,7 +31,7 @@
   text-align: center;
 }
 
-.groupInfo__changeSecurity__saveButton{
+.groupConfig__changeSecurity__saveButton{
   width: 15%;
   height: 20px;
   font-size: 15px;
@@ -43,7 +43,7 @@
   }
 }
 
-.groupInfo__infos__image {
+.groupConfig__infos__image {
   @include displayFlex(center);
   img {
     width: 220px;
@@ -55,14 +55,14 @@
     border: 5px solid $primaryColor;
   }
 
-  .groupInfo__infos__image__text {
+  .groupConfig__infos__image__text {
     display: none;
   }
   
   &:hover {
     filter: grayscale(0.8);
     cursor: pointer;
-    .groupInfo__infos__image__text {
+    .groupConfig__infos__image__text {
       @include displayFlex(center);
       position: absolute;
     }
@@ -70,7 +70,7 @@
   
 }
 
-.groupInfo__infos__segurityButton {
+.groupConfig__infos__segurityButton {
   color: white;
   background-color: $buttonColor;
   border-radius: 20px;  
@@ -82,13 +82,13 @@
   }
 }
 
-.groupInfo__members {
+.groupConfig__members {
   @include displayFlex(unset, column, flex-start);
   width: 40%;
   height: 80%;
 }
 
-.groupInfo__members__addMember {
+.groupConfig__members__addMember {
   @include displayFlex();
   width: 100%;
   padding-bottom: 20px;
@@ -104,7 +104,7 @@
   }
 }
 
-.groupInfo__members__body {
+.groupConfig__members__body {
   width: 100%;
   @include scrollBar(10px, 20px);
 }
