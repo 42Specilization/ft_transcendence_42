@@ -255,7 +255,7 @@ export class UserService {
           'groups',
           'directs'
         ]
-      
+
       });
   }
 
@@ -360,7 +360,6 @@ export class UserService {
     const { nick, imgUrl, isTFAEnable, tfaEmail, tfaValidated, tfaCode } = updateUserDto;
     if (nick && (await this.checkDuplicateNick(nick)))
       throw new ForbiddenException('Duplicated nickname');
-
     user.nick = nick ? nick : user?.nick;
     user.isTFAEnable =
       isTFAEnable !== undefined ? isTFAEnable : user.isTFAEnable;

@@ -1,57 +1,123 @@
-import { DotsThreeVertical, SignIn } from 'phosphor-react';
+import './CardGroup.scss';
+import { DotsThreeVertical, LockKey, Shield, SignIn, SignOut, TelegramLogo } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
-import { GroupData } from '../../../others/Interfaces/interfaces';
-import './CardGroup.scss';
+import { GroupCardData } from '../../../others/Interfaces/interfaces';
 import { Link } from 'react-router-dom';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { actionsChat } from '../../../adapters/chat/chatState';
+import { getUserInDb } from '../../../others/utils/utils';
 
 interface CardGroupProps {
-  group: GroupData;
+  group: GroupCardData;
 }
 
 export function CardGroup({ group }: CardGroupProps) {
 
+  const { api, config, intraData, setIntraData } = useContext(IntraDataContext);
   const { setGroupsChat } = useContext(ChatContext);
   const [activeMenu, setActiveMenu] = useState(false);
 
-
-  function selectActiveGroup(e: any) {
-    if (e.target.id === 'card__group__community') {
+  function handleSendMessage(e: any) {
+    if (e.target.id === 'card__group__community')
       setGroupsChat(group.id);
-    }
+  }
+
+  async function handleJoinGroup() {
+    await api.patch('/chat/joinGroup', { id: group.id }, config);
+    actionsChat.joinGroup(group.id, intraData.login);
+    const user = await getUserInDb();
+    setIntraData((prev) => {
+      return {
+        ...prev,
+        groups: user.groups,
+      };
+    });
+  }
+
+  async function handleLeaveGroup() {
+    await api.patch('/chat/leaveGroup', { id: group.id }, config);
+    actionsChat.leaveGroup(group.id, intraData.login);
+    const user = await getUserInDb();
+    setIntraData((prev) => {
+      return {
+        ...prev,
+        groups: user.groups,
+      };
+    });
   }
 
   return (
     <div id='card__group__community' className='card__group__community'
-      onClick={(e) => selectActiveGroup(e)}
+      onClick={() => console.log('clicou no bagulho')}
     >
       <div id='card__group__community' className='card__group__community__icon'
         style={{ backgroundImage: `url(${group.image})` }}>
-      </div>
+      </  div>
       <div id='card__group__community' className='card__group__community__name'>{group.name}</div>
 
-      <div className='card__group__community__menu'>
-        <div id='card__group__community__menu__body' className='card__group__community__menu__body'
-          style={{ height: activeMenu ? '55px' : '0px', width: activeMenu ? '80px' : '0px' }}>
-          <Link to='/chat' className='card__group__community__menu__button'
-            onClick={() => { }}
-            data-html={true}
-            data-tip={'Join Group'}>
-            <SignIn size={32} />
-          </Link>
-        </div>
+      <div className='card__group__community__menu__div'>
+        <div
+          style={{ paddingRight: '20px' }}
+        >
+          {(() => {
+            if (group.type === 'private') {
+              return <LockKey size={32}
+                data-html={true}
+                data-tip={'Private Group'} />;
+            }
+            else if (group.type === 'protected')
+              return <Shield size={32}
+                data-html={true}
+                data-tip={'Protected Group'} />;
+          })()}
+        </  div>
 
-        <DotsThreeVertical
-          id='card__group__community__menu'
-          className='card__group__community__header__icon'
-          size={40}
-          onClick={() => setActiveMenu(prev => !prev)}
-          data-html={true}
-          data-tip={'Menu'}
-        />
+        <div className='card__group__community__menu'>
+          {group.member ?
+            <div id='card__group__community__menu__body' className='card__group__community__menu__body'
+              style={{ height: activeMenu ? '100px' : '0px', width: activeMenu ? '80px' : '0px' }}>
+              <Link to='/chat'>
+                <button className='card__group__community__menu__button'
+                  onClick={handleSendMessage}
+                  data-html={true}
+                  data-tip={'Send Message'}
+                >
+                  <TelegramLogo size={32} />
+                </  button>
+              </  Link>
+              <button className='card__group__community__menu__button'
+                onClick={handleLeaveGroup}
+                data-html={true}
+                data-tip={'Leave Group'}
+              >
+                <SignOut size={32} />
+              </  button>
+            </  div>
+            :
+            <div id='card__group__community__menu__body' className='card__group__community__menu__body'
+              style={{ height: activeMenu ? '55px' : '0px', width: activeMenu ? '80px' : '0px' }}>
+              <button className='card__group__community__menu__button'
+                onClick={handleJoinGroup}
+                data-html={true}
+                data-tip={'Join Group'}
+              >
+                <SignIn size={32} />
+              </  button>
+            </  div>
+          }
+          <DotsThreeVertical
+            id='card__group__community__menu'
+            className='card__group__community__header__icon'
+            size={40}
+            onClick={() => setActiveMenu(prev => !prev)}
+            data-html={true}
+            data-tip={'Menu'}
+          />
+        </  div>
         <ReactTooltip delayShow={50} />
-      </div>
-    </div >
+      </  div>
+    </  div >
   );
 }

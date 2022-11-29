@@ -1,0 +1,52 @@
+@import '../../others/styles/global.scss';
+
+#modal__changeGroupName {
+  .modal__container {
+    max-width: none;
+    min-width: none;
+    width: 650px;
+    height: 200px;
+    color: white !important;
+    padding-bottom: 20px;
+  }
+}
+
+.changeGroupName__modal {
+  @include displayFlex(center, row, flex-end);
+  width: 100%;
+  height: 90%;
+}
+
+.changeGroupName__modal__textdiv {
+  @include displayFlex(space-between, column);
+  width: 80%;
+  height: 100%;
+  h3 {
+    font-size: 35px;
+  }
+}
+
+.changeGroupName__modal__input {
+  @include displayFlex(center);
+  text-align: center;
+  width: 90%;
+  color: white;
+  height: 40px;
+  font-size:20px;
+  border-radius: 20px;
+  padding: 0px 30px 0px 30px;
+  background-color: $backgroundColor;
+
+}
+
+.changeGroupName__modal__button {
+  @include displayFlex(center, row, end);
+  color: white;
+  padding: 5px 2px 5px 7px;
+  border-radius: 50%;
+  background-color: $backgroundColor;
+  &:hover  {
+    cursor: pointer;
+    background-color: $primaryColorHover;
+  }
+}

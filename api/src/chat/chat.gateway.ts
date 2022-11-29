@@ -59,6 +59,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.logger.debug(`Client ${client.id} join a chat: |${chat}|`);
   }
 
+  @SubscribeMessage('joinGroup')
+  async handleJoinGroup(@ConnectedSocket() client: Socket,
+    @MessageBody() { id, login }: { id: string, login: string }) {
+    client.join(id);
+    login;
+    this.logger.debug(`Client ${client.id} join a group: |${id}|`);
+  }
+
+  @SubscribeMessage('leaveGroup')
+  async handleLeaveGroup(@ConnectedSocket() client: Socket,
+    @MessageBody() { id, login }: { id: string, login: string }) {
+    client.leave(id);
+    login;
+    this.logger.debug(`Client ${client.id} join a group: |${id}|`);
+  }
+
   @SubscribeMessage('leaveChat')
   async handleLeaveChat(@ConnectedSocket() client: Socket, @MessageBody() chat: string) {
 

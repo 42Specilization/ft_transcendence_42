@@ -1,23 +1,23 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { MsgToClient, MsgToServer } from './chat.class';
-import { CreateGroupDto, DirectDto, GroupDto } from './dto/chat.dto';
+import { CreateGroupDto, DirectDto, GroupDto, UpdateGroupDto, GroupInfoDto, GroupCommunityDto } from './dto/chat.dto';
 import { Direct } from './entities/direct.entity';
 import { Group } from './entities/group.entity';
 import { Message } from './entities/message.entity';
 import * as bcrypt from 'bcrypt';
+import * as fs from 'fs';
+
 @Injectable()
 export class ChatService {
   constructor(
     @InjectRepository(Direct) private directRepository: Repository<Direct>,
     @InjectRepository(Group) private groupRepository: Repository<Group>,
     private userService: UserService,
-  ) {
-
-  }
+  ) { }
 
   async deleteDirectById(user_email: string, friend_login: string) {
     const user = await this.userService.findUserDirectByEmail(user_email);
@@ -358,6 +358,20 @@ export class ChatService {
     return groupDto;
   }
 
+  async findGroupInfosById(id: string) {
+    return await this.groupRepository.findOne({
+      where: {
+        id
+      },
+      relations: [
+        'users',
+        'admins',
+        'owner',
+      ]
+    });
+  }
+
+
   async createGroup(group: CreateGroupDto) {
 
     const owner = await this.userService.findUserGroupByNick(group.owner);
@@ -405,6 +419,34 @@ export class ChatService {
     return this.createGroupDto(group, owner, 'activeGroup');
   }
 
+  async getGroupInfosById(id: string) {
+    const group = await this.findGroupInfosById(id);
+    if (!group)
+      throw new BadRequestException('Invalid group GetGroup');
+    const groupInfo: GroupInfoDto = {
+      id: group.id,
+      owner: {
+        name: group.owner.nick,
+        image: group.owner.imgUrl
+      },
+      admins: group.admins.map((user: User) => {
+        return {
+          name: user.nick,
+          image: user.imgUrl,
+        };
+      }),
+      members: group.users.map((user: User) => {
+        return {
+          name: user.nick,
+          image: user.imgUrl,
+        };
+      }),
+      image: group.image,
+      name: group.name,
+    };
+    return groupInfo;
+  }
+
   async getAllGroups(user_email: string) {
     const owner = await this.userService.findUserGroupByEmail(user_email);
     if (!owner)
@@ -415,7 +457,7 @@ export class ChatService {
     return groups;
   }
 
-  async getCommunityGroups() {
+  async getCommunityGroups(user_email: string): Promise<GroupCommunityDto[] | void> {
     const groups = await this.groupRepository.find({
       relations: [
         'users',
@@ -423,17 +465,111 @@ export class ChatService {
     });
     if (!groups)
       return;
-    const groupsDto: GroupDto[] = groups.filter(group => group.type !== 'private')
-      .sort((a, b) => a.users.length < b.users.length ? -1 : 1).map((group) => {
-        return {
-          id: group.id,
-          type: group.type,
-          name: group.name,
-          image: group.image,
-          date: group.date,
-          newMessages: 0
-        };
-      });
+
+    let groupsDto: GroupCommunityDto[] = groups.map((group) => {
+      return {
+        id: group.id,
+        type: group.type,
+        name: group.name,
+        image: group.image,
+        date: group.date,
+        member: group.users.map(e => e.email).indexOf(user_email) >= 0,
+        size: group.users.length,
+      };
+    });
+
+    groupsDto = groupsDto.filter(group => group.type !== 'private'
+      || (group.type === 'private' && group.member))
+      .sort((a, b) => a.size < b.size ? 1 : -1);
+
     return groupsDto;
   }
+
+  async updateGroup(user_email: string, updateGroupDto: UpdateGroupDto) {
+    const group = await this.findGroupInfosById(updateGroupDto.id);
+    if (!group)
+      throw new BadRequestException('Group not Found updateGroup');
+    const {
+      // id,
+      // admins,
+      date,
+      image,
+      name,
+      // owner,
+      type,
+      password
+      // users,
+      // messages,
+      // newMessages,
+    } = updateGroupDto;
+    const user = await this.userService.findUserByEmail(user_email);
+    if (!user || user.nick !== group.owner.nick) {
+
+      throw new UnauthorizedException('Permission denied');
+    }
+
+    // group.users = users ? users : group.users
+    // group.admins = admins ? admins : group.admins
+    // group.owner = ? : group.owner
+    group.date = date ? date : group.date;
+    group.name = name ? name : group.name;
+    group.type = type ? type : group.type;
+    group.password = password ? bcrypt.hashSync(password, 8) : group.password;
+    if (image) {
+      if (group.image !== 'userDefault.png') {
+        fs.rm(
+          `../web/public/${group.image}`,
+          function (err) {
+            if (err) throw err;
+          }
+        );
+      }
+      group.image = image;
+    }
+
+    try {
+      await group.save();
+      // return user;
+    } catch (error) {
+      throw new InternalServerErrorException('Error saving user update');
+    }
+  }
+
+
+  async joinGroup(user_email: string, id: string) {
+    const user = await this.userService.findUserGroupByEmail(user_email);
+    const group = await this.findGroupById(id);
+    if (!user || !group)
+      throw new BadRequestException('Invalid Request joinGroup');
+
+    group.users.push(user);
+    try {
+      group.save();
+    } catch (err) {
+      throw new InternalServerErrorException('Error sabing group joinGroup');
+    }
+  }
+
+
+  async leaveGroup(user_email: string, id: string) {
+    const user = await this.userService.findUserGroupByEmail(user_email);
+    const group = await this.findGroupById(id);
+    if (!user || !group)
+      throw new BadRequestException('Invalid Request joinGroup');
+
+    group.users = group.users.filter((key) => {
+      if (key.email === user.email)
+        return;
+      return key;
+    });
+
+    try {
+      group.save();
+    } catch (err) {
+      throw new InternalServerErrorException('Error sabing group joinGroup');
+    }
+  }
+
+
+
 }

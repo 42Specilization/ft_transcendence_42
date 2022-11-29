@@ -12,7 +12,7 @@ import { GetUserFromJwt } from 'src/auth/decorators/get-user.decorator';
 import { UserFromJwt } from 'src/auth/dto/UserFromJwt.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
-import { DirectDto, GetDirectDto, DeleteDirectDto, CreateGroupDto, GetGroupDto } from './dto/chat.dto';
+import { DirectDto, GetDirectDto, DeleteDirectDto, CreateGroupDto, GetGroupDto, UpdateGroupDto } from './dto/chat.dto';
 import { BadRequestException } from '@nestjs/common';
 
 @Controller('chat')
@@ -38,8 +38,8 @@ export class ChatController {
 
   @Get('/getCommunityGroups')
   @UseGuards(JwtAuthGuard)
-  async getCommunityGroups() {
-    const result = await this.chatService.getCommunityGroups();
+  async getCommunityGroups(@GetUserFromJwt() userFromJwt: UserFromJwt) {
+    const result = await this.chatService.getCommunityGroups(userFromJwt.email);
     return result;
   }
 
@@ -51,7 +51,6 @@ export class ChatController {
   ): Promise<DirectDto> {
     return await this.chatService.getDirect(userFromJwt.email, getDirectDto.id);
   }
-
 
   @Patch('/getFriendDirect')
   @UseGuards(JwtAuthGuard)
@@ -131,5 +130,44 @@ export class ChatController {
     return await this.chatService.getGroup(userFromJwt.email, getGroupDto.id);
   }
 
+  @Patch('/getGroupInfosById')
+  @UseGuards(JwtAuthGuard)
+  async getGroupInfosById(
+    @Body() getGroupDto: GetGroupDto,
+    // @GetUserFromJwt() userFromJwt: UserFromJwt
+  ) {
+    return await this.chatService.getGroupInfosById(getGroupDto.id);
+  }
+
+
+  @Patch('/updateGroup')
+  @UseGuards(JwtAuthGuard)
+  async updateGroup(
+    @Body() updateGroupDto: UpdateGroupDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ) {
+    await this.chatService.updateGroup(userFromJwt.email, updateGroupDto);
+    return { message: 'success' };
+  }
+
+  @Patch('/joinGroup')
+  @UseGuards(JwtAuthGuard)
+  async joinGroup(
+    @Body() getGroupDto: GetGroupDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ) {
+    await this.chatService.joinGroup(userFromJwt.email, getGroupDto.id);
+    return { message: 'success' };
+  }
+
+  @Patch('/leaveGroup')
+  @UseGuards(JwtAuthGuard)
+  async leaveGroup(
+    @Body() getGroupDto: GetGroupDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ) {
+    await this.chatService.leaveGroup(userFromJwt.email, getGroupDto.id);
+    return { message: 'success' };
+  }
 
 }

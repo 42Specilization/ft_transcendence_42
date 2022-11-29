@@ -1,9 +1,28 @@
-import { IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, MaxLength, MinLength } from 'class-validator';
 import { MsgToClient } from '../chat.class';
 
 export class UserInfoDto {
   name: string;
   image: string;
+}
+
+export class GroupInfoDto {
+  id: string;
+  owner: UserInfoDto;
+  admins: UserInfoDto[];
+  members: UserInfoDto[];
+  image: string;
+  name: string;
+}
+
+export class GroupCommunityDto {
+  id: string;
+  type: string;
+  name: string;
+  image: string;
+  date: Date;
+  member: boolean;
+  size: number;
 }
 
 export class GroupDto {
@@ -17,6 +36,31 @@ export class GroupDto {
   messages?: MsgToClient[];
   date: Date;
   newMessages: number;
+}
+
+export class UpdateGroupDto {
+  @IsNotEmpty({ message: 'Insert an valid id' })
+  id: string;
+  @IsOptional()
+  type?: string;
+  @IsOptional()
+  name?: string;
+  @IsOptional()
+  image?: string;
+  @IsOptional()
+  owner?: UserInfoDto;
+  @IsOptional()
+  admins?: UserInfoDto[];
+  @IsOptional()
+  users?: UserInfoDto[];
+  @IsOptional()
+  messages?: MsgToClient[];
+  @IsOptional()
+  date?: Date;
+  @IsOptional()
+  newMessages?: number;
+  @IsOptional()
+  password?: string;
 }
 
 export class DirectDto {
@@ -51,6 +95,7 @@ export class CreateGroupDto {
   @MaxLength(15, { message: 'Group Name need have only 15 characters' })
   name: string;
   @IsOptional()
+  @MinLength(3, { message: 'Group Name need have at least 3 characters' })
   password?: string;
   @IsOptional()
   confirmPassword?: string;

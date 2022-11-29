@@ -56,6 +56,14 @@ const actionsChat = {
     stateChat.socket?.emit('joinChat', id);
   },
 
+  joinGroup(id: string, login: string) {
+    stateChat.socket?.emit('joinGroup', { id: id, login: login });
+  },
+
+  leaveGroup(id: string, login: string) {
+    stateChat.socket?.emit('joinGroup', { id: id, login: login });
+  },
+
   leaveChat(id: string) {
     stateChat.socket?.emit('leaveChat', id);
   },

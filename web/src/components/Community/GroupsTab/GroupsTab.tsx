@@ -13,10 +13,10 @@ export function GroupsTab() {
   const [isTableSearch, setIsTableSearch] = useState(false);
   const [createGroupModal, setCreateGroupModal] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-  const { intraData, api, config } = useContext(IntraDataContext);
+  const { api, config, intraData } = useContext(IntraDataContext);
 
   const { data, status } = useQuery(
-    'getCommunityGroups',
+    ['getCommunityGroups', intraData],
     async () => {
       const response = await api.get('/chat/getCommunityGroups', config);
       return response.data;
@@ -26,13 +26,13 @@ export function GroupsTab() {
       refetchOnWindowFocus: true,
     }
   );
-  console.log(data);
+
   if (status === 'loading')
-    return <></>;
+    return (<div className='groups__tab' />);
+
   return (
     < div className='groups__tab' >
-      <div
-        className='groups__tab__header'>
+      <div className='groups__tab__header'>
         <div className='groups__tab__header__search'
           style={{ width: isTableSearch ? '70%' : '40px' }}>
           < MagnifyingGlass className='groups__tab__header__icon'

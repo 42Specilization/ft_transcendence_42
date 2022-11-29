@@ -1,5 +1,6 @@
 import pongGame from '../../assets/pong-game.png';
 import './SignIn.scss';
+import { SelectItem } from '../../components/SelectItem/SelectItem';
 
 
 export default function SignIn() {
@@ -11,6 +12,7 @@ export default function SignIn() {
           Sign in
         </button>
       </a>
+
     </div>
   );
 }

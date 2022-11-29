@@ -26,6 +26,21 @@ export interface BlockedData {
   image_url: string;
 }
 
+export interface MemberData {
+  name: string;
+  image: string;
+}
+
+export interface GroupCardData {
+  id: string;
+  type: string;
+  name: string;
+  image: string;
+  date: Date;
+  member: boolean;
+  size: number;
+}
+
 export interface GroupData {
   id: string;
   type: string;

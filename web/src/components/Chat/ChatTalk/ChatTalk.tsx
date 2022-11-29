@@ -9,6 +9,7 @@ import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModa
 import ReactTooltip from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
+import { GroupInfoModal } from '../../GroupInfoModal/GroupInfoModal';
 
 interface ChatTalkProps {
   setTableSelected: Dispatch<SetStateAction<string>>;
@@ -26,6 +27,7 @@ export function ChatTalk(
 
   const { intraData, setIntraData, api, config } = useContext(IntraDataContext);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
+  const [groupInfoVisible, setGroupInfoVisible] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -195,6 +197,16 @@ export function ChatTalk(
     }
   }, [activeChat]);
 
+  function selectGroupOrFriendVisible() {
+    if (activeChat) {
+      if (activeChat.chat.type !== 'direct') {
+        setGroupInfoVisible(true);
+      } else {
+        setFriendProfileVisible(true);
+      }
+    }
+  }
+
   return (
     <div className='chat__talk'>
       {activeChat != null &&
@@ -203,7 +215,7 @@ export function ChatTalk(
             <ArrowBendUpLeft size={32} onClick={exitActiveChat} />
             <div
               className='chat__talk__header__user'
-              onClick={() => setFriendProfileVisible(true)}
+              onClick={() => selectGroupOrFriendVisible()}
               data-html={true}
               data-tip={`${activeChat.chat?.name} profile`}
             >
@@ -244,6 +256,11 @@ export function ChatTalk(
             <ProfileFriendModal
               login={activeChat.chat.name}
               setFriendProfileVisible={setFriendProfileVisible} />
+          }
+          {groupInfoVisible &&
+            <GroupInfoModal
+              id={activeChat.chat.id}
+              setGroupInfoVisible={setGroupInfoVisible} />
           }
           <form autoComplete='off' className='chat__talk__footer' onSubmit={handleKeyEnter}>
             <input
