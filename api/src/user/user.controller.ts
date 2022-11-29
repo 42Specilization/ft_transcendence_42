@@ -31,6 +31,7 @@ import { FriendRequestDto } from './dto/friend-request.dto';
 // import axios from 'axios';
 import { GetFriendDto } from './dto/get-friend.dto';
 import { NewNotifyDto, NotifyHandlerDto } from 'src/notification/dto/notify-dto';
+import { getAssetsPath } from 'src/utils/utils';
 // import { NotificationService } from 'src/notification/notification.service';
 
 @Controller('user')
@@ -207,7 +208,7 @@ export class UserController {
     storage: diskStorage({
       // Destination storage path details
       destination: (req, file, cb) => {
-        const uploadPath = './data/';
+        const uploadPath = getAssetsPath();
         req;
         file;
         cb(null, uploadPath);
@@ -225,7 +226,7 @@ export class UserController {
   ) {
     const updateUserDto: UpdateUserDto = { imgUrl: file.originalname };
     this.userService.updateUser(updateUserDto, userFromJwt.email);
-    return { message: 'succes', path: file.path };
+    return { message: 'success', path: file.path };
   }
 
   @Patch('/sendFriendRequest')

@@ -7,6 +7,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { Notifications } from '../Notifications/Notifications';
 import { actionsStatus } from '../../adapters/status/statusState';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { getUrlImage } from '../../others/utils/utils';
 
 interface NavBarProps {
   Children: any;
@@ -15,7 +16,7 @@ interface NavBarProps {
 export function NavBar({ Children }: NavBarProps) {
   const { logout } = useAuth();
 
-  const { intraData, setIntraData } = useContext(IntraDataContext);
+  const { intraData } = useContext(IntraDataContext);
   const [menuVisible, setMenuVisible] = useState(false);
   const [notifyVisible, setNotifyVisible] = useState(false);
 
@@ -25,18 +26,6 @@ export function NavBar({ Children }: NavBarProps) {
 
   const menuRef: React.RefObject<HTMLDivElement> = useRef(null);
   const notifyRef: React.RefObject<HTMLDivElement> = useRef(null);
-
-  useEffect(() => {
-    if (!intraData.image_url.includes('https://cdn.intra.42.fr/')) {
-      setIntraData((prevIntraData) => {
-        return {
-          ...prevIntraData,
-          image_url: `${intraData.image_url}`
-          // image_url: `/public/${intraData.image_url}`
-        };
-      });
-    }
-  }, []);
 
   useEffect(() => {
     document.addEventListener('click', handleClickOutside, true);
@@ -128,14 +117,15 @@ export function NavBar({ Children }: NavBarProps) {
             </div>
           </li>
 
+
           <li>
             <Link to='/profile'>
               <div
                 className='navBar__profile'
-                style={{ backgroundImage: `url(${intraData.image_url})` }}
+                style={{ backgroundImage: `url(${getUrlImage(intraData.image_url)})` }}
               />
             </Link>
-          </li >
+          </li>
 
 
           <li className='navBar__logout navBar__icons' onClick={handleLogOut}>

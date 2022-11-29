@@ -15,7 +15,9 @@ services:
     environment:
       - VITE_API_HOST=api
     env_file:
-      - ./.production.env
+      - ./.env
+    volumes:
+      - dataAssets:/app/dist/data
 
   api:
     depends_on:
@@ -31,7 +33,9 @@ services:
     environment:
       - DATABASE_HOST=pgsql
     env_file:
-      - ./.production.env
+      - ./.env
+    volumes:
+      - dataAssets:/app/data
     
   pgsql:
     image: postgres:alpine
@@ -57,3 +61,11 @@ services:
 networks:
   transcendence-network:
     driver: bridge
+
+volumes:
+  dataAssets:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: /home/mavinici/ft_transcendence_42/dataAssets
