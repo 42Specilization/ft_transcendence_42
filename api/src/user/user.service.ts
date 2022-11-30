@@ -324,7 +324,7 @@ export class UserService {
       if (user.imgUrl !== 'userDefault.png'
         && !user.imgUrl.includes('https://')) {
         fs.rm(
-          `${getAssetsPath}${user.imgUrl}`,
+          `${getAssetsPath()}${user.imgUrl}`,
           function (err) {
             if (err) throw err;
           }
