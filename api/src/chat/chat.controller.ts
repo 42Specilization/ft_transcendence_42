@@ -172,4 +172,24 @@ export class ChatController {
     return { message: 'success' };
   }
 
+  @Patch('/addAdmin')
+  @UseGuards(JwtAuthGuard)
+  async addAdmin(
+    @Body() groupInviteDto: GroupInviteDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.chatService.addAdmin(userFromJwt.email, groupInviteDto);
+    return { message: 'success' };
+  }
+
+  @Patch('/removeAdmin')
+  @UseGuards(JwtAuthGuard)
+  async removeAdmin(
+    @Body() groupInviteDto: GroupInviteDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.chatService.removeAdmin(userFromJwt.email, groupInviteDto);
+    return { message: 'success' };
+  }
+
 }

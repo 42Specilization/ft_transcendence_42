@@ -1,12 +1,26 @@
 import './CardAdmin.scss';
 import ReactTooltip from 'react-tooltip';
 import { MemberData } from '../../../others/Interfaces/interfaces';
+import { useContext } from 'react';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
 interface CardAdminProps {
-  member: MemberData
+  member: MemberData;
+  id: string;
 }
 
-export function CardAdmin({ member }: CardAdminProps) {
+export function CardAdmin({ member, id }: CardAdminProps) {
+  const { api, config } = useContext(IntraDataContext);
+
+  async function handleRemoveAdmin() {
+    try {
+      await api.patch('/chat/removeAdmin', { login: member.name, groupId: id });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+
   return (
     <div className='card__admin'
     //  onClick={() => setActiveMenu(prev => !prev)}

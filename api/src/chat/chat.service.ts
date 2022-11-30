@@ -265,6 +265,9 @@ export class ChatService {
     if (!owner || !friend)
       throw new BadRequestException('User Not Found getFrienddirect');
 
+    if (owner.nick === friend.nick)
+      throw new UnauthorizedException('You cant talk with you getFrienddirect');
+
     if (this.userService.isBlocked(owner, friend) || this.userService.isBlocked(friend, owner))
       return;
 
@@ -650,26 +653,7 @@ export class ChatService {
       };
       return msgClient;
     } catch (err) {
-      throw new InternalServerErrorException('Error sabing group joinGroup');
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    try {
-      group.save();
-    } catch (err) {
-      throw new InternalServerErrorException('Error sabing group joinGroup');
+      throw new InternalServerErrorException('Error saving group joinGroup');
     }
   }
 
@@ -709,6 +693,7 @@ export class ChatService {
 
     // console.log('passou das validações')
 
+
     const newNotify = new Notify();
     newNotify.type = 'group';
     newNotify.user_source = user;
@@ -728,8 +713,8 @@ export class ChatService {
     if (duplicated.length > 0)
       throw new BadRequestException('This user already your order');
 
-    // if (group.users.map(e => e.email).indexOf(user_email) >= 0)
-    //   throw new BadRequestException('This user already in group');
+    if (group.users.map(e => e.email).indexOf(friend.email) >= 0)
+      throw new BadRequestException('This user already in group');
 
     if (this.userService.isBlocked(user, friend) || this.userService.isBlocked(friend, user))
       return;
@@ -742,4 +727,60 @@ export class ChatService {
     }
   }
 
+  async addAdmin(user_email: string, groupInviteDto: GroupInviteDto) {
+    const user = await this.userService.findUserByEmail(user_email);
+    const friend = await this.userService.findUserByNick(groupInviteDto.name);
+    const group = await this.findGroupById(groupInviteDto.groupId);
+
+    if (!friend || !user || !group)
+      throw new InternalServerErrorException('User not found');
+
+    if (user.nick !== group.owner.nick)
+      throw new UnauthorizedException('Permission denied');
+
+    if (group.admins && group.admins.map(e => e.email).indexOf(friend.email) >= 0)
+      throw new BadRequestException('This user already is admin');
+
+    if (!group.admins || group.admins.length === 0)
+      group.admins = [];
+
+    group.admins.push(friend);
+
+   
+    try {
+      group.save();
+    } catch (err) {
+      throw new InternalServerErrorException('error saving admin');
+    }
+  }
+
+  async removeAdmin(user_email: string, groupInviteDto: GroupInviteDto) {
+    const user = await this.userService.findUserByEmail(user_email);
+    const friend = await this.userService.findUserByNick(groupInviteDto.name);
+    const group = await this.findGroupById(groupInviteDto.groupId);
+
+    if (!friend || !user || !group)
+      throw new InternalServerErrorException('User not found');
+
+    if (user.nick !== group.owner.nick)
+      throw new UnauthorizedException('Permission denied');
+
+    if (!group.admins || group.admins.length === 0)
+      group.admins = [];
+
+    if (group.admins.map(e => e.email).indexOf(friend.email) < 0)
+      throw new BadRequestException('This user isnt admin');
+   
+    group.admins = group.admins.filter((user) => {
+      if (user.email === friend.email)
+        return;
+      return user;
+    });
+
+    try {
+      group.save();
+    } catch (err) {
+      throw new InternalServerErrorException('error saving admin');
+    }
+  }
 }

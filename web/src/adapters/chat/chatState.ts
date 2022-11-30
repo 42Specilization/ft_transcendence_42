@@ -72,6 +72,10 @@ const actionsChat = {
     stateChat.socket?.emit('kickMember', { id: id, email: email, login: login });
   },
 
+  getUpdateGroup(id: string) {
+    stateChat.socket?.emit('getUpdateGroup', id);
+  },
+
   async msgToServer(message: MsgToServer, type: string) {
     stateChat.socket?.emit('msgToServer', { message: message, type: type });
 

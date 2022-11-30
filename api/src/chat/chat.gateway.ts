@@ -76,7 +76,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     if (msgToClient)
       this.server.to(id).emit('msgToClient', msgToClient);
     client.join(id);
-    client.emit('updateGroup');
+    this.server.to(id).emit('updateGroup');
     this.logger.debug(`Client ${client.id} join a group: |${id}|`);
   }
 
@@ -90,7 +90,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       this.server.to(id).emit('msgToClient', msgToClient);
     client.leave(id);
     client.emit('updateGroup');
-    this.logger.debug(`Client ${client.id} join a group: |${id}|`);
+    this.server.to(id).emit('updateGroup');
+    this.logger.debug(`Client ${client.id} leave a group: |${id}|`);
   }
 
   @SubscribeMessage('kickMember')
@@ -102,9 +103,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     console.log(msgToClient);
     this.server.to(id).emit('msgToClient', msgToClient);
     this.server.to(id).emit('removeGroup', id, login);
+    this.server.to(id).emit('updateGroup');
     this.logger.debug(`Client ${client.id} login: |${login}| has been kicked the group: |${id}|`);
   }
 
+  @SubscribeMessage('getUpdateGroup')
+  async handleGetUpdateGroup(@MessageBody() id: string) {
+    this.server.to(id).emit('updateGroup');
+  }
 
   @SubscribeMessage('msgToServer')
   async handleMsgToServer(@ConnectedSocket() client: Socket,

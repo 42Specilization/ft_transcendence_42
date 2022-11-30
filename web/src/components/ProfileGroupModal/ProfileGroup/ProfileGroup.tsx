@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { CardAdmin } from '../CardAdmin/CardAdmin';
 import { CardMember } from '../CardMember/CardMember';
+import { ChatContext } from '../../../contexts/ChatContext';
 
 interface ProfileGroupProps {
   id: string | undefined;
@@ -11,8 +12,9 @@ interface ProfileGroupProps {
 
 export function ProfileGroup({ id }: ProfileGroupProps) {
   const { api, config } = useContext(IntraDataContext);
+  const { updateGroup } = useContext(ChatContext);
   const { data, status } = useQuery(
-    'getProfileGroup',
+    ['getProfileGroup', updateGroup],
     async () => {
       const response = await api.patch('/chat/getProfileGroupById', { id: id }, config);
       return response.data;
@@ -38,6 +40,7 @@ export function ProfileGroup({ id }: ProfileGroupProps) {
       </div >
 
       <div className='profileGroup__members'>
+        <span className='profileGroup__members__title' >Members</span>
         < div className='profileGroup__members__body'>
           {
             data.admins &&

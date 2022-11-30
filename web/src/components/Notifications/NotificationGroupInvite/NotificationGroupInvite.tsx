@@ -6,6 +6,7 @@ import { actionsStatus } from '../../../adapters/status/statusState';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsChat } from '../../../adapters/chat/chatState';
+import { ProfileGroupModal } from '../../ProfileGroupModal/ProfileGroupModal';
 
 interface NotificationGroupInviteProps {
   notify: NotifyData;
@@ -13,7 +14,7 @@ interface NotificationGroupInviteProps {
 export function NotificationGroupInvite({ notify }: NotificationGroupInviteProps) {
 
   const [side, setSide] = useState(true);
-  const [friendProfileVisible, setFriendProfileVisible] = useState(false);
+  const [profileGroupVisible, setProfileGroupVisible] = useState(false);
   const { api, config, intraData, setIntraData } = useContext(IntraDataContext);
 
   async function removeNotify() {
@@ -87,16 +88,16 @@ export function NotificationGroupInvite({ notify }: NotificationGroupInviteProps
         </div>
 
         <div className='notificationGroupInvite__backSide__button'
-          onClick={() => setFriendProfileVisible(true)}>
+          onClick={() => setProfileGroupVisible(true)}>
           <p> Profile
             <UserCircle size={22} />
           </p>
 
         </div>
-        {friendProfileVisible &&
-          <ProfileFriendModal
-            login={notify.user_source}
-            setFriendProfileVisible={setFriendProfileVisible} />
+        {profileGroupVisible &&
+          <ProfileGroupModal
+            id={notify.additional_info}
+            setProfileGroupVisible={setProfileGroupVisible} />
         }
 
       </div >

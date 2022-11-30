@@ -20,16 +20,17 @@ interface GroupConfigProps {
 
 export function GroupConfig({ id, setGroupConfigVisible }: GroupConfigProps) {
   const { api, config, intraData } = useContext(IntraDataContext);
-  const { setActiveChat } = useContext(ChatContext);
+  const { setActiveChat, updateGroup } = useContext(ChatContext);
   const [changeSecurityType, setChangeSecurityType] = useState('');
   const [inviteName, setInviteName] = useState('');
   const [selectedFile, setSelectedFile] = useState<File>();
   const [isModalChangeGroupNameVisible, setIsModalChangeGroupNameVisible] = useState(false);
   const [isModalChangeSecurityVisible, setIsModalChangeSecurityVisible] = useState(false);
   const [isModalAddMemberVisible, setIsModalAddMemberVisible] = useState(false);
+  const [placeHolder, setPlaceHolder] = useState('Insert user name');
 
   const { data, status } = useQuery(
-    'getGroupInfos',
+    ['getGroupInfos', updateGroup],
     async () => {
       const response = await api.patch('/chat/getProfileGroupById', { id: id }, config);
       return response.data;
@@ -81,10 +82,12 @@ export function GroupConfig({ id, setGroupConfigVisible }: GroupConfigProps) {
         await api.patch('/chat/sendGroupInvite', { name: inviteName, groupId: data.id }, config);
         actionsStatus.newNotify(inviteName, 'group');
         setInviteName('');
-        setIsModalAddMemberVisible(false)
+        setIsModalAddMemberVisible(false);
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.log(err);
+      setInviteName('');
+      setPlaceHolder('Invalid Name');
       // setModalErrorVisible(true);
     }
   }
@@ -111,7 +114,7 @@ export function GroupConfig({ id, setGroupConfigVisible }: GroupConfigProps) {
         <span>{data.name}
           <NotePencil size={30} onClick={() => setIsModalChangeGroupNameVisible(true)} />
         </span>
-        <span>{data.owner.name}</span>
+        <span>Owner: {data.owner.name}</span>
         <button
           className='groupConfig__infos__segurityButton'
           onClick={() => { setIsModalChangeSecurityVisible(true); }}
@@ -166,7 +169,7 @@ export function GroupConfig({ id, setGroupConfigVisible }: GroupConfigProps) {
         < div className='groupConfig__members__body'>
           {
             data.admins &&
-            data.admins.map((obj: any) => <CardAdmin key={crypto.randomUUID()} member={obj} />)
+            data.admins.map((obj: any) => <CardAdmin key={crypto.randomUUID()} id={data.id} member={obj} />)
           }
           {
             data.members &&
@@ -184,13 +187,21 @@ export function GroupConfig({ id, setGroupConfigVisible }: GroupConfigProps) {
           <Modal
             id='groupConfig__members__addMember'
             onClose={() => setIsModalAddMemberVisible(false)}>
-            <input
+            <span style={{
+              fontSize: '30px'
+            }}>Insert a name</span>
+            < input
               className='groupConfig__members__addMember__input'
               type="text"
+              value={inviteName}
               maxLength={15}
-              placeholder='Insert user name'
+              placeholder={placeHolder}
+              style={{
+                border: placeHolder !== '' ? '3px solid red' : 'none'
+              }}
               onChange={(e) => {
                 setInviteName(e.target.value);
+                setPlaceHolder('');
               }}
             />
             <button

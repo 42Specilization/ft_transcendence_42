@@ -94,6 +94,8 @@ export class DeleteDirectDto {
   friend_login: string;
 }
 
+
+// troocar o nome para um mais apropriado
 export class GroupInviteDto {
   @IsNotEmpty({ message: 'Insert an valid name' })
   name: string;

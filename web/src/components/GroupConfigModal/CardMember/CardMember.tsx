@@ -2,7 +2,7 @@ import './CardMember.scss';
 import ReactTooltip from 'react-tooltip';
 import { MemberData } from '../../../others/Interfaces/interfaces';
 import { useContext, useState } from 'react';
-import { CrownSimple, DotsThreeVertical, Prohibit, Sword, TelegramLogo, UserMinus } from 'phosphor-react';
+import { CrownSimple, DotsThreeVertical, Prohibit, Sword, TelegramLogo, UserMinus, Alien } from 'phosphor-react';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { Link } from 'react-router-dom';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
@@ -20,9 +20,18 @@ export function CardMember({ member, id }: CardMemberProps) {
   const { setSelectedChat } = useContext(ChatContext);
   const { api, config, intraData } = useContext(IntraDataContext);
 
+  async function handleMakeAdmin() {
+    try {
+      console.log(id);
+      await api.patch('/chat/addAdmin', { name: member.name, groupId: id }, config);
+      actionsChat.getUpdateGroup(id);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   function handleSendMessage() {
     setSelectedChat({ chat: member.name, type: 'person' });
-
   }
 
   async function handleRemoveFriend() {
@@ -63,10 +72,10 @@ export function CardMember({ member, id }: CardMemberProps) {
 
 
           <button className='card__friend__menu__button'
-            onClick={() => console.log('Desafiou ')}
+            onClick={handleMakeAdmin}
             data-html={true}
             data-tip={'Make Admin'}>
-            <CrownSimple size={32} />
+            <Alien size={32} />
           </button>
 
           {/* Usuario nao pode se redirecionar pro proprio chat */}
