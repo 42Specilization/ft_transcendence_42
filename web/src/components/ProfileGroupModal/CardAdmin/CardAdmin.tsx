@@ -1,7 +1,7 @@
 import './CardAdmin.scss';
 import ReactTooltip from 'react-tooltip';
 import { MemberData } from '../../../others/Interfaces/interfaces';
-import { Alien, DotsThreeVertical, Link, Shield, TelegramLogo } from 'phosphor-react';
+import { Alien, DotsThreeVertical, Link, TelegramLogo } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';

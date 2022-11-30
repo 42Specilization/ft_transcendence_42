@@ -1,6 +1,6 @@
 import './SelectItem.scss';
 import * as SelectPrimitive from '@radix-ui/react-select';
-import { CaretDown, CaretUp, Check } from 'phosphor-react';
+import { CaretDown,Check } from 'phosphor-react';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SelectProps extends SelectPrimitive.SelectProps {

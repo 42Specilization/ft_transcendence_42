@@ -12,6 +12,7 @@ import { SelectItem } from '../../SelectItem/SelectItem';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { ChatContext } from '../../../contexts/ChatContext';
+import { CardOwner } from '../CardOwner/CardOwner';
 
 interface GroupConfigProps {
   id: string | undefined;
@@ -51,6 +52,7 @@ export function GroupConfig({ id, setGroupConfigVisible }: GroupConfigProps) {
       await api.post('/chat/updateGroupImage', file, config);
       await api.patch('/chat/updateGroup', { id: data.id, image: selectedFile.name }, config);
     }
+    actionsChat.updateGroup();
 
     // actionsStatus.changeImage(selectedFile?.name);
   }
@@ -142,9 +144,7 @@ export function GroupConfig({ id, setGroupConfigVisible }: GroupConfigProps) {
                   id='groupConfig__changeSecurity__input'
                   className='groupConfig__changeSecurity__input'
                   type="text"
-                  value={inviteName}
                   placeholder='Password'
-
                 />
               }
               <button
@@ -172,8 +172,9 @@ export function GroupConfig({ id, setGroupConfigVisible }: GroupConfigProps) {
             // data.admins.map((obj: any) => <CardAdmin key={crypto.randomUUID()} id={data.id} member={obj} />)
             data.members &&
             data.members.map((obj: any) => {
-              console.log(obj)
-              if (obj.role === 'admin')
+              if (obj.role === 'owner')
+                return <CardOwner key={crypto.randomUUID()} id={data.id} member={obj} />;
+              else if (obj.role === 'admin')
                 return <CardAdmin key={crypto.randomUUID()} id={data.id} member={obj} />;
               else
                 return <CardMember key={crypto.randomUUID()} id={data.id} member={obj} />;

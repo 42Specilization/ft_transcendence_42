@@ -1,52 +1,43 @@
-import './CardMember.scss';
+import './CardOwner.scss';
 import ReactTooltip from 'react-tooltip';
 import { MemberData } from '../../../others/Interfaces/interfaces';
 import { useContext, useState } from 'react';
-import { DotsThreeVertical, TelegramLogo } from 'phosphor-react';
-import { ChatContext } from '../../../contexts/ChatContext';
+import { Crown, DotsThreeVertical,  TelegramLogo } from 'phosphor-react';
 import { Link } from 'react-router-dom';
-import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { ChatContext } from '../../../contexts/ChatContext';
 
-interface CardMemberProps {
+interface CardOwnerProps {
+  member: MemberData;
   id: string;
-  member: MemberData
 }
 
-export function CardMember({ member }: CardMemberProps) {
-
-  const [profileMemberVisible, setProfileMemberVisible] = useState(false);
+export function CardOwner({ member}: CardOwnerProps) {
   const [activeMenu, setActiveMenu] = useState(false);
   const { setSelectedChat } = useContext(ChatContext);
-  const { intraData } = useContext(IntraDataContext);
 
   function handleSendMessage() {
     setSelectedChat({ chat: member.name, type: 'person' });
   }
 
-  function selectProfileMemberVisible(e: any) {
-    if (e.target.id === 'card__member')
-      setProfileMemberVisible((prev) => !prev);
-  }
-
   return (
-    <div id='card__member' className='card__member'
-      onClick={(e) => selectProfileMemberVisible(e)}
+    <div className='card__owner'
+    //  onClick={() => setActiveMenu(prev => !prev)}
     >
-
-      <div id='card__member' className="card__member__div">
+      <div className="card__owner__div">
         <div
-          id='card__member'
-          className='card__member__icon'
+          className='card__owner__icon'
           style={{ backgroundImage: `url(${member.image})` }}>
         </div>
-        <div id='card__member' className='card__member__name'>{member.name}</div>
+        <div className='card__owner__name'>
+          <span>{member.name}</span>
+          <Crown size={32} />
+        </div>
       </div>
 
-      <div className='card__friend__menu'
-        style={{ display: intraData.login === member.name ? 'none' : '' }}>
+      <div className='card__friend__menu'>
         <div id='card__friend__menu__body' className='card__friend__menu__body'
           style={{ height: activeMenu ? '55px' : '0px', width: activeMenu ? '80px' : '0px' }}>
+          {/* Usuario nao pode se redirecionar pro proprio chat */}
           <Link to='/chat'>
             <button className='card__friend__menu__button'
               onClick={handleSendMessage}
@@ -57,6 +48,7 @@ export function CardMember({ member }: CardMemberProps) {
             </button>
           </Link>
         </div>
+
         <DotsThreeVertical
           id='card__friend__menu'
           className='chat__friends__header__icon'
@@ -67,10 +59,6 @@ export function CardMember({ member }: CardMemberProps) {
         />
       </div>
       <ReactTooltip className='chat__friends__header__icon__tip' delayShow={50} />
-      {
-        profileMemberVisible &&
-        <ProfileFriendModal login={member.name} setFriendProfileVisible={setProfileMemberVisible} />
-      }
     </div>
   );
 }

@@ -2,11 +2,10 @@ import './CardMember.scss';
 import ReactTooltip from 'react-tooltip';
 import { MemberData } from '../../../others/Interfaces/interfaces';
 import { useContext, useState } from 'react';
-import { CrownSimple, DotsThreeVertical, Prohibit, Sword, TelegramLogo, UserMinus, Alien } from 'phosphor-react';
+import { DotsThreeVertical, Prohibit,  TelegramLogo, UserMinus, Alien } from 'phosphor-react';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { Link } from 'react-router-dom';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import { actionsStatus } from '../../../adapters/status/statusState';
 import { actionsChat } from '../../../adapters/chat/chatState';
 
 interface CardMemberProps {
@@ -29,28 +28,22 @@ export function CardMember({ member, id }: CardMemberProps) {
       console.log(err);
     }
   }
-
+  
   function handleSendMessage() {
     setSelectedChat({ chat: member.name, type: 'person' });
   }
-
+  
   async function handleRemoveFriend() {
     actionsChat.kickMember(id, intraData.email, member.name);
   }
-
+  
   async function handleBanMember() {
-    // await api.patch('/user/addBlocked', { nick: friend.login }, config);
-    // await api.patch('/chat/deleteDirect', { friend_login: friend.login }, config);
-
-    // setIntraData((prevIntraData) => {
-    //   prevIntraData.blockeds.push(friend);
-    //   return {
-    //     ...prevIntraData,
-    //     directs: prevIntraData.directs.filter((key) => key.name != friend.login),
-    //     friends: prevIntraData.friends.filter((key) => key.login != friend.login),
-    //   };
-    // });
-    // actionsStatus.blockFriend(friend.login);
+    try {
+      console.log(id);
+      actionsChat.banMember(id, intraData.email, member.name);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   return (

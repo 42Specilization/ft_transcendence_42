@@ -1,8 +1,7 @@
 import { XCircle } from 'phosphor-react';
-import { Dispatch, SetStateAction, useContext } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { GroupConfig } from './GroupConfig/GroupConfig';
 import './GroupConfigModal.scss';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
 
 interface GroupConfigModalProps {
   id: string | undefined;
@@ -10,7 +9,6 @@ interface GroupConfigModalProps {
 }
 
 export function GroupConfigModal({ id, setGroupConfigVisible }: GroupConfigModalProps) {
-  const { api, config } = useContext(IntraDataContext);
 
   const handleOutsideClick = (e: any) => {
     if (e.target.id == 'groupConfig__modal')

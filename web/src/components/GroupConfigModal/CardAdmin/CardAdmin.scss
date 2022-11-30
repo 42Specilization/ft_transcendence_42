@@ -28,12 +28,16 @@
 }
 
 .card__admin__name {
+  @include displayFlex(space-between);
   font-size: x-large;
   margin-left: 10px;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   width: 100%;
+  span {
+    margin-right: 10px;
+  }
 }
 
 .card__admin__div {

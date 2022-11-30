@@ -4,6 +4,7 @@ import { PaperPlaneRight } from 'phosphor-react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { Modal } from '../../Modal/Modal';
+import { actionsChat } from '../../../adapters/chat/chatState';
 
 
 interface ChangeGroupNameProps {
@@ -37,6 +38,7 @@ export function ChangeGroupName({ id, setIsModalChangeGroupNameVisible }: Change
       }
     }
     setName('');
+    actionsChat.updateGroup();
   }
 
   return (
@@ -45,7 +47,7 @@ export function ChangeGroupName({ id, setIsModalChangeGroupNameVisible }: Change
       setPlaceHolder('');
       setName('');
     }}
-      id={'modal__changeGroupName'}
+    id={'modal__changeGroupName'}
     >
       <form className='changeGroupName__modal' onSubmit={handleKeyEnter}>
         <div className='changeGroupName__modal__textdiv'>

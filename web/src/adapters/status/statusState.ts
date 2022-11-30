@@ -328,10 +328,9 @@ const actionsStatus = {
           ...prev,
           groups: prev.groups.sort((a, b) => a.date < b.date ? 1 : -1)
         };
-      })
-    };
+      });
+    }
   },
-
 };
 
 export type AppActionsStatus = typeof actionsStatus;

@@ -36,12 +36,9 @@ export function ChatTalk(
   }, []);
 
   useEffect(() => {
-    console.log(selectedChat);
     if (selectedChat) {
-      console.log('entro no if');
       setNewChat();
     }
-    console.log('passou no useEffect');
   }, [selectedChat]);
 
   async function exitActiveChat() {

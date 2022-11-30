@@ -2,7 +2,7 @@ import './CardFriend.scss';
 import ReactTooltip from 'react-tooltip';
 import { FriendData } from '../../../others/Interfaces/interfaces';
 import { useContext, useState } from 'react';
-import { DotsThreeVertical, TelegramLogo, Prohibit, Sword, UserMinus } from 'phosphor-react';
+import { DotsThreeVertical, TelegramLogo, Sword, UserMinus } from 'phosphor-react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { ChatContext } from '../../../contexts/ChatContext';
@@ -39,21 +39,6 @@ export function CardFriend({ friend }: CardFriendProps) {
     actionsStatus.removeFriend(friend.login);
   }
 
-  async function handleBlockFriend() {
-    await api.patch('/user/addBlocked', { nick: friend.login }, config);
-    await api.patch('/chat/deleteDirect', { friend_login: friend.login }, config);
-
-    setIntraData((prevIntraData) => {
-      prevIntraData.blockeds.push(friend);
-      return {
-        ...prevIntraData,
-        directs: prevIntraData.directs.filter((key) => key.name != friend.login),
-        friends: prevIntraData.friends.filter((key) => key.login != friend.login),
-      };
-    });
-    actionsStatus.blockFriend(friend.login);
-  }
-
   function modalVisible(event: any) {
     if (event.target.id === 'card__friend')
       setFriendProfileVisible(true);
@@ -73,7 +58,7 @@ export function CardFriend({ friend }: CardFriendProps) {
 
         <div className='card__friend__menu'>
           <div id='card__friend__menu__body' className='card__friend__menu__body'
-            style={{ height: activeMenu ? '190px' : '0px', width: activeMenu ? '80px' : '0px' }}>
+            style={{ height: activeMenu ? '155px' : '0px', width: activeMenu ? '80px' : '0px' }}>
 
             <button className='card__friend__menu__button'
               onClick={handleChallenger}
@@ -98,14 +83,6 @@ export function CardFriend({ friend }: CardFriendProps) {
             >
               <UserMinus size={32} />
             </button>
-            <button className='card__friend__menu__button'
-              onClick={handleBlockFriend}
-              data-html={true}
-              data-tip={'Block'}
-            >
-              <Prohibit size={32} />
-            </button>
-
           </div>
 
           <DotsThreeVertical
