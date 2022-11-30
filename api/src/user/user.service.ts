@@ -243,6 +243,7 @@ export class UserService {
         ],
       });
   }
+
   async findAllChats(nick: string): Promise<User | null> {
     return await this.usersRepository.findOne(
       {
@@ -534,13 +535,27 @@ export class UserService {
  */
   async blockUserByNotification(email: string, id: string) {
     const user = await this.findUserByEmail(email) as User;
-
     const requestedNotify: Notify[] = user.notify.filter((notify) => notify.id === id);
 
     if (!requestedNotify.at(0))
       throw new BadRequestException('friend not found');
 
     const blocked = await this.findUserByEmail(requestedNotify.at(0)?.user_source.email as string) as User;
+  
+    const alreadyFriends = this.alreadyFriends(user, blocked);
+    if (alreadyFriends) {
+      user.relations = user.relations.filter((relation) => {
+        if (relation.type === 'friend' && relation.passive_user.nick == blocked.nick)
+          return;
+        return relation;
+      });
+  
+      blocked.relations = blocked.relations.filter((relation) => {
+        if (relation.type === 'friend' && relation.passive_user.nick == user.nick)
+          return;
+        return relation;
+      });
+    }
 
     const relationUser = new Relations();
 
@@ -567,7 +582,6 @@ export class UserService {
  */
   async removeFriend(email: string, friend_login: string) {
     const user = await this.findUserByEmail(email) as User;
-
     const friend = await this.findUserByNick(friend_login) as User;
 
     user.relations = user.relations.filter((relation) => {

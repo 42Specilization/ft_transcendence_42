@@ -40,27 +40,27 @@ export class GroupDto {
 
 export class UpdateGroupDto {
   @IsNotEmpty({ message: 'Insert an valid id' })
-  id: string;
+    id: string;
   @IsOptional()
-  type?: string;
+    type?: string;
   @IsOptional()
-  name?: string;
+    name?: string;
   @IsOptional()
-  image?: string;
+    image?: string;
   @IsOptional()
-  owner?: UserInfoDto;
+    owner?: UserInfoDto;
   @IsOptional()
-  admins?: UserInfoDto[];
+    admins?: UserInfoDto[];
   @IsOptional()
-  users?: UserInfoDto[];
+    users?: UserInfoDto[];
   @IsOptional()
-  messages?: MsgToClient[];
+    messages?: MsgToClient[];
   @IsOptional()
-  date?: Date;
+    date?: Date;
   @IsOptional()
-  newMessages?: number;
+    newMessages?: number;
   @IsOptional()
-  password?: string;
+    password?: string;
 }
 
 export class DirectDto {
@@ -75,46 +75,46 @@ export class DirectDto {
 
 export class GetDirectDto {
   @IsNotEmpty({ message: 'Insert an valid id' })
-  id: string;
+    id: string;
 }
 export class GetGroupDto {
   @IsNotEmpty({ message: 'Insert an valid id' })
-  id: string;
+    id: string;
 }
 export class RemoveMemberDto {
   @IsNotEmpty({ message: 'Insert an valid id' })
-  id: string;
+    id: string;
   @IsNotEmpty({ message: 'Insert an valid name' })
-  name: string;
+    name: string;
 }
 
 
 export class DeleteDirectDto {
   @IsNotEmpty({ message: 'Insert an valid id' })
-  friend_login: string;
+    friend_login: string;
 }
 
 
 // troocar o nome para um mais apropriado
 export class GroupInviteDto {
   @IsNotEmpty({ message: 'Insert an valid name' })
-  name: string;
+    name: string;
   @IsNotEmpty({ message: 'Insert an valid group' })
-  groupId: string;
+    groupId: string;
 }
 
 export class CreateGroupDto {
   @IsNotEmpty({ message: 'Insert an valid type' })
-  type: string;
+    type: string;
   @IsNotEmpty({ message: 'Insert an valid name' })
   @MaxLength(15, { message: 'Group Name need have only 15 characters' })
-  name: string;
+    name: string;
   @IsOptional()
-  password?: string;
+    password?: string;
   @IsOptional()
-  confirmPassword?: string;
+    confirmPassword?: string;
   @IsOptional()
-  image?: string;
+    image?: string;
   @IsNotEmpty({ message: 'Insert an valid owner' })
-  owner: string;
+    owner: string;
 }

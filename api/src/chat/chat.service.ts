@@ -406,7 +406,11 @@ export class ChatService {
         'owner',
         'relations',
         'relations.user_target',
-      ]
+      ], order: {
+        relations: {
+          date: 'asc'
+        }
+      }
     });
   }
 
@@ -507,6 +511,9 @@ export class ChatService {
     const group = await this.findGroupById(updateGroupDto.id);
     if (!group)
       throw new BadRequestException('Group not Found updateGroup');
+    const user = await this.userService.findUserByEmail(user_email);
+    if (!user || (user.nick !== group.owner.nick && !this.isGroupAdmin(group, user.nick))) 
+      throw new UnauthorizedException('Permission denied');
     const {
       // id,
       // admins,
@@ -520,19 +527,12 @@ export class ChatService {
       // messages,
       // newMessages,
     } = updateGroupDto;
-    const user = await this.userService.findUserByEmail(user_email);
-    if (!user || user.nick !== group.owner.nick) {
-
-      throw new UnauthorizedException('Permission denied');
-    }
-
+      
     // group.users = users ? users : group.users
     // group.admins = admins ? admins : group.admins
     // group.owner = ? : group.owner
     group.date = date ? date : group.date;
     group.name = name ? name : group.name;
-    group.type = type ? type : group.type;
-    group.password = password ? bcrypt.hashSync(password, 8) : group.password;
     if (image) {
       if (group.image !== 'userDefault.png') {
         fs.rm(
@@ -543,6 +543,10 @@ export class ChatService {
         );
       }
       group.image = image;
+    }
+    if (user.nick === group.owner.nick){
+      group.type = type ? type : group.type;
+      group.password = password ? bcrypt.hashSync(password, 8) : group.password;
     }
 
     try {
@@ -651,7 +655,7 @@ export class ChatService {
     if (!group || !user || !removed)
       throw new InternalServerErrorException('Infos not found kickMember');
 
-    if (user.nick !== group.owner.nick) // pensar o que fazer nessa porra desse trol aqui
+    if (user.nick !== group.owner.nick && !this.isGroupAdmin(group, user.nick)) // pensar o que fazer nessa porra desse trol aqui
       throw new UnauthorizedException('Permission denied');
 
     if (group.users.map(e => e.nick).indexOf(removed.nick) < 0)
@@ -700,7 +704,6 @@ export class ChatService {
     // }
 
     // console.log('passou das validações')
-
 
     const newNotify = new Notify();
     newNotify.type = 'group';
@@ -767,6 +770,7 @@ export class ChatService {
     const friend = await this.userService.findUserByNick(groupInviteDto.name);
     const group = await this.findGroupById(groupInviteDto.groupId);
 
+    console.log(group.relations);
     if (!friend || !user || !group)
       throw new InternalServerErrorException('User not found');
 
@@ -776,14 +780,73 @@ export class ChatService {
     if (!this.isGroupAdmin(group, friend.nick))
       throw new BadRequestException('This user isnt admin');
 
-    group.relations = group.relations.filter((relation) =>
-      relation.type === 'admin' && relation.user_target.email === friend.email
-    );
-
+    group.relations = group.relations.filter((relation) =>{
+      if (relation.type === 'admin' && relation.user_target.email === friend.email)
+        return ;
+      return relation;
+    });
+    
     try {
       group.save();
     } catch (err) {
       throw new InternalServerErrorException('error saving admin');
     }
   }
+
+
+  async addBan(user_email: string, groupInviteDto: GroupInviteDto) {
+    const user = await this.userService.findUserByEmail(user_email);
+    const member = await this.userService.findUserByNick(groupInviteDto.name);
+    const group = await this.findGroupById(groupInviteDto.groupId);
+
+    if (!member || !user || !group)
+      throw new InternalServerErrorException('User not found');
+
+    if (user.nick !== group.owner.nick && !this.isGroupAdmin(group, user.nick))
+      throw new UnauthorizedException('Permission denied');
+
+    if (this.isGroupAdmin(group, member.nick) ){
+      group.relations = group.relations.filter((relation) =>{
+        if (relation.type === 'admin' && relation.user_target.email === member.email)
+          return ;
+        return relation;
+      });
+    }
+
+    const relation = new GroupRelations();
+    relation.date = new Date(Date.now());
+    relation.user_target = member;
+    relation.type = 'ban';
+    group.relations.push(relation);
+
+    const banned = new Message();
+    banned.sender = member;
+    banned.date = new Date(Date.now());
+    banned.msg = 'has been banned the group';
+    banned.type = 'action';
+
+    group.users = group.users.filter((key) => key.nick !== member.nick);
+    group.messages = group.messages.filter(key =>
+      !(key.type === 'breakpoint' && key.sender.nick === member.nick));
+
+    group.messages.push(banned);
+
+    try {
+      group.save();
+      const msgClient: MsgToClient = {
+        id: banned.id,
+        chat: group.id,
+        user: { login: member.nick, image: member.imgUrl },
+        date: banned.date,
+        msg: banned.msg,
+        type: banned.type,
+      };
+      return msgClient;
+    } catch (err) {
+      throw new InternalServerErrorException('error saving admin');
+    }
+  }
+
+  // Pensar em como um usuario sera desbanido
+  
 }
