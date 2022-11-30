@@ -12,7 +12,7 @@ import { GetUserFromJwt } from 'src/auth/decorators/get-user.decorator';
 import { UserFromJwt } from 'src/auth/dto/UserFromJwt.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
-import { DirectDto, GetDirectDto, DeleteDirectDto, CreateGroupDto, GetGroupDto, UpdateGroupDto, RemoveMemberDto, GroupInviteDto } from './dto/chat.dto';
+import { DirectDto, GetDirectDto, DeleteDirectDto, CreateGroupDto, GetGroupDto, UpdateGroupDto, GroupInviteDto } from './dto/chat.dto';
 import { BadRequestException } from '@nestjs/common';
 
 @Controller('chat')
@@ -149,18 +149,6 @@ export class ChatController {
     await this.chatService.updateGroup(userFromJwt.email, updateGroupDto);
     return { message: 'success' };
   }
-
-
-  @Patch('/removeMember')
-  @UseGuards(JwtAuthGuard)
-  async removeMember(
-    @Body() removeMeberDto: RemoveMemberDto,
-    @GetUserFromJwt() userFromJwt: UserFromJwt
-  ) {
-    await this.chatService.removeMember(userFromJwt.email, removeMeberDto);
-    return { message: 'success' };
-  }
-
 
   @Patch('/sendGroupInvite')
   @UseGuards(JwtAuthGuard)

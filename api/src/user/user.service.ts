@@ -219,7 +219,6 @@ export class UserService {
         relations: [
           'groups',
           'groups.users',
-          'groups.admins',
           'groups.messages',
           'groups.messages.sender',
           'relations',
@@ -237,7 +236,6 @@ export class UserService {
         relations: [
           'groups',
           'groups.users',
-          'groups.admins',
           'groups.messages',
           'groups.messages.sender',
           'relations',

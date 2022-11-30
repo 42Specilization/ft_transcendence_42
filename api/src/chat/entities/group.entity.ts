@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/user/entities/user.entity';
-import { GroupController } from './groupController.entity';
+import { GroupRelations } from './groupRelations.entity';
 // import { MessageGroup } from './messageGroup.entity';
 
 import {
@@ -12,7 +12,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   ManyToOne,
-  JoinTable
 } from 'typeorm';
 import { Message } from './message.entity';
 
@@ -48,17 +47,14 @@ export class Group extends BaseEntity {
   users: User[];
 
   @ApiProperty()
-  @ManyToMany(() => User)
-  @JoinTable()
-  admins: User[];
-
-  @ApiProperty()
   @OneToMany(() => Message, (message: Message) => message.group, { cascade: ['insert', 'update'] })
   messages: Message[];
 
   @ApiProperty()
-  @OneToMany(() => GroupController, (groupController: GroupController) => groupController.group, { cascade: ['insert', 'update'] })
-  groupController: GroupController[];
+  @OneToMany(() => GroupRelations, (groupRelations: GroupRelations) => groupRelations.group, {
+    cascade: ['insert', 'update']
+  })
+  relations: GroupRelations[];
 
   @ApiProperty()
   @Column({ nullable: false })

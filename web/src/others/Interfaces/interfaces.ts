@@ -29,6 +29,7 @@ export interface BlockedData {
 export interface MemberData {
   name: string;
   image: string;
+  role: string;
 }
 
 export interface GroupCardData {

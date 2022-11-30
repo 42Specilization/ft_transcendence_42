@@ -4,12 +4,12 @@ import { MsgToClient } from '../chat.class';
 export class UserInfoDto {
   name: string;
   image: string;
+  role: string;
 }
 
 export class GroupInfoDto {
   id: string;
   owner: UserInfoDto;
-  admins: UserInfoDto[];
   members: UserInfoDto[];
   image: string;
   name: string;

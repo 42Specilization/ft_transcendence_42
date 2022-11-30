@@ -167,13 +167,17 @@ export function GroupConfig({ id, setGroupConfigVisible }: GroupConfigProps) {
           </button>
         </div>
         < div className='groupConfig__members__body'>
+
           {
-            data.admins &&
-            data.admins.map((obj: any) => <CardAdmin key={crypto.randomUUID()} id={data.id} member={obj} />)
-          }
-          {
+            // data.admins.map((obj: any) => <CardAdmin key={crypto.randomUUID()} id={data.id} member={obj} />)
             data.members &&
-            data.members.map((obj: any) => <CardMember key={crypto.randomUUID()} id={data.id} member={obj} />)
+            data.members.map((obj: any) => {
+              console.log(obj)
+              if (obj.role === 'admin')
+                return <CardAdmin key={crypto.randomUUID()} id={data.id} member={obj} />;
+              else
+                return <CardMember key={crypto.randomUUID()} id={data.id} member={obj} />;
+            })
           }
         </div>
         <div className='groupConfig__members__action'>

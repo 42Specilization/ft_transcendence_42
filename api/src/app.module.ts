@@ -17,7 +17,8 @@ import { Message } from './chat/entities/message.entity';
 // import { APP_GUARD } from '@nestjs/core';
 // import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { Group } from './chat/entities/group.entity';
-import { GroupController } from './chat/entities/groupController.entity';
+import { GroupRelations } from './chat/entities/groupRelations.entity';
+
 
 @Module({
   imports: [
@@ -34,7 +35,7 @@ import { GroupController } from './chat/entities/groupController.entity';
         Relations,
         Direct,
         Group,
-        GroupController,
+        GroupRelations,
         GameEntity,
         Message,
       ],
