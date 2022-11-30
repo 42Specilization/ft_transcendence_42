@@ -59,22 +59,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.logger.debug(`Client ${client.id} join a chat: |${chat}|`);
   }
 
-  @SubscribeMessage('joinGroup')
-  async handleJoinGroup(@ConnectedSocket() client: Socket,
-    @MessageBody() { id, login }: { id: string, login: string }) {
-    client.join(id);
-    login;
-    this.logger.debug(`Client ${client.id} join a group: |${id}|`);
-  }
-
-  @SubscribeMessage('leaveGroup')
-  async handleLeaveGroup(@ConnectedSocket() client: Socket,
-    @MessageBody() { id, login }: { id: string, login: string }) {
-    client.leave(id);
-    login;
-    this.logger.debug(`Client ${client.id} join a group: |${id}|`);
-  }
-
   @SubscribeMessage('leaveChat')
   async handleLeaveChat(@ConnectedSocket() client: Socket, @MessageBody() chat: string) {
 
@@ -83,12 +67,40 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.logger.debug(`Client ${client.id} leave a chat: |${chat}|`);
   }
 
+  @SubscribeMessage('joinGroup')
+  async handleJoinGroup(@ConnectedSocket() client: Socket,
+    @MessageBody() { id, email }: { id: string, email: string }) {
+    const msgToClient: MsgToClient | null | undefined = await this.chatService.joinGroup(email, id);
+    if (typeof msgToClient === 'undefined')
+      return;
+    if (msgToClient)
+      this.server.to(id).emit('msgToClient', msgToClient);
+    client.join(id);
+    client.emit('updateGroup');
+    this.logger.debug(`Client ${client.id} join a group: |${id}|`);
+  }
+
+  @SubscribeMessage('leaveGroup')
+  async handleLeaveGroup(@ConnectedSocket() client: Socket,
+    @MessageBody() { id, email }: { id: string, email: string }) {
+    const msgToClient: MsgToClient | null | undefined = await this.chatService.leaveGroup(email, id);
+    if (typeof msgToClient === 'undefined')
+      return;
+    if (msgToClient)
+      this.server.to(id).emit('msgToClient', msgToClient);
+    client.leave(id);
+    client.emit('updateGroup');
+    this.logger.debug(`Client ${client.id} join a group: |${id}|`);
+  }
+
+
   @SubscribeMessage('msgToServer')
   async handleMsgToServer(@ConnectedSocket() client: Socket,
     @MessageBody() { message, type }: { message: MsgToServer, type: string }) {
-    const msgToClient: MsgToClient = await this.chatService.saveMessage(message, type);
-    this.server.to(message.chat).emit('msgToClient', msgToClient);
-    this.logger.debug(`Client ${client.id} send message : |${msgToClient}|`);
+    const msgToClient: MsgToClient | undefined = await this.chatService.saveMessage(message, type);
+    if (msgToClient) {
+      this.server.to(message.chat).emit('msgToClient', msgToClient, type);
+      this.logger.debug(`Client ${client.id} send message : |${msgToClient}|`);
+    }
   }
 }
-

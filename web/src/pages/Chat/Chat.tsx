@@ -12,11 +12,12 @@ export default function Chat() {
   const { intraData, setIntraData, api, config } = useContext(IntraDataContext);
   const [tableSelected, setTableSelected] = useState('Directs');
 
-  function newMessages() {
-    return intraData.directs.reduce((acc, direct) => {
-      if (activeChat && direct.id === activeChat.chat.id)
+  function newMessages(type: string) {
+    const chat = type === 'direct' ? intraData.directs : intraData.groups;
+    return chat.reduce((acc, chat) => {
+      if (activeChat && chat.id === activeChat.chat.id)
         return acc;
-      return acc + direct.newMessages;
+      return acc + chat.newMessages;
     }, 0);
   }
 
@@ -56,9 +57,9 @@ export default function Chat() {
               <li className={`chat__cards__header__list__item ${tableSelected === 'Directs' ? 'chat__cards__header__list__item__selected' : ''}`}>
                 <div onClick={() => setTableSelected('Directs')}>
                   <p>Directs</p>
-                  {newMessages() > 0 &&
+                  {newMessages('direct') > 0 &&
                     < div className='chat__cards__header__list__item__count' >
-                      {newMessages()}
+                      {newMessages('direct')}
                     </div>
                   }
                 </div>
@@ -66,9 +67,9 @@ export default function Chat() {
               <li className={`chat__cards__header__list__item ${tableSelected === 'Groups' ? 'chat__cards__header__list__item__selected' : ''}`}>
                 <div onClick={() => setTableSelected('Groups')}>
                   <p>Groups</p>
-                  {newMessages() > 0 &&
+                  {newMessages('group') > 0 &&
                     < div className='chat__cards__header__list__item__count' >
-                      {newMessages()}
+                      {newMessages('group')}
                     </div>
                   }
                 </div>

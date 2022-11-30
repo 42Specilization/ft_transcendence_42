@@ -1,9 +1,6 @@
 import './GroupTab.scss';
 import { MagnifyingGlass, X } from 'phosphor-react';
-import {
-  useContext,
-  useState
-} from 'react';
+import { useContext, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { GroupData } from '../../../others/Interfaces/interfaces';
@@ -52,11 +49,6 @@ export function GroupTab() {
       < div className='group__tab__body'>
         {
           intraData.groups.filter((obj: GroupData) => obj.name?.includes(searchInput))
-            .sort((a: any, b: any) => {
-              if (a.date < b.date)
-                return 1;
-              return -1;
-            })
             .map((obj: GroupData) => (
               <CardGroup key={crypto.randomUUID()} chat={obj} />
             ))

@@ -1,5 +1,5 @@
 import './ChatTalk.scss';
-import { DirectData, MsgToClient, MsgToServer } from '../../../others/Interfaces/interfaces';
+import { DirectData, GroupData, MsgToClient, MsgToServer } from '../../../others/Interfaces/interfaces';
 import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react';
 import { ArrowBendUpLeft, PaperPlaneRight } from 'phosphor-react';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
@@ -15,16 +15,9 @@ interface ChatTalkProps {
   setTableSelected: Dispatch<SetStateAction<string>>;
 }
 
-export function ChatTalk(
-  { setTableSelected }: ChatTalkProps
-) {
-  const {
-    activeChat, setActiveChat,
-    peopleChat, setPeopleChat,
-    directsChat, setDirectsChat,
-    groupsChat, setGroupsChat,
-  } = useContext(ChatContext);
+export function ChatTalk({ setTableSelected }: ChatTalkProps) {
 
+  const { selectedChat, setSelectedChat, activeChat, setActiveChat } = useContext(ChatContext);
   const { intraData, setIntraData, api, config } = useContext(IntraDataContext);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
   const [groupInfoVisible, setGroupInfoVisible] = useState(false);
@@ -36,82 +29,77 @@ export function ChatTalk(
     };
   }, []);
 
+  useEffect(() => {
+    if (selectedChat)
+      serNewChat();
+  }, [selectedChat]);
+
   async function exitActiveChat() {
-    api.patch('/chat/setBreakpoint', { chatId: activeChat?.chat.id, type: activeChat?.chat.type }, config);
+    if (!activeChat)
+      return;
+    api.patch('/chat/setBreakpoint', { chatId: activeChat.chat.id, type: activeChat.chat.type }, config);
     setIntraData(prev => {
-      return {
-        ...prev,
-        directs: prev.directs.map(key => {
-          if (key.id === activeChat?.chat.id) {
-            return { ...key, newMessages: 0 };
-          }
-          return key;
-        })
-      };
+      if (activeChat.chat.type === 'direct') {
+        return {
+          ...prev,
+          directs: prev.directs.map(key => {
+            if (key.id === activeChat.chat.id) {
+              return { ...key, newMessages: 0 };
+            }
+            return key;
+          })
+        };
+      } else {
+        return {
+          ...prev,
+          groups: prev.groups.map(key => {
+            if (key.id === activeChat.chat.id) {
+              return { ...key, newMessages: 0 };
+            }
+            return key;
+          })
+        };
+      }
     });
-    setActiveChat(null);
-    setDirectsChat(null);
-    setPeopleChat(null);
-    setGroupsChat(null);
+    setSelectedChat(null);
   }
 
-  function initActiveChat(chat: DirectData) {
+  function initActiveChat(chat: DirectData | GroupData) {
     const messages: MsgToClient[] = chat.messages;
     const blocks = Math.floor((messages.length - 1) / 20);
     setActiveChat({
       chat: { ...chat, messages: messages.slice(-20) },
       newMessage: true,
-      historicMsg: messages.filter((msg: any) => msg.breakpoint !== true),
+      historicMsg: messages.filter((msg: any) => msg.type !== 'breakpoint'),
       blocks: blocks,
       currentBlock: blocks - 1
     });
   }
 
-  async function setActiveChatWithGroup(id: string) {
-    const response = await api.patch('/chat/getGroup', { id: id }, config);
+  async function serNewChat() {
+    let chat;
+    if (selectedChat?.chat === 'person') {
+      const response = await api.patch('/chat/getFriendDirect', { id: selectedChat?.chat }, config);
+      chat = response.data.directDto;
+      if (response.data.created) {
+        actionsChat.joinChat(chat.id);
+        await actionsStatus.newDirect(chat.name, chat.id);
+      }
+      setTableSelected('Directs');
+    } else if (selectedChat?.chat === 'direct') {
+      const response = await api.patch('/chat/getDirect', { id: selectedChat?.chat }, config);
+      chat = response.data;
+      setTableSelected('Directs');
+    } else {
+      const response = await api.patch('/chat/getGroup', { id: selectedChat?.chat }, config);
+      chat = response.data;
+      setTableSelected('Groups');
+    }
     if (activeChat) {
       exitActiveChat();
     }
-    initActiveChat(response.data);
-    setTableSelected('Groups');
+    initActiveChat(chat);
   }
-
-  async function setActiveChatWithDirect(id: string) {
-    const response = await api.patch('/chat/getDirect', { id: id }, config);
-    if (activeChat) {
-      exitActiveChat();
-    }
-    setTableSelected('Directs');
-    initActiveChat(response.data);
-  }
-
-  async function setActiveChatWithFriend(id: string) {
-    const response = await api.patch('/chat/getFriendDirect', { id: id }, config);
-    if (activeChat) {
-      exitActiveChat();
-    }
-    setTableSelected('Directs');
-    initActiveChat(response.data.directDto);
-    if (response.data.created) {
-      actionsChat.joinChat(response.data.directDto.id);
-      await actionsStatus.newDirect(response.data.directDto.name, response.data.directDto.id);
-    }
-  }
-
-  useEffect(() => {
-    if (groupsChat)
-      setActiveChatWithGroup(groupsChat);
-  }, [groupsChat]);
-
-  useEffect(() => {
-    if (directsChat)
-      setActiveChatWithDirect(directsChat);
-  }, [directsChat]);
-
-  useEffect(() => {
-    if (peopleChat)
-      setActiveChatWithFriend(peopleChat.login);
-  }, [peopleChat]);
 
   function handleKeyEnter(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -236,19 +224,33 @@ export function ChatTalk(
             {activeChat.chat?.messages
               .map((msg: MsgToClient, index: number) => {
                 const len = activeChat.chat?.messages?.length - 1;
-                if (msg.breakpoint) {
+
+
+                if (msg.type === 'breakpoint') {
                   return (
                     <div className='chat__talk__unread__message'
                       style={{ display: index !== len ? '' : 'none' }}
                       key={crypto.randomUUID()}
                     >
                       <div /><p>unread message: {len - index}</p><div />
-                    </div>);
+                    </div>
+                  );
+                } else if (msg.type === 'action') {
+                  return (
+                    <div className='chat__talk__action__message'
+                      key={crypto.randomUUID()}
+                    >
+                      <p>{msg.user.login} {msg.msg}</p>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <ChatMessage
+                      key={crypto.randomUUID()}
+                      user={intraData.login}
+                      message={msg} />
+                  );
                 }
-                return < ChatMessage
-                  key={crypto.randomUUID()}
-                  user={intraData.login}
-                  message={msg} />;
               })
             }
           </div>

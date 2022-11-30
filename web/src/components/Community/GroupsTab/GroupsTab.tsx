@@ -7,16 +7,18 @@ import { CardGroup } from '../CardGroup/CardGroup';
 import { Modal } from '../../Modal/Modal';
 import { CreateGroup } from './CreateGroup/CreateGroup';
 import { useQuery } from 'react-query';
+import { ChatContext } from '../../../contexts/ChatContext';
 
 export function GroupsTab() {
 
   const [isTableSearch, setIsTableSearch] = useState(false);
   const [createGroupModal, setCreateGroupModal] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-  const { api, config, intraData } = useContext(IntraDataContext);
+  const { api, config } = useContext(IntraDataContext);
+  const { updateGroup } = useContext(ChatContext);
 
   const { data, status } = useQuery(
-    ['getCommunityGroups', intraData],
+    ['getCommunityGroups', updateGroup ],
     async () => {
       const response = await api.get('/chat/getCommunityGroups', config);
       return response.data;

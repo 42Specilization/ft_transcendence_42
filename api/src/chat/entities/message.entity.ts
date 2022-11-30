@@ -39,7 +39,7 @@ export class Message extends BaseEntity {
   msg: string;
 
   @ApiProperty()
-  @Column({ default: false })
-  breakproint: boolean;
+  @Column({ default: 'message' })
+  type: string;
 
 }

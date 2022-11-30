@@ -72,7 +72,6 @@ const actionsStatus = {
   },
 
   newFriend(userSource: string) {
-    // console.log('no newFriend', userSource, stateStatus.socket);
     stateStatus.socket?.emit('newFriend', userSource);
   },
 
@@ -85,7 +84,6 @@ const actionsStatus = {
   },
 
   removeFriend(friend: string) {
-    // console.log(friend);
     stateStatus.socket?.emit('removeFriend', friend);
   },
 
@@ -293,17 +291,46 @@ const actionsStatus = {
       stateStatus.setIntraData((prevIntraData) => {
         return {
           ...prevIntraData,
-          directs: prevIntraData.directs
-            .sort((a, b) => {
-              if (a.date < b.date)
-                return 1;
-              return -1;
-            })
+          directs: prevIntraData.directs.sort((a, b) => a.date < b.date ? 1 : -1)
         };
       });
     }
   },
 
+  async updateGroup() {
+    if (stateStatus.setIntraData) {
+      const user = await getUserInDb();
+      stateStatus.setIntraData((prev) => {
+        return { ...prev,groups: user.groups };
+      });
+    }
+  },
+
+  async updateGroupInfos(message: MsgToClient) {
+    if (stateStatus.setIntraData) {
+      stateStatus.setIntraData((prev) => {
+        return {
+          ...prev,
+          groups: prev.groups.map((key) => {
+            if (key.id === message.chat) {
+              return {
+                ...key,
+                date: message.date,
+                newMessages: key.newMessages + 1
+              };
+            }
+            return key;
+          }),
+        };
+      });
+      stateStatus.setIntraData((prev) => {
+        return {
+          ...prev,
+          groups: prev.groups.sort((a, b) => a.date < b.date ? 1 : -1)
+        };
+      })
+    };
+  },
 
 };
 

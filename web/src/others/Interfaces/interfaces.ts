@@ -78,7 +78,7 @@ export interface MsgToClient {
   user: UserMsg;
   date: Date;
   msg: string;
-  breakpoint: boolean;
+  type: string;
 }
 
 export interface IntraData {

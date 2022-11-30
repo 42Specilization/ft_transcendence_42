@@ -28,9 +28,12 @@ export function createSocketChat({
     actionsChat.joinAll();
   });
 
-  socket.on('msgToClient', (message: MsgToClient) => {
-    actionsChat.msgToClient(message);
-    // console.log('msg to client:', message);
+  socket.on('msgToClient', (message: MsgToClient, type: string) => {
+    actionsChat.msgToClient(message, type);
+  });
+
+  socket.on('updateGroup', () => {
+    actionsChat.updateGroup();
   });
 
   return socket;

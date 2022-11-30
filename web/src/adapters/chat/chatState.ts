@@ -14,13 +14,15 @@ import {
 export interface AppStateChat {
   socket?: Socket;
   setActiveChat?: Dispatch<SetStateAction<ActiveChatData | null>> | null;
+  setUpdateGroup?: Dispatch<SetStateAction<number>>;
 }
 
 const stateChat = proxy<AppStateChat>({});
 
 const actionsChat = {
   initializeSocketChat: (
-    setActiveChat: Dispatch<SetStateAction<ActiveChatData | null>>
+    setActiveChat: Dispatch<SetStateAction<ActiveChatData | null>>,
+    setUpdateGroup: Dispatch<SetStateAction<number>>
   ): void => {
 
     if (!stateChat.socket) {
@@ -32,11 +34,13 @@ const actionsChat = {
       };
       stateChat.socket = ref(createSocketChat(createSocketOptions));
       stateChat.setActiveChat = ref(setActiveChat);
+      stateChat.setUpdateGroup = ref(setUpdateGroup);
       return;
     }
     if (!stateChat.socket.connected) {
       stateChat.socket.connect();
       stateChat.setActiveChat = ref(setActiveChat);
+      stateChat.setUpdateGroup = ref(setUpdateGroup);
       return;
     }
   },
@@ -56,16 +60,12 @@ const actionsChat = {
     stateChat.socket?.emit('joinChat', id);
   },
 
-  joinGroup(id: string, login: string) {
-    stateChat.socket?.emit('joinGroup', { id: id, login: login });
+  joinGroup(id: string, email: string) {
+    stateChat.socket?.emit('joinGroup', { id: id, email: email });
   },
 
-  leaveGroup(id: string, login: string) {
-    stateChat.socket?.emit('joinGroup', { id: id, login: login });
-  },
-
-  leaveChat(id: string) {
-    stateChat.socket?.emit('leaveChat', id);
+  leaveGroup(id: string, email: string) {
+    stateChat.socket?.emit('joinGroup', { id: id, email: email });
   },
 
   async msgToServer(message: MsgToServer, type: string) {
@@ -73,7 +73,7 @@ const actionsChat = {
 
   },
 
-  async msgToClient(message: MsgToClient) {
+  async msgToClient(message: MsgToClient, type: string) {
     if (stateChat.setActiveChat) {
       stateChat.setActiveChat((prev: ActiveChatData | null) => {
         if (prev && prev.chat.id === message.chat) {
@@ -94,7 +94,16 @@ const actionsChat = {
         return prev;
       });
     }
-    actionsStatus.updateDirectInfos(message);
+    if (type === 'direct')
+      actionsStatus.updateDirectInfos(message);
+    else
+      actionsStatus.updateGroupInfos(message);
+  },
+
+  async updateGroup() {
+    actionsStatus.updateGroup();
+    if (stateChat.setUpdateGroup)
+      stateChat.setUpdateGroup(Date.now());
   },
 };
 

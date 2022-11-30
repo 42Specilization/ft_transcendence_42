@@ -7,7 +7,6 @@ import { GroupCardData } from '../../../others/Interfaces/interfaces';
 import { Link } from 'react-router-dom';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsChat } from '../../../adapters/chat/chatState';
-import { getUserInDb } from '../../../others/utils/utils';
 
 interface CardGroupProps {
   group: GroupCardData;
@@ -15,37 +14,24 @@ interface CardGroupProps {
 
 export function CardGroup({ group }: CardGroupProps) {
 
-  const { api, config, intraData, setIntraData } = useContext(IntraDataContext);
-  const { setGroupsChat } = useContext(ChatContext);
+  const { intraData } = useContext(IntraDataContext);
+  const { setSelectedChat } = useContext(ChatContext);
   const [activeMenu, setActiveMenu] = useState(false);
 
   function handleSendMessage(e: any) {
     if (e.target.id === 'card__group__community')
-      setGroupsChat(group.id);
+      setSelectedChat({
+        chat: group.id,
+        type: 'group'
+      });
   }
 
-  async function handleJoinGroup() {
-    await api.patch('/chat/joinGroup', { id: group.id }, config);
-    actionsChat.joinGroup(group.id, intraData.login);
-    const user = await getUserInDb();
-    setIntraData((prev) => {
-      return {
-        ...prev,
-        groups: user.groups,
-      };
-    });
+  function handleJoinGroup() {
+    actionsChat.joinGroup(group.id, intraData.email);
   }
 
-  async function handleLeaveGroup() {
-    await api.patch('/chat/leaveGroup', { id: group.id }, config);
-    actionsChat.leaveGroup(group.id, intraData.login);
-    const user = await getUserInDb();
-    setIntraData((prev) => {
-      return {
-        ...prev,
-        groups: user.groups,
-      };
-    });
+  function handleLeaveGroup() {
+    actionsChat.leaveGroup(group.id, intraData.email);
   }
 
   return (

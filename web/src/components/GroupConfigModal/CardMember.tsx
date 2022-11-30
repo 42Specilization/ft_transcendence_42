@@ -15,14 +15,13 @@ interface CardMemberProps {
 export function CardMember({ member, id }: CardMemberProps) {
 
   const [activeMenu, setActiveMenu] = useState(false);
-  const { setPeopleChat } = useContext(ChatContext);
+  const { setSelectedChat } = useContext(ChatContext);
   const { api, config } = useContext(IntraDataContext);
 
   function handleSendMessage() {
-    setPeopleChat({
-      status: 'offline',
-      login: member.name,
-      image_url: member.image,
+    setSelectedChat({
+      chat: member.name,
+      type: 'person'
     });
   }
 
@@ -69,7 +68,7 @@ export function CardMember({ member, id }: CardMemberProps) {
         <div id='card__friend__menu__body' className='card__friend__menu__body'
           style={{ height: activeMenu ? '190px' : '0px', width: activeMenu ? '80px' : '0px' }}>
 
-                  
+
           <button className='card__friend__menu__button'
             onClick={() => console.log('Desafiou ')}
             data-html={true}

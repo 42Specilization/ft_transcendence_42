@@ -150,25 +150,6 @@ export class ChatController {
     return { message: 'success' };
   }
 
-  @Patch('/joinGroup')
-  @UseGuards(JwtAuthGuard)
-  async joinGroup(
-    @Body() getGroupDto: GetGroupDto,
-    @GetUserFromJwt() userFromJwt: UserFromJwt
-  ) {
-    await this.chatService.joinGroup(userFromJwt.email, getGroupDto.id);
-    return { message: 'success' };
-  }
-
-  @Patch('/leaveGroup')
-  @UseGuards(JwtAuthGuard)
-  async leaveGroup(
-    @Body() getGroupDto: GetGroupDto,
-    @GetUserFromJwt() userFromJwt: UserFromJwt
-  ) {
-    await this.chatService.leaveGroup(userFromJwt.email, getGroupDto.id);
-    return { message: 'success' };
-  }
 
   @Patch('/removeMember')
   @UseGuards(JwtAuthGuard)

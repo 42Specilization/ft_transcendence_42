@@ -57,7 +57,6 @@ export class ChatService {
 
   }
 
-
   async findDirectById(id: string): Promise<Direct> {
     const direct: Direct | null = await this.directRepository.findOne({
       where: { id: id },
@@ -101,19 +100,25 @@ export class ChatService {
     return chats.map((chat) => chat.id);
   }
 
-
-  async saveMessage(msgServer: MsgToServer, type: string): Promise<MsgToClient> {
+  async saveMessage(msgServer: MsgToServer, type: string): Promise<MsgToClient | undefined> {
     const user: User = await this.userService.findUserByNick(msgServer.user) as User;
 
     const chat: Direct | Group = type === 'direct' ?
       await this.findDirectById(msgServer.chat) :
       await this.findGroupById(msgServer.chat);
 
+    if (!user || !chat)
+      throw new BadRequestException('Invalid Request saveMessage');
+
+    if (chat.users.map(e => e.email).indexOf(user.email) < 0)
+      return undefined;
+
     const msgDb = new Message();
 
     msgDb.sender = user;
     msgDb.date = new Date(Date.now());
     msgDb.msg = msgServer.msg;
+    msgDb.type = 'message';
 
     chat.messages.push(msgDb);
     chat.date = msgDb.date;
@@ -130,7 +135,7 @@ export class ChatService {
         user: { login: user.nick, image: user.imgUrl },
         date: msgDb.date,
         msg: msgDb.msg,
-        breakpoint: false,
+        type: msgDb.type,
       };
       return msgClient;
     } catch (err) {
@@ -139,7 +144,6 @@ export class ChatService {
 
   }
 
-  // Proteger pra quando o usuario for bloqueado ou o chat nao existir mais
   async setBreakpointController(email: string, chatId: string, type: string) {
     const user = await this.userService.findUserDirectByEmail(email);
     if (!user)
@@ -156,11 +160,12 @@ export class ChatService {
   async setBreakpoint(user: User, chat: Direct | Group, type: string) {
     let index = 0;
     chat.messages.forEach((msg, i) => {
-      if (msg.breakproint === true && msg.sender.nick === user?.nick)
+      if (msg.type === 'breakpoint' && msg.sender.nick === user?.nick)
         index = i;
     });
 
-
+    if (index === chat.messages.length)
+      return;
     chat.messages[index].date = new Date(Date.now());
 
     try {
@@ -174,11 +179,10 @@ export class ChatService {
 
   }
 
-
   async getBreakpoint(messages: MsgToClient[] | undefined): Promise<number> {
 
     let newMessages = 0;
-    const breakpoint: Date | undefined = messages?.filter((msg) => msg.breakpoint === true).at(0)?.date;
+    const breakpoint: Date | undefined = messages?.filter((msg) => msg.type === 'breakpoint').at(0)?.date;
     if (breakpoint) {
       messages?.forEach(msg => {
         if (msg.date > breakpoint)
@@ -187,7 +191,6 @@ export class ChatService {
     }
     return newMessages;
   }
-
 
   async createDirectDto(direct: Direct, owner: User | undefined, friend: User | undefined, type: string): Promise<DirectDto> {
     const directDto: DirectDto = {
@@ -200,8 +203,8 @@ export class ChatService {
     };
 
     const messages: MsgToClient[] = direct.messages
-      .filter(msg => msg.breakproint === false
-        || (msg.breakproint === true && msg.sender.nick === owner?.nick))
+      .filter(msg => msg.type !== 'breakpoint'
+        || (msg.type === 'breakpoint' && msg.sender.nick === owner?.nick))
       .map((message: Message) => {
         return {
           id: message.id,
@@ -212,7 +215,7 @@ export class ChatService {
           },
           date: message.date,
           msg: message.msg,
-          breakpoint: message.breakproint,
+          type: message.type,
         };
       });
 
@@ -236,7 +239,6 @@ export class ChatService {
     return directs;
   }
 
-
   async getDirect(owner_email: string, id: string): Promise<DirectDto> {
     const direct = await this.findDirectById(id);
     if (!direct)
@@ -248,7 +250,6 @@ export class ChatService {
     return this.createDirectDto(direct, owner, friend, 'activeDirect');
   }
 
-  // Impedir a criação de chats com pessoas bloqueadas
   async getFriendDirect(owner_email: string, friend_login: string) {
 
     const owner = await this.userService.findUserDirectByEmail(owner_email);
@@ -279,13 +280,13 @@ export class ChatService {
       ownerBreakpoint.sender = owner;
       ownerBreakpoint.date = new Date(Date.now());
       ownerBreakpoint.msg = '';
-      ownerBreakpoint.breakproint = true;
+      ownerBreakpoint.type = 'breakpoint';
 
       const friendBreakpoint = new Message();
       friendBreakpoint.sender = friend;
       friendBreakpoint.date = new Date(Date.now());
       friendBreakpoint.msg = '';
-      friendBreakpoint.breakproint = true;
+      friendBreakpoint.type = 'breakpoint';
 
       newDirect.messages = [friendBreakpoint, ownerBreakpoint];
       try {
@@ -318,8 +319,8 @@ export class ChatService {
     };
 
     const messages: MsgToClient[] = group.messages
-      .filter(msg => msg.breakproint === false
-        || (msg.breakproint === true && msg.sender.nick === owner?.nick))
+      .filter(msg => msg.type !== 'breakpoint'
+        || (msg.type === 'breakpoint' && msg.sender.nick === owner?.nick))
       .map((message: Message) => {
         return {
           id: message.id,
@@ -330,28 +331,12 @@ export class ChatService {
           },
           date: message.date,
           msg: message.msg,
-          breakpoint: message.breakproint,
+          type: message.type,
         };
       });
 
     if (type === 'activeGroup') {
       groupDto.messages = messages;
-      // groupDto.owner = {
-      //   name: group.owner.nick,
-      //   image: group.owner.imgUrl
-      // };
-      // groupDto.admins = group.admins.map((user: User) => {
-      //   return {
-      //     name: user.nick,
-      //     image: user.imgUrl,
-      //   };
-      // });
-      // groupDto.members = group.users.map((user: User) => {
-      //   return {
-      //     name: user.nick,
-      //     image: user.imgUrl,
-      //   };
-      // });
     }
 
     groupDto.newMessages = await this.getBreakpoint(messages);
@@ -372,7 +357,6 @@ export class ChatService {
     });
   }
 
-
   async createGroup(group: CreateGroupDto) {
 
     const owner = await this.userService.findUserGroupByNick(group.owner);
@@ -382,32 +366,24 @@ export class ChatService {
 
     const newGroup = new Group();
 
-    const ownerBreakpoint = new Message();
-    ownerBreakpoint.sender = owner;
-    ownerBreakpoint.date = new Date(Date.now());
-    ownerBreakpoint.msg = '';
-    ownerBreakpoint.breakproint = true;
-
     newGroup.type = group.type;
     newGroup.name = group.name;
     newGroup.password = group.password ? bcrypt.hashSync(group.password, 8) : null;
     newGroup.image = group.image ? group.image : 'userDefault.png';
-
     newGroup.owner = owner;
-    newGroup.users = [owner];
+    newGroup.users = [];
     newGroup.admins = [];
-    newGroup.messages = [ownerBreakpoint];
+    newGroup.messages = [];
     newGroup.groupController = [];
     newGroup.date = new Date(Date.now());
 
     try {
       await this.groupRepository.save(newGroup);
+      return newGroup.id;
     } catch (err) {
       console.log(err);
       throw new InternalServerErrorException('Error saving group in db');
     }
-
-    return await this.createGroupDto(newGroup, owner, 'activeGroup');
   }
 
   async getGroup(owner_email: string, id: string) {
@@ -536,47 +512,103 @@ export class ChatService {
     }
   }
 
-
-  async joinGroup(user_email: string, id: string) {
+  async joinGroup(user_email: string, id: string): Promise<MsgToClient | null | undefined> {
     const user = await this.userService.findUserGroupByEmail(user_email);
     const group = await this.findGroupById(id);
     if (!user || !group)
       throw new BadRequestException('Invalid Request joinGroup');
+
+    if (group.users.map(e => e.email).indexOf(user_email) >= 0)
+      return undefined;
+
+    const firstUser: boolean = group.users.length === 0
+
+    const join = new Message();
+    join.sender = user;
+    join.date = new Date(Date.now());
+    join.msg = 'joined the group';
+    join.type = 'action';
+
+    const breakpoint = new Message();
+    breakpoint.sender = user;
+    breakpoint.date = new Date(Date.now());
+    breakpoint.msg = '';
+    breakpoint.type = 'breakpoint';
 
     group.users.push(user);
+    if (!firstUser)
+      group.messages.push(join);
+    group.messages.push(breakpoint);
+
+
     try {
-      group.save();
+      await group.save();
+      if (firstUser)
+        return null;
+      const msgClient: MsgToClient = {
+        id: join.id,
+        chat: id,
+        user: { login: user.nick, image: user.imgUrl },
+        date: join.date,
+        msg: join.msg,
+        type: join.type,
+      };
+      return msgClient;
     } catch (err) {
       throw new InternalServerErrorException('Error sabing group joinGroup');
     }
   }
 
-
-  async leaveGroup(user_email: string, id: string) {
+  async leaveGroup(user_email: string, id: string): Promise<MsgToClient | null | undefined> {
     const user = await this.userService.findUserGroupByEmail(user_email);
     const group = await this.findGroupById(id);
     if (!user || !group)
       throw new BadRequestException('Invalid Request joinGroup');
 
-    group.users = group.users.filter((key) => {
-      if (key.email === user.email)
-        return;
-      return key;
-    });
+    if (group.users.map(e => e.email).indexOf(user_email) < 0)
+      return undefined;
+
+    const lastUser: boolean = group.users.length === 1
+
+    const leave = new Message();
+    leave.sender = user;
+    leave.date = new Date(Date.now());
+    leave.msg = 'leaved the group';
+    leave.type = 'action';
+
+    group.users = group.users.filter((key) => key.email !== user.email);
+    group.messages = group.messages.filter(key =>
+      !(key.type === 'breakpoint' && key.sender.email === user_email));
+
+    if (!lastUser)
+      group.messages.push(leave);
 
     try {
-      group.save();
+      await group.save();
+      if (lastUser) {
+        await this.groupRepository.delete(group.id);
+        return null;
+      }
+      const msgClient: MsgToClient = {
+        id: leave.id,
+        chat: id,
+        user: { login: user.nick, image: user.imgUrl },
+        date: leave.date,
+        msg: leave.msg,
+        type: leave.type,
+      };
+      return msgClient;
     } catch (err) {
       throw new InternalServerErrorException('Error sabing group joinGroup');
     }
   }
-  
+
   async removeMember(user_email: string, removeMemberDto: RemoveMemberDto) {
     const user = await this.userService.findUserGroupByEmail(user_email);
     const group = await this.findGroupById(removeMemberDto.id);
     if (!group)
       throw new BadRequestException('Group not found joinGroup');
-    
+
     if (!user || user.nick !== group.owner.nick)
       throw new UnauthorizedException('Permission denied');
 
@@ -592,7 +624,5 @@ export class ChatService {
       throw new InternalServerErrorException('Error sabing group joinGroup');
     }
   }
-
-
 
 }

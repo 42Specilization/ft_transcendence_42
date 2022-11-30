@@ -19,10 +19,6 @@ export function NavBar({ Children }: NavBarProps) {
   const [menuVisible, setMenuVisible] = useState(false);
   const [notifyVisible, setNotifyVisible] = useState(false);
 
-  //changeNewFriend ---
-  //ChangeNotify  -- notificações carregadas corretamente
-
-
   const menuRef: React.RefObject<HTMLDivElement> = useRef(null);
   const notifyRef: React.RefObject<HTMLDivElement> = useRef(null);
 
@@ -32,7 +28,6 @@ export function NavBar({ Children }: NavBarProps) {
         return {
           ...prevIntraData,
           image_url: `${intraData.image_url}`
-          // image_url: `/public/${intraData.image_url}`
         };
       });
     }

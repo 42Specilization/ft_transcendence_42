@@ -9,10 +9,13 @@ interface CardGroupProps {
 }
 
 export function CardGroup({ chat }: CardGroupProps) {
-  const { setGroupsChat, activeChat } = useContext(ChatContext);
+  const { setSelectedChat, activeChat } = useContext(ChatContext);
 
   function setChat(chat: DirectData) {
-    setGroupsChat(chat.id);
+    setSelectedChat({
+      chat: chat.id,
+      type: 'group'
+    });
   }
 
   function newMessagesVisible() {

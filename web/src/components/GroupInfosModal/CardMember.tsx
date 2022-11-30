@@ -12,19 +12,16 @@ interface CardMemberProps {
 }
 
 export function CardMember({ member, id }: CardMemberProps) {
-  
+
   const [activeMenu, setActiveMenu] = useState(false);
-  const { setPeopleChat } = useContext(ChatContext);
+  const { setSelectedChat } = useContext(ChatContext);
 
   function handleSendMessage() {
-    setPeopleChat({
-      status: 'offline',
-      login: member.name,
-      image_url: member.image,
+    setSelectedChat({
+      chat: member.name,
+      type: 'person'
     });
   }
-
-
 
   return (
     <div className='card__member'

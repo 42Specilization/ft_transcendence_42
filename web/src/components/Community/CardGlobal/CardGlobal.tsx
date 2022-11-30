@@ -20,7 +20,7 @@ export function CardGlobal({ image_url, login, ratio }: CardGlobalProps) {
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
   const [modalErrorVisible, setModalErrorVisible] = useState(false);
   const { api, config } = useContext(IntraDataContext);
-  const { setPeopleChat } = useContext(ChatContext);
+  const { setSelectedChat } = useContext(ChatContext);
 
   function selectAction(e: any) {
     if (e.target.id === 'cardGlobal') {
@@ -29,10 +29,9 @@ export function CardGlobal({ image_url, login, ratio }: CardGlobalProps) {
   }
 
   function handleSendMessage() {
-    setPeopleChat({
-      status: 'offline',
-      login: login,
-      image_url: image_url,
+    setSelectedChat({
+      chat: login,
+      type: 'person',
     });
   }
 

@@ -9,10 +9,13 @@ interface CardDirectProps {
 }
 
 export function CardDirect({ chat }: CardDirectProps) {
-  const { setDirectsChat, activeChat } = useContext(ChatContext);
+  const { setSelectedChat, activeChat } = useContext(ChatContext);
 
   function setChat(chat: DirectData) {
-    setDirectsChat(chat.id);
+    setSelectedChat({
+      chat: chat.id,
+      type: 'direct'
+    });
   }
 
   function newMessagesVisible() {

@@ -15,7 +15,7 @@ interface CardFriendProps {
 
 export function CardFriend({ friend }: CardFriendProps) {
 
-  const { setPeopleChat } = useContext(ChatContext);
+  const { setSelectedChat } = useContext(ChatContext);
   const { setIntraData, api, config } = useContext(IntraDataContext);
   const [activeMenu, setActiveMenu] = useState(false);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
@@ -25,7 +25,7 @@ export function CardFriend({ friend }: CardFriendProps) {
   }
 
   function handleSendMessage() {
-    setPeopleChat(friend);
+    setSelectedChat({chat: friend.login, type: 'friend'});
   }
 
   async function handleRemoveFriend() {
