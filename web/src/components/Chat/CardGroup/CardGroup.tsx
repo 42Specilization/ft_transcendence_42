@@ -12,10 +12,7 @@ export function CardGroup({ chat }: CardGroupProps) {
   const { setSelectedChat, activeChat } = useContext(ChatContext);
 
   function setChat(chat: DirectData) {
-    setSelectedChat({
-      chat: chat.id,
-      type: 'group'
-    });
+    setSelectedChat({ chat: chat.id, type: 'group' });
   }
 
   function newMessagesVisible() {

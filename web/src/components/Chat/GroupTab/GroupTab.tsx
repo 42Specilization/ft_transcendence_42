@@ -48,6 +48,7 @@ export function GroupTab() {
       </div>
       < div className='group__tab__body'>
         {
+          intraData.groups &&
           intraData.groups.filter((obj: GroupData) => obj.name?.includes(searchInput))
             .map((obj: GroupData) => (
               <CardGroup key={crypto.randomUUID()} chat={obj} />

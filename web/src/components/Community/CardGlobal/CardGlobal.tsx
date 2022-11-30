@@ -29,10 +29,7 @@ export function CardGlobal({ image_url, login, ratio }: CardGlobalProps) {
   }
 
   function handleSendMessage() {
-    setSelectedChat({
-      chat: login,
-      type: 'person',
-    });
+    setSelectedChat({ chat: login, type: 'person' });
   }
 
   async function sendFriendRequest() {

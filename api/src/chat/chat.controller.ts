@@ -12,7 +12,7 @@ import { GetUserFromJwt } from 'src/auth/decorators/get-user.decorator';
 import { UserFromJwt } from 'src/auth/dto/UserFromJwt.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
-import { DirectDto, GetDirectDto, DeleteDirectDto, CreateGroupDto, GetGroupDto, UpdateGroupDto, RemoveMemberDto } from './dto/chat.dto';
+import { DirectDto, GetDirectDto, DeleteDirectDto, CreateGroupDto, GetGroupDto, UpdateGroupDto, RemoveMemberDto, GroupInviteDto } from './dto/chat.dto';
 import { BadRequestException } from '@nestjs/common';
 
 @Controller('chat')
@@ -130,13 +130,13 @@ export class ChatController {
     return await this.chatService.getGroup(userFromJwt.email, getGroupDto.id);
   }
 
-  @Patch('/getGroupInfosById')
+  @Patch('/getProfileGroupById')
   @UseGuards(JwtAuthGuard)
-  async getGroupInfosById(
+  async getProfileGroupById(
     @Body() getGroupDto: GetGroupDto,
     // @GetUserFromJwt() userFromJwt: UserFromJwt
   ) {
-    return await this.chatService.getGroupInfosById(getGroupDto.id);
+    return await this.chatService.getProfileGroupById(getGroupDto.id);
   }
 
 
@@ -158,6 +158,17 @@ export class ChatController {
     @GetUserFromJwt() userFromJwt: UserFromJwt
   ) {
     await this.chatService.removeMember(userFromJwt.email, removeMeberDto);
+    return { message: 'success' };
+  }
+
+
+  @Patch('/sendGroupInvite')
+  @UseGuards(JwtAuthGuard)
+  async sendGroupInvite(
+    @Body() groupInviteDto: GroupInviteDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.chatService.sendGroupInvite(userFromJwt.email, groupInviteDto);
     return { message: 'success' };
   }
 

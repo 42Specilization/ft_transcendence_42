@@ -93,6 +93,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.logger.debug(`Client ${client.id} join a group: |${id}|`);
   }
 
+  @SubscribeMessage('kickMember')
+  async handleKickMember(@ConnectedSocket() client: Socket,
+    @MessageBody() { id, email, login }: { id: string, email: string, login: string }) {
+    const msgToClient: MsgToClient | null = await this.chatService.kickMember(email, login, id);
+    if (!msgToClient)
+      return;
+    console.log(msgToClient);
+    this.server.to(id).emit('msgToClient', msgToClient);
+    this.server.to(id).emit('removeGroup', id, login);
+    this.logger.debug(`Client ${client.id} login: |${login}| has been kicked the group: |${id}|`);
+  }
+
 
   @SubscribeMessage('msgToServer')
   async handleMsgToServer(@ConnectedSocket() client: Socket,

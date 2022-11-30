@@ -4,12 +4,13 @@ import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { MsgToClient, MsgToServer } from './chat.class';
-import { CreateGroupDto, DirectDto, GroupDto, UpdateGroupDto, GroupInfoDto, GroupCommunityDto, RemoveMemberDto } from './dto/chat.dto';
+import { CreateGroupDto, DirectDto, GroupDto, UpdateGroupDto, GroupInfoDto, GroupCommunityDto, RemoveMemberDto, GroupInviteDto } from './dto/chat.dto';
 import { Direct } from './entities/direct.entity';
 import { Group } from './entities/group.entity';
 import { Message } from './entities/message.entity';
 import * as bcrypt from 'bcrypt';
 import * as fs from 'fs';
+import { Notify } from 'src/notification/entities/notify.entity';
 
 @Injectable()
 export class ChatService {
@@ -85,7 +86,11 @@ export class ChatService {
         'messages',
         'messages.group',
         'messages.sender',
-      ]
+      ], order: {
+        messages: {
+          date: 'asc'
+        }
+      }
     });
     if (!group)
       throw new NotFoundException('Group not found');
@@ -160,11 +165,13 @@ export class ChatService {
   async setBreakpoint(user: User, chat: Direct | Group, type: string) {
     let index = 0;
     chat.messages.forEach((msg, i) => {
-      if (msg.type === 'breakpoint' && msg.sender.nick === user?.nick)
+      if (msg.type === 'breakpoint' && msg.sender.nick === user.nick)
         index = i;
     });
 
-    if (index === chat.messages.length)
+    if (index === chat.messages.length
+      || chat.messages[index].type !== 'breakpoint'
+      || chat.messages[index].sender.nick !== user.nick)
       return;
     chat.messages[index].date = new Date(Date.now());
 
@@ -396,7 +403,7 @@ export class ChatService {
     return this.createGroupDto(group, owner, 'activeGroup');
   }
 
-  async getGroupInfosById(id: string) {
+  async getProfileGroupById(id: string) {
     const group = await this.findGroupInfosById(id);
     if (!group)
       throw new BadRequestException('Invalid group GetGroup');
@@ -521,7 +528,7 @@ export class ChatService {
     if (group.users.map(e => e.email).indexOf(user_email) >= 0)
       return undefined;
 
-    const firstUser: boolean = group.users.length === 0
+    const firstUser: boolean = group.users.length === 0;
 
     const join = new Message();
     join.sender = user;
@@ -531,7 +538,7 @@ export class ChatService {
 
     const breakpoint = new Message();
     breakpoint.sender = user;
-    breakpoint.date = new Date(Date.now());
+    breakpoint.date = new Date(Date.now() + 1);
     breakpoint.msg = '';
     breakpoint.type = 'breakpoint';
 
@@ -539,7 +546,6 @@ export class ChatService {
     if (!firstUser)
       group.messages.push(join);
     group.messages.push(breakpoint);
-
 
     try {
       await group.save();
@@ -568,7 +574,7 @@ export class ChatService {
     if (group.users.map(e => e.email).indexOf(user_email) < 0)
       return undefined;
 
-    const lastUser: boolean = group.users.length === 1
+    const lastUser: boolean = group.users.length === 1;
 
     const leave = new Message();
     leave.sender = user;
@@ -603,6 +609,70 @@ export class ChatService {
     }
   }
 
+  async kickMember(user_email: string, removed_login: string, chat: string): Promise<MsgToClient | null> {
+    const user = await this.userService.findUserGroupByEmail(user_email);
+    const removed = await this.userService.findUserGroupByNick(removed_login);
+    const group = await this.findGroupById(chat);
+
+    if (!group || !user || !removed)
+      throw new InternalServerErrorException('Infos not found kickMember');
+
+    if (user.nick !== group.owner.nick) // pensar o que fazer nessa porra desse trol aqui
+      throw new UnauthorizedException('Permission denied');
+
+    if (group.users.map(e => e.nick).indexOf(removed.nick) < 0)
+      return null;
+
+    if (user.nick === removed.nick)
+      return null;
+
+    const kick = new Message();
+    kick.sender = removed;
+    kick.date = new Date(Date.now());
+    kick.msg = 'has been kicked the group';
+    kick.type = 'action';
+
+    group.users = group.users.filter((key) => key.nick !== removed.nick);
+    group.messages = group.messages.filter(key =>
+      !(key.type === 'breakpoint' && key.sender.nick === removed.nick));
+
+    group.messages.push(kick);
+
+    try {
+      await group.save();
+      const msgClient: MsgToClient = {
+        id: kick.id,
+        chat: chat,
+        user: { login: removed.nick, image: removed.imgUrl },
+        date: kick.date,
+        msg: kick.msg,
+        type: kick.type,
+      };
+      return msgClient;
+    } catch (err) {
+      throw new InternalServerErrorException('Error sabing group joinGroup');
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    try {
+      group.save();
+    } catch (err) {
+      throw new InternalServerErrorException('Error sabing group joinGroup');
+    }
+  }
+
   async removeMember(user_email: string, removeMemberDto: RemoveMemberDto) {
     const user = await this.userService.findUserGroupByEmail(user_email);
     const group = await this.findGroupById(removeMemberDto.id);
@@ -622,6 +692,53 @@ export class ChatService {
       group.save();
     } catch (err) {
       throw new InternalServerErrorException('Error sabing group joinGroup');
+    }
+  }
+
+
+  async sendGroupInvite(user_email: string, groupInviteDto: GroupInviteDto) {
+    const user = await this.userService.findUserByEmail(user_email);
+    const friend = await this.userService.findUserByNick(groupInviteDto.name);
+    const group = await this.findGroupById(groupInviteDto.groupId);
+
+    if (!friend || !user || !group)
+      throw new InternalServerErrorException('User not found');
+    // if (user && friend && user.nick === friend.nick) {
+    //   throw new BadRequestException('You cant add yourself');
+    // }
+
+    // console.log('passou das validações')
+
+    const newNotify = new Notify();
+    newNotify.type = 'group';
+    newNotify.user_source = user;
+    newNotify.date = new Date(Date.now());
+    newNotify.additional_info = group.id;
+
+    if (friend.notify?.length === 0) {
+      friend.notify = [];
+    }
+
+    const duplicated = friend.notify.filter((friendNotify) => {
+      if (friendNotify.type == newNotify.type && friendNotify.user_source.nick == newNotify.user_source.nick)
+        return friendNotify;
+      return;
+    });
+
+    if (duplicated.length > 0)
+      throw new BadRequestException('This user already your order');
+
+    // if (group.users.map(e => e.email).indexOf(user_email) >= 0)
+    //   throw new BadRequestException('This user already in group');
+
+    if (this.userService.isBlocked(user, friend) || this.userService.isBlocked(friend, user))
+      return;
+
+    friend.notify?.push(newNotify);
+    try {
+      friend.save();
+    } catch (err) {
+      console.log(err);
     }
   }
 

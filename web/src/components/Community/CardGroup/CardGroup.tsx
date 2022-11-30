@@ -7,6 +7,7 @@ import { GroupCardData } from '../../../others/Interfaces/interfaces';
 import { Link } from 'react-router-dom';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsChat } from '../../../adapters/chat/chatState';
+import { ProfileGroupModal } from '../../ProfileGroupModal/ProfileGroupModal';
 
 interface CardGroupProps {
   group: GroupCardData;
@@ -17,13 +18,10 @@ export function CardGroup({ group }: CardGroupProps) {
   const { intraData } = useContext(IntraDataContext);
   const { setSelectedChat } = useContext(ChatContext);
   const [activeMenu, setActiveMenu] = useState(false);
+  const [profileGroupVisible, setProfileGroupVisible] = useState(false);
 
-  function handleSendMessage(e: any) {
-    if (e.target.id === 'card__group__community')
-      setSelectedChat({
-        chat: group.id,
-        type: 'group'
-      });
+  function handleSendMessage() {
+    setSelectedChat({ chat: group.id, type: 'group' });
   }
 
   function handleJoinGroup() {
@@ -34,9 +32,15 @@ export function CardGroup({ group }: CardGroupProps) {
     actionsChat.leaveGroup(group.id, intraData.email);
   }
 
+  function selectProfileGroupVisible(e: any) {
+    if (e.target.id === 'card__group__community') {
+      setProfileGroupVisible((prev) => !prev);
+    }
+  }
+
   return (
     <div id='card__group__community' className='card__group__community'
-      onClick={() => console.log('clicou no bagulho')}
+      onClick={(e) => selectProfileGroupVisible(e)}
     >
       <div id='card__group__community' className='card__group__community__icon'
         style={{ backgroundImage: `url(${group.image})` }}>
@@ -103,6 +107,10 @@ export function CardGroup({ group }: CardGroupProps) {
           />
         </  div>
         <ReactTooltip delayShow={50} />
+        {
+          profileGroupVisible &&
+          <ProfileGroupModal id={group.id} setProfileGroupVisible={setProfileGroupVisible} />
+        }
       </  div>
     </  div >
   );

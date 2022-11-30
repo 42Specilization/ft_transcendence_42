@@ -12,10 +12,7 @@ export function CardDirect({ chat }: CardDirectProps) {
   const { setSelectedChat, activeChat } = useContext(ChatContext);
 
   function setChat(chat: DirectData) {
-    setSelectedChat({
-      chat: chat.id,
-      type: 'direct'
-    });
+    setSelectedChat({ chat: chat.id, type: 'direct' });
   }
 
   function newMessagesVisible() {

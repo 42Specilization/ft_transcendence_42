@@ -65,7 +65,11 @@ const actionsChat = {
   },
 
   leaveGroup(id: string, email: string) {
-    stateChat.socket?.emit('joinGroup', { id: id, email: email });
+    stateChat.socket?.emit('leaveGroup', { id: id, email: email });
+  },
+
+  kickMember(id: string, email: string, login: string) {
+    stateChat.socket?.emit('kickMember', { id: id, email: email, login: login });
   },
 
   async msgToServer(message: MsgToServer, type: string) {
@@ -104,6 +108,14 @@ const actionsChat = {
     actionsStatus.updateGroup();
     if (stateChat.setUpdateGroup)
       stateChat.setUpdateGroup(Date.now());
+  },
+
+  async removeGroup(id: string, login: string) {
+    const user = await getUserInDb();
+    if (user.login === login) {
+      stateChat.socket?.emit('leaveChat', id);
+      this.updateGroup();
+    }
   },
 };
 

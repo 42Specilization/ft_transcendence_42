@@ -1,20 +1,20 @@
+import './ProfileGroup.scss';
 import { useQuery } from 'react-query';
-import { useContext} from 'react';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
-import './GroupInfos.scss';
-import { CardAdmin } from './CardAdmin';
-import { CardMember } from './CardMember';
+import { useContext } from 'react';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { CardAdmin } from '../CardAdmin/CardAdmin';
+import { CardMember } from '../CardMember/CardMember';
 
-interface GroupInfosProps {
+interface ProfileGroupProps {
   id: string | undefined;
 }
 
-export function GroupInfos({ id }: GroupInfosProps) {
+export function ProfileGroup({ id }: ProfileGroupProps) {
   const { api, config } = useContext(IntraDataContext);
   const { data, status } = useQuery(
-    'getGroupInfos',
+    'getProfileGroup',
     async () => {
-      const response = await api.patch('/chat/getGroupInfosById', { id: id }, config);
+      const response = await api.patch('/chat/getProfileGroupById', { id: id }, config);
       return response.data;
     },
     {
@@ -24,21 +24,21 @@ export function GroupInfos({ id }: GroupInfosProps) {
   );
 
   if (status === 'loading')
-    return <div className='groupInfos' />;
+    return <div className='profileGroup' />;
 
   return (
-    <div className='groupInfos'>
+    <div className='profileGroup'>
 
-      <div className='groupInfos__infos'>
-        <div className='groupInfos__infos__image'>
+      <div className='profileGroup__infos'>
+        <div className='profileGroup__infos__image'>
           <img src={data.image} alt="Group Image" />
         </div>
         <span>{data.name}</span>
-        <span>{data.owner.name}</span>
+        <span>Owner: {data.owner.name}</span>
       </div >
 
-      <div className='groupInfos__members'>
-        < div className='groupInfos__members__body'>
+      <div className='profileGroup__members'>
+        < div className='profileGroup__members__body'>
           {
             data.admins &&
             data.admins.map((obj: any) => <CardAdmin key={crypto.randomUUID()} member={obj} />)

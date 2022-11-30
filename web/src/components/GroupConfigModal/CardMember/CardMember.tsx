@@ -1,14 +1,16 @@
 import './CardMember.scss';
 import ReactTooltip from 'react-tooltip';
-import { MemberData } from '../../others/Interfaces/interfaces';
+import { MemberData } from '../../../others/Interfaces/interfaces';
 import { useContext, useState } from 'react';
 import { CrownSimple, DotsThreeVertical, Prohibit, Sword, TelegramLogo, UserMinus } from 'phosphor-react';
-import { ChatContext } from '../../contexts/ChatContext';
+import { ChatContext } from '../../../contexts/ChatContext';
 import { Link } from 'react-router-dom';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { actionsStatus } from '../../../adapters/status/statusState';
+import { actionsChat } from '../../../adapters/chat/chatState';
 
 interface CardMemberProps {
-  id: string ;
+  id: string;
   member: MemberData
 }
 
@@ -16,24 +18,15 @@ export function CardMember({ member, id }: CardMemberProps) {
 
   const [activeMenu, setActiveMenu] = useState(false);
   const { setSelectedChat } = useContext(ChatContext);
-  const { api, config } = useContext(IntraDataContext);
+  const { api, config, intraData } = useContext(IntraDataContext);
 
   function handleSendMessage() {
-    setSelectedChat({
-      chat: member.name,
-      type: 'person'
-    });
+    setSelectedChat({ chat: member.name, type: 'person' });
+
   }
 
   async function handleRemoveFriend() {
-    await api.patch('/chat/removeMember', {id:id, name: member.name }, config);
-    // setIntraData((prevIntraData) => {
-    //   return {
-    //     ...prevIntraData,
-    //     friends: prevIntraData.friends.filter((key) => key.login != friend.login)
-    //   };
-    // });
-    // actionsStatus.removeFriend(friend.login);
+    actionsChat.kickMember(id, intraData.email, member.name);
   }
 
   async function handleBanMember() {

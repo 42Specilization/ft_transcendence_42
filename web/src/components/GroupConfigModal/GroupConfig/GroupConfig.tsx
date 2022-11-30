@@ -1,29 +1,37 @@
 import { useQuery } from 'react-query';
-import { useContext, useEffect, useState } from 'react';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import './GroupConfig.scss';
-import { CardAdmin } from './CardAdmin';
-import { CardMember } from './CardMember';
-import { Dropzone } from '../Profile/UserImage/Dropzone';
+import { CardAdmin } from '../CardAdmin/CardAdmin';
+import { CardMember } from '../CardMember/CardMember';
+import { Dropzone } from '../../Profile/UserImage/Dropzone';
 import { NotePencil } from 'phosphor-react';
-import { ChangeGroupName } from './ChangeGroupName';
-import { Modal } from '../Modal/Modal';
-import { SelectItem } from '../SelectItem/SelectItem';
+import { ChangeGroupName } from '../ChangeGroupName/ChangeGroupName';
+import { Modal } from '../../Modal/Modal';
+import { SelectItem } from '../../SelectItem/SelectItem';
+import { actionsStatus } from '../../../adapters/status/statusState';
+import { actionsChat } from '../../../adapters/chat/chatState';
+import { ChatContext } from '../../../contexts/ChatContext';
 
 interface GroupConfigProps {
   id: string | undefined;
+  setGroupConfigVisible: Dispatch<SetStateAction<boolean>>;
 }
 
-export function GroupConfig({ id }: GroupConfigProps) {
-  const { api, config } = useContext(IntraDataContext);
+export function GroupConfig({ id, setGroupConfigVisible }: GroupConfigProps) {
+  const { api, config, intraData } = useContext(IntraDataContext);
+  const { setActiveChat } = useContext(ChatContext);
   const [changeSecurityType, setChangeSecurityType] = useState('');
+  const [inviteName, setInviteName] = useState('');
   const [selectedFile, setSelectedFile] = useState<File>();
   const [isModalChangeGroupNameVisible, setIsModalChangeGroupNameVisible] = useState(false);
   const [isModalChangeSecurityVisible, setIsModalChangeSecurityVisible] = useState(false);
+  const [isModalAddMemberVisible, setIsModalAddMemberVisible] = useState(false);
+
   const { data, status } = useQuery(
     'getGroupInfos',
     async () => {
-      const response = await api.patch('/chat/getGroupInfosById', { id: id }, config);
+      const response = await api.patch('/chat/getProfileGroupById', { id: id }, config);
       return response.data;
     },
     {
@@ -66,6 +74,26 @@ export function GroupConfig({ id }: GroupConfigProps) {
     setChangeSecurityType('');
   }
 
+  async function sendGroupInvite() {
+    try {
+      console.log(inviteName);
+      if (inviteName.trim()) {
+        await api.patch('/chat/sendGroupInvite', { name: inviteName, groupId: data.id }, config);
+        actionsStatus.newNotify(inviteName, 'group');
+        setInviteName('');
+        setIsModalAddMemberVisible(false)
+      }
+    } catch (err: unknown) {
+      console.log(err);
+      // setModalErrorVisible(true);
+    }
+  }
+
+  function handleLeaveGroup() {
+    actionsChat.leaveGroup(data.id, intraData.email);
+    setGroupConfigVisible(false);
+    setActiveChat(null);
+  }
 
   if (status === 'loading')
     return <div className='groupConfig' />;
@@ -111,7 +139,9 @@ export function GroupConfig({ id }: GroupConfigProps) {
                   id='groupConfig__changeSecurity__input'
                   className='groupConfig__changeSecurity__input'
                   type="text"
+                  value={inviteName}
                   placeholder='Password'
+
                 />
               }
               <button
@@ -127,8 +157,11 @@ export function GroupConfig({ id }: GroupConfigProps) {
 
 
       <div className='groupConfig__members'>
-        <div className='groupConfig__members__addMember'>
-          <button > Add Member</button>
+        <div className='groupConfig__members__action'>
+          <button
+            onClick={() => { setIsModalAddMemberVisible(true); }}
+          > Add Member
+          </button>
         </div>
         < div className='groupConfig__members__body'>
           {
@@ -140,6 +173,32 @@ export function GroupConfig({ id }: GroupConfigProps) {
             data.members.map((obj: any) => <CardMember key={crypto.randomUUID()} id={data.id} member={obj} />)
           }
         </div>
+        <div className='groupConfig__members__action'>
+          <button
+            onClick={handleLeaveGroup}
+          >
+            Leave
+          </button>
+        </div>
+        {isModalAddMemberVisible &&
+          <Modal
+            id='groupConfig__members__addMember'
+            onClose={() => setIsModalAddMemberVisible(false)}>
+            <input
+              className='groupConfig__members__addMember__input'
+              type="text"
+              maxLength={15}
+              placeholder='Insert user name'
+              onChange={(e) => {
+                setInviteName(e.target.value);
+              }}
+            />
+            <button
+              className='groupConfig__members__addMember__button'
+              onClick={sendGroupInvite}
+            >Send</button>
+          </Modal>
+        }
       </div>
     </div >
   );

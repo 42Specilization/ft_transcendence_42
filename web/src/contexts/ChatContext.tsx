@@ -20,18 +20,22 @@ interface IChatContext {
   selectedChat: SelectedChat | null;
   activeChat: ActiveChatData | null;
   updateGroup: number;
+  tabSelected: string;
   setSelectedChat: Dispatch<SetStateAction<SelectedChat | null>>;
   setActiveChat: Dispatch<SetStateAction<ActiveChatData | null>>;
   setUpdateGroup: Dispatch<SetStateAction<number>>;
+  setTabSelected: Dispatch<SetStateAction<string>>;
 }
 
 export const ChatContext = createContext<IChatContext>({
   selectedChat: null,
   activeChat: null,
   updateGroup: Date.now(),
+  tabSelected: 'directs',
   setSelectedChat: () => { },
   setActiveChat: () => { },
   setUpdateGroup: () => { },
+  setTabSelected: () => { },
 });
 
 interface ChatProviderProps {
@@ -43,6 +47,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
   const [selectedChat, setSelectedChat] = useState<SelectedChat | null>(null);
   const [activeChat, setActiveChat] = useState<ActiveChatData | null>(null);
   const [updateGroup, setUpdateGroup] = useState<number>(Date.now());
+  const [tabSelected, setTabSelected] = useState('directs');
 
   useEffect(() => {
     actionsChat.initializeSocketChat(setActiveChat, setUpdateGroup);
@@ -56,6 +61,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
       selectedChat, setSelectedChat,
       activeChat, setActiveChat,
       updateGroup, setUpdateGroup,
+      tabSelected, setTabSelected,
     }}>
       {children}
     </ChatContext.Provider>

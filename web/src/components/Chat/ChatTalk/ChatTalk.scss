@@ -71,13 +71,24 @@
     border-radius: 20px;
   }
 }
-
+.chat__message {
+	@include displayFlex(left);
+	word-break: break-word;
+	p {
+    font-size: 20px;
+		max-width: 75%;
+		border-radius: 50px;
+		background-color: $secondaryColor;
+	}
+}
 .chat__talk__action__message {
   @include displayFlex();
-
+  margin: 10px;
   p {
     @include displayFlex();
-    background-color: $primaryColor;
+    margin: 5px 0px 5px 0px;
+    color:rgba(255, 255, 255, 0.48);
+    background-color: rgba(128, 128, 128, 0.48);
     padding: 0px 30px 0px 30px;
     border-radius: 20px;
   }

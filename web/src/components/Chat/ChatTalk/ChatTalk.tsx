@@ -1,6 +1,6 @@
 import './ChatTalk.scss';
 import { DirectData, GroupData, MsgToClient, MsgToServer } from '../../../others/Interfaces/interfaces';
-import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { ArrowBendUpLeft, PaperPlaneRight } from 'phosphor-react';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { actionsChat } from '../../../adapters/chat/chatState';
@@ -11,13 +11,18 @@ import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { GroupConfigModal } from '../../GroupConfigModal/GroupConfigModal';
 
-interface ChatTalkProps {
-  setTableSelected: Dispatch<SetStateAction<string>>;
-}
+// interface ChatTalkProps {
+// }
 
-export function ChatTalk({ setTableSelected }: ChatTalkProps) {
+export function ChatTalk(
+  // { }: ChatTalkProps
+) {
 
-  const { selectedChat, setSelectedChat, activeChat, setActiveChat } = useContext(ChatContext);
+  const {
+    selectedChat, setSelectedChat,
+    activeChat, setActiveChat,
+    setTabSelected
+  } = useContext(ChatContext);
   const { intraData, setIntraData, api, config } = useContext(IntraDataContext);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
   const [groupInfoVisible, setGroupInfoVisible] = useState(false);
@@ -26,12 +31,17 @@ export function ChatTalk({ setTableSelected }: ChatTalkProps) {
     return () => {
       if (activeChat)
         api.patch('/chat/setBreakpoint', { chatId: activeChat.chat.id, type: activeChat.chat.type }, config);
+      setActiveChat(null);
     };
   }, []);
 
   useEffect(() => {
-    if (selectedChat)
-      serNewChat();
+    console.log(selectedChat);
+    if (selectedChat) {
+      console.log('entro no if');
+      setNewChat();
+    }
+    console.log('passou no useEffect');
   }, [selectedChat]);
 
   async function exitActiveChat() {
@@ -62,6 +72,7 @@ export function ChatTalk({ setTableSelected }: ChatTalkProps) {
       }
     });
     setSelectedChat(null);
+    setActiveChat(null);
   }
 
   function initActiveChat(chat: DirectData | GroupData) {
@@ -76,24 +87,26 @@ export function ChatTalk({ setTableSelected }: ChatTalkProps) {
     });
   }
 
-  async function serNewChat() {
+  async function setNewChat() {
     let chat;
-    if (selectedChat?.chat === 'person') {
+    if (!selectedChat)
+      return;
+    if (selectedChat.type === 'person') {
       const response = await api.patch('/chat/getFriendDirect', { id: selectedChat?.chat }, config);
       chat = response.data.directDto;
       if (response.data.created) {
         actionsChat.joinChat(chat.id);
         await actionsStatus.newDirect(chat.name, chat.id);
       }
-      setTableSelected('Directs');
-    } else if (selectedChat?.chat === 'direct') {
+      setTabSelected('directs');
+    } else if (selectedChat.type === 'direct') {
       const response = await api.patch('/chat/getDirect', { id: selectedChat?.chat }, config);
       chat = response.data;
-      setTableSelected('Directs');
+      setTabSelected('directs');
     } else {
       const response = await api.patch('/chat/getGroup', { id: selectedChat?.chat }, config);
       chat = response.data;
-      setTableSelected('Groups');
+      setTabSelected('groups');
     }
     if (activeChat) {
       exitActiveChat();
@@ -224,7 +237,6 @@ export function ChatTalk({ setTableSelected }: ChatTalkProps) {
             {activeChat.chat?.messages
               .map((msg: MsgToClient, index: number) => {
                 const len = activeChat.chat?.messages?.length - 1;
-
 
                 if (msg.type === 'breakpoint') {
                   return (

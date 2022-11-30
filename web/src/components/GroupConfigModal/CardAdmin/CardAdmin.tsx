@@ -1,6 +1,6 @@
 import './CardAdmin.scss';
 import ReactTooltip from 'react-tooltip';
-import { MemberData } from '../../others/Interfaces/interfaces';
+import { MemberData } from '../../../others/Interfaces/interfaces';
 
 interface CardAdminProps {
   member: MemberData
