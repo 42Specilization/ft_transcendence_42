@@ -50,7 +50,7 @@ export function FriendTab() {
       </div>
       < div className='friend__tab__body'>
         {intraData.friends?.filter((obj) => obj.login.includes(searchInput))
-          .map((obj) => <CardFriend key={crypto.randomUUID()} friend={obj} />)
+          .map((obj) => <CardFriend key={Math.random()} friend={obj} />)
         }
       </div>
     </div >);

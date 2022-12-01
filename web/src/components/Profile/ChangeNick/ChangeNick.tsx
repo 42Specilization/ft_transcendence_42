@@ -33,7 +33,7 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
     } catch (e: any) {
       if (e && e.response) {
         if (e.response.data.statusCode === 403) {
-          setPlaceHolder('Nick Unavaiable!');
+          setPlaceHolder('Nick Unavailable!');
         } else if (e.response.data.statusCode === 400) {
           setPlaceHolder('Need have min: 3, max: 15, forbidden: ');
         } else {
@@ -45,15 +45,11 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
   }
 
   return (
-    <Modal onClose={() => {
-      setIsModalChangeNickVisible(false);
-      setPlaceHolder('');
-      setNick('');
-    }}
-    id={'modal__changeNick'}
+    <Modal id='modal__changeNick'
+      onClose={() => { setIsModalChangeNickVisible(false); }}
     >
       <form className='change__nick__modal' onSubmit={handleKeyEnter}>
-        <div className='change__nick__modal__textdiv'>
+        <div className='change__nick__modal__text__div'>
           <h3>Insert the new nick</h3>
           <input
             className='change__nick__modal__input'

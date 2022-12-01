@@ -1,7 +1,6 @@
 import pongGame from '../../assets/pong-game.png';
 import './SignIn.scss';
 
-
 export default function SignIn() {
   return (
     <div className='signin'>

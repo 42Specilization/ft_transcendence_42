@@ -9,6 +9,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn
 } from 'typeorm';
+import { Group } from './group.entity';
 
 @Entity()
 export class Message extends BaseEntity {
@@ -21,9 +22,9 @@ export class Message extends BaseEntity {
   @ManyToOne(() => Direct, (direct: Direct) => direct.messages, { onDelete: 'CASCADE', orphanedRowAction: 'delete' })
   direct?: Direct;
 
-  // @ApiProperty()
-  // @ManyToOne(() => Chat, (chat: Chat) => chat.messages, { orphanedRowAction: 'delete' })
-  // group?: Chat;
+  @ApiProperty()
+  @ManyToOne(() => Group, (group: Group) => group.messages, { onDelete: 'CASCADE', orphanedRowAction: 'delete' })
+  group?: Group;
 
   @ApiProperty()
   @ManyToOne(() => User)
@@ -38,7 +39,7 @@ export class Message extends BaseEntity {
   msg: string;
 
   @ApiProperty()
-  @Column({ default: false })
-  breakproint: boolean;
+  @Column({ default: 'message' })
+  type: string;
 
 }

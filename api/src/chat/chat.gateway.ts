@@ -67,12 +67,81 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.logger.debug(`Client ${client.id} leave a chat: |${chat}|`);
   }
 
+  @SubscribeMessage('joinGroup')
+  async handleJoinGroup(@ConnectedSocket() client: Socket,
+    @MessageBody() { id, email }: { id: string, email: string }) {
+    const msgToClient: MsgToClient | null | undefined = await this.chatService.joinGroup(email, id);
+    if (typeof msgToClient === 'undefined')
+      return;
+    if (msgToClient)
+      this.server.to(id).emit('msgToClient', msgToClient);
+    client.join(id);
+    this.server.to(id).emit('updateGroup');
+    this.logger.debug(`Client ${client.id} join a group: |${id}|`);
+  }
+
+  @SubscribeMessage('leaveGroup')
+  async handleLeaveGroup(@ConnectedSocket() client: Socket,
+    @MessageBody() { id, email }: { id: string, email: string }) {
+    const msgToClient: MsgToClient | null | undefined = await this.chatService.leaveGroup(email, id);
+    if (typeof msgToClient === 'undefined')
+      return;
+    if (msgToClient)
+      this.server.to(id).emit('msgToClient', msgToClient);
+    client.leave(id);
+    client.emit('updateGroup');
+    this.server.to(id).emit('updateGroup');
+    this.logger.debug(`Client ${client.id} leave a group: |${id}|`);
+  }
+
+  @SubscribeMessage('kickMember')
+  async handleKickMember(@ConnectedSocket() client: Socket,
+    @MessageBody() { id, email, login }: { id: string, email: string, login: string }) {
+    const msgToClient: MsgToClient | null = await this.chatService.kickMember(email, login, id);
+    if (!msgToClient)
+      return;
+    this.server.to(id).emit('msgToClient', msgToClient);
+    this.server.to(id).emit('removeGroup', id, login);
+    this.server.to(id).emit('updateGroup');
+    this.logger.debug(`Client ${client.id} login: |${login}| has been kicked the group: |${id}|`);
+  }
+
+  @SubscribeMessage('removeBanMember')
+  async handleRemoveBanMember(@ConnectedSocket() client: Socket,
+    @MessageBody() { id, email, login }: { id: string, email: string, login: string }) {
+    const msgToClient: MsgToClient | null = await this.chatService.removeBan(email, { name: login, groupId: id });
+    if (!msgToClient)
+      return;
+    this.server.to(id).emit('msgToClient', msgToClient);
+    this.server.to(id).emit('removeGroup', id, login);
+    this.server.to(id).emit('updateGroup');
+    this.logger.debug(`Client ${client.id} login: |${login}| has been banned the group: |${id}|`);
+  }
+
+  @SubscribeMessage('banMember')
+  async handleBanMember(@ConnectedSocket() client: Socket,
+    @MessageBody() { id, email, login }: { id: string, email: string, login: string }) {
+    const msgToClient: MsgToClient | null = await this.chatService.addBan(email, { name: login, groupId: id });
+    if (!msgToClient)
+      return;
+    this.server.to(id).emit('msgToClient', msgToClient);
+    this.server.to(id).emit('removeGroup', id, login);
+    this.server.to(id).emit('updateGroup');
+    this.logger.debug(`Client ${client.id} login: |${login}| has been banned the group: |${id}|`);
+  }
+
+  @SubscribeMessage('getUpdateGroup')
+  async handleGetUpdateGroup(@MessageBody() id: string) {
+    this.server.to(id).emit('updateGroup');
+  }
+
   @SubscribeMessage('msgToServer')
   async handleMsgToServer(@ConnectedSocket() client: Socket,
     @MessageBody() { message, type }: { message: MsgToServer, type: string }) {
-    const msgToClient: MsgToClient = await this.chatService.saveMessage(message, type);
-    this.server.to(message.chat).emit('msgToClient', msgToClient);
-    this.logger.debug(`Client ${client.id} send message : |${msgToClient}|`);
+    const msgToClient: MsgToClient | undefined = await this.chatService.saveMessage(message, type);
+    if (msgToClient) {
+      this.server.to(message.chat).emit('msgToClient', msgToClient, type);
+      this.logger.debug(`Client ${client.id} send message : |${msgToClient}|`);
+    }
   }
 }
-

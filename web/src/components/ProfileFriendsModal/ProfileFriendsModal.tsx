@@ -8,7 +8,6 @@ interface ProfileFriendModalProps {
   setFriendProfileVisible: Dispatch<SetStateAction<boolean>>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 export function ProfileFriendModal({ login, setFriendProfileVisible }: ProfileFriendModalProps) {
   const handleOutsideClick = (e: any) => {
     if (e.target.id == 'friend_modal')

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { ValidateTfa } from '../../components/TFA/ValidateTfa/ValidateTfa';
-import { DirectData, IntraData } from '../Interfaces/interfaces';
+import { DirectData, GroupData, IntraData } from '../Interfaces/interfaces';
 import { getInfos } from '../../pages/OAuth/OAuth';
 import { useQuery } from 'react-query';
 import { DoubleBubble } from '../../components/DoubleBubble/DoubleBubble';
@@ -65,7 +65,7 @@ export function RequireAuth({ children }: any) {
  * If the token is null, then render the children, otherwise redirect to the home page.
  * @param {any}  - any
  */
-export function ValidadeSignin({ children }: any) {
+export function ValidateSignin({ children }: any) {
   const token = window.localStorage.getItem('token');
   return token === null ? children : <Navigate to="/" replace />;
 }
@@ -104,11 +104,11 @@ export async function getUserInDb(): Promise<IntraData> {
     const user: IntraData = response.data as IntraData;
     const responseDirects = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/chat/getAllDirects`, config);
     user.directs = responseDirects.data as DirectData[];
-    // console.log('result', responseDirects);
-    // console.log('user Directs', user.directs);
+    const responseGroups = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/chat/getAllGroups`, config);
+    user.groups = responseGroups.data as GroupData[];
     return (user);
   } catch (err) {
-    console.log('erro no utils getUserInDb', err);
+    console.log('error on utils getUserInDb', err);
     return defaultIntra;
   }
 }
@@ -156,9 +156,10 @@ export const defaultIntra: IntraData = {
   isTFAEnable: false,
   tfaValidated: false,
   friends: [],
-  blockeds: [],
+  blocked: [],
   notify: [],
   directs: [],
+  groups: [],
 };
 
 export function formatDate(date: string): ReactElement {

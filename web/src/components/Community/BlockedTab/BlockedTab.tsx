@@ -45,7 +45,7 @@ export function BlockedTab() {
       </div>
       <div className='blocked__tab__body'>
         {
-          intraData.blockeds?.sort((a, b) => a.login < b.login ? -1 : 1)
+          intraData.blocked?.sort((a, b) => a.login < b.login ? -1 : 1)
             .map((obj) => <CardBlocked key={Math.random()} blocked={obj} />)
         }
       </div>

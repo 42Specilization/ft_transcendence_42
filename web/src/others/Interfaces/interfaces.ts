@@ -26,6 +26,33 @@ export interface BlockedData {
   image_url: string;
 }
 
+export interface MemberData {
+  name: string;
+  image: string;
+  role: string;
+  mutated: boolean;
+}
+
+export interface GroupCardData {
+  id: string;
+  type: string;
+  name: string;
+  image: string;
+  date: Date;
+  member: boolean;
+  size: number;
+}
+
+export interface GroupData {
+  id: string;
+  type: string;
+  name?: string;
+  image?: string;
+  messages: MsgToClient[];
+  date: Date;
+  newMessages: number;
+}
+
 export interface DirectData {
   id: string;
   type: string;
@@ -53,7 +80,7 @@ export interface MsgToClient {
   user: UserMsg;
   date: Date;
   msg: string;
-  breakpoint: boolean;
+  type: string;
 }
 
 export interface IntraData {
@@ -69,8 +96,9 @@ export interface IntraData {
   tfaValidated: boolean;
   notify: NotifyData[];
   friends: FriendData[];
-  blockeds: BlockedData[];
-  directs: DirectData[]
+  blocked: BlockedData[];
+  directs: DirectData[];
+  groups: GroupData[];
 }
 
 export interface ErrResponse {

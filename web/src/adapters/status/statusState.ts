@@ -72,7 +72,6 @@ const actionsStatus = {
   },
 
   newFriend(userSource: string) {
-    // console.log('no newFriend', userSource, stateStatus.socket);
     stateStatus.socket?.emit('newFriend', userSource);
   },
 
@@ -85,7 +84,6 @@ const actionsStatus = {
   },
 
   removeFriend(friend: string) {
-    // console.log(friend);
     stateStatus.socket?.emit('removeFriend', friend);
   },
 
@@ -174,7 +172,7 @@ const actionsStatus = {
           ...prevIntraData,
           friends: prevIntraData.friends.map(friend =>
             oldUser.login === friend.login ? newUser : friend),
-          blockeds: prevIntraData.blockeds.map(blocked =>
+          blocked: prevIntraData.blocked.map(blocked =>
             oldUser.login === blocked.login ? newUser : blocked),
           directs: prevIntraData.directs.map(direct =>
             oldUser.login === direct.name ? { ...direct, name: newUser.login } : direct)
@@ -212,7 +210,6 @@ const actionsStatus = {
   async updateFriend() {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
-      // console.log(user.friends);
       stateStatus.setIntraData((prevIntraData) => {
         return {
           ...prevIntraData,
@@ -236,7 +233,7 @@ const actionsStatus = {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
       stateStatus.setIntraData((prevIntraData) => {
-        return { ...prevIntraData, blockeds: user.blockeds };
+        return { ...prevIntraData, blocked: user.blocked };
       });
     }
   },
@@ -255,7 +252,7 @@ const actionsStatus = {
             }
             return obj;
           }),
-          blockeds: user.blockeds,
+          blocked: user.blocked,
           directs: user.directs
         };
       });
@@ -293,18 +290,46 @@ const actionsStatus = {
       stateStatus.setIntraData((prevIntraData) => {
         return {
           ...prevIntraData,
-          directs: prevIntraData.directs
-            .sort((a, b) => {
-              if (a.date < b.date)
-                return 1;
-              return -1;
-            })
+          directs: prevIntraData.directs.sort((a, b) => a.date < b.date ? 1 : -1)
         };
       });
     }
   },
 
+  async updateGroup() {
+    if (stateStatus.setIntraData) {
+      const user = await getUserInDb();
+      stateStatus.setIntraData((prev) => {
+        return { ...prev,groups: user.groups };
+      });
+    }
+  },
 
+  async updateGroupInfos(message: MsgToClient) {
+    if (stateStatus.setIntraData) {
+      stateStatus.setIntraData((prev) => {
+        return {
+          ...prev,
+          groups: prev.groups.map((key) => {
+            if (key.id === message.chat) {
+              return {
+                ...key,
+                date: message.date,
+                newMessages: key.newMessages + 1
+              };
+            }
+            return key;
+          }),
+        };
+      });
+      stateStatus.setIntraData((prev) => {
+        return {
+          ...prev,
+          groups: prev.groups.sort((a, b) => a.date < b.date ? 1 : -1)
+        };
+      });
+    }
+  },
 };
 
 export type AppActionsStatus = typeof actionsStatus;

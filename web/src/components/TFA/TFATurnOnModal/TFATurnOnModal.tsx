@@ -50,7 +50,7 @@ export function TFATurnOnModal({
       setTfaEmail('');
     }}>
       <form className='tfaTurnOn__modal' onSubmit={handleKeyEnter}>
-        <div className='tfaTurnOn__modal__textdiv'>
+        <div className='tfaTurnOn__modal__text__div'>
           <h3>Insert your email to receive 2FA code</h3>
           <input
             className='tfaTurnOn__modal__input'

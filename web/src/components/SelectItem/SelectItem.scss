@@ -1,0 +1,64 @@
+@import '../../others/styles/global.scss';
+
+.SelectTrigger {
+  @include displayFlex();
+  height: 40px;
+  gap: 10px;
+  color: white;
+  font-size: 25px;
+  border-radius: 20px;
+  padding: 5px 20px 5px 20px;
+  background-color:$buttonColor;
+
+  &:hover {
+    background-color: $buttonColorHover;
+  }
+}
+
+.SelectTrigger[data-placeholder] {
+  color: white;
+}
+
+.SelectIcon {
+  @include displayFlex();
+  color: white;
+}
+
+.SelectContent {
+  z-index: 10;
+  overflow: hidden;
+  background-color: $buttonColor;
+  border-radius: 10px;
+}
+
+.SelectViewport {
+  padding: 5px;
+}
+
+.SelectItem {
+  @include displayFlex();
+  position: relative;
+  height: 40px;
+  color: white;
+  font-size: 25px;
+  border-radius: 10px;
+  user-select: none;
+}
+
+.SelectItem[data-disabled] {
+  color: $buttonColor;
+  pointer-events: none;
+}
+
+.SelectItem[data-highlighted] {
+  color: white;
+  background-color:$buttonColorHover;
+}
+
+.SelectItemIndicator {
+  @include displayFlex();
+  display: inline-flex;
+  position: absolute;
+  left: 0;
+  width: 25px;
+}

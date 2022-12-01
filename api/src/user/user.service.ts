@@ -211,6 +211,54 @@ export class UserService {
       });
   }
 
+  async findUserGroupByNick(nick: string): Promise<User | null> {
+    return await this.usersRepository.findOne(
+      {
+        where: {
+          nick,
+        },
+        relations: [
+          'groups',
+          'groups.users',
+          'groups.messages',
+          'groups.messages.sender',
+          'relations',
+          'relations.passive_user',
+        ],
+      });
+  }
+
+  async findUserGroupByEmail(email: string): Promise<User | null> {
+    return await this.usersRepository.findOne(
+      {
+        where: {
+          email,
+        },
+        relations: [
+          'groups',
+          'groups.users',
+          'groups.messages',
+          'groups.messages.sender',
+          'relations',
+          'relations.passive_user',
+        ],
+      });
+  }
+
+  async findAllChats(nick: string): Promise<User | null> {
+    return await this.usersRepository.findOne(
+      {
+        where: {
+          nick,
+        },
+        relations: [
+          'groups',
+          'directs'
+        ]
+
+      });
+  }
+
   async findUserById(id: string): Promise<User> {
     const user = await this.usersRepository.findOne({
       where: {
@@ -280,7 +328,7 @@ export class UserService {
         };
       }),
 
-      blockeds: user.relations.filter((rel) => rel.type === 'blocked')
+      blocked: user.relations.filter((rel) => rel.type === 'blocked')
         .map((rel) => {
           return {
             login: rel.passive_user.nick,
@@ -312,7 +360,6 @@ export class UserService {
     const { nick, imgUrl, isTFAEnable, tfaEmail, tfaValidated, tfaCode } = updateUserDto;
     if (nick && (await this.checkDuplicateNick(nick)))
       throw new ForbiddenException('Duplicated nickname');
-
     user.nick = nick ? nick : user?.nick;
     user.isTFAEnable =
       isTFAEnable !== undefined ? isTFAEnable : user.isTFAEnable;
@@ -326,7 +373,8 @@ export class UserService {
         fs.rm(
           `${getAssetsPath()}${user.imgUrl}`,
           function (err) {
-            if (err) throw err;
+            if (err)
+              user.imgUrl = 'userDefault.png';
           }
         );
       }
@@ -452,7 +500,6 @@ export class UserService {
     if (!requestedNotify.at(0))
       throw new BadRequestException('friend not found');
 
-    console.log('apagou a notificaçao');
     const friend = await this.findUserByEmail(requestedNotify.at(0)?.user_source.email as string) as User;
     const alreadyFriends = this.alreadyFriends(user, friend);
     if (alreadyFriends) {
@@ -489,7 +536,6 @@ export class UserService {
  */
   async blockUserByNotification(email: string, id: string) {
     const user = await this.findUserByEmail(email) as User;
-
     const requestedNotify: Notify[] = user.notify.filter((notify) => notify.id === id);
 
     if (!requestedNotify.at(0))
@@ -522,7 +568,6 @@ export class UserService {
  */
   async removeFriend(email: string, friend_login: string) {
     const user = await this.findUserByEmail(email) as User;
-
     const friend = await this.findUserByNick(friend_login) as User;
 
     user.relations = user.relations.filter((relation) => {
@@ -605,11 +650,11 @@ export class UserService {
       await user.save();
       return;
     } catch (err) {
-      throw new InternalServerErrorException('erro salvando notificacao');
+      throw new InternalServerErrorException('error saving notify');
     }
   }
 
-  async getCommunty(user_email: string) {
+  async getCommunity(user_email: string) {
     const users = await this.usersRepository.find();
     const usersToReturn: CommunityDto[] = users.filter((user) => {
       if (user.email === user_email)
@@ -656,7 +701,6 @@ export class UserService {
             result: result,
           };
         });
-      console.log(userData);
       return (userData);
     }
     throw new BadRequestException('user not found');
@@ -688,7 +732,7 @@ export class UserService {
     try {
       await target.save();
     } catch (err) {
-      throw new InternalServerErrorException('Error saving datas in db notifyMessage');
+      throw new InternalServerErrorException('Error saving data in db notifyMessage');
     }
   }
 

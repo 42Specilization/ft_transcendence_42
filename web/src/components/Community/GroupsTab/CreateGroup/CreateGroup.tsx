@@ -1,11 +1,11 @@
 import './CreateGroup.scss';
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
-import { actionsStatus } from '../../../../adapters/status/statusState';
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { IntraDataContext } from '../../../../contexts/IntraDataContext';
 import { Dropzone } from '../../../Profile/UserImage/Dropzone';
-import { CheckSquare, Image } from 'phosphor-react';
 import { CreateGroupData } from '../../../../others/Interfaces/interfaces';
 import { Checkbox } from '../../../Checkbox/Checkbox';
+import { actionsChat } from '../../../../adapters/chat/chatState';
+import { Image } from 'phosphor-react';
 
 interface CreateGroupProps {
   setCreateGroupModal: Dispatch<SetStateAction<boolean>>
@@ -16,27 +16,27 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
   const [selectedFile, setSelectedFile] = useState<File>();
   const [privateGroup, setPrivateGroup] = useState<boolean>(false);
   const [placeHolder, setPlaceHolder] = useState('Group Name');
-  const [password, setPassword] = useState('Password');
+  const [password, setPassword] = useState('Password (Optional)');
 
   async function handleSubmit(groupData: CreateGroupData) {
     const data = new FormData();
     data.append('name', 'chatImage');
     if (selectedFile) {
       data.append('file', selectedFile);
-      console.log(selectedFile);
       groupData.image = selectedFile.name;
       await api.post('/chat/updateGroupImage', data, config);
     } else {
       groupData.image = 'userDefault.png';
     }
-    console.log(groupData);
     await api.post('/chat/createGroup', groupData, config)
-      .catch((err) => {
-        // console.log(err.response.data.message);
+      .then((response) => {
+        if (response.status === 201) {
+          setCreateGroupModal(false);
+          actionsChat.joinGroup(response.data, intraData.email);
+        }
+      }).catch((err) => {
         setPassword(err.response.data.message);
       });
-
-    // actionsStatus.changeImage(selectedFile?.name);
   }
 
   function handleKeyEnter(event: any) {
@@ -62,7 +62,6 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
     handleSubmit(groupData);
     event.target[1].value = '';
     event.target[2].value = '';
-    // setCreateGroupModal(false);
   }
 
   return (
@@ -86,7 +85,7 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
           type="text"
           name="groupPassword"
           placeholder={password}
-          style={{ border: password !== 'Password' ? '3px solid red' : 'none' }}
+          style={{ border: password !== 'Password (Optional)' ? '3px solid red' : 'none' }}
         />
         <input
           className='createGroup__groupPassword'

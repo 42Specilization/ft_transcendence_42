@@ -8,19 +8,10 @@
   border-radius: 50px;
   background-color: $backgroundColor;
   overflow: hidden;
-
   &:hover {
     cursor: pointer;
     background-color: $primaryColorHover;
   }
-}
-
-.card__friend__div {
-  display: grid;
-  grid-template-columns: 0.1fr 1fr;
-  align-items: center;
-  justify-items: left;
-  color: white;
 }
 
 .card__friend__icon {

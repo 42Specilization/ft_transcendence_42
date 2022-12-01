@@ -36,9 +36,7 @@ interface IntraDataProviderProps {
 }
 
 export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
-
   const [intraData, setIntraData] = useState(defaultIntra);
-
   const config = useMemo(() => {
     return {
       headers: {

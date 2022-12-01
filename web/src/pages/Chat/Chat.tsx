@@ -1,5 +1,5 @@
 import './Chat.scss';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { ChatTalk } from '../../components/Chat/ChatTalk/ChatTalk';
 import { DirectTab } from '../../components/Chat/DirectTab/DirectTab';
 import { GroupTab } from '../../components/Chat/GroupTab/GroupTab';
@@ -8,15 +8,26 @@ import { ChatContext } from '../../contexts/ChatContext';
 
 export default function Chat() {
 
-  const { activeChat } = useContext(ChatContext);
+  const { activeChat, tabSelected, setTabSelected } = useContext(ChatContext);
   const { intraData, setIntraData, api, config } = useContext(IntraDataContext);
-  const [tableSelected, setTableSelected] = useState('Directs');
 
-  function newMessages() {
-    return intraData.directs.reduce((acc, direct) => {
-      if (activeChat && direct.id === activeChat.chat.id)
+  useEffect(() => {
+    clearNotifyMessages();
+  }, []);
+
+  useEffect(() => {
+    if (activeChat)
+      clearNotifyMessages();
+  }, [activeChat]);
+
+  function newMessages(type: string) {
+    const chat = type === 'direct' ? intraData.directs : intraData.groups;
+    if (typeof chat === 'undefined' || chat.length === 0)
+      return 0;
+    return chat.reduce((acc, chat) => {
+      if (activeChat && chat.id === activeChat.chat.id)
         return acc;
-      return acc + direct.newMessages;
+      return acc + chat.newMessages;
     }, 0);
   }
 
@@ -38,14 +49,6 @@ export default function Chat() {
     });
   }
 
-  useEffect(() => {
-    clearNotifyMessages();
-  }, []);
-
-  useEffect(() => {
-    if (activeChat)
-      clearNotifyMessages();
-  }, [activeChat]);
 
   return (
     <div className='body'>
@@ -53,22 +56,22 @@ export default function Chat() {
         <div className='chat__cards'>
           <nav className='chat__cards__header'>
             <ul className='chat__cards__header__list'>
-              <li className={`chat__cards__header__list__item ${tableSelected === 'Directs' ? 'chat__cards__header__list__item__selected' : ''}`}>
-                <div onClick={() => setTableSelected('Directs')}>
+              <li className={`chat__cards__header__list__item ${tabSelected === 'directs' ? 'chat__cards__header__list__item__selected' : ''}`}>
+                <div onClick={() => setTabSelected('directs')}>
                   <p>Directs</p>
-                  {newMessages() > 0 &&
+                  {newMessages('direct') > 0 &&
                     < div className='chat__cards__header__list__item__count' >
-                      {newMessages()}
+                      {newMessages('direct')}
                     </div>
                   }
                 </div>
               </li>
-              <li className={`chat__cards__header__list__item ${tableSelected === 'Groups' ? 'chat__cards__header__list__item__selected' : ''}`}>
-                <div onClick={() => setTableSelected('Groups')}>
+              <li className={`chat__cards__header__list__item ${tabSelected === 'groups' ? 'chat__cards__header__list__item__selected' : ''}`}>
+                <div onClick={() => setTabSelected('groups')}>
                   <p>Groups</p>
-                  {newMessages() > 0 &&
+                  {newMessages('group') > 0 &&
                     < div className='chat__cards__header__list__item__count' >
-                      {newMessages()}
+                      {newMessages('group')}
                     </div>
                   }
                 </div>
@@ -77,9 +80,9 @@ export default function Chat() {
           </nav>
           <div className='chat__cards__body'>
             {(() => {
-              if (tableSelected === 'Directs')
+              if (tabSelected === 'directs')
                 return <DirectTab />;
-              if (tableSelected === 'Groups')
+              if (tabSelected === 'groups')
                 return <GroupTab />;
             })()}
           </div>

@@ -106,7 +106,7 @@ export class AuthService {
           tfaValidated: response.data.tfaValidated,
           notify: [],
           friends: [],
-          blockeds: [],
+          blocked: [],
           directs: [],
         });
       }).catch(err => {
@@ -146,16 +146,14 @@ export class AuthService {
         wins: '0',
         lose: '0',
       });
-
-      this.logger.log('user Criado!');
+      this.logger.log('user Created!');
     } else {
       const updateUserDto: UpdateUserDto = {
         tfaCode: undefined,
       };
       await this.userService.updateToken(data.email, token);
-      this.logger.log('token atualizado!');
+      this.logger.log('token updated!');
       await this.userService.updateUser(updateUserDto, user.email);
-
     }
     return (data);
 

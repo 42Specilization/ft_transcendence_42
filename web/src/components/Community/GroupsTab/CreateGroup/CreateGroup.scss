@@ -1,8 +1,7 @@
 @import '../../../../others/styles/global.scss';
+
 .createGroup__image {
   @include displayFlex(center);
-  margin-top: 0px;
-  margin-bottom: 10px;
   .createGroup__image__icon {
     width: 225px;
     height: 225px;
@@ -26,19 +25,18 @@
 }
 
 .createGroup {
-  @include displayFlex(center,column);
+  @include displayFlex(space-around);
   width: 100%;
-  height: 80%;
+  height: 100%;
 }
-.createGroup__form{
+.createGroup__form {
   @include displayFlex(center,column);
   width: 60%;
-  height: 80%;
+  height: 100%;
   text-align: center;
 }
 
-
-.createGroup__groupName, 
+.createGroup__groupName,
 .createGroup__groupPassword {
   @include displayFlex();
   &::placeholder{
@@ -72,5 +70,5 @@
 .createGroup__private{
   @include displayFlex(space-around);
   width: 40%;
-  
+
 }

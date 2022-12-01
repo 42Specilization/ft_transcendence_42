@@ -14,13 +14,15 @@ import {
 export interface AppStateChat {
   socket?: Socket;
   setActiveChat?: Dispatch<SetStateAction<ActiveChatData | null>> | null;
+  setUpdateGroup?: Dispatch<SetStateAction<number>>;
 }
 
 const stateChat = proxy<AppStateChat>({});
 
 const actionsChat = {
   initializeSocketChat: (
-    setActiveChat: Dispatch<SetStateAction<ActiveChatData | null>>
+    setActiveChat: Dispatch<SetStateAction<ActiveChatData | null>>,
+    setUpdateGroup: Dispatch<SetStateAction<number>>
   ): void => {
 
     if (!stateChat.socket) {
@@ -32,11 +34,13 @@ const actionsChat = {
       };
       stateChat.socket = ref(createSocketChat(createSocketOptions));
       stateChat.setActiveChat = ref(setActiveChat);
+      stateChat.setUpdateGroup = ref(setUpdateGroup);
       return;
     }
     if (!stateChat.socket.connected) {
       stateChat.socket.connect();
       stateChat.setActiveChat = ref(setActiveChat);
+      stateChat.setUpdateGroup = ref(setUpdateGroup);
       return;
     }
   },
@@ -56,25 +60,36 @@ const actionsChat = {
     stateChat.socket?.emit('joinChat', id);
   },
 
-  leaveChat(id: string) {
-    stateChat.socket?.emit('leaveChat', id);
+  joinGroup(id: string, email: string) {
+    stateChat.socket?.emit('joinGroup', { id: id, email: email });
+  },
+
+  leaveGroup(id: string, email: string) {
+    stateChat.socket?.emit('leaveGroup', { id: id, email: email });
+  },
+
+  kickMember(id: string, email: string, login: string) {
+    stateChat.socket?.emit('kickMember', { id: id, email: email, login: login });
+  },
+  
+  banMember(id: string, email: string, login: string) {
+    stateChat.socket?.emit('banMember', { id: id, email: email, login: login });
+  },
+
+  removeBanMember(id: string, email: string, login: string) {
+    stateChat.socket?.emit('removeBanMember', { id: id, email: email, login: login });
+  },
+
+  getUpdateGroup(id: string) {
+    stateChat.socket?.emit('getUpdateGroup', id);
   },
 
   async msgToServer(message: MsgToServer, type: string) {
     stateChat.socket?.emit('msgToServer', { message: message, type: type });
-    // if (!window.location.pathname.includes('/chat')) {
-    //   const token = window.localStorage.getItem('token');
-    //   const config = {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`
-    //     }
-    //   };
-    // await axios.patch(`http://${import.meta.env.VITE_API_HOST}:3000/user/notifyMessage`, { id: message.chat, chatName: message.user, add_info: 'is a direct' }, config);
-    //   statusState.updateNotify();
-    // }
+
   },
 
-  async msgToClient(message: MsgToClient) {
+  async msgToClient(message: MsgToClient, type: string) {
     if (stateChat.setActiveChat) {
       stateChat.setActiveChat((prev: ActiveChatData | null) => {
         if (prev && prev.chat.id === message.chat) {
@@ -95,7 +110,24 @@ const actionsChat = {
         return prev;
       });
     }
-    actionsStatus.updateDirectInfos(message);
+    if (type === 'direct')
+      actionsStatus.updateDirectInfos(message);
+    else
+      actionsStatus.updateGroupInfos(message);
+  },
+
+  async updateGroup() {
+    actionsStatus.updateGroup();
+    if (stateChat.setUpdateGroup)
+      stateChat.setUpdateGroup(Date.now());
+  },
+
+  async removeGroup(id: string, login: string) {
+    const user = await getUserInDb();
+    if (user.login === login) {
+      stateChat.socket?.emit('leaveChat', id);
+      this.updateGroup();
+    }
   },
 };
 

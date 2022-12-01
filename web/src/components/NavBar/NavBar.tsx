@@ -20,12 +20,10 @@ export function NavBar({ Children }: NavBarProps) {
   const [menuVisible, setMenuVisible] = useState(false);
   const [notifyVisible, setNotifyVisible] = useState(false);
 
-  //changeNewFriend ---
-  //ChangeNotify  -- notificações carregadas corretamente
-
-
   const menuRef: React.RefObject<HTMLDivElement> = useRef(null);
   const notifyRef: React.RefObject<HTMLDivElement> = useRef(null);
+
+
 
   useEffect(() => {
     document.addEventListener('click', handleClickOutside, true);

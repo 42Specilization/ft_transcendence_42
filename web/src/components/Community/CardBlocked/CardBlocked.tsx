@@ -1,10 +1,9 @@
 import './CardBlocked.scss';
 import { BlockedData } from '../../../others/Interfaces/interfaces';
 import { UserMinus } from 'phosphor-react';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import axios from 'axios';
 import { actionsStatus } from '../../../adapters/status/statusState';
 
 interface CardBlockedProps {
@@ -14,35 +13,18 @@ interface CardBlockedProps {
 export function CardBlocked({ blocked }: CardBlockedProps) {
 
   const [isTableFriendUsersMenu, setIsTableFriendUsersMenu] = useState(false);
-  const { setIntraData } = useContext(IntraDataContext);
-
-  const token = useMemo(() => window.localStorage.getItem('token'), []);
-
-  const config = useMemo(() => {
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  }, []);
-
-  const api = useMemo(() => axios.create({
-    baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
-  }), []);
+  const { setIntraData, api , config } = useContext(IntraDataContext);
 
   async function handleUnblock() {
     await api.patch('/user/removeBlocked', { nick: blocked.login }, config);
     setIntraData((prevIntraData) => {
       return {
         ...prevIntraData,
-        blockeds: prevIntraData.blockeds.filter((key) => key.login != blocked.login)
+        blocked: prevIntraData.blocked.filter((key) => key.login != blocked.login)
       };
     });
     actionsStatus.removeBlocked(blocked.login);
   }
-
-
-
 
   return (
     <div className='card__blocked' onClick={() => setIsTableFriendUsersMenu(prev => !prev)}>
@@ -54,7 +36,6 @@ export function CardBlocked({ blocked }: CardBlockedProps) {
         </div>
         <div className='card__blocked__name'>{blocked.login}</div>
       </div>
-
       <div className="card__blocked__menu">
         <div
           className="card__blocked__menu__body"

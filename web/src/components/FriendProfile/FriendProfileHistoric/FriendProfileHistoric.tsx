@@ -42,7 +42,7 @@ export function FriendProfileHistoric({ friendData }: FriendProfileHistoricProps
       <div className='friendProfile__historic__body'>
         {data && data.map((index: any) => (
           <FriendHistoricMatch
-            key={crypto.randomUUID()}
+            key={Math.random()}
             image_url={index.opponent.imgUrl}
             nick={index.opponent.login}
             date={index.date}
