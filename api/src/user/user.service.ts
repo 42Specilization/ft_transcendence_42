@@ -43,7 +43,7 @@ export class UserService {
       createUserDto;
     const user = new User();
     user.email = email;
-    user.imgUrl = !imgUrl ? 'userDefault.png' : imgUrl;
+    user.imgUrl = !imgUrl ? 'userDefault.12345678.png' : imgUrl;
     user.first_name = first_name;
     user.usual_full_name = usual_full_name;
     user.nick = nick;
@@ -368,13 +368,13 @@ export class UserService {
       tfaValidated !== undefined ? tfaValidated : user.tfaValidated;
     user.tfaCode = tfaCode ? bcrypt.hashSync(tfaCode, 8) : user.tfaCode;
     if (imgUrl) {
-      if (user.imgUrl !== 'userDefault.png'
+      if (user.imgUrl !== 'userDefault.12345678.png'
         && !user.imgUrl.includes('https://')) {
         fs.rm(
           `${getAssetsPath()}${user.imgUrl}`,
           function (err) {
             if (err)
-              user.imgUrl = 'userDefault.png';
+              user.imgUrl = 'userDefault.12345678.png';
           }
         );
       }

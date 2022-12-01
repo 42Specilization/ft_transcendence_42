@@ -14,6 +14,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
 import { DirectDto, GetDirectDto, DeleteDirectDto, CreateGroupDto, GetGroupDto, UpdateGroupDto, GroupInviteDto, GroupProtectedJoinDto } from './dto/chat.dto';
 import { BadRequestException } from '@nestjs/common';
+import { getAssetsPath } from 'src/utils/utils';
 
 @Controller('chat')
 @ApiTags('chat')
@@ -86,7 +87,7 @@ export class ChatController {
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
       destination: (req, file, cb) => {
-        const uploadPath = '../web/public';
+        const uploadPath = getAssetsPath();
         req;
         file;
         cb(null, uploadPath);

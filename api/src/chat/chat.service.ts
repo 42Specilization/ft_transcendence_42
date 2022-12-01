@@ -12,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 import * as fs from 'fs';
 import { Notify } from 'src/notification/entities/notify.entity';
 import { GroupRelations } from './entities/groupRelations.entity';
+import { getAssetsPath } from 'src/utils/utils';
 
 @Injectable()
 export class ChatService {
@@ -232,7 +233,7 @@ export class ChatService {
         };
       });
 
-    if (type === 'activeDirect') 
+    if (type === 'activeDirect')
       directDto.messages = messages;
 
     directDto.newMessages = await this.getBreakpoint(messages);
@@ -369,7 +370,7 @@ export class ChatService {
     newGroup.type = group.type;
     newGroup.name = group.name;
     newGroup.password = group.password ? bcrypt.hashSync(group.password, 8) : null;
-    newGroup.image = group.image ? group.image : 'userDefault.png';
+    newGroup.image = group.image ? group.image : 'userDefault.12345678.png';
     newGroup.owner = owner;
     newGroup.users = [];
     newGroup.messages = [];
@@ -393,6 +394,7 @@ export class ChatService {
   }
 
   async getGroup(owner_email: string, id: string) {
+    console.log(owner_email, id);
     const group = await this.findGroupById(id);
     if (!group)
       throw new BadRequestException('Invalid group GetGroup');
@@ -475,11 +477,11 @@ export class ChatService {
           mutated: this.getRelation(group, user.nick, 'mutated'),
         };
       }),
-      banned: group.relations.filter((relation)=> {
+      banned: group.relations.filter((relation) => {
         if (relation.type === 'banned')
           return relation;
-        return ;
-      }).map((relation)=> {
+        return;
+      }).map((relation) => {
         return {
           name: relation.user_target.nick,
           image: relation.user_target.imgUrl,
@@ -536,7 +538,7 @@ export class ChatService {
 
     if (!groups)
       return;
-      
+
     const groupsDto: GroupCommunityDto[] = groups.map((group) => {
       return {
         id: group.id,
@@ -569,12 +571,12 @@ export class ChatService {
 
     group.name = name ? name : group.name;
     if (image) {
-      if (group.image !== 'userDefault.png') {
+      if (group.image !== 'userDefault.12345678.png') {
         fs.rm(
-          `../web/public/${group.image}`,
+          `${getAssetsPath()}${group.image}`,
           function (err) {
             if (err)
-              group.image = 'userDefault.png';
+              group.image = 'userDefault.12345678.png';
           }
         );
       }
@@ -606,7 +608,7 @@ export class ChatService {
     if (group.type === 'protected'
       && !this.getRelation(group, user.nick, 'join allowed'))
       return undefined;
-    
+
     const firstUser: boolean = group.users.length === 0;
 
     const join = new Message();
@@ -628,7 +630,7 @@ export class ChatService {
 
     if (group.type === 'protected')
       this.removeRelation(group, user.nick, 'join allowed');
-    
+
     try {
       await group.save();
       if (firstUser)
@@ -674,7 +676,7 @@ export class ChatService {
           group.owner = newOwner;
       }
     }
-    if (this.getRelation(group, user.nick, 'admin')) 
+    if (this.getRelation(group, user.nick, 'admin'))
       this.removeRelation(group, user.nick, 'admin');
 
     const leave = new Message();
@@ -860,7 +862,7 @@ export class ChatService {
     if (this.getRole(group, friend.nick) !== 'admin')
       throw new BadRequestException('Position unavailable');
 
-    this.removeRelation(group, user.nick, 'admin');
+    this.removeRelation(group, friend.nick, 'admin');
 
     try {
       await group.save();
@@ -941,12 +943,12 @@ export class ChatService {
     // && !this.getRelation(group, user.nick, 'admin'))
     if (user.nick !== group.owner.nick)
       return null;
-     
+
     if (!this.getRelation(group, member.nick, 'banned'))
       return null;
 
     this.removeRelation(group, member.nick, 'banned');
-        
+
     const unbanned = new Message();
     unbanned.sender = member;
     unbanned.date = new Date(Date.now());
@@ -1034,8 +1036,10 @@ export class ChatService {
     if (!this.getRelation(group, member.nick, 'mutated'))
       throw new BadRequestException('Position unavailable');
 
-    this.removeRelation(group, user.nick, 'mutated');
- 
+    console.log('relation', group.relations);
+    this.removeRelation(group, member.nick, 'mutated');
+    console.log('relation 2', group.relations);
+
     const mutated = new Message();
     mutated.sender = member;
     mutated.date = new Date(Date.now());

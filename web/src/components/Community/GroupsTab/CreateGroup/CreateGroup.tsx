@@ -26,7 +26,7 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
       groupData.image = selectedFile.name;
       await api.post('/chat/updateGroupImage', data, config);
     } else {
-      groupData.image = 'userDefault.png';
+      groupData.image = 'userDefault.12345678.png';
     }
     await api.post('/chat/createGroup', groupData, config)
       .then((response) => {

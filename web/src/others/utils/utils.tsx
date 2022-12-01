@@ -147,7 +147,7 @@ export async function getIntraDataNotify(intraData: IntraData, setIntraData: Dis
 export const defaultIntra: IntraData = {
   email: 'ft_transcendence@gmail.com',
   first_name: 'ft',
-  image_url: 'userDefault.png',
+  image_url: 'userDefault.12345678.png',
   login: 'PingPong',
   usual_full_name: 'ft_transcendence',
   matches: '0',
@@ -181,7 +181,7 @@ export function formatDate(date: string): ReactElement {
 
 export function getUrlImage(url: string) {
   if (!url.includes('https://cdn.intra.42.fr/')) {
-    if (process.env.NODE_ENV === 'production' && url !== 'userDefault.png') {
+    if (process.env.NODE_ENV === 'production') {
       return (`/data/${url}`);
     } else {
       return (url);

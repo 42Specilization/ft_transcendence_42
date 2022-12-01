@@ -26,7 +26,7 @@ export function CardFriend({ friend }: CardFriendProps) {
   }
 
   function handleSendMessage() {
-    setSelectedChat({ chat: friend.login, type: 'friend' });
+    setSelectedChat({ chat: friend.login, type: 'person' });
   }
 
   async function handleRemoveFriend() {

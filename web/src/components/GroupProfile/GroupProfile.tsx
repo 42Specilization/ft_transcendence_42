@@ -35,6 +35,7 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
     ['getGroupInfos', updateGroup],
     async () => {
       const response = await api.patch('/chat/getProfileGroupById', { id: id }, config);
+      console.log(data)
       return response.data;
     },
     {
