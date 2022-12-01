@@ -30,13 +30,11 @@ export function GroupsTab() {
   );
 
 
-
-
   if (status === 'loading')
     return (<div className='groups__tab' />);
 
   return (
-    < div className='groups__tab' >
+    <div className='groups__tab' >
       <div className='groups__tab__header'>
         <div className='groups__tab__header__search'
           style={{ width: isTableSearch ? '70%' : '40px' }}>

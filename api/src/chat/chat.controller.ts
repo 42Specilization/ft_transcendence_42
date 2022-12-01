@@ -134,9 +134,9 @@ export class ChatController {
   @UseGuards(JwtAuthGuard)
   async getProfileGroupById(
     @Body() getGroupDto: GetGroupDto,
-    // @GetUserFromJwt() userFromJwt: UserFromJwt
+    @GetUserFromJwt() userFromJwt: UserFromJwt
   ) {
-    return await this.chatService.getProfileGroupById(getGroupDto.id);
+    return await this.chatService.getProfileGroupById(userFromJwt.email, getGroupDto.id);
   }
 
 

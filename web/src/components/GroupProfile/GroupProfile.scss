@@ -1,26 +1,26 @@
-@import '../../../others/styles/global.scss';
+@import '../../others/styles/global.scss';
 
-.groupConfig {
+.group__profile {
   @include displayFlex(space-around);
   width: 100%;
   height: 100%;
 }
 
-.groupConfig__infos {
+.group__profile__infos {
   @include displayFlex(space-around, column);
   width: 40%;
   height: 80%;
   font-size: 35px;
 }
 
-.groupConfig__changeSecurity {
+.group__profile__changeSecurity {
   @include displayFlex(space-around, column);
   height: 100%;
   width: 100%;
 
 }
 
-.groupConfig__changeSecurity__input {
+.group__profile__changeSecurity__input {
   width: 60%;
   height: 20px;
   border-radius: 10px;
@@ -33,7 +33,7 @@
   text-align: center;
 }
 
-.groupConfig__changeSecurity__saveButton {
+.group__profile__changeSecurity__saveButton {
   width: 15%;
   height: 20px;
   font-size: 15px;
@@ -46,7 +46,7 @@
   }
 }
 
-.groupConfig__infos__image {
+.group__profile__infos__image {
   @include displayFlex(center);
 
   img {
@@ -59,7 +59,7 @@
     border: 5px solid $primaryColor;
   }
 
-  .groupConfig__infos__image__text {
+  .group__profile__infos__image__text {
     display: none;
   }
 
@@ -67,7 +67,7 @@
     filter: grayscale(0.8);
     cursor: pointer;
 
-    .groupConfig__infos__image__text {
+    .group__profile__infos__image__text {
       @include displayFlex(center);
       position: absolute;
     }
@@ -75,26 +75,42 @@
 
 }
 
-.groupConfig__infos__segurityButton {
-  color: white;
-  background-color: $buttonColor;
-  border-radius: 20px;
-  width: 60%;
+.group__profile__infos__name {
+  @include displayFlex(center, row);
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.group__profile__infos__name__button {
+  @include displayFlex(center);
+  margin-left: 15px;
+  border-radius: 5px;
+  &:hover  {
+    cursor: pointer;
+    color: gray;
+  }
+}
+
+.group__profile__infos__segurityButton {
   height: 40px;
   font-size: 30px;
+  color: white;
+  border-radius: 20px;
+  padding: 0px 20px 0px 20px;
+  background-color: $buttonColor;
 
   &:hover {
     background-color: $buttonColorHover;
   }
 }
 
-.groupConfig__members {
-  @include displayFlex(unset, column, flex-start);
+.group__profile__members {
+  @include displayFlex(center, column);
   width: 40%;
   height: 90%;
 }
 
-.groupConfig__members__action {
+.group__profile__members__action {
   @include displayFlex();
   width: 100%;
   height: 40px;
@@ -113,7 +129,7 @@
   }
 }
 
-.groupConfig__members__addMember__input {
+.group__profile__members__addMember__input {
   border-radius: 10px;
   font-size: 20px;
   width: 60%;
@@ -123,13 +139,13 @@
   color: white;
 }
 
-.groupConfig__members__body {
+.group__profile__members__body {
   width: 100%;
   height: calc(100% - 160px);
   @include scrollBar(10px, 20px);
 }
 
-.groupConfig__members__addMember__button{
+.group__profile__members__addMember__button{
   border-radius: 10px;
   font-size: 20px;
   width: 40%;

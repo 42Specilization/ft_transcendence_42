@@ -9,7 +9,7 @@ import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModa
 import ReactTooltip from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
-import { GroupConfigModal } from '../../GroupConfigModal/GroupConfigModal';
+import { ProfileGroupModal } from '../../ProfileGroupModal/ProfileGroupModal';
 
 // interface ChatTalkProps {
 // }
@@ -25,7 +25,7 @@ export function ChatTalk(
   } = useContext(ChatContext);
   const { intraData, setIntraData, api, config } = useContext(IntraDataContext);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
-  const [groupInfoVisible, setGroupInfoVisible] = useState(false);
+  const [profileGroupVisible, setProfileGroupVisible] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -198,7 +198,7 @@ export function ChatTalk(
   function selectGroupOrFriendVisible() {
     if (activeChat) {
       if (activeChat.chat.type !== 'direct') {
-        setGroupInfoVisible(true);
+        setProfileGroupVisible(true);
       } else {
         setFriendProfileVisible(true);
       }
@@ -268,10 +268,10 @@ export function ChatTalk(
               login={activeChat.chat.name}
               setFriendProfileVisible={setFriendProfileVisible} />
           }
-          {groupInfoVisible &&
-            <GroupConfigModal
+          {profileGroupVisible &&
+            < ProfileGroupModal
               id={activeChat.chat.id}
-              setGroupConfigVisible={setGroupInfoVisible} />
+              setProfileGroupVisible={setProfileGroupVisible} />
           }
           <form autoComplete='off' className='chat__talk__footer' onSubmit={handleKeyEnter}>
             <input

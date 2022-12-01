@@ -1,4 +1,4 @@
-import './ChangeGroupName.scss';
+import './ChangeName.scss';
 import { useContext, useState } from 'react';
 import { PaperPlaneRight } from 'phosphor-react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
@@ -7,12 +7,12 @@ import { Modal } from '../../Modal/Modal';
 import { actionsChat } from '../../../adapters/chat/chatState';
 
 
-interface ChangeGroupNameProps {
-  id: string;
-  setIsModalChangeGroupNameVisible: (arg0: boolean) => void;
+interface ChangeNameProps {
+  id: string | undefined;
+  setModalChangeName: (arg0: boolean) => void;
 }
 
-export function ChangeGroupName({ id, setIsModalChangeGroupNameVisible }: ChangeGroupNameProps) {
+export function ChangeName({ id, setModalChangeName }: ChangeNameProps) {
 
   const { api, config } = useContext(IntraDataContext);
   const [name, setName] = useState<string>('');
@@ -20,15 +20,15 @@ export function ChangeGroupName({ id, setIsModalChangeGroupNameVisible }: Change
 
   function handleKeyEnter(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    handleChangeGroupName();
+    handleChangeName();
   }
 
-  async function handleChangeGroupName() {
+  async function handleChangeName() {
     try {
       const result = await api.patch('/chat/updateGroup', { id: id, name: name }, config);
 
       if (result.status === 200) {
-        setIsModalChangeGroupNameVisible(false);
+        setModalChangeName(false);
         actionsStatus.changeLogin(name);
         setPlaceHolder('');
       }
@@ -43,11 +43,11 @@ export function ChangeGroupName({ id, setIsModalChangeGroupNameVisible }: Change
 
   return (
     <Modal onClose={() => {
-      setIsModalChangeGroupNameVisible(false);
+      setModalChangeName(false);
       setPlaceHolder('');
       setName('');
     }}
-    id={'modal__changeGroupName'}
+      id={'modal__changeGroupName'}
     >
       <form className='changeGroupName__modal' onSubmit={handleKeyEnter}>
         <div className='changeGroupName__modal__textdiv'>

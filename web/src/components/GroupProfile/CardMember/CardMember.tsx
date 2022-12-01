@@ -10,10 +10,11 @@ import { actionsChat } from '../../../adapters/chat/chatState';
 
 interface CardMemberProps {
   id: string;
-  member: MemberData
+  member: MemberData;
+  gePermition: (arg0: string) => boolean;
 }
 
-export function CardMember({ member, id }: CardMemberProps) {
+export function CardMember({ id, member, gePermition }: CardMemberProps) {
 
   const [activeMenu, setActiveMenu] = useState(false);
   const { setSelectedChat } = useContext(ChatContext);
@@ -28,15 +29,15 @@ export function CardMember({ member, id }: CardMemberProps) {
       console.log(err);
     }
   }
-  
+
   function handleSendMessage() {
     setSelectedChat({ chat: member.name, type: 'person' });
   }
-  
+
   async function handleRemoveFriend() {
     actionsChat.kickMember(id, intraData.email, member.name);
   }
-  
+
   async function handleBanMember() {
     try {
       console.log(id);

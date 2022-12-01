@@ -8,7 +8,6 @@ interface ModalProps {
   id?: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 export function Modal({ id = 'modal', children, onClose = () => { } }: ModalProps) {
   const handleOutsideClick = (e: any) => {
     if (e.target.id == id) onClose();

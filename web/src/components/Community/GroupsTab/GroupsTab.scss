@@ -1,5 +1,18 @@
 @import '../../../others/styles/global.scss';
 
+#createGroupModal {
+  .modal__container {
+    max-width: none;
+    min-width: none;
+    width: 750px;
+    min-height:400px;
+    height: 1500px;
+    color: white !important;
+    padding-bottom: 20px;
+  }
+
+}
+
 .groups__tab {
   @include displayFlex(unset, column);
   width: 100%;
@@ -8,15 +21,6 @@
   border-radius: 0 0 50px 50px;
   background-color: $backgroundColor;
   color: white;
-  .modal__container__content {
-    padding-top: 0;
-  }
-  .modal__container {
-    top: 100px;
-    width: 80%;
-    height: 85%;
-    max-height: 1000px;
-  }
 }
 
 .groups__tab__header {

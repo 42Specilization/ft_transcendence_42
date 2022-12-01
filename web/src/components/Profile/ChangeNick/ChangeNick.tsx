@@ -45,12 +45,8 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
   }
 
   return (
-    <Modal onClose={() => {
-      setIsModalChangeNickVisible(false);
-      setPlaceHolder('');
-      setNick('');
-    }}
-    id={'modal__changeNick'}
+    <Modal id='modal__changeNick'
+      onClose={() => { setIsModalChangeNickVisible(false); }}
     >
       <form className='change__nick__modal' onSubmit={handleKeyEnter}>
         <div className='change__nick__modal__textdiv'>

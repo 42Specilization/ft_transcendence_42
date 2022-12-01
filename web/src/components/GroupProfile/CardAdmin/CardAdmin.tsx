@@ -9,11 +9,12 @@ import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsChat } from '../../../adapters/chat/chatState';
 
 interface CardAdminProps {
-  member: MemberData;
   id: string;
+  member: MemberData;
+  gePermition: (arg0: string) => boolean;
 }
 
-export function CardAdmin({ member, id }: CardAdminProps) {
+export function CardAdmin({ id, member, gePermition}: CardAdminProps) {
   const [activeMenu, setActiveMenu] = useState(false);
   const { setSelectedChat } = useContext(ChatContext);
   const { api, config, intraData } = useContext(IntraDataContext);

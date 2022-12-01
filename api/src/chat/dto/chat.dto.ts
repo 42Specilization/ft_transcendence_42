@@ -7,12 +7,12 @@ export class UserInfoDto {
   role: string;
 }
 
-export class GroupInfoDto {
+export class ProfileGroupDto {
   id: string;
-  owner: UserInfoDto;
-  members: UserInfoDto[];
-  image: string;
   name: string;
+  image: string;
+  role: string;
+  members: UserInfoDto[];
 }
 
 export class GroupCommunityDto {
