@@ -27,13 +27,11 @@ export async function getInfos() {
 }
 
 export default function OAuth() {
-
   const { login } = useAuth();
 
   async function handleLogin() {
     await login();
     await getInfos();
-
   }
 
   useEffect(() => {
