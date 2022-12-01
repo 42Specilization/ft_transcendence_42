@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { DirectData } from '../../../others/Interfaces/interfaces';
+import { getUrlImage } from '../../../others/utils/utils';
 import './CardGroup.scss';
 
 interface CardGroupProps {
@@ -27,7 +28,7 @@ export function CardGroup({ chat }: CardGroupProps) {
       <div className="card__group__div">
         <div
           className='card__group__icon'
-          style={{ backgroundImage: `url(${chat.image})` }}>
+          style={{ backgroundImage: `url(${getUrlImage(chat.image as string)})` }}>
           <div className='card__group_count'
             style={{ display: newMessagesVisible() ? '' : 'none' }}>
             {chat.newMessages > 9 ? '+9' : chat.newMessages}

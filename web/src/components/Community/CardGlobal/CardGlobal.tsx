@@ -8,6 +8,7 @@ import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { Modal } from '../../Modal/Modal';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { Link } from 'react-router-dom';
+import { getUrlImage } from '../../../others/utils/utils';
 
 interface CardGlobalProps {
   image_url: string;
@@ -47,7 +48,7 @@ export function CardGlobal({ image_url, login, ratio }: CardGlobalProps) {
         onClick={(e) => selectAction(e)}
       >
         <div id='cardGlobal' className='cardGlobal__icon'
-          style={{ backgroundImage: `url(${image_url})` }}>
+          style={{ backgroundImage: `url(${getUrlImage(image_url)})` }}>
         </div>
 
         <div id='cardGlobal' className='cardGlobal__name'>{login}</div>

@@ -5,6 +5,7 @@ import { useContext, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
+import { getUrlImage } from '../../../others/utils/utils';
 
 interface CardBlockedProps {
   blocked: BlockedData;
@@ -13,7 +14,7 @@ interface CardBlockedProps {
 export function CardBlocked({ blocked }: CardBlockedProps) {
 
   const [isTableFriendUsersMenu, setIsTableFriendUsersMenu] = useState(false);
-  const { setIntraData, api , config } = useContext(IntraDataContext);
+  const { setIntraData, api, config } = useContext(IntraDataContext);
 
   async function handleUnblock() {
     await api.patch('/user/removeBlocked', { nick: blocked.login }, config);
@@ -32,7 +33,7 @@ export function CardBlocked({ blocked }: CardBlockedProps) {
       <div className="card__blocked__div">
         <div
           className='card__blocked__icon'
-          style={{ backgroundImage: `url(${blocked.image_url})` }}>
+          style={{ backgroundImage: `url(${getUrlImage(blocked.image_url)})` }}>
         </div>
         <div className='card__blocked__name'>{blocked.login}</div>
       </div>

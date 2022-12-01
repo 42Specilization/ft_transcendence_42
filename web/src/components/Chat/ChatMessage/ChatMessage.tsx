@@ -2,7 +2,7 @@ import './ChatMessage.scss';
 import ReactDOMServer from 'react-dom/server';
 import ReactTooltip from 'react-tooltip';
 import { MsgToClient } from '../../../others/Interfaces/interfaces';
-import { formatDate } from '../../../others/utils/utils';
+import { formatDate, getUrlImage } from '../../../others/utils/utils';
 
 interface ChatMessageProps {
   user: string;
@@ -18,7 +18,7 @@ export function ChatMessage({ user, message }: ChatMessageProps) {
     <div className={'chat__message' + (self() ? ' self' : '')}>
       <div
         className='chat__message__icon'
-        style={{ backgroundImage: `url(${message.user.image})` }}
+        style={{ backgroundImage: `url(${getUrlImage(message.user.image)})` }}
       />
       <p
         data-html={true}

@@ -1,3 +1,4 @@
+import { getUrlImage } from '../../../others/utils/utils';
 import './FriendCard.scss';
 
 interface FriendCardProps {
@@ -12,7 +13,7 @@ export function FriendCard({ friendData }: FriendCardProps) {
 
   return (
     <div className='friendCard'>
-      <img className='friendCard_image' src={friendData.image_url} alt='friend_image' />
+      <img className='friendCard_image' src={getUrlImage(friendData.image_url)} alt='friend_image' />
       <div className='friendCard__infos__nick'>
         <strong>{friendData.login}</strong>
       </div>

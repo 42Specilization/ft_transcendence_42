@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
+import { getUrlImage } from '../../../others/utils/utils';
 
 interface CardAdminProps {
   id: string;
@@ -81,7 +82,7 @@ export function CardAdmin({ id, member, getPermission }: CardAdminProps) {
       <div id='card__admin' className="card__admin__div">
         <div id='card__admin'
           className='card__admin__icon'
-          style={{ backgroundImage: `url(${member.image})` }}>
+          style={{ backgroundImage: `url(${getUrlImage(member.image)})` }}>
         </div>
         <div id='card__admin' className='card__admin__name'>
           <span id='card__admin'>{member.name}</span>

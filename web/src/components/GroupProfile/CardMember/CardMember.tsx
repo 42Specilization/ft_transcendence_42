@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
+import { getUrlImage } from '../../../others/utils/utils';
 
 interface CardMemberProps {
   id: string;
@@ -82,7 +83,7 @@ export function CardMember({ id, member, getPermission }: CardMemberProps) {
       <div id='card__member' className="card__member__div">
         <div id='card__member'
           className='card__member__icon'
-          style={{ backgroundImage: `url(${member.image})` }}>
+          style={{ backgroundImage: `url(${getUrlImage(member.image)})` }}>
         </div>
         <div id='card__member' className='card__member__name'>
           {member.name}

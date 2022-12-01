@@ -1,4 +1,4 @@
-import { formatDate } from '../../../others/utils/utils';
+import { formatDate, getUrlImage } from '../../../others/utils/utils';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import './HistoricMatch.scss';
 import { useState } from 'react';
@@ -20,10 +20,10 @@ export function HistoricMatch({
 
   return (
     <div className='historicMatch'>
-      <div 
-        className='historicMatch__player' 
+      <div
+        className='historicMatch__player'
         onClick={() => setFriendProfileVisible(true)}>
-        <img src={image_url} alt='user image' />
+        <img src={getUrlImage(image_url)} alt='user image' />
         <div className='historicMatch__player__nick'>{nick}</div>
       </div>
       <p className='historicMatch__infos'>{formatDate(date)}</p>

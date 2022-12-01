@@ -9,6 +9,7 @@ import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { ProfileGroupModal } from '../../ProfileGroupModal/ProfileGroupModal';
 import { Modal } from '../../Modal/Modal';
+import { getUrlImage } from '../../../others/utils/utils';
 
 interface CardGroupProps {
   group: GroupCardData;
@@ -58,7 +59,7 @@ export function CardGroup({ group }: CardGroupProps) {
         onClick={(e) => selectProfileGroupVisible(e)}
       >
         <div id='card__group__community' className='card__group__community__icon'
-          style={{ backgroundImage: `url(${group.image})` }}>
+          style={{ backgroundImage: `url(${getUrlImage(group.image)})` }}>
         </  div>
         <div id='card__group__community' className='card__group__community__name'>{group.name}</div>
 

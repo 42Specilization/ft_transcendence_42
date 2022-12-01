@@ -181,7 +181,7 @@ export function formatDate(date: string): ReactElement {
 
 export function getUrlImage(url: string) {
   if (!url.includes('https://cdn.intra.42.fr/')) {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === 'production' && url !== 'userDefault.png') {
       return (`/data/${url}`);
     } else {
       return (url);

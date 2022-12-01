@@ -8,6 +8,7 @@ import { actionsStatus } from '../../../adapters/status/statusState';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { Link } from 'react-router-dom';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
+import { getUrlImage } from '../../../others/utils/utils';
 
 interface CardFriendProps {
   friend: FriendData;
@@ -25,7 +26,7 @@ export function CardFriend({ friend }: CardFriendProps) {
   }
 
   function handleSendMessage() {
-    setSelectedChat({chat: friend.login, type: 'friend'});
+    setSelectedChat({ chat: friend.login, type: 'friend' });
   }
 
   async function handleRemoveFriend() {
@@ -50,7 +51,7 @@ export function CardFriend({ friend }: CardFriendProps) {
         onClick={modalVisible}
       >
         <div id='card__friend' className='card__friend__icon'
-          style={{ backgroundImage: `url(${friend.image_url})` }}>
+          style={{ backgroundImage: `url(${getUrlImage(friend.image_url)})` }}>
           <div id='card__friend' className='card__friend__status'
             style={{ backgroundColor: friend.status === 'online' ? 'green' : 'rgb(70, 70, 70)' }} />
         </div>

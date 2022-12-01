@@ -21,10 +21,6 @@ export function UserImage() {
   }
 
   useEffect(() => {
-    console.log('image name is ', intraData.image_url);
-  }, [intraData]);
-
-  useEffect(() => {
     if (selectedFile) handleSubmit();
   }, [selectedFile]);
 

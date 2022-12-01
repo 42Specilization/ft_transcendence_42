@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
+import { getUrlImage } from '../../../others/utils/utils';
 
 interface CardOwnerProps {
   member: MemberData;
@@ -33,7 +34,7 @@ export function CardOwner({ member }: CardOwnerProps) {
       <div id='card__owner' className="card__owner__div">
         <div id='card__owner'
           className='card__owner__icon'
-          style={{ backgroundImage: `url(${member.image})` }}>
+          style={{ backgroundImage: `url(${getUrlImage(member.image)})` }}>
         </div>
         <div id='card__owner' className='card__owner__name'>
           <span id='card__owner'>{member.name}</span>

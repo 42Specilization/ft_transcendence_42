@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { getUrlImage } from '../../../others/utils/utils';
 
 interface CardBannedProps {
   id: string;
@@ -15,7 +16,7 @@ interface CardBannedProps {
   setProfileGroupVisible: Dispatch<SetStateAction<boolean>>;
 }
 
-export function CardBanned({ id, banned, setProfileGroupVisible}: CardBannedProps) {
+export function CardBanned({ id, banned, setProfileGroupVisible }: CardBannedProps) {
 
   const { intraData } = useContext(IntraDataContext);
   const { setSelectedChat } = useContext(ChatContext);
@@ -45,7 +46,7 @@ export function CardBanned({ id, banned, setProfileGroupVisible}: CardBannedProp
       <div id='card__banned' className="card__banned__div">
         <div id='card__banned'
           className='card__banned__icon'
-          style={{ backgroundImage: `url(${banned.image})` }}>
+          style={{ backgroundImage: `url(${getUrlImage(banned.image)})` }}>
         </div>
         <div id='card__banned' className='card__banned__name'>{banned.name}</div>
       </div>

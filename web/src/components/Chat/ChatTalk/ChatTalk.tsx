@@ -10,6 +10,7 @@ import ReactTooltip from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { ProfileGroupModal } from '../../ProfileGroupModal/ProfileGroupModal';
+import { getUrlImage } from '../../../others/utils/utils';
 
 // interface ChatTalkProps {
 // }
@@ -219,7 +220,7 @@ export function ChatTalk(
             >
               <div
                 className='chat__talk__header__user__icon'
-                style={{ backgroundImage: `url(${activeChat.chat?.image})` }}
+                style={{ backgroundImage: `url(${getUrlImage(activeChat.chat?.image as string)})` }}
               />
               <div className='chat__talk__header__user__name'>
                 {activeChat.chat?.name}

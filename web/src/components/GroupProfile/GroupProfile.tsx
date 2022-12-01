@@ -13,6 +13,7 @@ import { Dropzone } from '../Profile/UserImage/Dropzone';
 import { AddMember } from './AddMember/AddMember';
 import { ChangeSecurity } from './ChangeSecurity/ChangeSecurity';
 import { CardBanned } from './CardBanned/CardBanned';
+import { getUrlImage } from '../../others/utils/utils';
 
 
 interface GroupProfileProps {
@@ -87,7 +88,7 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
         >UnBan
         </button>
         <div className='group__profile__infos__image'>
-          <img src={data.image} alt="Group Image" />
+          <img src={getUrlImage(data.image)} alt="Group Image" />
           {getPermission('middleLevel') &&
             <div className='group__profile__infos__image__text'>
               <Dropzone onFileUploaded={setSelectedFile} />
