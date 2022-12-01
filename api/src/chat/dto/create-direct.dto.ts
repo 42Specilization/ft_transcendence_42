@@ -9,6 +9,4 @@ export class CreateDirectDto {
   @ApiProperty()
   @IsNotEmpty({ message: 'Inform an login!' })
     friend_login: string;
-
-
 }

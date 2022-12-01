@@ -98,14 +98,24 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   async handleKickMember(@ConnectedSocket() client: Socket,
     @MessageBody() { id, email, login }: { id: string, email: string, login: string }) {
     const msgToClient: MsgToClient | null = await this.chatService.kickMember(email, login, id);
-
     if (!msgToClient)
       return;
-    // console.log(msgToClient);
     this.server.to(id).emit('msgToClient', msgToClient);
     this.server.to(id).emit('removeGroup', id, login);
     this.server.to(id).emit('updateGroup');
     this.logger.debug(`Client ${client.id} login: |${login}| has been kicked the group: |${id}|`);
+  }
+
+  @SubscribeMessage('removeBanMember')
+  async handleRemoveBanMember(@ConnectedSocket() client: Socket,
+    @MessageBody() { id, email, login }: { id: string, email: string, login: string }) {
+    const msgToClient: MsgToClient | null = await this.chatService.removeBan(email, { name: login, groupId: id });
+    if (!msgToClient)
+      return;
+    this.server.to(id).emit('msgToClient', msgToClient);
+    this.server.to(id).emit('removeGroup', id, login);
+    this.server.to(id).emit('updateGroup');
+    this.logger.debug(`Client ${client.id} login: |${login}| has been banned the group: |${id}|`);
   }
 
   @SubscribeMessage('banMember')
@@ -114,7 +124,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     const msgToClient: MsgToClient | null = await this.chatService.addBan(email, { name: login, groupId: id });
     if (!msgToClient)
       return;
-    console.log(msgToClient);
     this.server.to(id).emit('msgToClient', msgToClient);
     this.server.to(id).emit('removeGroup', id, login);
     this.server.to(id).emit('updateGroup');

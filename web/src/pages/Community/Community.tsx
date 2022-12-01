@@ -37,10 +37,10 @@ export default function Community() {
             </button>
           </li>
           <li className={`community__header__list__item
-      ${tableSelected === 'Blockeds' ?
+      ${tableSelected === 'blocked' ?
       'community__header__list__item__selected' : ''}`}>
-            <button onClick={() => setTableSelected('Blockeds')}>
-              Blockeds
+            <button onClick={() => setTableSelected('blocked')}>
+              blocked
             </button>
           </li>
         </ul>
@@ -53,7 +53,7 @@ export default function Community() {
             return <GlobalTab />;
           if (tableSelected === 'Groups')
             return <GroupsTab />;
-          if (tableSelected === 'Blockeds')
+          if (tableSelected === 'blocked')
             return <BlockedTab />;
         })()}
       </div>

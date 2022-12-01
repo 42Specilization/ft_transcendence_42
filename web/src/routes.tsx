@@ -9,7 +9,7 @@ import Game from './pages/Game/Game';
 import Chat from './pages/Chat/Chat';
 import Community from './pages/Community/Community';
 import { NavBar } from './components/NavBar/NavBar';
-import { RequireAuth, ValidadeSignin } from './others/utils/utils';
+import { RequireAuth, ValidateSignin } from './others/utils/utils';
 import { IntraDataProvider } from './contexts/IntraDataContext';
 import { ChatProvider } from './contexts/ChatContext';
 import { AuthProvider } from './contexts/AuthContext';
@@ -26,6 +26,7 @@ export default function AppRouter() {
       }
     };
   }, []);
+  
   return (
     <Router>
       <AuthProvider>
@@ -86,9 +87,9 @@ export default function AppRouter() {
               <Route
                 path="/signin"
                 element={
-                  <ValidadeSignin >
+                  <ValidateSignin >
                     <SignIn />
-                  </ValidadeSignin>
+                  </ValidateSignin>
                 } />
               <Route path="*" element={<NotFound />} />
             </Routes>

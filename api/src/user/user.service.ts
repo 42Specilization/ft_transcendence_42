@@ -327,7 +327,7 @@ export class UserService {
         };
       }),
 
-      blockeds: user.relations.filter((rel) => rel.type === 'blocked')
+      blocked: user.relations.filter((rel) => rel.type === 'blocked')
         .map((rel) => {
           return {
             login: rel.passive_user.nick,
@@ -499,7 +499,6 @@ export class UserService {
     if (!requestedNotify.at(0))
       throw new BadRequestException('friend not found');
 
-    console.log('apagou a notificaçao');
     const friend = await this.findUserByEmail(requestedNotify.at(0)?.user_source.email as string) as User;
     const alreadyFriends = this.alreadyFriends(user, friend);
     if (alreadyFriends) {
@@ -542,21 +541,6 @@ export class UserService {
       throw new BadRequestException('friend not found');
 
     const blocked = await this.findUserByEmail(requestedNotify.at(0)?.user_source.email as string) as User;
-
-    // const alreadyFriends = this.alreadyFriends(user, blocked);
-    // if (alreadyFriends) {
-    //   user.relations = user.relations.filter((relation) => {
-    //     if (relation.type === 'friend' && relation.passive_user.nick == blocked.nick)
-    //       return;
-    //     return relation;
-    //   });
-
-    //   blocked.relations = blocked.relations.filter((relation) => {
-    //     if (relation.type === 'friend' && relation.passive_user.nick == user.nick)
-    //       return;
-    //     return relation;
-    //   });
-    // }
 
     const relationUser = new Relations();
 
@@ -665,11 +649,11 @@ export class UserService {
       await user.save();
       return;
     } catch (err) {
-      throw new InternalServerErrorException('erro salvando notificacao');
+      throw new InternalServerErrorException('error saving notify');
     }
   }
 
-  async getCommunty(user_email: string) {
+  async getCommunity(user_email: string) {
     const users = await this.usersRepository.find();
     const usersToReturn: CommunityDto[] = users.filter((user) => {
       if (user.email === user_email)
@@ -716,7 +700,6 @@ export class UserService {
             result: result,
           };
         });
-      console.log(userData);
       return (userData);
     }
     throw new BadRequestException('user not found');
@@ -748,7 +731,7 @@ export class UserService {
     try {
       await target.save();
     } catch (err) {
-      throw new InternalServerErrorException('Error saving datas in db notifyMessage');
+      throw new InternalServerErrorException('Error saving data in db notifyMessage');
     }
   }
 

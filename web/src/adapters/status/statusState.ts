@@ -172,7 +172,7 @@ const actionsStatus = {
           ...prevIntraData,
           friends: prevIntraData.friends.map(friend =>
             oldUser.login === friend.login ? newUser : friend),
-          blockeds: prevIntraData.blockeds.map(blocked =>
+          blocked: prevIntraData.blocked.map(blocked =>
             oldUser.login === blocked.login ? newUser : blocked),
           directs: prevIntraData.directs.map(direct =>
             oldUser.login === direct.name ? { ...direct, name: newUser.login } : direct)
@@ -210,7 +210,6 @@ const actionsStatus = {
   async updateFriend() {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
-      // console.log(user.friends);
       stateStatus.setIntraData((prevIntraData) => {
         return {
           ...prevIntraData,
@@ -234,7 +233,7 @@ const actionsStatus = {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
       stateStatus.setIntraData((prevIntraData) => {
-        return { ...prevIntraData, blockeds: user.blockeds };
+        return { ...prevIntraData, blocked: user.blocked };
       });
     }
   },
@@ -253,7 +252,7 @@ const actionsStatus = {
             }
             return obj;
           }),
-          blockeds: user.blockeds,
+          blocked: user.blocked,
           directs: user.directs
         };
       });

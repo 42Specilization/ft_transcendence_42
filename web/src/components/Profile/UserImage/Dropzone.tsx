@@ -17,9 +17,9 @@ export function Dropzone({ onFileUploaded }: DropzoneProps) {
 
       function generateCode() {
         let code = '';
-        const avaliableChar = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const availableChar = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         for (let i = 0; i < 24; i++) {
-          code += avaliableChar.charAt(Math.floor(Math.random() * avaliableChar.length));
+          code += availableChar.charAt(Math.floor(Math.random() * availableChar.length));
         }
         return code;
       }

@@ -1,5 +1,5 @@
 import './CreateGroup.scss';
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { IntraDataContext } from '../../../../contexts/IntraDataContext';
 import { Dropzone } from '../../../Profile/UserImage/Dropzone';
 import { CreateGroupData } from '../../../../others/Interfaces/interfaces';
@@ -17,10 +17,6 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
   const [privateGroup, setPrivateGroup] = useState<boolean>(false);
   const [placeHolder, setPlaceHolder] = useState('Group Name');
   const [password, setPassword] = useState('Password (Optional)');
-
-  useEffect(() => {
-    console.log(window.location, document.title);
-  }, []);
 
   async function handleSubmit(groupData: CreateGroupData) {
     const data = new FormData();
@@ -66,7 +62,6 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
     handleSubmit(groupData);
     event.target[1].value = '';
     event.target[2].value = '';
-
   }
 
   return (

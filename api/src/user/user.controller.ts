@@ -312,11 +312,11 @@ export class UserController {
     return await this.userService.getHistoric(userHistoricDto.login);
   }
 
-  @Get('getCommunty')
+  @Get('getCommunity')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
-  async getCommunty(@GetUserFromJwt() userFromJwt: UserFromJwt) {
-    return (await this.userService.getCommunty(userFromJwt.email));
+  async getCommunity(@GetUserFromJwt() userFromJwt: UserFromJwt) {
+    return (await this.userService.getCommunity(userFromJwt.email));
   }
 
   @Patch('/notifyMessage')

@@ -18,7 +18,7 @@ export function GlobalTab() {
   const { data } = useQuery(
     'getCommunity',
     async () => {
-      const response = await api.get('/user/getCommunty', config);
+      const response = await api.get('/user/getCommunity', config);
       return response.data;
     },
     {
@@ -26,7 +26,6 @@ export function GlobalTab() {
       refetchOnWindowFocus: true,
     }
   );
-  console.log(data);
 
   return (
     <div className='global__tab'>
@@ -67,7 +66,7 @@ export function GlobalTab() {
             .filter((obj: CommunityUser) => obj.login.includes(searchInput))
             .map((index: CommunityUser) => (
               <CardGlobal
-                key={crypto.randomUUID()}
+                key={Math.random()}
                 image_url={index.image_url}
                 login={index.login}
                 ratio={index.ratio}

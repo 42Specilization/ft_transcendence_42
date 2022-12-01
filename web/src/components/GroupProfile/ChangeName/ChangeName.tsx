@@ -42,15 +42,16 @@ export function ChangeName({ id, setModalChangeName }: ChangeNameProps) {
   }
 
   return (
-    <Modal onClose={() => {
-      setModalChangeName(false);
-      setPlaceHolder('');
-      setName('');
-    }}
+    <Modal 
+      onClose={() => {
+        setModalChangeName(false);
+        setPlaceHolder('');
+        setName('');
+      }}
       id={'modal__changeGroupName'}
     >
       <form className='changeGroupName__modal' onSubmit={handleKeyEnter}>
-        <div className='changeGroupName__modal__textdiv'>
+        <div className='changeGroupName__modal__text__div'>
           <h3>Insert the new nick</h3>
           <input
             className='changeGroupName__modal__input'

@@ -75,7 +75,7 @@ export class StatusGateway
     }
     this.mapUserData.delete(client.id);
 
-    this.logger.debug(`iAmOffine => Client: ${client.id}, email: |${user.login}|`);
+    this.logger.debug(`iAmOffline => Client: ${client.id}, email: |${user.login}|`);
   }
 
 

@@ -96,7 +96,7 @@ export interface IntraData {
   tfaValidated: boolean;
   notify: NotifyData[];
   friends: FriendData[];
-  blockeds: BlockedData[];
+  blocked: BlockedData[];
   directs: DirectData[];
   groups: GroupData[];
 }

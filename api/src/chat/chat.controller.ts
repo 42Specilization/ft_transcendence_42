@@ -76,7 +76,6 @@ export class ChatController {
     @Body() deleteDirectDto: DeleteDirectDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
   ) {
-    console.log(deleteDirectDto.friend_login);
     await this.chatService.deleteDirectById(userFromJwt.email, deleteDirectDto.friend_login);
     return { message: 'success' };
   }
@@ -114,7 +113,6 @@ export class ChatController {
   async createGroup(
     @Body() createGroupDto: CreateGroupDto,
   ) {
-    console.log(createGroupDto);
     if (createGroupDto.password !== createGroupDto.confirmPassword)
       throw new BadRequestException('Passwords must be equals');
     return await this.chatService.createGroup(createGroupDto);
@@ -138,7 +136,6 @@ export class ChatController {
   ) {
     return await this.chatService.getProfileGroupById(userFromJwt.email, getGroupDto.id);
   }
-
 
   @Patch('/updateGroup')
   @UseGuards(JwtAuthGuard)
@@ -167,6 +164,26 @@ export class ChatController {
     @GetUserFromJwt() userFromJwt: UserFromJwt
   ): Promise<{ message: string }> {
     await this.chatService.addAdmin(userFromJwt.email, groupInviteDto);
+    return { message: 'success' };
+  }
+
+  @Patch('/muteMember')
+  @UseGuards(JwtAuthGuard)
+  async muteMember(
+    @Body() groupInviteDto: GroupInviteDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.chatService.addMutated(userFromJwt.email, groupInviteDto);
+    return { message: 'success' };
+  }
+
+  @Patch('/removeMuteMember')
+  @UseGuards(JwtAuthGuard)
+  async removeMuteMember(
+    @Body() groupInviteDto: GroupInviteDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: string }> {
+    await this.chatService.removeMutated(userFromJwt.email, groupInviteDto);
     return { message: 'success' };
   }
 

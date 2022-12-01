@@ -23,7 +23,7 @@ export function NavBar({ Children }: NavBarProps) {
   const notifyRef: React.RefObject<HTMLDivElement> = useRef(null);
 
   useEffect(() => {
-    if (!intraData.image_url.includes('https://cdn.intra.42.fr/')) {
+    if (!intraData.image_url.includes('https://')) {
       setIntraData((prevIntraData) => {
         return {
           ...prevIntraData,

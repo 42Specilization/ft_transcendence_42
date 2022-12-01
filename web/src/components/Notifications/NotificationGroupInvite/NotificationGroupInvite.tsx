@@ -28,7 +28,6 @@ export function NotificationGroupInvite({ notify }: NotificationGroupInviteProps
     try {
       await api.patch('/user/removeNotify', { id: notify.id }, config);
       removeNotify();
-      console.log('Aceitou a notificação', notify.user_source);
       actionsChat.joinGroup(notify.additional_info, intraData.email);
     } catch (err: any) {
       if (err.response.data.message == 'This user already is your friend') {

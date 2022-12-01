@@ -41,7 +41,7 @@ export function ChangeSecurity({ id, setModalChangeSecurity }: ChangeSecurityPro
     >
       <form className='group__changeSecurity__modal' onSubmit={handleKeyEnter}>
         <SelectItem onValueChange={(e) => setSecurityType(e)} />
-        <div className='group__changeSecurity__modal__textdiv'>
+        <div className='group__changeSecurity__modal__text__div'>
           {securityType === 'protected' &&
             <>
               <h3>Insert a password</h3>

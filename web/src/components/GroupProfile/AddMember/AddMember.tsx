@@ -30,9 +30,8 @@ export function AddMember({ id, setModalAddMember }: AddMemberProps) {
         setModalAddMember(false);
       }
     } catch (err: any) {
-      console.log(err);
       setInviteName('');
-      setPlaceHolder('Invalid Nick');
+      setPlaceHolder(err.response.data.message);
     }
   }
 
@@ -41,7 +40,7 @@ export function AddMember({ id, setModalAddMember }: AddMemberProps) {
       onClose={() => { setModalAddMember(false); }}
     >
       <form className='group__addMember__modal' onSubmit={handleKeyEnter}>
-        <div className='group__addMember__modal__textdiv'>
+        <div className='group__addMember__modal__text__div'>
           <h3>Insert a nick</h3>
           <input
             className='group__addMember__modal__input'

@@ -32,7 +32,7 @@ export function CardDirect({ chat }: CardDirectProps) {
         
     setIntraData((prevIntraData) => {
       if(chat.name && chat.image)
-        prevIntraData.blockeds.push({ login: chat.name, image_url: chat.image});
+        prevIntraData.blocked.push({ login: chat.name, image_url: chat.image});
       return {
         ...prevIntraData,
         directs: prevIntraData.directs.filter((key) => key.name != chat.name),

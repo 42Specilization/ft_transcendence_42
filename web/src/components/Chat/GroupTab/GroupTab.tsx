@@ -22,7 +22,7 @@ export function GroupTab() {
             className='group__tab__header__icon'
             size={40}
             data-html={true}
-            data-tip={'Search Gropu'}
+            data-tip={'Search Group'}
             onClick={() => {
               setIsTableSearch(prev => !prev);
               setSearchInput('');
@@ -51,7 +51,7 @@ export function GroupTab() {
           intraData.groups &&
           intraData.groups.filter((obj: GroupData) => obj.name?.includes(searchInput))
             .map((obj: GroupData) => (
-              <CardGroup key={crypto.randomUUID()} chat={obj} />
+              <CardGroup key={Math.random()} chat={obj} />
             ))
         }
       </div>

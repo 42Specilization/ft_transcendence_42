@@ -239,7 +239,7 @@ export function ChatTalk(
                   return (
                     <div className='chat__talk__unread__message'
                       style={{ display: index !== len ? '' : 'none' }}
-                      key={crypto.randomUUID()}
+                      key={Math.random()}
                     >
                       <div /><p>unread message: {len - index}</p><div />
                     </div>
@@ -247,7 +247,7 @@ export function ChatTalk(
                 } else if (msg.type === 'action') {
                   return (
                     <div className='chat__talk__action__message'
-                      key={crypto.randomUUID()}
+                      key={Math.random()}
                     >
                       <p>{msg.user.login} {msg.msg}</p>
                     </div>
@@ -255,7 +255,7 @@ export function ChatTalk(
                 } else {
                   return (
                     <ChatMessage
-                      key={crypto.randomUUID()}
+                      key={Math.random()}
                       user={intraData.login}
                       message={msg} />
                   );

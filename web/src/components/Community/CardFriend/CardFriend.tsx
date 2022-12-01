@@ -58,7 +58,7 @@ export function CardFriend({ friend }: CardFriendProps) {
 
         <div className='card__friend__menu'>
           <div id='card__friend__menu__body' className='card__friend__menu__body'
-            style={{ height: activeMenu ? '155px' : '0px', width: activeMenu ? '80px' : '0px' }}>
+            style={{ height: activeMenu ? '145px' : '0px', width: activeMenu ? '80px' : '0px' }}>
 
             <button className='card__friend__menu__button'
               onClick={handleChallenger}

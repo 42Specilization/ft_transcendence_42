@@ -12,26 +12,24 @@ import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModa
 interface CardAdminProps {
   id: string;
   member: MemberData;
-  getPermition: (arg0: string) => boolean;
+  getPermission: (arg0: string) => boolean;
 }
 
-export function CardAdmin({ id, member, getPermition }: CardAdminProps) {
-
+export function CardAdmin({ id, member, getPermission }: CardAdminProps) {
   const { api, config, intraData } = useContext(IntraDataContext);
   const { setSelectedChat } = useContext(ChatContext);
   const [activeMenu, setActiveMenu] = useState(false);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
 
   function heightMenu() {
-    if (getPermition('maxLevel'))
+    if (getPermission('maxLevel'))
       return '235px';
     return '55px';
   }
 
   async function handleRemoveAdmin() {
     try {
-      const response = await api.patch('/chat/removeAdmin', { name: member.name, groupId: id }, config);
-      console.log(response);
+      await api.patch('/chat/removeAdmin', { name: member.name, groupId: id }, config);
       actionsChat.getUpdateGroup(id);
     } catch (err) {
       console.log(err);
@@ -48,9 +46,26 @@ export function CardAdmin({ id, member, getPermition }: CardAdminProps) {
 
   async function handleBanMember() {
     try {
-      console.log(id);
       await api.patch('/chat/addBan', { name: member.name, groupId: id }, config);
       actionsChat.updateGroup();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function handleMute() {
+    try {
+      await api.patch('/chat/muteMember', { name: member.name, groupId: id }, config);
+      actionsChat.getUpdateGroup(id);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function handleUnmute() {
+    try {
+      await api.patch('/chat/removeMuteMember', { name: member.name, groupId: id }, config);
+      actionsChat.getUpdateGroup(id);
     } catch (err) {
       console.log(err);
     }
@@ -89,7 +104,7 @@ export function CardAdmin({ id, member, getPermition }: CardAdminProps) {
               </button>
             </Link>
 
-            {getPermition('maxLevel') &&
+            {getPermission('maxLevel') &&
               <>
                 <button className='card__friend__menu__button'
                   onClick={handleRemoveAdmin}
@@ -100,7 +115,7 @@ export function CardAdmin({ id, member, getPermition }: CardAdminProps) {
                 {member.mutated ?
                   <button
                     className='card__friend__menu__button'
-                    onClick={handleRemoveFriend}
+                    onClick={handleUnmute}
                     data-html={true}
                     data-tip={'Unmute Member'}
                   >
@@ -109,9 +124,9 @@ export function CardAdmin({ id, member, getPermition }: CardAdminProps) {
                   :
                   <button
                     className='card__friend__menu__button'
-                    onClick={handleRemoveFriend}
+                    onClick={handleMute}
                     data-html={true}
-                    data-tip={'Mute Member(1 hour)'}
+                    data-tip={'Mute Member(15 minutes)'}
                   >
                     <SpeakerSlash size={32} />
                   </button>

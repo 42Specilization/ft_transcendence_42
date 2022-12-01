@@ -16,7 +16,7 @@ export class UserDto {
   tfaValidated: boolean;
   notify: NotifyDto[];
   friends: FriendsDto[];
-  blockeds: BlockedDto[];
+  blocked: BlockedDto[];
 }
 
 export class CommunityDto {

@@ -15,6 +15,7 @@ export class ProfileGroupDto {
   image: string;
   role: string;
   members: UserInfoDto[];
+  banned: UserInfoDto[];
 }
 
 export class GroupCommunityDto {
@@ -83,7 +84,7 @@ export class DeleteDirectDto {
 }
 
 
-// troocar o nome para um mais apropriado
+// trocar o nome para um mais apropriado
 export class GroupInviteDto {
   @IsNotEmpty({ message: 'Insert an valid name' })
     name: string;
