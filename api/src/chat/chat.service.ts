@@ -1036,9 +1036,7 @@ export class ChatService {
     if (!this.getRelation(group, member.nick, 'mutated'))
       throw new BadRequestException('Position unavailable');
 
-    console.log('relation', group.relations);
     this.removeRelation(group, member.nick, 'mutated');
-    console.log('relation 2', group.relations);
 
     const mutated = new Message();
     mutated.sender = member;
