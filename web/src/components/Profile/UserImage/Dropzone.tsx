@@ -15,16 +15,17 @@ export function Dropzone({ onFileUploaded }: DropzoneProps) {
   const onDrop = useCallback(
     (acceptedFiles: any) => {
 
-      function generateCode() {
+      function generateCode(length: number) {
         let code = '';
         const availableChar = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        for (let i = 0; i < 24; i++) {
+        for (let i = 0; i < length; i++) {
           code += availableChar.charAt(Math.floor(Math.random() * availableChar.length));
         }
         return code;
       }
-      const id = generateCode();
-      const file = new File([acceptedFiles[0]], `${id}.jpg`);
+      const id = generateCode(24);
+      const hash = generateCode(8);
+      const file = new File([acceptedFiles[0]], `${id}.${hash}.jpg`);
       onFileUploaded(file);
     },
     [onFileUploaded, intraData]

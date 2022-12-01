@@ -21,6 +21,7 @@ import { Notify } from '../notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
 // import { Chat } from 'src/chat/entities/chat.entity';
 import { NewNotifyDto } from '../notification/dto/notify-dto';
+import { getAssetsPath } from 'src/utils/utils';
 
 @Injectable()
 export class UserService {
@@ -370,8 +371,8 @@ export class UserService {
       if (user.imgUrl !== 'userDefault.png'
         && !user.imgUrl.includes('https://')) {
         fs.rm(
-          `../web/public/${user.imgUrl}`,
-          function (err) {
+          `${getAssetsPath()}${user.imgUrl}`,
+           function (err) {
             if (err)
               user.imgUrl = 'userDefault.png';
           }

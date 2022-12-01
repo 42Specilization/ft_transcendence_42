@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { Dropzone } from './Dropzone';
+import { getUrlImage } from '../../../others/utils/utils';
 
 export function UserImage() {
 
@@ -20,12 +21,16 @@ export function UserImage() {
   }
 
   useEffect(() => {
+    console.log('image name is ', intraData.image_url);
+  }, [intraData]);
+
+  useEffect(() => {
     if (selectedFile) handleSubmit();
   }, [selectedFile]);
 
   return (
     <div className='userImage__image'>
-      <img src={`${intraData.image_url}`} alt='User Image' />
+      <img src={`${getUrlImage(intraData.image_url)}`} alt='User Image' />
       <div className='userImage__button_text'>
         <Dropzone onFileUploaded={setSelectedFile} />
       </div>
