@@ -1,8 +1,7 @@
 import './NotificationGroupInvite.scss';
-import { CheckCircle, Prohibit, UserCircle, XCircle } from 'phosphor-react';
+import { CheckCircle, UserCircle, XCircle } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import { NotifyData } from '../../../others/Interfaces/interfaces';
-import { actionsStatus } from '../../../adapters/status/statusState';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { ProfileGroupModal } from '../../ProfileGroupModal/ProfileGroupModal';
@@ -36,12 +35,6 @@ export function NotificationGroupInvite({ notify }: NotificationGroupInviteProps
         removeNotify();
       }
     }
-  }
-
-  async function handleBlock() {
-    await api.patch('/user/blockUserByNotification', { id: notify.id }, config);
-    removeNotify();
-    actionsStatus.newBlocked();
   }
 
   async function handleReject() {
@@ -81,10 +74,6 @@ export function NotificationGroupInvite({ notify }: NotificationGroupInviteProps
           <p> Reject </p>
           <XCircle size={22} />
         </div>
-        <div className='notificationGroupInvite__backSide__button' onClick={handleBlock}>
-          <p> Block </p>
-          <Prohibit size={22} />
-        </div>
 
         <div className='notificationGroupInvite__backSide__button'
           onClick={() => setProfileGroupVisible(true)}>
@@ -95,7 +84,7 @@ export function NotificationGroupInvite({ notify }: NotificationGroupInviteProps
         </div>
         {profileGroupVisible &&
           <ProfileGroupModal
-            id={notify.additional_info}
+            id='profile__group__modal'
             setProfileGroupVisible={setProfileGroupVisible} />
         }
 

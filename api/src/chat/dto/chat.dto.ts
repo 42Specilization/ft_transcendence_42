@@ -5,10 +5,12 @@ export class UserInfoDto {
   name: string;
   image: string;
   role: string;
+  mutated: boolean;
 }
 
 export class ProfileGroupDto {
   id: string;
+  type: string;
   name: string;
   image: string;
   role: string;
@@ -30,9 +32,6 @@ export class GroupDto {
   type: string;
   name?: string;
   image?: string;
-  owner?: UserInfoDto;
-  admins?: UserInfoDto[];
-  members?: UserInfoDto[];
   messages?: MsgToClient[];
   date: Date;
   newMessages: number;
@@ -47,18 +46,7 @@ export class UpdateGroupDto {
     name?: string;
   @IsOptional()
     image?: string;
-  @IsOptional()
-    owner?: UserInfoDto;
-  @IsOptional()
-    admins?: UserInfoDto[];
-  @IsOptional()
-    users?: UserInfoDto[];
-  @IsOptional()
-    messages?: MsgToClient[];
-  @IsOptional()
-    date?: Date;
-  @IsOptional()
-    newMessages?: number;
+
   @IsOptional()
     password?: string;
 }
@@ -99,6 +87,13 @@ export class DeleteDirectDto {
 export class GroupInviteDto {
   @IsNotEmpty({ message: 'Insert an valid name' })
     name: string;
+  @IsNotEmpty({ message: 'Insert an valid group' })
+    groupId: string;
+}
+
+export class GroupProtectedJoinDto {
+  @IsNotEmpty({ message: 'Insert an valid password' })
+    password: string;
   @IsNotEmpty({ message: 'Insert an valid group' })
     groupId: string;
 }

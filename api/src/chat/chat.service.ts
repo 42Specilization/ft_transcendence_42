@@ -4,7 +4,7 @@ import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { MsgToClient, MsgToServer } from './chat.class';
-import { CreateGroupDto, DirectDto, GroupDto, UpdateGroupDto, ProfileGroupDto, GroupCommunityDto, GroupInviteDto } from './dto/chat.dto';
+import { CreateGroupDto, DirectDto, GroupDto, UpdateGroupDto, ProfileGroupDto, GroupCommunityDto, GroupInviteDto, GroupProtectedJoinDto } from './dto/chat.dto';
 import { Direct } from './entities/direct.entity';
 import { Group } from './entities/group.entity';
 import { Message } from './entities/message.entity';
@@ -375,6 +375,14 @@ export class ChatService {
     newGroup.messages = [];
     newGroup.date = new Date(Date.now());
 
+    if (newGroup.type === 'protected') {
+      const relation = new GroupRelations();
+      relation.date = new Date(Date.now());
+      relation.user_target = owner;
+      relation.type = 'join allowed';
+      newGroup.relations = [relation];
+    }
+
     try {
       await this.groupRepository.save(newGroup);
       return newGroup.id;
@@ -406,25 +414,24 @@ export class ChatService {
         'relations.user_target',
       ], order: {
         relations: {
-          date: 'asc'
+          date: 'desc'
         }
       }
     });
   }
 
-  isGroupAdmin(group: Group, nick: string): boolean {
-    const admins = group.relations.filter(key => key.type === 'admin')
+  getRelation(group: Group, nick: string, relation: string): boolean {
+    const relations = group.relations.filter(key => key.type === relation)
       .map(key => key.user_target.nick);
-
-    if (admins)
-      return admins.indexOf(nick) >= 0;
+    if (relations)
+      return relations.indexOf(nick) >= 0;
     return false;
   }
 
   getRole(group: Group, nick: string): string {
     if (group.owner.nick === nick)
       return 'owner';
-    if (this.isGroupAdmin(group, nick))
+    if (this.getRelation(group, nick, 'admin'))
       return 'admin';
     if (group.users.map(e => e.nick).indexOf(nick) >= 0)
       return 'member';
@@ -441,12 +448,14 @@ export class ChatService {
       id: group.id,
       name: group.name,
       image: group.image,
+      type: group.type,
       role: this.getRole(group, user.nick),
       members: group.users.map((user: User) => {
         return {
           name: user.nick,
           image: user.imgUrl,
           role: this.getRole(group, user.nick),
+          mutated: this.getRelation(group, user.nick, 'muted'),
         };
       }),
     };
@@ -479,15 +488,27 @@ export class ChatService {
   }
 
   async getCommunityGroups(user_email: string): Promise<GroupCommunityDto[] | void> {
-    const groups = await this.groupRepository.find({
+    const user = await this.userService.findUserGroupByEmail(user_email);
+    if (!user)
+      throw new BadRequestException('User Not Found getCommunityGroups');
+    let groups = await this.groupRepository.find({
       relations: [
         'users',
+        'owner',
+        'relations',
+        'relations.user_target',
       ]
     });
+
+    groups = groups.filter(group =>
+      !this.getRelation(group, user.nick, 'banned')
+      && (group.type !== 'private'
+        || (group.type === 'private' && this.getRole(group, user.nick) !== 'outside')));
+
     if (!groups)
       return;
 
-    let groupsDto: GroupCommunityDto[] = groups.map((group) => {
+    const groupsDto: GroupCommunityDto[] = groups.map((group) => {
       return {
         id: group.id,
         type: group.type,
@@ -497,11 +518,7 @@ export class ChatService {
         member: group.users.map(e => e.email).indexOf(user_email) >= 0,
         size: group.users.length,
       };
-    });
-
-    groupsDto = groupsDto.filter(group => group.type !== 'private'
-      || (group.type === 'private' && group.member))
-      .sort((a, b) => a.size < b.size ? 1 : -1);
+    }).sort((a, b) => a.size < b.size ? 1 : -1);
 
     return groupsDto;
   }
@@ -510,39 +527,32 @@ export class ChatService {
     const group = await this.findGroupById(updateGroupDto.id);
     if (!group)
       throw new BadRequestException('Group not Found updateGroup');
+
     const user = await this.userService.findUserByEmail(user_email);
-    if (!user || (user.nick !== group.owner.nick && !this.isGroupAdmin(group, user.nick)))
+    if (!user || (user.nick !== group.owner.nick && !this.getRelation(group, user.nick, 'admin')))
       throw new UnauthorizedException('Permission denied');
+
     const {
-      // id,
-      // admins,
-      date,
       image,
       name,
-      // owner,
       type,
       password
-      // users,
-      // messages,
-      // newMessages,
     } = updateGroupDto;
 
-    // group.users = users ? users : group.users
-    // group.admins = admins ? admins : group.admins
-    // group.owner = ? : group.owner
-    group.date = date ? date : group.date;
     group.name = name ? name : group.name;
     if (image) {
       if (group.image !== 'userDefault.png') {
         fs.rm(
           `../web/public/${group.image}`,
           function (err) {
-            if (err) throw err;
+            if (err)
+              group.image = 'userDefault.png';
           }
         );
       }
       group.image = image;
     }
+
     if (user.nick === group.owner.nick) {
       group.type = type ? type : group.type;
       group.password = password ? bcrypt.hashSync(password, 8) : group.password;
@@ -550,7 +560,6 @@ export class ChatService {
 
     try {
       await group.save();
-      // return user;
     } catch (error) {
       throw new InternalServerErrorException('Error saving user update');
     }
@@ -562,8 +571,14 @@ export class ChatService {
     if (!user || !group)
       throw new BadRequestException('Invalid Request joinGroup');
 
-    if (group.users.map(e => e.email).indexOf(user_email) >= 0)
+    if (group.users.map(e => e.email).indexOf(user_email) >= 0
+      || this.getRelation(group, user.nick, 'banned'))
       return undefined;
+
+    if (group.type === 'protected'
+      && !this.getRelation(group, user.nick, 'join allowed')) {
+      return undefined;
+    }
 
     const firstUser: boolean = group.users.length === 0;
 
@@ -584,6 +599,15 @@ export class ChatService {
       group.messages.push(join);
     group.messages.push(breakpoint);
 
+    if (group.type === 'protected') {
+      group.relations = group.relations.filter((relation) => {
+        if (relation.type === 'join allowed'
+          && relation.user_target.email === user.email)
+          return;
+        return relation;
+      });
+    }
+
     try {
       await group.save();
       if (firstUser)
@@ -602,6 +626,11 @@ export class ChatService {
     }
   }
 
+  getOlderAdmin(group: Group): User | undefined {
+    const admins = group.relations.filter(key => key.type === 'admin');
+    return admins[0].user_target;
+  }
+
   async leaveGroup(user_email: string, id: string): Promise<MsgToClient | null | undefined> {
     const user = await this.userService.findUserGroupByEmail(user_email);
     const group = await this.findGroupById(id);
@@ -612,6 +641,29 @@ export class ChatService {
       return undefined;
 
     const lastUser: boolean = group.users.length === 1;
+
+    if (!lastUser && user.email == group.owner.email) {
+      let newOwner: User | undefined = this.getOlderAdmin(group);
+      if (newOwner) {
+        group.relations = group.relations.filter((relation) => {
+          if (relation.type === 'admin' && relation.user_target.email == newOwner?.email)
+            return;
+          return relation;
+        });
+        group.owner = newOwner;
+      } else {
+        newOwner = group.users.filter((key) => key.email !== group.owner.email).at(0);
+        if (newOwner)
+          group.owner = newOwner;
+      }
+    }
+    if (this.getRelation(group, user.nick, 'admin')) {
+      group.relations = group.relations.filter((relation) => {
+        if (relation.type === 'admin' && relation.user_target.email == user.email)
+          return;
+        return relation;
+      });
+    }
 
     const leave = new Message();
     leave.sender = user;
@@ -654,14 +706,23 @@ export class ChatService {
     if (!group || !user || !removed)
       throw new InternalServerErrorException('Infos not found kickMember');
 
-    if (user.nick !== group.owner.nick && !this.isGroupAdmin(group, user.nick)) // pensar o que fazer nessa porra desse trol aqui
-      throw new UnauthorizedException('Permission denied');
-
-    if (group.users.map(e => e.nick).indexOf(removed.nick) < 0)
+    if (user.nick !== group.owner.nick && !this.getRelation(group, user.nick, 'admin'))
       return null;
 
-    if (user.nick === removed.nick)
+    if (this.getRole(group, removed.nick) !== 'outside'
+      && this.getRole(group, removed.nick) !== 'owner')
       return null;
+
+    if (this.getRelation(group, removed.nick, 'admin') && user.nick !== group.owner.nick)
+      return null;
+
+    if (this.getRelation(group, user.nick, 'admin')) {
+      group.relations = group.relations.filter((relation) => {
+        if (relation.type === 'admin' && relation.user_target.email == user.email)
+          return;
+        return relation;
+      });
+    }
 
     const kick = new Message();
     kick.sender = removed;
@@ -698,11 +759,21 @@ export class ChatService {
 
     if (!friend || !user || !group)
       throw new InternalServerErrorException('User not found');
-    // if (user && friend && user.nick === friend.nick) {
-    //   throw new BadRequestException('You cant add yourself');
-    // }
 
-    // console.log('passou das validações')
+    if (this.getRole(group, user.nick) === 'outside')
+      throw new UnauthorizedException('You are not in group');
+
+    if (group.type !== 'public' && this.getRole(group, user.nick) === 'member')
+      throw new UnauthorizedException('Permission denied');
+
+    if (this.getRole(group, friend.nick) !== 'outside')
+      throw new BadRequestException('User already in group');
+
+    if (this.getRelation(group, friend.nick, 'banned'))
+      throw new BadRequestException('User has been banned');
+
+    if (this.userService.isBlocked(user, friend) || this.userService.isBlocked(friend, user))
+      return;
 
     const newNotify = new Notify();
     newNotify.type = 'group';
@@ -723,15 +794,18 @@ export class ChatService {
     if (duplicated.length > 0)
       throw new BadRequestException('This user already your order');
 
-    if (group.users.map(e => e.email).indexOf(friend.email) >= 0)
-      throw new BadRequestException('This user already in group');
 
-    if (this.userService.isBlocked(user, friend) || this.userService.isBlocked(friend, user))
-      return;
+    const joined = new GroupRelations();
+    joined.date = new Date(Date.now());
+    joined.group = group;
+    joined.type = 'join allowed';
+    joined.user_target = friend;
 
+    group.relations.push(joined);
     friend.notify?.push(newNotify);
     try {
-      friend.save();
+      await group.save();
+      await friend.save();
     } catch (err) {
       console.log(err);
     }
@@ -748,8 +822,8 @@ export class ChatService {
     if (user.nick !== group.owner.nick)
       throw new UnauthorizedException('Permission denied');
 
-    if (this.isGroupAdmin(group, friend.nick))
-      throw new BadRequestException('This user already is admin');
+    if (this.getRole(group, friend.nick) !== 'member')
+      throw new BadRequestException('Position unavailable');
 
     const relation = new GroupRelations();
     relation.date = new Date(Date.now());
@@ -758,7 +832,7 @@ export class ChatService {
     group.relations.push(relation);
 
     try {
-      group.save();
+      await group.save();
     } catch (err) {
       throw new InternalServerErrorException('error saving admin');
     }
@@ -769,15 +843,14 @@ export class ChatService {
     const friend = await this.userService.findUserByNick(groupInviteDto.name);
     const group = await this.findGroupById(groupInviteDto.groupId);
 
-    console.log(group.relations);
     if (!friend || !user || !group)
       throw new InternalServerErrorException('User not found');
 
     if (user.nick !== group.owner.nick)
       throw new UnauthorizedException('Permission denied');
 
-    if (!this.isGroupAdmin(group, friend.nick))
-      throw new BadRequestException('This user isnt admin');
+    if (this.getRole(group, friend.nick) !== 'admin')
+      throw new BadRequestException('Position unavailable');
 
     group.relations = group.relations.filter((relation) => {
       if (relation.type === 'admin' && relation.user_target.email === friend.email)
@@ -786,7 +859,7 @@ export class ChatService {
     });
 
     try {
-      group.save();
+      await group.save();
     } catch (err) {
       throw new InternalServerErrorException('error saving admin');
     }
@@ -797,15 +870,22 @@ export class ChatService {
     const member = await this.userService.findUserByNick(groupInviteDto.name);
     const group = await this.findGroupById(groupInviteDto.groupId);
 
-    if (!member || !user || !group)
-      throw new InternalServerErrorException('User not found');
+    if (!group || !user || !member)
+      throw new InternalServerErrorException('Infos not found addBan');
 
-    if (user.nick !== group.owner.nick && !this.isGroupAdmin(group, user.nick))
-      throw new UnauthorizedException('Permission denied');
+    if (user.nick !== group.owner.nick && !this.getRelation(group, user.nick, 'admin'))
+      return null;
 
-    if (this.isGroupAdmin(group, member.nick)) {
+    if (this.getRole(group, member.nick) !== 'outside'
+      && this.getRole(group, member.nick) !== 'owner')
+      return null;
+
+    if (this.getRelation(group, member.nick, 'admin') && user.nick !== group.owner.nick)
+      return null;
+
+    if (this.getRelation(group, user.nick, 'admin')) {
       group.relations = group.relations.filter((relation) => {
-        if (relation.type === 'admin' && relation.user_target.email === member.email)
+        if (relation.type === 'admin' && relation.user_target.email == user.email)
           return;
         return relation;
       });
@@ -814,7 +894,7 @@ export class ChatService {
     const relation = new GroupRelations();
     relation.date = new Date(Date.now());
     relation.user_target = member;
-    relation.type = 'ban';
+    relation.type = 'banned';
     group.relations.push(relation);
 
     const banned = new Message();
@@ -845,6 +925,40 @@ export class ChatService {
     }
   }
 
-  // Pensar em como um usuario sera desbanido
+  async removeBan() {
+    // Pensar em como um usuario sera desbanido
+  }
 
+
+  async confirmPassword(user_email: string, groupProtectedJoinDto: GroupProtectedJoinDto) {
+    const group = await this.findGroupById(groupProtectedJoinDto.groupId);
+    if (!group)
+      throw new BadRequestException('Group not found confirmPassword');
+
+    if (group.type !== 'protected')
+      return;
+
+    if (!bcrypt.compareSync(groupProtectedJoinDto.password as string, group.password as string))
+      throw new UnauthorizedException('Invalid Password');
+
+    const user = await this.userService.findUserByEmail(user_email);
+    if (!user)
+      throw new UnauthorizedException('User Not Found confirmPassword');
+
+    if (this.getRelation(group, user.nick, 'join allowed'))
+      return;
+
+    const joined = new GroupRelations();
+    joined.date = new Date(Date.now());
+    joined.group = group;
+    joined.type = 'join allowed';
+    joined.user_target = user;
+
+    group.relations.push(joined);
+    try {
+      await group.save();
+    } catch (err) {
+      throw new InternalServerErrorException('Error saving group confirmPassword');
+    }
+  }
 }

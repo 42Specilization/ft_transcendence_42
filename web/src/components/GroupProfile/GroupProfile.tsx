@@ -32,6 +32,8 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
     ['getGroupInfos', updateGroup],
     async () => {
       const response = await api.patch('/chat/getProfileGroupById', { id: id }, config);
+
+
       return response.data;
     },
     {
@@ -56,7 +58,7 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
     actionsChat.updateGroup();
   }
 
-  function gePermition(level: string) {
+  function getPermition(level: string) {
     if (level === 'maxLevel')
       return data.role === 'owner';
     if (level === 'middleLevel')
@@ -81,7 +83,7 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
       <div className='group__profile__infos'>
         <div className='group__profile__infos__image'>
           <img src={data.image} alt="Group Image" />
-          {gePermition('maxLevel') &&
+          {getPermition('middleLevel') &&
             <div className='group__profile__infos__image__text'>
               <Dropzone onFileUploaded={setSelectedFile} />
             </div>
@@ -89,7 +91,7 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
         </div>
         <div className='group__profile__infos__name'>
           <strong>{data.name}</strong>
-          {gePermition('maxLevel') &&
+          {getPermition('middleLevel') &&
             <div className='group__profile__infos__name__button'>
               <NotePencil size={30} onClick={() => setModalChangeName(true)} />
               {modalChangeName &&
@@ -99,7 +101,7 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
           }
         </div>
 
-        {gePermition('maxLevel') &&
+        {getPermition('maxLevel') &&
           <>
             <button className='group__profile__infos__segurityButton'
               onClick={() => { setModalChangeSecurity(true); }}
@@ -115,39 +117,40 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
 
       <div className='group__profile__members'>
         <div className='group__profile__members__action'>
-          {gePermition('middleLevel') &&
+          {getPermition(data.type === 'public' ? 'lowLevel' : 'middleLevel') &&
             <>
               <button onClick={() => { setModalAddMember(true); }}>
                 Add Member
               </button>
-              {modalAddMember &&
-                <AddMember id={id} setModalAddMember={setModalAddMember} />
-              }
+
             </>
           }
         </div>
+        {modalAddMember &&
+          <AddMember id={id} setModalAddMember={setModalAddMember} />
+        }
         < div className='group__profile__members__body'>
           {data.members &&
             data.members.map((obj: any) => {
               if (obj.role === 'owner')
-                return <CardOwner key={crypto.randomUUID()} id={data.id}
-                  member={obj} gePermition={gePermition} />;
+                return <CardOwner key={crypto.randomUUID()} member={obj} />;
               if (obj.role === 'admin')
                 return <CardAdmin key={crypto.randomUUID()} id={data.id}
-                  member={obj} gePermition={gePermition} />;
+                  member={obj} getPermition={getPermition} />;
               else
                 return <CardMember key={crypto.randomUUID()} id={data.id}
-                  member={obj} gePermition={gePermition} />;
+                  member={obj} getPermition={getPermition} />;
             })
           }
         </div>
         <div className='group__profile__members__action'>
-          {gePermition('lowLevel') &&
+          {getPermition('lowLevel') &&
             <button onClick={handleLeaveGroup}>
               Leave
             </button>
           }
         </div>
+
       </div>
     </div >
   );

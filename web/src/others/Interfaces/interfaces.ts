@@ -30,6 +30,7 @@ export interface MemberData {
   name: string;
   image: string;
   role: string;
+  mutated: boolean;
 }
 
 export interface GroupCardData {
@@ -47,8 +48,8 @@ export interface GroupData {
   type: string;
   name?: string;
   image?: string;
-  date: Date;
   messages: MsgToClient[];
+  date: Date;
   newMessages: number;
 }
 

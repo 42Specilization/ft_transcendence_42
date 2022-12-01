@@ -2,23 +2,33 @@ import './CardMember.scss';
 import ReactTooltip from 'react-tooltip';
 import { MemberData } from '../../../others/Interfaces/interfaces';
 import { useContext, useState } from 'react';
-import { DotsThreeVertical, Prohibit,  TelegramLogo, UserMinus, Alien } from 'phosphor-react';
+import { DotsThreeVertical, Prohibit, TelegramLogo, UserMinus, Alien, SpeakerHigh, SpeakerSlash } from 'phosphor-react';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { Link } from 'react-router-dom';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsChat } from '../../../adapters/chat/chatState';
+import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 
 interface CardMemberProps {
   id: string;
   member: MemberData;
-  gePermition: (arg0: string) => boolean;
+  getPermition: (arg0: string) => boolean;
 }
 
-export function CardMember({ id, member, gePermition }: CardMemberProps) {
+export function CardMember({ id, member, getPermition }: CardMemberProps) {
 
-  const [activeMenu, setActiveMenu] = useState(false);
-  const { setSelectedChat } = useContext(ChatContext);
   const { api, config, intraData } = useContext(IntraDataContext);
+  const { setSelectedChat } = useContext(ChatContext);
+  const [activeMenu, setActiveMenu] = useState(false);
+  const [friendProfileVisible, setFriendProfileVisible] = useState(false);
+
+  function heightMenu() {
+    if (getPermition('maxLevel'))
+      return '235px';
+    if (getPermition('middleLevel'))
+      return '190px';
+    return '55px';
+  }
 
   async function handleMakeAdmin() {
     try {
@@ -47,69 +57,104 @@ export function CardMember({ id, member, gePermition }: CardMemberProps) {
     }
   }
 
-  return (
-    <div className='card__member'
-    //  onClick={() => setActiveMenu(prev => !prev)}
-    >
+  function modalVisible(event: any) {
+    if (event.target.id === 'card__member')
+      setFriendProfileVisible(true);
+  }
 
-      <div className="card__member__div">
-        <div
+  return (
+    <div id='card__member' className='card__member' onClick={modalVisible}>
+      <div id='card__member' className="card__member__div">
+        <div id='card__member'
           className='card__member__icon'
           style={{ backgroundImage: `url(${member.image})` }}>
         </div>
-        <div className='card__member__name'>{member.name}</div>
-      </div>
-
-      <div className='card__friend__menu'>
-        <div id='card__friend__menu__body' className='card__friend__menu__body'
-          style={{ height: activeMenu ? '190px' : '0px', width: activeMenu ? '80px' : '0px' }}>
-
-
-          <button className='card__friend__menu__button'
-            onClick={handleMakeAdmin}
-            data-html={true}
-            data-tip={'Make Admin'}>
-            <Alien size={32} />
-          </button>
-
-          {/* Usuario nao pode se redirecionar pro proprio chat */}
-          <Link to='/chat'>
-            <button className='card__friend__menu__button'
-              onClick={handleSendMessage}
-              data-html={true}
-              data-tip={'Send Message'}
-            >
-              <TelegramLogo size={32} />
-            </button>
-          </Link>
-          <button
-            className='card__friend__menu__button'
-            onClick={handleRemoveFriend}
-            data-html={true}
-            data-tip={'Remove Member'}
-          >
-            <UserMinus size={32} />
-          </button>
-          <button className='card__friend__menu__button'
-            onClick={handleBanMember}
-            data-html={true}
-            data-tip={'Ban Member'}
-          >
-            <Prohibit size={32} />
-          </button>
-
+        <div id='card__member' className='card__member__name'>
+          {member.name}
         </div>
-
-        <DotsThreeVertical
-          id='card__friend__menu'
-          className='chat__friends__header__icon'
-          size={40}
-          onClick={() => setActiveMenu(prev => !prev)}
-          data-html={true}
-          data-tip={'Menu'}
-        />
       </div>
+
+      {
+        intraData.login !== member.name &&
+        <div className='card__friend__menu'>
+          <div id='card__friend__menu__body' className='card__friend__menu__body'
+            style={{ height: activeMenu ? heightMenu() : '0px', width: activeMenu ? '80px' : '0px' }}>
+
+            <Link to='/chat'>
+              <button className='card__friend__menu__button'
+                onClick={handleSendMessage}
+                data-html={true}
+                data-tip={'Send Message'}
+              >
+                <TelegramLogo size={32} />
+              </button>
+            </Link>
+
+            {getPermition('maxLevel') &&
+              <button className='card__friend__menu__button'
+                onClick={handleMakeAdmin}
+                data-html={true}
+                data-tip={'Make Admin'}>
+                <Alien size={32} />
+              </button>
+            }
+            {getPermition('middleLevel') &&
+              <>
+                {member.mutated ?
+                  <button
+                    className='card__friend__menu__button'
+                    onClick={handleRemoveFriend}
+                    data-html={true}
+                    data-tip={'Unmute Member'}
+                  >
+                    <SpeakerHigh size={32} />
+                  </button>
+                  :
+                  <button
+                    className='card__friend__menu__button'
+                    onClick={handleRemoveFriend}
+                    data-html={true}
+                    data-tip={'Mute Member(1 hour)'}
+                  >
+                    <SpeakerSlash size={32} />
+                  </button>
+                }
+                <button
+                  className='card__friend__menu__button'
+                  onClick={handleRemoveFriend}
+                  data-html={true}
+                  data-tip={'Remove Member'}
+                >
+                  <UserMinus size={32} />
+                </button>
+                <button className='card__friend__menu__button'
+                  onClick={handleBanMember}
+                  data-html={true}
+                  data-tip={'Ban Member'}
+                >
+                  <Prohibit size={32} />
+                </button>
+              </>
+            }
+          </div>
+
+          <DotsThreeVertical
+            id='card__friend__menu'
+            className='chat__friends__header__icon'
+            size={40}
+            onClick={() => setActiveMenu(prev => !prev)}
+            data-html={true}
+            data-tip={'Menu'}
+          />
+        </div>
+      }
       <ReactTooltip className='chat__friends__header__icon__tip' delayShow={50} />
-    </div>
+      {
+        friendProfileVisible &&
+        <ProfileFriendModal
+          login={member.name}
+          setFriendProfileVisible={setFriendProfileVisible} />
+      }
+    </div >
   );
 }

@@ -372,7 +372,8 @@ export class UserService {
         fs.rm(
           `../web/public/${user.imgUrl}`,
           function (err) {
-            if (err) throw err;
+            if (err)
+              user.imgUrl = 'userDefault.png';
           }
         );
       }
@@ -541,21 +542,21 @@ export class UserService {
       throw new BadRequestException('friend not found');
 
     const blocked = await this.findUserByEmail(requestedNotify.at(0)?.user_source.email as string) as User;
-  
-    const alreadyFriends = this.alreadyFriends(user, blocked);
-    if (alreadyFriends) {
-      user.relations = user.relations.filter((relation) => {
-        if (relation.type === 'friend' && relation.passive_user.nick == blocked.nick)
-          return;
-        return relation;
-      });
-  
-      blocked.relations = blocked.relations.filter((relation) => {
-        if (relation.type === 'friend' && relation.passive_user.nick == user.nick)
-          return;
-        return relation;
-      });
-    }
+
+    // const alreadyFriends = this.alreadyFriends(user, blocked);
+    // if (alreadyFriends) {
+    //   user.relations = user.relations.filter((relation) => {
+    //     if (relation.type === 'friend' && relation.passive_user.nick == blocked.nick)
+    //       return;
+    //     return relation;
+    //   });
+
+    //   blocked.relations = blocked.relations.filter((relation) => {
+    //     if (relation.type === 'friend' && relation.passive_user.nick == user.nick)
+    //       return;
+    //     return relation;
+    //   });
+    // }
 
     const relationUser = new Relations();
 

@@ -15,13 +15,13 @@
 .group__addMember__modal {
   @include displayFlex(center, row, flex-end);
   width: 100%;
-  height: 90%;
+  height: 100%;
 }
 
 .group__addMember__modal__textdiv {
   @include displayFlex(space-between, column);
   width: 80%;
-  height: 80%;
+  height: 100%;
 
   h3 {
     font-size: 35px;
