@@ -2,7 +2,7 @@ import './UserImage.scss';
 import { useContext, useEffect, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
-import { Dropzone } from './Dropzone';
+import { Dropzone } from '../../Dropzone/Dropzone';
 import { getUrlImage } from '../../../others/utils/utils';
 
 export function UserImage() {
