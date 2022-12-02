@@ -392,9 +392,29 @@ export class UserService {
     }
   }
 
+  async getFriend(user_email: string, friend_nick: string) {
+    const user = await this.findUserByEmail(user_email);
+    const userValidate = await this.findUserByNick(friend_nick);
+    if (!userValidate || !user)
+      throw new InternalServerErrorException('User not found');
+
+    const friendData = {
+      image_url: userValidate.imgUrl,
+      login: userValidate.nick,
+      matches: userValidate.matches,
+      wins: userValidate.wins,
+      lose: userValidate.lose,
+      name: userValidate.usual_full_name,
+      relation: 'none'
+    };
+
+    friendData.relation = this.alreadyFriends(user, userValidate) ? 'friend' : friendData.relation;
+    friendData.relation = (this.isBlocked(user, userValidate) || this.isBlocked(userValidate, user)) ? 'blocked' : friendData.relation;
+    return (friendData);
+  }
+
 
   isBlocked(user_passive: User, user_active: User) {
-
     const blocked = user_active.relations.filter((friendRelation) => {
       if (friendRelation.type == 'blocked' && friendRelation.passive_user.nick == user_passive.nick)
         return friendRelation;

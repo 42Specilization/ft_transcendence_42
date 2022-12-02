@@ -7,7 +7,7 @@ import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { getUrlImage } from '../../../others/utils/utils';
 import { ConfirmActionModal } from '../../ConfirmActionModal/ConfirmActionModal';
-import { ButtonBlockedUser } from '../../Button/ButtonUnBlockedUser';
+import { ButtonUnBlockedUser } from '../../Button/ButtonUnBlockedUser';
 
 interface CardBlockedProps {
   blocked: BlockedData;
@@ -45,7 +45,7 @@ export function CardBlocked({ blocked }: CardBlockedProps) {
             className="card__blocked__menu__body"
             style={{ height: isTableFriendUsersMenu ? '55px' : '0px', width: isTableFriendUsersMenu ? '90px' : '0px' }}
           >
-            <ButtonBlockedUser login={blocked.login} />
+            <ButtonUnBlockedUser login={blocked.login} />
           </div>
         </div>
         <ReactTooltip className='chat__friends__header__icon__tip' delayShow={50} />

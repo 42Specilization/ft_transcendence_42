@@ -5,11 +5,11 @@ import { IntraDataContext } from '../../contexts/IntraDataContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import { actionsStatus } from '../../adapters/status/statusState';
 
-interface ButtonBlockedUserProps {
+interface ButtonUnBlockedUserProps {
   login: string;
 }
 
-export function ButtonBlockedUser({ login }: ButtonBlockedUserProps) {
+export function ButtonUnBlockedUser({ login }: ButtonUnBlockedUserProps) {
 
   const { api, config, setIntraData } = useContext(IntraDataContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
