@@ -81,7 +81,16 @@ export function GameMenu() {
         </div>
       </div>
       <div className='gameMenu__options'>
-        {commands === true ? <Commands /> : (watch === true ? <WatchGame /> : <Instructions />)}
+
+        {(() => {
+          if (commands === true) {
+            return (<Commands />);
+          } else if (watch === true) {
+            return (<WatchGame />);
+          } else {
+            return (<Instructions />);
+          }
+        })()}
       </div>
     </div>
   );

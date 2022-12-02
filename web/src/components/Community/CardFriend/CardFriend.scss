@@ -1,5 +1,11 @@
 @import '../../../others/styles/global.scss';
 
+#card__modal__challenge {
+  .modal__container__content {
+    height: 100%;
+  }
+}
+
 .card__friend {
   @include displayFlex(space-between);
   width: 100%;

@@ -9,3 +9,16 @@
   background-repeat: no-repeat;
   background-position: center;
 }
+
+#game__modal {
+  .modal__container__content {
+    position: absolute;
+    top: 30px;
+    font-size: 24px;
+  }
+}
+
+.modal {
+  top: 0;
+  height: 100%;
+}

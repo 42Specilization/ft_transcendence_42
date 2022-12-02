@@ -1,6 +1,6 @@
 import './Notifications.scss';
 import { useContext } from 'react';
-// import { NotificationChallenge } from './NotificationChallenge/NotificationChallenge';
+import { NotificationChallenge } from './NotificationChallenge/NotificationChallenge';
 import { NotificationFriend } from './NotificationFriend/NotificationFriend';
 import { NotificationMessage } from './NotificationMessage/NotificationMessage';
 import { NotificationGroupInvite } from './NotificationGroupInvite/NotificationGroupInvite';
@@ -24,8 +24,8 @@ export function Notifications() {
                   return <NotificationMessage notify={obj} />;
                 if (obj.type === 'group')
                   return <NotificationGroupInvite notify={obj} />;
-                // if (obj.type === 'challenge')
-                //   return <NotificationChallenge notify={obj} />;
+                if (obj.type === 'challenge')
+                  return <NotificationChallenge notify={obj} />;
               })()}
             </div>
           )

@@ -1,5 +1,12 @@
 @import '../../../others/styles/global.scss';
 
+#waiting-room__modal {
+  .modal__container__content {
+    position: absolute;
+    top: 30px;
+    font-size: 24px;
+  }
+}
 
 .waiting-room {
   @include displayFlex(center, column);
