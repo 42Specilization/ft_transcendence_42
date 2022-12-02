@@ -8,24 +8,16 @@ import { Commands } from '../Commands/Commands';
 import { WatchGame } from '../WatchGame/WatchGame';
 import { Instructions } from '../Instructions/Instructions';
 import './GameMenu.scss';
-import { Challenge } from '../Challenge/Challenge';
 
 export function GameMenu() {
 
   const [commands, setCommands] = useState<boolean>(true);
   const [watch, setWatch] = useState<boolean>(false);
   const [powerUp, setPowerUp] = useState<boolean>(false);
-  const [challenge, setChallenge] = useState<boolean>(false);
 
   const handleStartGame = () => {
     actions.initializeSocket();
     actions.initializeGame(powerUp);
-  };
-
-  const handleChallenge = () => {
-    setCommands(false);
-    setWatch(false);
-    setChallenge(true);
   };
 
   const handleCommands = () => {
@@ -56,12 +48,6 @@ export function GameMenu() {
           onClick={handleStartGame}
         >
           Play online game
-        </button>
-        <button
-          className='gameMenu__buttons__button'
-          onClick={handleChallenge}
-        >
-          Challenge
         </button>
         <button
           className='gameMenu__buttons__button'
@@ -101,8 +87,6 @@ export function GameMenu() {
             return (<Commands />);
           } else if (watch === true) {
             return (<WatchGame />);
-          } else if (challenge === true) {
-            return (<Challenge />);
           } else {
             return (<Instructions />);
           }

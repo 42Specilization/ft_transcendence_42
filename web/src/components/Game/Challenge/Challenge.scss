@@ -1,9 +1,9 @@
 @import '../../../others/styles/global.scss';
 
-.gameMenu__challenge {
-  @include displayFlex(center, column);
+.challenge {
+  @include displayFlex(start, column);
   padding: 15px ;
-  gap: 17px;
+  // gap: 17px;
   height: 100%;
   width: 100%;
   h2 {
@@ -12,14 +12,14 @@
   }
 }
 
-.gameMenu__challenge__form__buttons__checkbox {
+.challenge__form__buttons__checkbox {
   margin-top: 17px;
   span {
     padding-left: 10px;
   }
 }
 
-.gameMenu__challenge__form__button__play {
+.challenge__form__button__play {
   background-color: $primaryColor;
   padding: 15px;
   border-radius: 4px;
@@ -34,7 +34,7 @@
 }
 
 @media (min-width: 900px) {
-  .gameMenu__challenge {
+  .challenge {
     height: 100%;
     width: 100%;
     border-top: none;

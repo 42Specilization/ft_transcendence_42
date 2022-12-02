@@ -22,6 +22,7 @@ import { Relations } from 'src/relations/entity/relations.entity';
 // import { Chat } from 'src/chat/entities/chat.entity';
 import { NewNotifyDto } from '../notification/dto/notify-dto';
 import { getAssetsPath } from 'src/utils/utils';
+import { ChallengeRequestDto } from './dto/challenge-request.dto';
 
 @Injectable()
 export class UserService {
@@ -454,6 +455,42 @@ export class UserService {
     if (alreadyFriends)
       throw new BadRequestException('This user already is your friend');
 
+
+    if (this.isBlocked(user, friend) || this.isBlocked(friend, user))
+      return;
+
+    friend.notify?.push(newNotify);
+    try {
+      friend.save();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async sendChallengeRequest(user_email: string, challengeRequestDto: ChallengeRequestDto) {
+    const user = await this.findUserByEmail(user_email);
+    const friend = await this.findUserByNick(challengeRequestDto.userTarget);
+    if (!friend || !user)
+      throw new InternalServerErrorException('User not found');
+    if (user && friend && user.nick === friend.nick) {
+      throw new BadRequestException('You cant add yourself');
+    }
+
+    const newNotify = new Notify();
+    newNotify.additional_info = challengeRequestDto.room.toString();
+    newNotify.type = 'challenge';
+    newNotify.user_source = user;
+    newNotify.date = new Date(Date.now());
+    if (friend.notify?.length === 0) {
+      friend.notify = [];
+    }
+    const duplicated = friend.notify.filter((friendNotify) => {
+      if (friendNotify.type == newNotify.type && friendNotify.user_source.nick == newNotify.user_source.nick)
+        return friendNotify;
+      return;
+    });
+    if (duplicated.length > 0)
+      throw new BadRequestException('This user already your order');
 
     if (this.isBlocked(user, friend) || this.isBlocked(friend, user))
       return;

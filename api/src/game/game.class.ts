@@ -12,13 +12,14 @@ const BIG_BALL = 2;
 
 export class Game {
 
-  constructor(room: number, index: number, isWithPowerUps = false) {
+  constructor(room: number, index: number, isWithPowerUps = false, isChallenge = false) {
     this.room = room;
     this.index = index;
     this.waiting = true;
     this.hasEnded = false;
     this.hasStarted = false;
     this.isWithPowerUps = isWithPowerUps;
+    this.isChallenge = isChallenge;
   }
 
   room: number;
@@ -38,6 +39,7 @@ export class Game {
   };
   ballLastHit: number;
   isWithPowerUps: boolean;
+  isChallenge: boolean;
 
   player1: IPlayer = {
     paddle: {

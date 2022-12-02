@@ -1,36 +1,71 @@
 import './Challenge.scss';
 import { useSnapshot } from 'valtio';
-import { useEffect, useState } from 'react';
-import { actions, Game, state } from '../../../adapters/game/gameState';
+import { useContext, useEffect, useState } from 'react';
+import { actions, state } from '../../../adapters/game/gameState';
 import { Checkbox } from '../../Checkbox/Checkbox';
-import { TextInput } from '../../TextInput/TextInput';
-import { User } from 'phosphor-react';
+import { Link } from 'react-router-dom';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { actionsStatus } from '../../../adapters/status/statusState';
+import { Modal } from '../../Modal/Modal';
 
-export function Challenge() {
+interface ChallengeProps {
+  nick: string;
+  path: string;
+}
+
+export function Challenge({ nick, path }: ChallengeProps) {
 
   const [powerUp, setPowerUp] = useState<boolean>(false);
+  const [modalErrorChallenge, setModalErrorChallenge] = useState<boolean>(false);
+  const { intraData, api, config } = useContext(IntraDataContext);
   const currentState = useSnapshot(state);
 
+  useEffect(() => {
+    if (currentState.name !== intraData.login) {
+      actions.updateName(intraData.login);
+    }
+  }, [intraData]);
+
+  function handleChallengeGame() {
+    const socket = actions.initializeSocket();
+    actions.challengeFriend(nick, powerUp);
+    socket?.on('game-room', async (room) => {
+      try {
+        const challenge = {
+          room: room,
+          userSource: intraData.login,
+          userTarget: nick
+        };
+        await api.patch('/user/sendChallengeRequest', challenge, config);
+        actionsStatus.newNotify(nick, 'challenge');
+      } catch (err: unknown) {
+        setModalErrorChallenge(true);
+      }
+    });
+  }
+
   return (
-    <div className='gameMenu__challenge'>
+    <div className='challenge'>
       <h2>Challenge</h2>
-      <form className='gameMenu__challenge__form'>
-        <TextInput.Root>
-          <TextInput.Icon>
-            <User size={32} />
-          </TextInput.Icon>
-          <TextInput.Input type='text' id='friendNick' placeholder='Nick' />
-        </TextInput.Root>
-        <div className='gameMenu__challenge__form__buttons__checkbox'>
+      <form className='challenge__form'>
+        <div className='challenge__form__buttons__checkbox'>
           <label htmlFor='powerUpChallenge'>
             <Checkbox id='powerUpChallenge' onCheckedChange={() => setPowerUp(!powerUp)} />
             <span>Enable power up</span>
           </label>
         </div>
-        <button className='gameMenu__challenge__form__button__play'>
-          Play
-        </button>
+        <Link to={path}>
+          <button className='challenge__form__button__play' onClick={handleChallengeGame}>
+            Play
+          </button>
+        </Link>
       </form>
+      {modalErrorChallenge &&
+        <Modal onClose={() => setModalErrorChallenge(true)}>
+          Error to challenge a player!
+        </Modal>
+
+      }
     </div>
   );
 }

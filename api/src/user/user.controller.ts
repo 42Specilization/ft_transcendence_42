@@ -32,6 +32,7 @@ import { FriendRequestDto } from './dto/friend-request.dto';
 import { GetFriendDto } from './dto/get-friend.dto';
 import { NewNotifyDto, NotifyHandlerDto } from 'src/notification/dto/notify-dto';
 import { getAssetsPath } from 'src/utils/utils';
+import { ChallengeRequestDto } from './dto/challenge-request.dto';
 // import { NotificationService } from 'src/notification/notification.service';
 
 @Controller('user')
@@ -235,6 +236,16 @@ export class UserController {
   ): Promise<{ message: string }> {
     await this.userService.sendFriendRequest(userFromJwt.email, friendRequestDto.nick);
     return { message: 'success' };
+  }
+
+  @Patch('/sendChallengeRequest')
+  @UseGuards(JwtAuthGuard)
+  async sendChallengeRequest(
+    @Body(ValidationPipe) challengeRequestDto: ChallengeRequestDto,
+    @GetUserFromJwt() userFromJwt: UserFromJwt
+  ): Promise<{ message: 'success' }> {
+    await this.userService.sendChallengeRequest(userFromJwt.email, challengeRequestDto);
+    return ({ message: 'success' });
   }
 
   @Patch('/removeNotify')
