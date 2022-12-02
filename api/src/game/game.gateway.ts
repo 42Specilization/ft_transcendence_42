@@ -100,6 +100,7 @@ export class GameGateway
   async acceptChallenge(@ConnectedSocket() user: Socket, @MessageBody() challenge: IChallenge) {
     const game = this.getGameByRoom(challenge.room);
     if (!game) {
+      user.emit('game-not-found');
       return;
     }
     if (game.player2.name === challenge.userSource && game.player1.name === challenge.userTarget) {

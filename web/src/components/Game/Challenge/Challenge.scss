@@ -1,9 +1,16 @@
 @import '../../../others/styles/global.scss';
 
+#challenge__modal {
+  .modal__container__content {
+    position: absolute;
+    top: 30px;
+    font-size: 24px;
+  }
+}
+
 .challenge {
   @include displayFlex(start, column);
   padding: 15px ;
-  // gap: 17px;
   height: 100%;
   width: 100%;
   h2 {

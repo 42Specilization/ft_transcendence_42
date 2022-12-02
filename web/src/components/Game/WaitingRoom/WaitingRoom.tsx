@@ -33,7 +33,7 @@ export function WaitingRoom() {
       <p>Press Q to Leave!</p>
       {
         modalReject &&
-        <Modal onClose={() => window.location.reload()}>
+        <Modal onClose={() => window.location.reload()} id='waiting-room__modal'>
           Your challenge was rejected!
         </Modal>
       }

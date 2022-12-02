@@ -107,7 +107,7 @@ export function CardFriend({ friend }: CardFriendProps) {
       }
       {
         challengeModal &&
-        <Modal onClose={() => setChallengeModal(false)}>
+        <Modal onClose={() => setChallengeModal(false)} id='card__modal__challenge'>
           <Challenge path='/game' nick={friend.login} />
         </Modal>
       }

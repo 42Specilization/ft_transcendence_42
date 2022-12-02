@@ -61,7 +61,7 @@ export function Challenge({ nick, path }: ChallengeProps) {
         </Link>
       </form>
       {modalErrorChallenge &&
-        <Modal onClose={() => setModalErrorChallenge(true)}>
+        <Modal onClose={() => setModalErrorChallenge(true)} id='challenge__modal'>
           Error to challenge a player!
         </Modal>
 
