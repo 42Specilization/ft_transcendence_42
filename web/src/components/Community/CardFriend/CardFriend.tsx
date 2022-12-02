@@ -9,6 +9,8 @@ import { ChatContext } from '../../../contexts/ChatContext';
 import { Link } from 'react-router-dom';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import { getUrlImage } from '../../../others/utils/utils';
+import { Modal } from '../../Modal/Modal';
+import { Challenge } from '../../Game/Challenge/Challenge';
 
 interface CardFriendProps {
   friend: FriendData;
@@ -20,9 +22,10 @@ export function CardFriend({ friend }: CardFriendProps) {
   const { setIntraData, api, config } = useContext(IntraDataContext);
   const [activeMenu, setActiveMenu] = useState(false);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
+  const [challengeModal, setChallengeModal] = useState(false);
 
   function handleChallenger() {
-    console.log('chamou', friend.login, 'pra um desafio');
+    setChallengeModal(true);
   }
 
   function handleSendMessage() {
@@ -101,6 +104,12 @@ export function CardFriend({ friend }: CardFriendProps) {
         <ProfileFriendModal
           login={friend.login}
           setFriendProfileVisible={setFriendProfileVisible} />
+      }
+      {
+        challengeModal &&
+        <Modal onClose={() => setChallengeModal(false)} id='card__modal__challenge'>
+          <Challenge path='/game' nick={friend.login} />
+        </Modal>
       }
     </>
   );

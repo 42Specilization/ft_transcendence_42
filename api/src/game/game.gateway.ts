@@ -16,6 +16,7 @@ import { WsCatchAllFilter } from 'src/socket/exceptions/ws-catch-all-filter';
 import { WsBadRequestException } from 'src/socket/exceptions/ws-exceptions';
 import { Game } from './game.class';
 import { GameService } from './game.service';
+import { IChallenge } from './interface/game.interfaces';
 
 interface IMove {
   direction: string;
@@ -70,6 +71,59 @@ export class GameGateway
     this.finishGame(user);
     this.logger.log(`Disconnected socket id: ${user.id}`);
     this.logger.debug(`Number of connected sockets: ${sockets.size}`);
+  }
+
+  @SubscribeMessage('challenge')
+  async challenge(@ConnectedSocket() user: Socket, @MessageBody() challenge: IChallenge) {
+    this.queue.push(
+      new Game(
+        this.checkGameRoom(randomInt(100)),
+        this.queue.length - 1 > 0 ? this.queue.length - 1 : this.queue.length,
+        challenge.isWithPowerUps,
+        true
+      )
+    );
+    const index = this.queue.length - 1;
+    const game = this.queue[index];
+    game.player1.socketId = user.id;
+    game.player1.name = challenge.userSource;
+    game.player2.name = challenge.userTarget;
+    user.join(game.room.toString());
+    this.io.to(game.room.toString()).emit('update-game', game.getGameDto());
+    user.emit('game-room', game.room);
+    this.logger.debug(
+      `${challenge.userSource} socket id:${user.id}. challenge ${challenge.userTarget} Game room:${game.room}  custom ${challenge.isWithPowerUps}`
+    );
+  }
+
+  @SubscribeMessage('accept-challenge')
+  async acceptChallenge(@ConnectedSocket() user: Socket, @MessageBody() challenge: IChallenge) {
+    const game = this.getGameByRoom(challenge.room);
+    if (!game) {
+      user.emit('game-not-found');
+      return;
+    }
+    if (game.player2.name === challenge.userSource && game.player1.name === challenge.userTarget) {
+      game.player2.socketId = user.id;
+      game.player2.name = challenge.userSource;
+      user.join(game.room.toString());
+      user.emit('update-game', game.getGameDto());
+      this.logger.debug(
+        `${challenge.userSource} socket id:${user.id}. challenge ${challenge.userTarget} Game room:${game.room} custom ${challenge.isWithPowerUps}`
+      );
+      game.hasStarted = true;
+      game.waiting = false;
+      this.sendUpdatesEmits(game);
+      this.io
+        .to(game.room.toString())
+        .emit('start-game', game);
+      this.sendGameList();
+    }
+  }
+
+  @SubscribeMessage('reject-challenge')
+  async rejectChallenge(@MessageBody() room: string) {
+    this.io.to(room).emit('reject-challenge');
   }
 
   /**
@@ -364,7 +418,8 @@ export class GameGateway
         if (
           (this.queue[i].player1.socketId === '' ||
             this.queue[i].player2.socketId === '') &&
-          !this.queue[i].hasEnded && this.queue[i].isWithPowerUps === player.isWithPowerUps
+          !this.queue[i].hasEnded && this.queue[i].isWithPowerUps === player.isWithPowerUps &&
+          !this.queue[i].isChallenge
         )
           return i;
       }

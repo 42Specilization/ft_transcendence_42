@@ -42,6 +42,13 @@ export interface Game {
   player2Name: string;
 }
 
+export interface IChallenge {
+  userTarget: string;
+  userSource: string;
+  isWithPowerUps: boolean;
+  room: number;
+}
+
 export interface AppState {
   socket?: Socket;
   name?: string;
@@ -70,7 +77,7 @@ const actions = {
     };
     state.socket?.emit('join-game', playerInfos);
   },
-  initializeSocket: (): void => {
+  initializeSocket: (): Socket | void => {
     if (!state.socket) {
       const createSocketOptions: CreateSocketOptions = {
         accessToken: getAccessToken(),
@@ -79,13 +86,43 @@ const actions = {
         state: state,
       };
       state.socket = ref(createSocket(createSocketOptions));
-      return;
+      return (state.socket);
     }
 
     if (!state.socket.connected) {
       state.socket.connect();
       return;
     }
+  },
+  challengeFriend(nick: string, isWithPowerUps: boolean) {
+    if (state.errorToConnect !== undefined && !state.errorToConnect) {
+      return;
+    }
+    const challengeInfos: IChallenge = {
+      isWithPowerUps: isWithPowerUps,
+      userSource: state.name as string,
+      userTarget: nick,
+      room: -1
+    };
+    state.socket?.emit('challenge', challengeInfos);
+  },
+  acceptChallenge(room: number, userSource: string, userTarget: string) {
+    if (state.errorToConnect !== undefined && !state.errorToConnect) {
+      return;
+    }
+    const challengeInfos: IChallenge = {
+      isWithPowerUps: false,
+      userSource: userSource,
+      userTarget: userTarget,
+      room: room
+    };
+    state.socket?.emit('accept-challenge', challengeInfos);
+  },
+  rejectChallenge(room: string) {
+    if (state.errorToConnect !== undefined && !state.errorToConnect) {
+      return;
+    }
+    state.socket?.emit('reject-challenge', room);
   },
   updateGame(game?: Game) {
     state.game = game;
