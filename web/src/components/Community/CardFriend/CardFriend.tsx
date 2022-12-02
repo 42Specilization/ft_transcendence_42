@@ -3,7 +3,6 @@ import { FriendData } from '../../../others/Interfaces/interfaces';
 import {  useState } from 'react';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import { getUrlImage } from '../../../others/utils/utils';
-import { Modal } from '../../Modal/Modal';
 
 interface CardFriendProps {
   friend: FriendData;

@@ -14,7 +14,6 @@ import { AddMember } from './AddMember/AddMember';
 import { ChangeSecurity } from './ChangeSecurity/ChangeSecurity';
 import { CardBanned } from './CardBanned/CardBanned';
 import { getUrlImage } from '../../others/utils/utils';
-import { Modal } from '../Modal/Modal';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import ReactTooltip from 'react-tooltip';
 
@@ -33,7 +32,6 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
   const [modalChangeSecurity, setModalChangeSecurity] = useState(false);
   const [modalAddMember, setModalAddMember] = useState(false);
   const [bannedVisible, setBannedVisible] = useState(false);
-  const [leaveConfirmVisible, setLeaveConfirmVisible] = useState(false);
   const [confirmActionVisible, setConfirmActionVisible] = useState('');
 
   const { data, status } = useQuery(
@@ -157,7 +155,7 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
           </>
           {(data.banned && bannedVisible) &&
             data.banned.map((obj: any) => {
-              return <CardBanned setProfileGroupVisible={setProfileGroupVisible} key={Math.random()} id={data.id} banned={obj} />;
+              return <CardBanned  key={Math.random()} id={data.id} banned={obj} />;
             })
           }
         </div>

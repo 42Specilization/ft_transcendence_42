@@ -11,7 +11,7 @@ interface FriendProfileProps {
 export function FriendProfile({ login }: FriendProfileProps) {
 
   const [tableSelected, setTableSelected] = useState('General');
-  const { api, config, intraData } = useContext(IntraDataContext);
+  const { api, config } = useContext(IntraDataContext);
 
   const { data, status } = useQuery(
     ['friend'],
@@ -24,7 +24,7 @@ export function FriendProfile({ login }: FriendProfileProps) {
       refetchOnWindowFocus: true,
     }
   );
-  console.log(data)
+  console.log(data);
 
   if (status == 'loading')
     return <></>;
@@ -35,14 +35,14 @@ export function FriendProfile({ login }: FriendProfileProps) {
         <ul className='friendProfile__header__list'>
           <li className={`friendProfile__header__list__item
           ${tableSelected === 'General' ?
-              'friendProfile__header__list__item__selected' : ''}`}>
+      'friendProfile__header__list__item__selected' : ''}`}>
             <button onClick={() => setTableSelected('General')}>
               General
             </button>
           </li>
           <li className={`friendProfile__header__list__item
           ${tableSelected === 'Historic' ?
-              'friendProfile__header__list__item__selected' : ''}`}>
+      'friendProfile__header__list__item__selected' : ''}`}>
             <button onClick={() => setTableSelected('Historic')}>
               Historic
             </button>
