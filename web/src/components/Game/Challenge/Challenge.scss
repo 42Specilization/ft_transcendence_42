@@ -1,0 +1,45 @@
+@import '../../../others/styles/global.scss';
+
+.gameMenu__challenge {
+  @include displayFlex(center, column);
+  padding: 15px ;
+  gap: 17px;
+  height: 100%;
+  width: 100%;
+  h2 {
+    font-weight: 400;
+    font-size: 2rem;
+  }
+}
+
+.gameMenu__challenge__form__buttons__checkbox {
+  margin-top: 17px;
+  span {
+    padding-left: 10px;
+  }
+}
+
+.gameMenu__challenge__form__button__play {
+  background-color: $primaryColor;
+  padding: 15px;
+  border-radius: 4px;
+  width: 200px;
+  color: white;
+  margin-top: 17px;
+  width: 100%;
+  &:hover {
+    background-color: $primaryColorHover;
+    cursor: pointer;
+  }
+}
+
+@media (min-width: 900px) {
+  .gameMenu__challenge {
+    height: 100%;
+    width: 100%;
+    border-top: none;
+    h2 {
+      font-size: 2.3rem;
+    }
+  }
+}
