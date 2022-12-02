@@ -1,15 +1,15 @@
 import { NotePencil } from 'phosphor-react';
-import { useCallback, useContext } from 'react';
+import { Dispatch, SetStateAction, useCallback, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { IntraDataContext } from '../../contexts/IntraDataContext';
 
 
 interface DropzoneProps {
+  setSelectedFileUrl?: Dispatch<SetStateAction<string>> | null;
   onFileUploaded: (file: File) => void;
 }
 
-export function Dropzone({ onFileUploaded }: DropzoneProps) {
-
+export function Dropzone({setSelectedFileUrl, onFileUploaded }: DropzoneProps) {
   const { intraData } = useContext(IntraDataContext);
 
   const onDrop = useCallback(
@@ -26,6 +26,9 @@ export function Dropzone({ onFileUploaded }: DropzoneProps) {
       const id = generateCode(24);
       const hash = generateCode(8);
       const file = new File([acceptedFiles[0]], `${id}.${hash}.jpg`);
+      const fileUrl = URL.createObjectURL(file);
+      if(setSelectedFileUrl)
+        setSelectedFileUrl(fileUrl);
       onFileUploaded(file);
     },
     [onFileUploaded, intraData]
@@ -43,7 +46,7 @@ export function Dropzone({ onFileUploaded }: DropzoneProps) {
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()} accept='image/*' />
-      <NotePencil size={120} className='dropzone__button'></NotePencil>
+      <NotePencil size={120} className='dropzone__button'/>
     </div>
   );
 }

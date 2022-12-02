@@ -1,7 +1,7 @@
 import './CreateGroup.scss';
 import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { IntraDataContext } from '../../../../contexts/IntraDataContext';
-import { Dropzone } from '../../../Profile/UserImage/Dropzone';
+import { Dropzone } from '../../../Dropzone/Dropzone';
 import { CreateGroupData } from '../../../../others/Interfaces/interfaces';
 import { Checkbox } from '../../../Checkbox/Checkbox';
 import { actionsChat } from '../../../../adapters/chat/chatState';
@@ -17,6 +17,7 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
   const [privateGroup, setPrivateGroup] = useState<boolean>(false);
   const [placeHolder, setPlaceHolder] = useState('Group Name');
   const [password, setPassword] = useState('Password (Optional)');
+  const [selectedFileUrl, setSelectedFileUrl] = useState('');
 
   async function handleSubmit(groupData: CreateGroupData) {
     const data = new FormData();
@@ -67,9 +68,13 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
   return (
     <div className='createGroup'>
       <div className='createGroup__image'>
-        <Image className='createGroup__image__icon' size={150} />
+        {
+          selectedFileUrl ?
+            <img src={selectedFileUrl}  className='createGroup__image__icon' alt='Image Preview'/> :
+            <Image className='createGroup__image__icon' size={150} />
+        }
         <div className='createGroup__button_text'>
-          <Dropzone onFileUploaded={setSelectedFile} />
+          <Dropzone setSelectedFileUrl={setSelectedFileUrl} onFileUploaded={setSelectedFile} />
         </div>
       </div>
       <form autoComplete='off' className='createGroup__form' action="submit" onSubmit={handleKeyEnter}>

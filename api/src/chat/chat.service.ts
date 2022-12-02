@@ -394,7 +394,6 @@ export class ChatService {
   }
 
   async getGroup(owner_email: string, id: string) {
-    console.log(owner_email, id);
     const group = await this.findGroupById(id);
     if (!group)
       throw new BadRequestException('Invalid group GetGroup');
@@ -979,20 +978,20 @@ export class ChatService {
     const group = await this.findGroupById(groupInviteDto.groupId);
 
     if (!member || !user || !group)
-      throw new InternalServerErrorException('User not found');
+      return null;
 
     if (user.nick !== group.owner.nick && !this.getRelation(group, user.nick, 'admin'))
-      throw new UnauthorizedException('Permission denied');
+      return null;
 
     if (this.getRole(group, member.nick) === 'outside'
       || this.getRole(group, member.nick) === 'owner')
-      throw new BadRequestException('Position unavailable');
+      return null;
 
     if (this.getRelation(group, member.nick, 'admin') && user.nick !== group.owner.nick)
-      throw new UnauthorizedException('Permission denied');
+      return null;
 
     if (this.getRelation(group, member.nick, 'mutated'))
-      throw new BadRequestException('Position unavailable');
+      return null;
 
     const relation = new GroupRelations();
     relation.date = new Date(Date.now());
@@ -1010,6 +1009,15 @@ export class ChatService {
 
     try {
       await group.save();
+      const msgClient: MsgToClient = {
+        id: mutated.id,
+        chat: group.id,
+        user: { login: member.nick, image: member.imgUrl },
+        date: mutated.date,
+        msg: mutated.msg,
+        type: mutated.type,
+      };
+      return msgClient;
     } catch (err) {
       throw new InternalServerErrorException('error saving admin');
     }
@@ -1021,33 +1029,42 @@ export class ChatService {
     const group = await this.findGroupById(groupInviteDto.groupId);
 
     if (!member || !user || !group)
-      throw new InternalServerErrorException('User not found');
+      return null;
 
     if (user.nick !== group.owner.nick && !this.getRelation(group, user.nick, 'admin'))
-      throw new UnauthorizedException('Permission denied');
+      return null;
 
     if (this.getRole(group, member.nick) === 'outside'
       || this.getRole(group, member.nick) === 'owner')
-      throw new BadRequestException('Position unavailable');
+      return null;
 
     if (this.getRelation(group, member.nick, 'admin') && user.nick !== group.owner.nick)
-      throw new UnauthorizedException('Permission denied');
+      return null;
 
     if (!this.getRelation(group, member.nick, 'mutated'))
-      throw new BadRequestException('Position unavailable');
+      return null;
 
     this.removeRelation(group, member.nick, 'mutated');
 
     const mutated = new Message();
     mutated.sender = member;
     mutated.date = new Date(Date.now());
-    mutated.msg = 'has been unmuted';
+    mutated.msg = 'was unmuted';
     mutated.type = 'action';
 
     group.messages.push(mutated);
 
     try {
       await group.save();
+      const msgClient: MsgToClient = {
+        id: mutated.id,
+        chat: group.id,
+        user: { login: member.nick, image: member.imgUrl },
+        date: mutated.date,
+        msg: mutated.msg,
+        type: mutated.type,
+      };
+      return msgClient;
     } catch (err) {
       throw new InternalServerErrorException('error saving admin');
     }

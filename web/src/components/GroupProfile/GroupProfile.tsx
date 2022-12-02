@@ -9,7 +9,7 @@ import { CardAdmin } from './CardAdmin/CardAdmin';
 import { CardMember } from './CardMember/CardMember';
 import { CardOwner } from './CardOwner/CardOwner';
 import { ChangeName } from './ChangeName/ChangeName';
-import { Dropzone } from '../Profile/UserImage/Dropzone';
+import { Dropzone } from '../Dropzone/Dropzone';
 import { AddMember } from './AddMember/AddMember';
 import { ChangeSecurity } from './ChangeSecurity/ChangeSecurity';
 import { CardBanned } from './CardBanned/CardBanned';

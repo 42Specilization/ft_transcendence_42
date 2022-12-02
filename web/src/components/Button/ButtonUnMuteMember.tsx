@@ -12,16 +12,11 @@ interface ButtonUnMuteMemberProps {
 
 export function ButtonUnMuteMember({ id, name }: ButtonUnMuteMemberProps) {
 
-  const { api, config } = useContext(IntraDataContext);
+  const { intraData } = useContext(IntraDataContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
   async function handleUnmute() {
-    try {
-      await api.patch('/chat/removeMuteMember', { name: name, groupId: id }, config);
-      actionsChat.getUpdateGroup(id);
-    } catch (err) {
-      console.log(err);
-    }
+    actionsChat.unmuteMember(id, intraData.email, name);
   }
 
   return (

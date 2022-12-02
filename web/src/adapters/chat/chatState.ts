@@ -80,6 +80,14 @@ const actionsChat = {
     stateChat.socket?.emit('removeBanMember', { id: id, email: email, login: login });
   },
 
+  muteMember(id: string, email: string, login: string) {
+    stateChat.socket?.emit('muteMember', { id: id, email: email, login: login });
+  },
+
+  unmuteMember(id: string, email: string, login: string) {
+    stateChat.socket?.emit('unmuteMember', { id: id, email: email, login: login });
+  },
+
   getUpdateGroup(id: string) {
     stateChat.socket?.emit('getUpdateGroup', id);
   },

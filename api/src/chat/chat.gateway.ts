@@ -130,6 +130,28 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.logger.debug(`Client ${client.id} login: |${login}| has been banned the group: |${id}|`);
   }
 
+  @SubscribeMessage('muteMember')
+  async handleMuteMember(@ConnectedSocket() client: Socket,
+    @MessageBody() { id, email, login }: { id: string, email: string, login: string }) {
+    const msgToClient: MsgToClient | null = await this.chatService.addMutated(email, { name: login, groupId: id });
+    if (!msgToClient)
+      return;
+    this.server.to(id).emit('msgToClient', msgToClient);
+    this.server.to(id).emit('updateGroup');
+    this.logger.debug(`Client ${client.id} login: |${login}| has been mutated the group: |${id}|`);
+  }
+
+  @SubscribeMessage('unmuteMember')
+  async handleUnmuteMember(@ConnectedSocket() client: Socket,
+    @MessageBody() { id, email, login }: { id: string, email: string, login: string }) {
+    const msgToClient: MsgToClient | null = await this.chatService.removeMutated(email, { name: login, groupId: id });
+    if (!msgToClient)
+      return;
+    this.server.to(id).emit('msgToClient', msgToClient);
+    this.server.to(id).emit('updateGroup');
+    this.logger.debug(`Client ${client.id} login: |${login}| has been unmuted the group: |${id}|`);
+  }
+
   @SubscribeMessage('getUpdateGroup')
   async handleGetUpdateGroup(@MessageBody() id: string) {
     this.server.to(id).emit('updateGroup');
