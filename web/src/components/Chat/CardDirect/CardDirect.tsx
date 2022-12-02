@@ -6,6 +6,7 @@ import { ChatContext } from '../../../contexts/ChatContext';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { DirectData } from '../../../others/Interfaces/interfaces';
 import { getUrlImage } from '../../../others/utils/utils';
+import { Modal } from '../../Modal/Modal';
 import './CardDirect.scss';
 
 interface CardDirectProps {
@@ -16,6 +17,8 @@ export function CardDirect({ chat }: CardDirectProps) {
   const { setSelectedChat, activeChat } = useContext(ChatContext);
   const { api, config, setIntraData } = useContext(IntraDataContext);
   const [activeMenu, setActiveMenu] = useState(false);
+  const [blockedConfirmVisible, setBlockedConfirmVisible] = useState(false);
+
   function setChat(chat: DirectData) {
     setSelectedChat({ chat: chat.id, type: 'direct' });
   }
@@ -50,50 +53,73 @@ export function CardDirect({ chat }: CardDirectProps) {
   }
 
   return (
-    <div
-      id='card__direct'
-      className='card__direct'
-      onClick={(e) => selectChat(e)}
-    >
-      <div
-        className='card__direct__icon'
-        id='card__direct'
-        style={{ backgroundImage: `url(${getUrlImage(chat.image as string)})` }}>
-        <div className='card__direct_count'
-          style={{ display: newMessagesVisible() ? '' : 'none' }}>
-          {chat.newMessages > 9 ? '+9' : chat.newMessages}
-        </div>
-      </div>
+    <>
       <div
         id='card__direct'
-        className='card__direct__name'>
-        {chat.name}
-      </div>
-      <div className='card__friend__menu'>
+        className='card__direct'
+        onClick={(e) => selectChat(e)}
+      >
         <div
-          id='card__friend__menu__body'
-          className='card__friend__menu__body'
-          style={{ height: activeMenu ? '55px' : '0px', width: activeMenu ? '80px' : '0px' }}>
-          <button
-            className='card__friend__menu__button'
-            onClick={handleBlockFriend}
-            data-html={true}
-            data-tip={'Block'}
-          >
-            <Prohibit size={32} />
-          </button>
+          className='card__direct__icon'
+          id='card__direct'
+          style={{ backgroundImage: `url(${getUrlImage(chat.image as string)})` }}>
+          <div className='card__direct_count'
+            style={{ display: newMessagesVisible() ? '' : 'none' }}>
+            {chat.newMessages > 9 ? '+9' : chat.newMessages}
+          </div>
         </div>
+        <div
+          id='card__direct'
+          className='card__direct__name'>
+          {chat.name}
+        </div>
+        <div className='card__friend__menu'>
+          <div
+            id='card__friend__menu__body'
+            className='card__friend__menu__body'
+            style={{ height: activeMenu ? '55px' : '0px', width: activeMenu ? '80px' : '0px' }}>
+            <button
+              className='card__friend__menu__button'
+              onClick={()=> setBlockedConfirmVisible((prev) => !prev)}
+              data-html={true}
+              data-tip={'Block'}
+            >
+              <Prohibit size={32} />
+            </button>
+          </div>
 
-        <DotsThreeVertical
-          id='card__friend__menu'
-          className='chat__friends__header__icon'
-          size={40}
-          onClick={() => setActiveMenu(prev => !prev)}
-          data-html={true}
-          data-tip={'Menu'}
-        />
-        <ReactTooltip delayShow={50} />
+          <DotsThreeVertical
+            id='card__friend__menu'
+            className='chat__friends__header__icon'
+            size={40}
+            onClick={() => setActiveMenu(prev => !prev)}
+            data-html={true}
+            data-tip={'Menu'}
+          />
+          <ReactTooltip delayShow={50} />
+        </div>
       </div>
-    </div>
+      {
+        blockedConfirmVisible &&
+      <Modal
+        id='card__group__community__modal__leave'
+        onClose={() => setBlockedConfirmVisible(false)}
+      >
+        <span>Remove block?</span>
+        <button
+          className='group__changeSecurity__modal__button'
+          onClick={handleBlockFriend}
+        >
+          Confirm
+        </button>
+        <button
+          className='group__changeSecurity__modal__button'
+          onClick={() => setBlockedConfirmVisible(false)}
+        >
+          Cancel
+        </button>
+      </Modal>
+      }
+    </>
   );
 }

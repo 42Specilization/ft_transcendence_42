@@ -19,7 +19,6 @@ import * as fs from 'fs';
 import { GameEntity } from 'src/game/entities/game.entity';
 import { Notify } from '../notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
-// import { Chat } from 'src/chat/entities/chat.entity';
 import { NewNotifyDto } from '../notification/dto/notify-dto';
 import { getAssetsPath } from 'src/utils/utils';
 

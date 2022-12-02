@@ -14,6 +14,8 @@ import { AddMember } from './AddMember/AddMember';
 import { ChangeSecurity } from './ChangeSecurity/ChangeSecurity';
 import { CardBanned } from './CardBanned/CardBanned';
 import { getUrlImage } from '../../others/utils/utils';
+import { Modal } from '../Modal/Modal';
+import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 
 
 interface GroupProfileProps {
@@ -30,6 +32,8 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
   const [modalChangeSecurity, setModalChangeSecurity] = useState(false);
   const [modalAddMember, setModalAddMember] = useState(false);
   const [bannedVisible, setBannedVisible] = useState(false);
+  const [leaveConfirmVisible, setLeaveConfirmVisible] = useState(false);
+  const [confirmActionVisible, setConfirmActionVisible] = useState('');
 
   const { data, status } = useQuery(
     ['getGroupInfos', updateGroup],
@@ -157,13 +161,21 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
           }
         </div>
         <div className='group__profile__members__action'>
-          {getPermission('lowLevel') &&
-            <button onClick={handleLeaveGroup}>
+          { getPermission('lowLevel') &&
+            <button onClick={()=> setConfirmActionVisible('leave')}>
               Leave
             </button>
           }
         </div>
-
+        {(() => {
+          if (confirmActionVisible === 'leave'){
+            return <ConfirmActionModal
+              title={'Leave group?'}
+              onClose={() => setConfirmActionVisible('')}
+              confirmationFunction={handleLeaveGroup}
+            />;
+          }       
+        })()}
       </div>
     </div >
   );

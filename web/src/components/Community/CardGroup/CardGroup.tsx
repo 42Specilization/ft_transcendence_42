@@ -10,6 +10,7 @@ import { actionsChat } from '../../../adapters/chat/chatState';
 import { ProfileGroupModal } from '../../ProfileGroupModal/ProfileGroupModal';
 import { Modal } from '../../Modal/Modal';
 import { getUrlImage } from '../../../others/utils/utils';
+import { ConfirmActionModal } from '../../ConfirmActionModal/ConfirmActionModal';
 
 interface CardGroupProps {
   group: GroupCardData;
@@ -24,14 +25,22 @@ export function CardGroup({ group }: CardGroupProps) {
   const [groupSecurityJoinVisible, setGroupSecurityJoinVisible] = useState(false);
   const [password, setPassword] = useState('');
   const [placeHolder, setPlaceHolder] = useState('');
-
+  const [confirmActionVisible, setConfirmActionVisible] = useState('');
+  
   function handleSendMessage() {
     setSelectedChat({ chat: group.id, type: 'group' });
   }
 
   async function handleJoinGroup() {
-    if (group.type === 'protected' && password.trim())
-      await api.patch('/chat/confirmPassword', { groupId: group.id, password: password }, config);
+    if (group.type === 'protected' && password.trim()){
+      try{
+        await api.patch('/chat/confirmPassword', { groupId: group.id, password: password }, config);
+      } catch(err: any){
+        setPassword('');
+        setPlaceHolder(err.response.data.message);
+      }
+
+    }
     actionsChat.joinGroup(group.id, intraData.email);
   }
 
@@ -94,7 +103,7 @@ export function CardGroup({ group }: CardGroupProps) {
                   </  button>
                 </  Link>
                 <button className='card__group__community__menu__button'
-                  onClick={handleLeaveGroup}
+                  onClick={()=> setConfirmActionVisible('leave')}
                   data-html={true}
                   data-tip={'Leave Group'}
                 >
@@ -138,6 +147,7 @@ export function CardGroup({ group }: CardGroupProps) {
           <h3>Insert a password</h3>
           <input
             className='group__changeSecurity__modal__input'
+            type='password'
             value={password}
             placeholder={placeHolder}
             style={{ border: placeHolder !== '' ? '3px solid red' : 'none' }}
@@ -153,8 +163,19 @@ export function CardGroup({ group }: CardGroupProps) {
           >
             Join
           </button>
-
         </Modal>
-      }</>
+      }
+      {(() => {
+        if (confirmActionVisible === 'leave'){
+          return <ConfirmActionModal
+            title={'Leave group?'}
+            onClose={() => setConfirmActionVisible('')}
+            confirmationFunction={handleLeaveGroup}
+          />;
+        }       
+      })()}
+
+      
+    </>
   );
 }

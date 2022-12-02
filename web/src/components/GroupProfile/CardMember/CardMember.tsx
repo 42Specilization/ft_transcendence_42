@@ -9,6 +9,7 @@ import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import { getUrlImage } from '../../../others/utils/utils';
+import { ConfirmActionModal } from '../../ConfirmActionModal/ConfirmActionModal';
 
 interface CardMemberProps {
   id: string;
@@ -21,7 +22,7 @@ export function CardMember({ id, member, getPermission }: CardMemberProps) {
   const { setSelectedChat } = useContext(ChatContext);
   const [activeMenu, setActiveMenu] = useState(false);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
-
+  const [confirmActionVisible, setConfirmActionVisible] = useState('');
   function heightMenu() {
     if (getPermission('maxLevel'))
       return '235px';
@@ -108,7 +109,7 @@ export function CardMember({ id, member, getPermission }: CardMemberProps) {
 
             {getPermission('maxLevel') &&
               <button className='card__friend__menu__button'
-                onClick={handleMakeAdmin}
+                onClick={()=> setConfirmActionVisible('makeAdmin')}
                 data-html={true}
                 data-tip={'Make Admin'}>
                 <Alien size={32} />
@@ -119,7 +120,7 @@ export function CardMember({ id, member, getPermission }: CardMemberProps) {
                 {member.mutated ?
                   <button
                     className='card__friend__menu__button'
-                    onClick={handleUnmute}
+                    onClick={()=> setConfirmActionVisible('unmute')}
                     data-html={true}
                     data-tip={'Unmute Member'}
                   >
@@ -128,7 +129,7 @@ export function CardMember({ id, member, getPermission }: CardMemberProps) {
                   :
                   <button
                     className='card__friend__menu__button'
-                    onClick={handleMute}
+                    onClick={()=> setConfirmActionVisible('mute')}
                     data-html={true}
                     data-tip={'Mute Member(15 minutes)'}
                   >
@@ -137,14 +138,14 @@ export function CardMember({ id, member, getPermission }: CardMemberProps) {
                 }
                 <button
                   className='card__friend__menu__button'
-                  onClick={handleRemoveFriend}
+                  onClick={()=> setConfirmActionVisible('removeMember')}
                   data-html={true}
                   data-tip={'Remove Member'}
                 >
                   <UserMinus size={32} />
                 </button>
                 <button className='card__friend__menu__button'
-                  onClick={handleBanMember}
+                  onClick={()=> setConfirmActionVisible('ban')}
                   data-html={true}
                   data-tip={'Ban Member'}
                 >
@@ -171,6 +172,43 @@ export function CardMember({ id, member, getPermission }: CardMemberProps) {
           login={member.name}
           setFriendProfileVisible={setFriendProfileVisible} />
       }
+      {(() => {
+        if (confirmActionVisible === 'makeAdmin'){
+          return <ConfirmActionModal
+            title={`Make admin ${member.name}?`}
+            onClose={() => setConfirmActionVisible('')}
+            confirmationFunction={handleMakeAdmin}
+          />;
+        }
+        if (confirmActionVisible === 'mute'){
+          return <ConfirmActionModal
+            title={`Mute ${member.name}?`}
+            onClose={() => setConfirmActionVisible('')}
+            confirmationFunction={handleMute}
+          />;
+        }
+        if (confirmActionVisible === 'unmute'){
+          return <ConfirmActionModal
+            title={`Unmute ${member.name}?`}
+            onClose={() => setConfirmActionVisible('')}
+            confirmationFunction={handleUnmute}
+          />;
+        }
+        if (confirmActionVisible === 'removeMember'){
+          return <ConfirmActionModal
+            title={`Remove ${member.name}?`}
+            onClose={() => setConfirmActionVisible('')}
+            confirmationFunction={handleRemoveFriend}
+          />;
+        }
+        if (confirmActionVisible === 'ban'){
+          return <ConfirmActionModal
+            title={`Ban ${member.name}?`}
+            onClose={() => setConfirmActionVisible('')}
+            confirmationFunction={handleBanMember}
+          />;
+        }
+      })()}
     </div >
   );
 }

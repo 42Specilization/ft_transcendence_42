@@ -5,6 +5,7 @@ import { NotifyData } from '../../../others/Interfaces/interfaces';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { ProfileGroupModal } from '../../ProfileGroupModal/ProfileGroupModal';
+import { ConfirmActionModal } from '../../ConfirmActionModal/ConfirmActionModal';
 
 interface NotificationGroupInviteProps {
   notify: NotifyData;
@@ -14,7 +15,7 @@ export function NotificationGroupInvite({ notify }: NotificationGroupInviteProps
   const [side, setSide] = useState(true);
   const [profileGroupVisible, setProfileGroupVisible] = useState(false);
   const { api, config, intraData, setIntraData } = useContext(IntraDataContext);
-
+  const [confirmActionVisible, setConfirmActionVisible] = useState('');
   async function removeNotify() {
     setIntraData((prevIntraData) => {
       return {
@@ -37,7 +38,6 @@ export function NotificationGroupInvite({ notify }: NotificationGroupInviteProps
   }
 
   async function handleReject() {
-    // Talvez colocar uma validação de confirmação
     await api.patch('/user/removeNotify', { id: notify.id }, config);
     removeNotify();
   }
@@ -69,7 +69,7 @@ export function NotificationGroupInvite({ notify }: NotificationGroupInviteProps
           <p> Accept </p>
           <CheckCircle size={22} />
         </div>
-        <div className='notificationGroupInvite__backSide__button' onClick={handleReject}>
+        <div className='notificationGroupInvite__backSide__button' onClick={()=> setConfirmActionVisible('reject')}>
           <p> Reject </p>
           <XCircle size={22} />
         </div>
@@ -86,6 +86,15 @@ export function NotificationGroupInvite({ notify }: NotificationGroupInviteProps
             id='profile__group__modal'
             setProfileGroupVisible={setProfileGroupVisible} />
         }
+        {(() => {
+          if (confirmActionVisible === 'reject'){
+            return <ConfirmActionModal
+              title={'Reject Invite?'}
+              onClose={() => setConfirmActionVisible('')}
+              confirmationFunction={handleReject}
+            />;
+          }       
+        })()}
 
       </div >
     </>

@@ -5,6 +5,7 @@ import { NotifyData } from '../../../others/Interfaces/interfaces';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { ConfirmActionModal } from '../../ConfirmActionModal/ConfirmActionModal';
 
 interface NotificationFriendProps {
   notify: NotifyData;
@@ -14,6 +15,7 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
   const [side, setSide] = useState(true);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
   const { api, config, setIntraData } = useContext(IntraDataContext);
+  const [confirmActionVisible, setConfirmActionVisible] = useState('');
 
   async function removeNotify() {
     setIntraData((prevIntraData) => {
@@ -43,7 +45,6 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
   }
 
   async function handleReject() {
-    // Talvez colocar uma validação de confirmação
     await api.patch('/user/removeNotify', { id: notify.id }, config);
     removeNotify();
   }
@@ -75,11 +76,11 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
           <p> Accept </p>
           <CheckCircle size={22} />
         </div>
-        <div className='notificationFriend__backSide__button' onClick={handleReject}>
+        <div className='notificationFriend__backSide__button' onClick={()=> setConfirmActionVisible('reject')}>
           <p> Reject </p>
           <XCircle size={22} />
         </div>
-        <div className='notificationFriend__backSide__button' onClick={handleBlock}>
+        <div className='notificationFriend__backSide__button' onClick={()=> setConfirmActionVisible('block')}>
           <p> Block </p>
           <Prohibit size={22} />
         </div>
@@ -96,6 +97,23 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
             login={notify.user_source}
             setFriendProfileVisible={setFriendProfileVisible} />
         }
+
+        {(() => {
+          if (confirmActionVisible === 'reject'){
+            return <ConfirmActionModal
+              title={'Reject friend request?'}
+              onClose={() => setConfirmActionVisible('')}
+              confirmationFunction={handleReject}
+            />;
+          }       
+          if (confirmActionVisible === 'block'){
+            return <ConfirmActionModal
+              title={'Reject friend request?'}
+              onClose={() => setConfirmActionVisible('')}
+              confirmationFunction={handleBlock}
+            />;
+          }       
+        })()}
 
       </div >
     </>

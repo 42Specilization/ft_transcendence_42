@@ -1,0 +1,27 @@
+@import '../../others/styles/global.scss';
+
+.confirmActionModal {
+  @include displayFlex(space-around);
+  width: 80%;
+}
+
+.confirmActionModal__button {
+  width: 20%;
+  min-width: 90px;
+  height: 30px;
+  font-size: 20px;
+  color: white;
+  border-radius: 10px;
+  background-color: $buttonColor;
+  &:hover {
+    cursor: pointer;
+    filter: grayscale(0.7);
+  }
+}
+.confirm{
+  background-color: green;
+}
+.cancel{
+  background-color: red;
+
+}

@@ -9,6 +9,7 @@ import { ChatContext } from '../../../contexts/ChatContext';
 import { Link } from 'react-router-dom';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import { getUrlImage } from '../../../others/utils/utils';
+import { ConfirmActionModal } from '../../ConfirmActionModal/ConfirmActionModal';
 
 interface CardFriendProps {
   friend: FriendData;
@@ -20,6 +21,7 @@ export function CardFriend({ friend }: CardFriendProps) {
   const { setIntraData, api, config } = useContext(IntraDataContext);
   const [activeMenu, setActiveMenu] = useState(false);
   const [friendProfileVisible, setFriendProfileVisible] = useState(false);
+  const [confirmActionVisible, setConfirmActionVisible] = useState('');
 
   function handleChallenger() {
     console.log('chamou', friend.login, 'pra um desafio');
@@ -78,7 +80,7 @@ export function CardFriend({ friend }: CardFriendProps) {
             </Link>
             <button
               className='card__friend__menu__button'
-              onClick={handleRemoveFriend}
+              onClick={()=> setConfirmActionVisible('remove')}
               data-html={true}
               data-tip={'Remove Friend'}
             >
@@ -102,6 +104,16 @@ export function CardFriend({ friend }: CardFriendProps) {
           login={friend.login}
           setFriendProfileVisible={setFriendProfileVisible} />
       }
+      {(() => {
+        if (confirmActionVisible === 'remove'){
+          return <ConfirmActionModal
+            title={'Reject Invite?'}
+            onClose={() => setConfirmActionVisible('')}
+            confirmationFunction={handleRemoveFriend}
+          />;
+        }       
+      })()}
+
     </>
   );
 }
