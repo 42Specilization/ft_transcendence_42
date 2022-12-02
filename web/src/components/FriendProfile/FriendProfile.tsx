@@ -16,6 +16,7 @@ export function FriendProfile({ login }: FriendProfileProps) {
     'friend',
     async () => {
       const response = await api.patch('/user/friend', { nick: login }, config);
+      console.log(data)
       return response.data;
     },
     {

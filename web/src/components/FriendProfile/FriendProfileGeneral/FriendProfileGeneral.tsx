@@ -21,6 +21,7 @@ export function FriendProfileGeneral({ friendData }: FriendProfileGeneralProps) 
         login: friendData.login,
         image_url: friendData.image_url,
       }} />
+      
       <div className='friendProfile__general__stats'>
         <div className='friendProfile__general__stats__title'>
           <p>Stats</p>

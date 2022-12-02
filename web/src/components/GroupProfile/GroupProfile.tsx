@@ -16,6 +16,7 @@ import { CardBanned } from './CardBanned/CardBanned';
 import { getUrlImage } from '../../others/utils/utils';
 import { Modal } from '../Modal/Modal';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
+import ReactTooltip from 'react-tooltip';
 
 
 interface GroupProfileProps {
@@ -161,22 +162,23 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
           }
         </div>
         <div className='group__profile__members__action'>
-          { getPermission('lowLevel') &&
-            <button onClick={()=> setConfirmActionVisible('leave')}>
+          {getPermission('lowLevel') &&
+            <button onClick={() => setConfirmActionVisible('leave')}>
               Leave
             </button>
           }
         </div>
         {(() => {
-          if (confirmActionVisible === 'leave'){
+          if (confirmActionVisible === 'leave') {
             return <ConfirmActionModal
               title={'Leave group?'}
               onClose={() => setConfirmActionVisible('')}
               confirmationFunction={handleLeaveGroup}
             />;
-          }       
+          }
         })()}
       </div>
+      <ReactTooltip delayShow={50} />
     </div >
   );
 }

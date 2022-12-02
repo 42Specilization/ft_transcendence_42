@@ -1,12 +1,13 @@
 import './CardBlocked.scss';
 import { BlockedData } from '../../../others/Interfaces/interfaces';
-import { UserMinus } from 'phosphor-react';
+
 import { useContext, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { getUrlImage } from '../../../others/utils/utils';
 import { ConfirmActionModal } from '../../ConfirmActionModal/ConfirmActionModal';
+import { ButtonBlockedUser } from '../../Button/ButtonUnBlockedUser';
 
 interface CardBlockedProps {
   blocked: BlockedData;
@@ -17,7 +18,7 @@ export function CardBlocked({ blocked }: CardBlockedProps) {
   const [isTableFriendUsersMenu, setIsTableFriendUsersMenu] = useState(false);
   const { setIntraData, api, config } = useContext(IntraDataContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState('');
-  
+
   async function handleUnblock() {
     await api.patch('/user/removeBlocked', { nick: blocked.login }, config);
     setIntraData((prevIntraData) => {
@@ -44,27 +45,22 @@ export function CardBlocked({ blocked }: CardBlockedProps) {
             className="card__blocked__menu__body"
             style={{ height: isTableFriendUsersMenu ? '55px' : '0px', width: isTableFriendUsersMenu ? '90px' : '0px' }}
           >
-            <button
-              className='card__blocked__menu__button'
-              onClick={()=> setConfirmActionVisible('removeBlock')}
-              data-html={true}
-              data-tip={'Unblock'}
-            >
-              <UserMinus size={32} />
-            </button>
+            <ButtonBlockedUser login={blocked.login} />
           </div>
         </div>
         <ReactTooltip className='chat__friends__header__icon__tip' delayShow={50} />
       </div>
-      {(() => {
-        if (confirmActionVisible === 'removeBlock'){
-          return <ConfirmActionModal
-            title={'Reject Invite?'}
-            onClose={() => setConfirmActionVisible('')}
-            confirmationFunction={handleUnblock}
-          />;
-        }       
-      })()}
+      {
+        (() => {
+          if (confirmActionVisible === 'removeBlock') {
+            return <ConfirmActionModal
+              title={'Unblock user?'}
+              onClose={() => setConfirmActionVisible('')}
+              confirmationFunction={handleUnblock}
+            />;
+          }
+        })()
+      }
     </>
   );
 }

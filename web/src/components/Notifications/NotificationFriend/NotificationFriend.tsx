@@ -32,7 +32,7 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
       removeNotify();
       actionsStatus.newFriend(notify.user_source);
     } catch (err: any) {
-      if (err.response.data.message == 'This user already is your friend') {
+      if (err.response.data.message == 'User already is your friend') {
         removeNotify();
       }
     }

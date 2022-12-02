@@ -447,11 +447,11 @@ export class UserService {
       return;
     });
     if (duplicated.length > 0)
-      throw new BadRequestException('This user already your order');
+      throw new BadRequestException('User already your order');
 
     const alreadyFriends = this.alreadyFriends(user, friend);
     if (alreadyFriends)
-      throw new BadRequestException('This user already is your friend');
+      throw new BadRequestException('User already is your friend');
 
 
     if (this.isBlocked(user, friend) || this.isBlocked(friend, user))
@@ -503,7 +503,7 @@ export class UserService {
     const alreadyFriends = this.alreadyFriends(user, friend);
     if (alreadyFriends) {
       this.popNotification(email, id);
-      throw new BadRequestException('This user already is your friend');
+      throw new BadRequestException('User already is your friend');
     }
 
     const relationUser = new Relations();

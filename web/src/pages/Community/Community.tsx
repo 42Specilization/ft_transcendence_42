@@ -40,7 +40,7 @@ export default function Community() {
       ${tableSelected === 'blocked' ?
       'community__header__list__item__selected' : ''}`}>
             <button onClick={() => setTableSelected('blocked')}>
-              blocked
+              Blocked
             </button>
           </li>
         </ul>

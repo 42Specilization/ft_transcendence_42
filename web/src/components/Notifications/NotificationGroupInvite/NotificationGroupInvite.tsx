@@ -31,7 +31,7 @@ export function NotificationGroupInvite({ notify }: NotificationGroupInviteProps
       removeNotify();
       actionsChat.joinGroup(notify.additional_info, intraData.email);
     } catch (err: any) {
-      if (err.response.data.message == 'This user already is your friend') {
+      if (err.response.data.message == 'User already is your friend') {
         removeNotify();
       }
     }

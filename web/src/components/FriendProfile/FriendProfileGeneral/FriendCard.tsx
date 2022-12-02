@@ -1,5 +1,10 @@
-import { getUrlImage } from '../../../others/utils/utils';
 import './FriendCard.scss';
+import { getUrlImage } from '../../../others/utils/utils';
+import { ButtonChallenge } from '../../Button/ButtonChallenge';
+import { ButtonSendMessage } from '../../Button/ButtonSendMessage';
+import { ButtonBlockUser } from '../../Button/ButtonBlockUser';
+import { ButtonAddFriend } from '../../Button/ButtonAddFriend';
+import { ButtonRemoveFriend } from '../../Button/ButtonRemoveFriend';
 
 interface FriendCardProps {
   friendData: {
@@ -18,6 +23,13 @@ export function FriendCard({ friendData }: FriendCardProps) {
         <strong>{friendData.login}</strong>
       </div>
       <strong className='friendCard__infos'>{friendData.name}</strong>
+      <div className='friendCard__buttons'>
+        <ButtonChallenge login={friendData.login} />
+        <ButtonSendMessage id={friendData.login} type={'person'} />
+        <ButtonAddFriend login={friendData.login} />
+        <ButtonRemoveFriend login={friendData.login} />
+        <ButtonBlockUser login={friendData.login} image={friendData.image_url} />
+      </div>
     </div >
   );
 }
