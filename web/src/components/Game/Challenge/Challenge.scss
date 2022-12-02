@@ -1,0 +1,52 @@
+@import '../../../others/styles/global.scss';
+
+#challenge__modal {
+  .modal__container__content {
+    position: absolute;
+    top: 30px;
+    font-size: 24px;
+  }
+}
+
+.challenge {
+  @include displayFlex(start, column);
+  padding: 15px ;
+  height: 100%;
+  width: 100%;
+  h2 {
+    font-weight: 400;
+    font-size: 2rem;
+  }
+}
+
+.challenge__form__buttons__checkbox {
+  margin-top: 17px;
+  span {
+    padding-left: 10px;
+  }
+}
+
+.challenge__form__button__play {
+  background-color: $primaryColor;
+  padding: 15px;
+  border-radius: 4px;
+  width: 200px;
+  color: white;
+  margin-top: 17px;
+  width: 100%;
+  &:hover {
+    background-color: $primaryColorHover;
+    cursor: pointer;
+  }
+}
+
+@media (min-width: 900px) {
+  .challenge {
+    height: 100%;
+    width: 100%;
+    border-top: none;
+    h2 {
+      font-size: 2.3rem;
+    }
+  }
+}

@@ -4,6 +4,7 @@ import {  useState } from 'react';
 import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
 import { getUrlImage } from '../../../others/utils/utils';
 
+
 interface CardFriendProps {
   friend: FriendData;
 }

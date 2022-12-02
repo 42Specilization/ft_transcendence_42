@@ -49,3 +49,9 @@ export interface IScore {
   player2: number;
 }
 
+export interface IChallenge {
+  userTarget: string;
+  userSource: string;
+  isWithPowerUps: boolean;
+  room: number;
+}

@@ -1,5 +1,7 @@
 import { CanvasHTMLAttributes, DetailedHTMLProps, MutableRefObject } from 'react';
 import './Canvas.scss';
+import imgPowerUp from '../../../assets/powerUp-box.png';
+
 
 interface CanvasProps extends
   DetailedHTMLProps<
@@ -90,7 +92,7 @@ export function Canvas({ canvasRef, ...props }: CanvasProps) {
         width={800}
         height={600}
       />
-      <img id='powerUp-box' src='powerUp-box.png' className='box-powerUp' />
+      <img id='powerUp-box' src={imgPowerUp} className='box-powerUp' />
     </div>
   );
 }

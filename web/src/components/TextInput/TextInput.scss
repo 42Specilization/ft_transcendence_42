@@ -1,0 +1,29 @@
+@import '../../others/styles/global.scss';
+
+.textInput__root {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: 3rem;
+  padding: 1rem 0.75rem 1rem 0.75rem;
+  border-radius: 0.25rem;
+  background-color: $primaryColorHover;
+  width: 100% ;
+}
+
+.textInput__icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: white;
+}
+
+.textInput__input {
+  background-color: transparent;
+  flex: 1 1 0%;
+  color: white;
+  outline: none;
+  &::placeholder{
+    color: rgba(255, 255, 255, 0.739);
+  }
+  font-size: 14px;
+}
