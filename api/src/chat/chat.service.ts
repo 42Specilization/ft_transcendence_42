@@ -802,7 +802,7 @@ export class ChatService {
     });
 
     if (duplicated.length > 0)
-      throw new BadRequestException('This user already your order');
+      throw new BadRequestException('User already your order');
 
 
     const joined = new GroupRelations();

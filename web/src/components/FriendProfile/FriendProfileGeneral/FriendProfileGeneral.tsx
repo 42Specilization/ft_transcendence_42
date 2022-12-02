@@ -9,6 +9,7 @@ interface FriendProfileGeneralProps {
     matches: string,
     wins: string,
     lose: string,
+    relation: string,
   }
 }
 
@@ -20,7 +21,9 @@ export function FriendProfileGeneral({ friendData }: FriendProfileGeneralProps) 
         name: friendData.name,
         login: friendData.login,
         image_url: friendData.image_url,
+        relation: friendData.relation,
       }} />
+
       <div className='friendProfile__general__stats'>
         <div className='friendProfile__general__stats__title'>
           <p>Stats</p>

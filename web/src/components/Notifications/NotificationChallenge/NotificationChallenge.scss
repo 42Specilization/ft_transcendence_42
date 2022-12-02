@@ -17,8 +17,9 @@
 }
 
 .notificationChallenge__buttons{
-  @include displayFlex();
+  @include displayFlex(space-around);
   text-align: center;
+  width: 100%;
 }
 
 .notificationChallenge__buttons__accept,
@@ -27,7 +28,18 @@
   text-align: center;
   width: 80px;
   font-size: 15px;
-  :hover {
+  &:hover {
+    cursor: pointer;
+    filter: grayscale(0.9);
+  }
+  
+}
+
+.notificationChallenge__buttons__accept__link{
+  @include displayFlex(space-between, row, end);
+  color: white;
+  width: 100%;
+  &:hover {
     cursor: pointer;
     color: gray;
   }

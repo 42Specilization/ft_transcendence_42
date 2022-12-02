@@ -1,0 +1,26 @@
+@import '../../others/styles/global.scss';
+
+.button__icon {
+  @include displayFlex();
+  width: 100%;
+  max-width: 60px;
+  height: 35px;
+  color: white;
+  font-size: 20px;
+  margin-top: 10px;
+  text-align: center;
+  border-radius: 10px;
+  background-color: $buttonColor;
+
+  &:hover {
+    background-color: $buttonColorHover;
+    cursor: pointer;
+  }
+}
+
+.button__link {
+  @include displayFlex();
+  width: 100%;
+  max-width: 60px;
+  height: 45px;
+}

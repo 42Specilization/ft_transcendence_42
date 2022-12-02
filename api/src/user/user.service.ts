@@ -19,7 +19,6 @@ import * as fs from 'fs';
 import { GameEntity } from 'src/game/entities/game.entity';
 import { Notify } from '../notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
-// import { Chat } from 'src/chat/entities/chat.entity';
 import { NewNotifyDto } from '../notification/dto/notify-dto';
 import { getAssetsPath } from 'src/utils/utils';
 import { ChallengeRequestDto } from './dto/challenge-request.dto';
@@ -394,9 +393,29 @@ export class UserService {
     }
   }
 
+  async getFriend(user_email: string, friend_nick: string) {
+    const user = await this.findUserByEmail(user_email);
+    const userValidate = await this.findUserByNick(friend_nick);
+    if (!userValidate || !user)
+      throw new InternalServerErrorException('User not found');
+
+    const friendData = {
+      image_url: userValidate.imgUrl,
+      login: userValidate.nick,
+      matches: userValidate.matches,
+      wins: userValidate.wins,
+      lose: userValidate.lose,
+      name: userValidate.usual_full_name,
+      relation: 'none'
+    };
+
+    friendData.relation = this.alreadyFriends(user, userValidate) ? 'friend' : friendData.relation;
+    friendData.relation = (this.isBlocked(user, userValidate) || this.isBlocked(userValidate, user)) ? 'blocked' : friendData.relation;
+    return (friendData);
+  }
+
 
   isBlocked(user_passive: User, user_active: User) {
-
     const blocked = user_active.relations.filter((friendRelation) => {
       if (friendRelation.type == 'blocked' && friendRelation.passive_user.nick == user_passive.nick)
         return friendRelation;
@@ -449,11 +468,11 @@ export class UserService {
       return;
     });
     if (duplicated.length > 0)
-      throw new BadRequestException('This user already your order');
+      throw new BadRequestException('User already your order');
 
     const alreadyFriends = this.alreadyFriends(user, friend);
     if (alreadyFriends)
-      throw new BadRequestException('This user already is your friend');
+      throw new BadRequestException('User already is your friend');
 
 
     if (this.isBlocked(user, friend) || this.isBlocked(friend, user))
@@ -541,7 +560,7 @@ export class UserService {
     const alreadyFriends = this.alreadyFriends(user, friend);
     if (alreadyFriends) {
       this.popNotification(email, id);
-      throw new BadRequestException('This user already is your friend');
+      throw new BadRequestException('User already is your friend');
     }
 
     const relationUser = new Relations();

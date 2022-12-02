@@ -9,11 +9,12 @@ interface FriendProfileProps {
 }
 
 export function FriendProfile({ login }: FriendProfileProps) {
+
   const [tableSelected, setTableSelected] = useState('General');
   const { api, config } = useContext(IntraDataContext);
 
   const { data, status } = useQuery(
-    'friend',
+    ['friend'],
     async () => {
       const response = await api.patch('/user/friend', { nick: login }, config);
       return response.data;
@@ -23,6 +24,7 @@ export function FriendProfile({ login }: FriendProfileProps) {
       refetchOnWindowFocus: true,
     }
   );
+  console.log(data);
 
   if (status == 'loading')
     return <></>;

@@ -14,6 +14,8 @@ import { AddMember } from './AddMember/AddMember';
 import { ChangeSecurity } from './ChangeSecurity/ChangeSecurity';
 import { CardBanned } from './CardBanned/CardBanned';
 import { getUrlImage } from '../../others/utils/utils';
+import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
+import ReactTooltip from 'react-tooltip';
 
 
 interface GroupProfileProps {
@@ -30,6 +32,7 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
   const [modalChangeSecurity, setModalChangeSecurity] = useState(false);
   const [modalAddMember, setModalAddMember] = useState(false);
   const [bannedVisible, setBannedVisible] = useState(false);
+  const [confirmActionVisible, setConfirmActionVisible] = useState('');
 
   const { data, status } = useQuery(
     ['getGroupInfos', updateGroup],
@@ -152,19 +155,28 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
           </>
           {(data.banned && bannedVisible) &&
             data.banned.map((obj: any) => {
-              return <CardBanned setProfileGroupVisible={setProfileGroupVisible} key={Math.random()} id={data.id} banned={obj} />;
+              return <CardBanned  key={Math.random()} id={data.id} banned={obj} />;
             })
           }
         </div>
         <div className='group__profile__members__action'>
           {getPermission('lowLevel') &&
-            <button onClick={handleLeaveGroup}>
+            <button onClick={() => setConfirmActionVisible('leave')}>
               Leave
             </button>
           }
         </div>
-
+        {(() => {
+          if (confirmActionVisible === 'leave') {
+            return <ConfirmActionModal
+              title={'Leave group?'}
+              onClose={() => setConfirmActionVisible('')}
+              confirmationFunction={handleLeaveGroup}
+            />;
+          }
+        })()}
       </div>
+      <ReactTooltip delayShow={50} />
     </div >
   );
 }

@@ -15,7 +15,7 @@ services:
     environment:
       - VITE_API_HOST=api
     env_file:
-      - ./.env
+      - ./.production.env
     volumes:
       - dataAssets:/app/dist/data
 
@@ -33,7 +33,7 @@ services:
     environment:
       - DATABASE_HOST=pgsql
     env_file:
-      - ./.env
+      - ./.production.env
     volumes:
       - dataAssets:/app/data
     
@@ -68,4 +68,4 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: /home/mavinici/ft_transcendence_42/dataAssets
+      device: /home/gsilva-v/Projetos/Transcendence/ft_transcendence_42/dataAssets

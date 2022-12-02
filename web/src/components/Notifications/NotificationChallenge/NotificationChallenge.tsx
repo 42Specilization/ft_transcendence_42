@@ -46,10 +46,10 @@ export function NotificationChallenge(
       <strong>{notify.user_source} send you a challenge request</strong>
       <div className='notificationChallenge__buttons'>
         <div className='notificationChallenge__buttons__accept' onClick={handleAcceptChallenge}>
-          <Link to='/game'>
+          <Link className='notificationChallenge__buttons__accept__link' to='/game'>
             <p> Accept</p>
+            <CheckCircle size={22} color=' rgb(2, 253, 2)' />
           </Link>
-          <CheckCircle size={22} color=' rgb(2, 253, 2)' />
         </div>
         <div className='notificationChallenge__buttons__reject' onClick={handleRejectChallenge}>
           <p> Reject </p>
