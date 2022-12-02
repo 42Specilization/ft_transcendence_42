@@ -24,7 +24,6 @@ export function FriendProfile({ login }: FriendProfileProps) {
       refetchOnWindowFocus: true,
     }
   );
-  console.log(data);
 
   if (status == 'loading')
     return <></>;

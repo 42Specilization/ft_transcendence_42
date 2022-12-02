@@ -168,25 +168,25 @@ export class ChatController {
     return { message: 'success' };
   }
 
-  @Patch('/muteMember')
-  @UseGuards(JwtAuthGuard)
-  async muteMember(
-    @Body() groupInviteDto: GroupInviteDto,
-    @GetUserFromJwt() userFromJwt: UserFromJwt
-  ): Promise<{ message: string }> {
-    await this.chatService.addMutated(userFromJwt.email, groupInviteDto);
-    return { message: 'success' };
-  }
+  // @Patch('/muteMember')
+  // @UseGuards(JwtAuthGuard)
+  // async muteMember(
+  //   @Body() groupInviteDto: GroupInviteDto,
+  //   @GetUserFromJwt() userFromJwt: UserFromJwt
+  // ): Promise<{ message: string }> {
+  //   await this.chatService.addMutated(userFromJwt.email, groupInviteDto);
+  //   return { message: 'success' };
+  // }
 
-  @Patch('/removeMuteMember')
-  @UseGuards(JwtAuthGuard)
-  async removeMuteMember(
-    @Body() groupInviteDto: GroupInviteDto,
-    @GetUserFromJwt() userFromJwt: UserFromJwt
-  ): Promise<{ message: string }> {
-    await this.chatService.removeMutated(userFromJwt.email, groupInviteDto);
-    return { message: 'success' };
-  }
+  // @Patch('/removeMuteMember')
+  // @UseGuards(JwtAuthGuard)
+  // async removeMuteMember(
+  //   @Body() groupInviteDto: GroupInviteDto,
+  //   @GetUserFromJwt() userFromJwt: UserFromJwt
+  // ): Promise<{ message: string }> {
+  //   await this.chatService.removeMutated(userFromJwt.email, groupInviteDto);
+  //   return { message: 'success' };
+  // }
 
   @Patch('/removeAdmin')
   @UseGuards(JwtAuthGuard)

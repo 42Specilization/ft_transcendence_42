@@ -16,11 +16,7 @@ export function ButtonUnBanMember({ id, name }: ButtonUnBanMemberProps) {
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
   async function handleUnBanMember() {
-    try {
-      actionsChat.removeBanMember(id, intraData.email, name);
-    } catch (err) {
-      console.log(err);
-    }
+    actionsChat.removeBanMember(id, intraData.email, name);
   }
 
   return (

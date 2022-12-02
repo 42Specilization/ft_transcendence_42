@@ -16,11 +16,7 @@ export function ButtonBanMember({ id, name }: ButtonBanMemberProps) {
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
   async function handleBanMember() {
-    try {
-      actionsChat.banMember(id, intraData.email, name);
-    } catch (err) {
-      console.log(err);
-    }
+    actionsChat.banMember(id, intraData.email, name);
   }
 
   return (
