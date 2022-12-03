@@ -4,7 +4,7 @@ import { MemberData } from '../../../others/Interfaces/interfaces';
 import { useContext, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { Alien } from 'phosphor-react';
-import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
+import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
 import { getUrlImage } from '../../../others/utils/utils';
 import { ButtonRemoveAdmin } from '../../Button/ButtonRemoveAdmin';
 import { ButtonMuteMember } from '../../Button/ButtonMuteMember';
@@ -23,7 +23,7 @@ export function CardAdmin({ id, member, getPermission }: CardAdminProps) {
 
   const { intraData } = useContext(IntraDataContext);
   const [activeMenu, setActiveMenu] = useState(false);
-  const [friendProfileVisible, setFriendProfileVisible] = useState(false);
+  const [friendProfileVisible, setProfileUserVisible] = useState(false);
 
 
   function heightMenu() {
@@ -34,7 +34,7 @@ export function CardAdmin({ id, member, getPermission }: CardAdminProps) {
 
   function modalVisible(event: any) {
     if (event.target.id === 'card__admin')
-      setFriendProfileVisible(true);
+      setProfileUserVisible(true);
   }
 
   return (
@@ -76,9 +76,9 @@ export function CardAdmin({ id, member, getPermission }: CardAdminProps) {
         <ReactTooltip delayShow={50} />
       </div >
       {friendProfileVisible &&
-        <ProfileFriendModal
+        <ProfileUserModal
           login={member.name}
-          setFriendProfileVisible={setFriendProfileVisible} />
+          setProfileUserVisible={setProfileUserVisible} />
       }
     </>
   );

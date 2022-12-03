@@ -1,7 +1,7 @@
 import './CardFriend.scss';
 import { FriendData } from '../../../others/Interfaces/interfaces';
-import {  useState } from 'react';
-import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
+import { useState } from 'react';
+import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
 import { getUrlImage } from '../../../others/utils/utils';
 
 
@@ -10,11 +10,11 @@ interface CardFriendProps {
 }
 
 export function CardFriend({ friend }: CardFriendProps) {
-  const [friendProfileVisible, setFriendProfileVisible] = useState(false);
+  const [friendProfileVisible, setProfileUserVisible] = useState(false);
 
   function modalVisible(event: any) {
     if (event.target.id === 'card__friend')
-      setFriendProfileVisible(true);
+      setProfileUserVisible(true);
   }
 
   return (
@@ -30,9 +30,9 @@ export function CardFriend({ friend }: CardFriendProps) {
         <div id='card__friend' className='card__friend__name'>{friend.login}</div>
       </div >
       {friendProfileVisible &&
-        <ProfileFriendModal
+        <ProfileUserModal
           login={friend.login}
-          setFriendProfileVisible={setFriendProfileVisible} />
+          setProfileUserVisible={setProfileUserVisible} />
       }
     </>
   );

@@ -1,6 +1,6 @@
 import './CardGlobal.scss';
 import { useState } from 'react';
-import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
+import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
 import { getUrlImage } from '../../../others/utils/utils';
 
 interface CardGlobalProps {
@@ -10,11 +10,11 @@ interface CardGlobalProps {
 }
 
 export function CardGlobal({ image_url, login, ratio }: CardGlobalProps) {
-  const [friendProfileVisible, setFriendProfileVisible] = useState(false);
+  const [friendProfileVisible, setProfileUserVisible] = useState(false);
 
   function selectAction(e: any) {
     if (e.target.id === 'cardGlobal') {
-      setFriendProfileVisible((prev) => !prev);
+      setProfileUserVisible((prev) => !prev);
     }
   }
 
@@ -29,10 +29,10 @@ export function CardGlobal({ image_url, login, ratio }: CardGlobalProps) {
       <div id='cardGlobal' className='cardGlobal__name'>{login}</div>
       <span className='cardGlobal__ratio' > Ratio: {ratio}</span>
       {friendProfileVisible &&
-          <ProfileFriendModal
-            login={login}
-            setFriendProfileVisible={setFriendProfileVisible} />
-      }      
+        <ProfileUserModal
+          login={login}
+          setProfileUserVisible={setProfileUserVisible} />
+      }
     </div >
   );
 }

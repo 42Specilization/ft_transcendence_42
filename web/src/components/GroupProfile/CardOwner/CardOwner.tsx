@@ -3,7 +3,7 @@ import ReactTooltip from 'react-tooltip';
 import { MemberData } from '../../../others/Interfaces/interfaces';
 import { useState } from 'react';
 import { Crown } from 'phosphor-react';
-import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
+import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
 import { getUrlImage } from '../../../others/utils/utils';
 
 interface CardOwnerProps {
@@ -12,11 +12,11 @@ interface CardOwnerProps {
 
 export function CardOwner({ member }: CardOwnerProps) {
 
-  const [friendProfileVisible, setFriendProfileVisible] = useState(false);
+  const [friendProfileVisible, setProfileUserVisible] = useState(false);
 
   function modalVisible(event: any) {
     if (event.target.id === 'card__owner')
-      setFriendProfileVisible(true);
+      setProfileUserVisible(true);
   }
 
   return (
@@ -35,9 +35,9 @@ export function CardOwner({ member }: CardOwnerProps) {
         <ReactTooltip className='chat__friends__header__icon__tip' delayShow={50} />
       </div >
       {friendProfileVisible &&
-        <ProfileFriendModal
+        <ProfileUserModal
           login={member.name}
-          setFriendProfileVisible={setFriendProfileVisible} />
+          setProfileUserVisible={setProfileUserVisible} />
       }
     </>
   );

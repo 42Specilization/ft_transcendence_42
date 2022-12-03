@@ -3,7 +3,7 @@ import ReactTooltip from 'react-tooltip';
 import { MemberData } from '../../../others/Interfaces/interfaces';
 import { useContext, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
+import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
 import { getUrlImage } from '../../../others/utils/utils';
 import { ButtonMakeAdmin } from '../../Button/ButtonMakeAdmin';
 import { ButtonMuteMember } from '../../Button/ButtonMuteMember';
@@ -22,7 +22,7 @@ export function CardMember({ id, member, getPermission }: CardMemberProps) {
 
   const { intraData } = useContext(IntraDataContext);
   const [activeMenu, setActiveMenu] = useState(false);
-  const [friendProfileVisible, setFriendProfileVisible] = useState(false);
+  const [friendProfileVisible, setProfileUserVisible] = useState(false);
 
   function heightMenu() {
     if (getPermission('maxLevel'))
@@ -34,7 +34,7 @@ export function CardMember({ id, member, getPermission }: CardMemberProps) {
 
   function modalVisible(event: any) {
     if (event.target.id === 'card__member')
-      setFriendProfileVisible(true);
+      setProfileUserVisible(true);
   }
 
   return (
@@ -77,9 +77,9 @@ export function CardMember({ id, member, getPermission }: CardMemberProps) {
         <ReactTooltip className='chat__friends__header__icon__tip' delayShow={50} />
       </div >
       {friendProfileVisible &&
-        <ProfileFriendModal
+        <ProfileUserModal
           login={member.name}
-          setFriendProfileVisible={setFriendProfileVisible} />
+          setProfileUserVisible={setProfileUserVisible} />
       }
     </>
   );

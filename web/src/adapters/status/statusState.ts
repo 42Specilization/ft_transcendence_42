@@ -63,6 +63,12 @@ const actionsStatus = {
     stateStatus.socket?.emit('whoIsOnline');
   },
 
+  whoIsOnline2() {
+    stateStatus.socket?.emit('whoIsOnline', (anwser: any) => {
+      console.log(anwser);
+    });
+  },
+
   changeLogin(login: string) {
     stateStatus.socket?.emit('changeLogin', login);
   },

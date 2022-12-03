@@ -2,7 +2,7 @@ import './CardBanned.scss';
 import { useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { MemberData } from '../../../others/Interfaces/interfaces';
-import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
+import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
 import { getUrlImage } from '../../../others/utils/utils';
 import { ButtonUnBanMember } from '../../Button/ButtonUnBanMember';
 import { ButtonMenu } from '../../Button/ButtonMenu';
@@ -15,11 +15,11 @@ interface CardBannedProps {
 export function CardBanned({ id, banned }: CardBannedProps) {
 
   const [activeMenu, setActiveMenu] = useState(false);
-  const [friendProfileVisible, setFriendProfileVisible] = useState(false);
+  const [friendProfileVisible, setProfileUserVisible] = useState(false);
 
   function modalVisible(event: any) {
     if (event.target.id === 'card__banned')
-      setFriendProfileVisible(true);
+      setProfileUserVisible(true);
   }
 
   return (
@@ -48,9 +48,9 @@ export function CardBanned({ id, banned }: CardBannedProps) {
         <ReactTooltip delayShow={50} />
       </div>
       {friendProfileVisible &&
-        <ProfileFriendModal
+        <ProfileUserModal
           login={banned.name}
-          setFriendProfileVisible={setFriendProfileVisible} />
+          setProfileUserVisible={setProfileUserVisible} />
       }
     </>
   );

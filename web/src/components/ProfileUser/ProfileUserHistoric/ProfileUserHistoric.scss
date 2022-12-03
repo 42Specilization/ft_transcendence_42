@@ -1,39 +1,39 @@
 @import '../../../others/styles/global.scss';
 
-.friendProfile__historic {
+.profileUser__historic {
   @include displayFlex(unset, column);
   width: 100%;
   height: 100%;
+  color: white;
   padding: 20px 60px 50px 60px;
   border-radius: 0px 0px 20px 20px;
   background-color: $backgroundColor;
-  color: white;
 }
 
-.friendProfile__historic__header{
+.profileUser__historic__header{
   @include displayFlex(space-between);
   width: 100%;
   font-size: 1.2em;
   padding-bottom: 20px;
 }
 
-.friendProfile__historic__header__item {
+.profileUser__historic__header__item {
   @include displayFlex();
   width: 33%;
 }
 
-.friendProfile__historic__body{
+.profileUser__historic__body {
   width: 100%;
   padding-left: 10px;
   @include scrollBar(10px, 20px);
 }
 
 @media (min-width:1200px) {
-  .friendProfile__historic {
+  .profileUser__historic {
     padding: 20px 100px 50px 100px;
   }
 
-  .friendProfile__historic__header {
+  .profileUser__historic__header {
     font-size: 1.5em;
   }
 }

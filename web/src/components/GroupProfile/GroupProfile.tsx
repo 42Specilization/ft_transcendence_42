@@ -1,6 +1,6 @@
 import './GroupProfile.scss';
-import { NotePencil } from 'phosphor-react';
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+import { NotePencil, Prohibit, UsersThree } from 'phosphor-react';
+import { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { actionsChat } from '../../adapters/chat/chatState';
 import { ChatContext } from '../../contexts/ChatContext';
@@ -10,34 +10,34 @@ import { CardMember } from './CardMember/CardMember';
 import { CardOwner } from './CardOwner/CardOwner';
 import { ChangeName } from './ChangeName/ChangeName';
 import { Dropzone } from '../Dropzone/Dropzone';
-import { AddMember } from './AddMember/AddMember';
 import { ChangeSecurity } from './ChangeSecurity/ChangeSecurity';
 import { CardBanned } from './CardBanned/CardBanned';
 import { getUrlImage } from '../../others/utils/utils';
-import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import ReactTooltip from 'react-tooltip';
-
+import { ButtonSendMessage } from '../Button/ButtonSendMessage';
+import { ButtonJoinGroup } from '../Button/ButtonJoinGroup';
+import { ButtonLeaveGroup } from '../Button/ButtonLeaveGroup';
+import { ButtonInviteMember } from '../Button/ButtonInviteMember';
+import { actionsStatus } from '../../adapters/status/statusState';
 
 interface GroupProfileProps {
   id: string | undefined;
-  setProfileGroupVisible: Dispatch<SetStateAction<boolean>>;
 }
 
-export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) {
+export function GroupProfile({ id }: GroupProfileProps) {
 
-  const { api, config, intraData } = useContext(IntraDataContext);
-  const { setActiveChat, updateGroup } = useContext(ChatContext);
+  const { api, config } = useContext(IntraDataContext);
+  const { updateGroup } = useContext(ChatContext);
   const [selectedFile, setSelectedFile] = useState<File>();
   const [modalChangeName, setModalChangeName] = useState(false);
   const [modalChangeSecurity, setModalChangeSecurity] = useState(false);
-  const [modalAddMember, setModalAddMember] = useState(false);
   const [bannedVisible, setBannedVisible] = useState(false);
-  const [confirmActionVisible, setConfirmActionVisible] = useState('');
 
   const { data, status } = useQuery(
     ['getGroupInfos', updateGroup],
     async () => {
       const response = await api.patch('/chat/getProfileGroupById', { id: id }, config);
+      // console.log(response.data);
       return response.data;
     },
     {
@@ -45,6 +45,7 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
       refetchOnWindowFocus: true,
     }
   );
+
 
   useEffect(() => {
     if (selectedFile)
@@ -72,24 +73,12 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
     return false;
   }
 
-
-  function handleLeaveGroup() {
-    actionsChat.leaveGroup(data.id, intraData.email);
-    setProfileGroupVisible(false);
-    setActiveChat(null);
-  }
-
   if (status === 'loading')
     return <div className='group__profile' />;
 
   return (
     <div className='group__profile'>
       <div className='group__profile__infos'>
-        <button
-          className='group__profile__infos__securityButton'
-          onClick={() => setBannedVisible(prev => !prev)}
-        >UnBan
-        </button>
         <div className='group__profile__infos__image'>
           <img src={getUrlImage(data.image)} alt="Group Image" />
           {getPermission('middleLevel') &&
@@ -109,10 +98,9 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
             </div>
           }
         </div>
-
         {getPermission('maxLevel') &&
           <>
-            <button className='group__profile__infos__securityButton'
+            <button className='group__profile__infos__security__button'
               onClick={() => { setModalChangeSecurity(true); }}
             >
               Change Security
@@ -125,20 +113,31 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
       </div >
 
       <div className='group__profile__members'>
-        <div className='group__profile__members__action'>
+        <div className='group__profile__buttons'>
+          {getPermission('lowLevel') &&
+            <ButtonSendMessage id={data.id} type={'group'} />
+          }
           {getPermission(data.type === 'public' ? 'lowLevel' : 'middleLevel') &&
-            <>
-              <button onClick={() => { setModalAddMember(true); }}>
-                Add Member
-              </button>
-
-            </>
+            <ButtonInviteMember id={data.id} />
+          }
+          {getPermission('lowLevel') ?
+            <ButtonLeaveGroup id={data.id} /> :
+            <ButtonJoinGroup id={data.id} type={data.type} />
+          }
+          {getPermission('middleLevel') &&
+            <button className='button__icon'
+              onClick={() => setBannedVisible(prev => !prev)}
+              data-html={true}
+              data-tip={bannedVisible ? 'Member List' : 'Banned List'}
+            >
+              {bannedVisible ?
+                <UsersThree size={32} /> :
+                <Prohibit size={32} />
+              }
+            </button>
           }
         </div>
-        {modalAddMember &&
-          <AddMember id={id} setModalAddMember={setModalAddMember} />
-        }
-        < div className='group__profile__members__body'>
+        <div className='group__profile__members__body'>
           <>
             {(data.members && !bannedVisible) &&
               data.members.map((obj: any) => {
@@ -152,29 +151,13 @@ export function GroupProfile({ id, setProfileGroupVisible }: GroupProfileProps) 
                     member={obj} getPermission={getPermission} />;
               })
             }
+            {(data.banned && bannedVisible) &&
+              data.banned.map((obj: any) => {
+                return <CardBanned key={Math.random()} id={data.id} banned={obj} />;
+              })
+            }
           </>
-          {(data.banned && bannedVisible) &&
-            data.banned.map((obj: any) => {
-              return <CardBanned  key={Math.random()} id={data.id} banned={obj} />;
-            })
-          }
         </div>
-        <div className='group__profile__members__action'>
-          {getPermission('lowLevel') &&
-            <button onClick={() => setConfirmActionVisible('leave')}>
-              Leave
-            </button>
-          }
-        </div>
-        {(() => {
-          if (confirmActionVisible === 'leave') {
-            return <ConfirmActionModal
-              title={'Leave group?'}
-              onClose={() => setConfirmActionVisible('')}
-              confirmationFunction={handleLeaveGroup}
-            />;
-          }
-        })()}
       </div>
       <ReactTooltip delayShow={50} />
     </div >

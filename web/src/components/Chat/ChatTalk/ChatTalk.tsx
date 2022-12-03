@@ -5,7 +5,7 @@ import { ArrowBendUpLeft, PaperPlaneRight } from 'phosphor-react';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
+import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
 import ReactTooltip from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
@@ -25,7 +25,7 @@ export function ChatTalk(
     setTabSelected
   } = useContext(ChatContext);
   const { intraData, setIntraData, api, config } = useContext(IntraDataContext);
-  const [friendProfileVisible, setFriendProfileVisible] = useState(false);
+  const [friendProfileVisible, setProfileUserVisible] = useState(false);
   const [profileGroupVisible, setProfileGroupVisible] = useState(false);
 
   useEffect(() => {
@@ -201,7 +201,7 @@ export function ChatTalk(
       if (activeChat.chat.type !== 'direct') {
         setProfileGroupVisible(true);
       } else {
-        setFriendProfileVisible(true);
+        setProfileUserVisible(true);
       }
     }
   }
@@ -265,9 +265,9 @@ export function ChatTalk(
             }
           </div>
           {friendProfileVisible &&
-            <ProfileFriendModal
+            <ProfileUserModal
               login={activeChat.chat.name}
-              setFriendProfileVisible={setFriendProfileVisible} />
+              setProfileUserVisible={setProfileUserVisible} />
           }
           {profileGroupVisible &&
             < ProfileGroupModal

@@ -1,6 +1,6 @@
-@import '../../others/styles/global.scss';
+@import '../../../others/styles/global.scss';
 
-.profile__friends__modal {
+.profileUser__modal {
   @include displayFlex();
   position: fixed;
   width: 100%;
@@ -11,7 +11,7 @@
   background-color: rgba(0,0,0,0.8);
 }
 
-.profile__friends__modal__container {
+.profileUser__modal__container {
   @include displayFlex(space-between);
   position: fixed;
   color: white;
@@ -23,14 +23,21 @@
   background-image: url('/background-galaxy.png');
 }
 
-.profile__friends__modal__container__closeButton__div {
+.profileUser__modal__container__content {
+  @include displayFlex(center, column);
+  width:100%;
+  height: 100%;
+  margin: 40px 0px 40px 40px;
+}
+
+.profileUser__modal__container__closeButton__div {
   @include displayFlex(space-between, column, flex-start);
   height: 100%;
   padding-top: 10px;
   padding-right: 10px;
 }
 
-.profile__friends__modal__container__closeButton {
+.profileUser__modal__container__closeButton {
   @include displayFlex();
   width: 30px;
   height: 30px;
@@ -44,9 +51,3 @@
   }
 }
 
-.profile__friends__modal__container__content {
-  @include displayFlex(center, column);
-  width:100%;
-  height: 100%;
-  margin: 40px 0px 40px 40px;
-}

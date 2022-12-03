@@ -393,31 +393,38 @@ export class UserService {
     }
   }
 
-  async getFriend(user_email: string, friend_nick: string) {
-    const user = await this.findUserByEmail(user_email);
-    const userValidate = await this.findUserByNick(friend_nick);
-    if (!userValidate || !user)
+  async getProfileUser(owner_email: string, user_nick: string) {
+    const owner = await this.findUserByEmail(owner_email);
+    const user = await this.findUserByNick(user_nick);
+    if (!owner || !user)
       throw new InternalServerErrorException('User not found');
 
-    const friendData = {
-      image_url: userValidate.imgUrl,
-      login: userValidate.nick,
-      matches: userValidate.matches,
-      wins: userValidate.wins,
-      lose: userValidate.lose,
-      name: userValidate.usual_full_name,
+    const profileUser = {
+      image_url: user.imgUrl,
+      login: user.nick,
+      matches: user.matches,
+      wins: user.wins,
+      lose: user.lose,
+      name: user.usual_full_name,
       relation: 'none'
     };
 
-    friendData.relation = this.alreadyFriends(user, userValidate) ? 'friend' : friendData.relation;
-    friendData.relation = (this.isBlocked(user, userValidate) || this.isBlocked(userValidate, user)) ? 'blocked' : friendData.relation;
-    return (friendData);
-  }
+    if (user.nick === owner.nick)
+      profileUser.relation = 'owner';
+    else if (this.alreadyFriends(owner, user))
+      profileUser.relation = 'friend';
+    else if (this.isBlocked(owner, user))
+      profileUser.relation = 'blocked';
+    else if (this.isBlocked(user, owner))
+      profileUser.relation = 'blocker';
 
+    return (profileUser);
+  }
 
   isBlocked(user_passive: User, user_active: User) {
     const blocked = user_active.relations.filter((friendRelation) => {
-      if (friendRelation.type == 'blocked' && friendRelation.passive_user.nick == user_passive.nick)
+      if (friendRelation.type == 'blocked'
+        && friendRelation.passive_user.nick == user_passive.nick)
         return friendRelation;
       return;
     });

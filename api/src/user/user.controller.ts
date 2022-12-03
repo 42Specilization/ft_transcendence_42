@@ -177,15 +177,15 @@ export class UserController {
     return (await this.userService.getUserDTO(userFromJwt.email));
   }
 
-  @Patch('friend')
+  @Patch('profile')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: GetFriendDto })
   async getFriend(
-    @Body() getFriendDto: GetFriendDto,
+    @Body() getProfileUserDto: GetFriendDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
   ) {
-    return await this.userService.getFriend(userFromJwt.email, getFriendDto.nick);
+    return await this.userService.getProfileUser(userFromJwt.email, getProfileUserDto.nick);
   }
 
   /* This method is used to update the user's image. */
