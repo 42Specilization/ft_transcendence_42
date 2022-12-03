@@ -38,6 +38,7 @@
 .profileUser__card__buttons {
   @include displayFlex(space-around);
   width: 100%;
+  min-width: 290px;
   height: 35px;
   color: white;
   margin-top: 10px;

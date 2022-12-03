@@ -34,9 +34,9 @@ export function ProfileUserCard({ profileUserData }: ProfileUserCardProps) {
       <strong className='profileUser__card__infos'>{name}</strong>
 
       <div className='profileUser__card__buttons'>
-        {!(relation === 'owner' || relation === 'blocker') &&
+        {!(relation === 'owner' || relation === 'blocked') &&
           <>
-            {relation !== 'blocked' ?
+            {relation !== 'blocker' ?
               <>
                 <ButtonSendMessage id={login} type={'person'} />
                 <ButtonChallenge login={login} />

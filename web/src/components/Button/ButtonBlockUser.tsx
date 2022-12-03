@@ -37,13 +37,13 @@ export function ButtonBlockUser({ login, image }: ButtonBlockUserProps) {
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
         data-html={true}
-        data-tip={'Block Friend'}
+        data-tip={'Block User'}
       >
         <Prohibit size={32} />
       </button>
       {confirmActionVisible &&
         <ConfirmActionModal
-          title={'Block friend?'}
+          title={'Block user?'}
           onClose={() => setConfirmActionVisible(false)}
           confirmationFunction={handleBlockFriend}
         />

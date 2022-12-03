@@ -1,5 +1,5 @@
 import './Button.scss';
-import { Prohibit } from 'phosphor-react';
+import { UserMinus } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import { actionsChat } from '../../adapters/chat/chatState';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
@@ -26,7 +26,7 @@ export function ButtonUnBanMember({ id, name }: ButtonUnBanMemberProps) {
         data-html={true}
         data-tip={'UnBan Member'}
       >
-        <Prohibit size={32} />
+        <UserMinus size={32} />
       </button>
       {confirmActionVisible &&
         <ConfirmActionModal
