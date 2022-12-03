@@ -71,11 +71,6 @@
   }
 }
 
-.group__profile__members {
-  @include displayFlex(center, column);
-  width: 40%;
-  height: 90%;
-}
 
 .group__profile__buttons {
   @include displayFlex(space-around);
@@ -84,8 +79,8 @@
   color: white;
 }
 
-.group__profile__members__body {
-  width: 100%;
-  height: calc(100% - 100px);
-  @include scrollBar(10px, 20px);
+.group__profile__members {
+  @include displayFlex(center, column);
+  width: 40%;
+  height: 90%;
 }

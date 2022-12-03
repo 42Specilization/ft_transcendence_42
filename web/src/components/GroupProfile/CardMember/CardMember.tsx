@@ -1,86 +1,82 @@
 import './CardMember.scss';
-import ReactTooltip from 'react-tooltip';
-import { MemberData } from '../../../others/Interfaces/interfaces';
-import { useContext, useState } from 'react';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
-import { getUrlImage } from '../../../others/utils/utils';
-import { ButtonMakeAdmin } from '../../Button/ButtonMakeAdmin';
-import { ButtonMuteMember } from '../../Button/ButtonMuteMember';
+import { ButtonUnBanMember } from '../../Button/ButtonUnBanMember';
+import { Alien, Crown } from 'phosphor-react';
+import { CardUser } from '../../CardUser/CardUser';
+import { ButtonRemoveAdmin } from '../../Button/ButtonRemoveAdmin';
 import { ButtonUnMuteMember } from '../../Button/ButtonUnMuteMember';
-import { ButtonBanMember } from '../../Button/ButtonBanMember';
+import { ButtonMuteMember } from '../../Button/ButtonMuteMember';
 import { ButtonKickMember } from '../../Button/ButtonKickMember';
-import { ButtonMenu } from '../../Button/ButtonMenu';
+import { ButtonBanMember } from '../../Button/ButtonBanMember';
+import { ButtonMakeAdmin } from '../../Button/ButtonMakeAdmin';
 
 interface CardMemberProps {
-  id: string;
-  member: MemberData;
+  data: any;
+  bannedVisible: boolean;
   getPermission: (arg0: string) => boolean;
 }
 
-export function CardMember({ id, member, getPermission }: CardMemberProps) {
-
-  const { intraData } = useContext(IntraDataContext);
-  const [activeMenu, setActiveMenu] = useState(false);
-  const [friendProfileVisible, setProfileUserVisible] = useState(false);
+export function CardMember({ data, bannedVisible, getPermission }: CardMemberProps) {
 
   function heightMenu() {
     if (getPermission('maxLevel'))
-      return '235px';
+      return 190;
     if (getPermission('middleLevel'))
-      return '190px';
-    return '55px';
-  }
-
-  function modalVisible(event: any) {
-    if (event.target.id === 'card__member')
-      setProfileUserVisible(true);
+      return 145;
+    return 55;
   }
 
   return (
-    <>
-      <div id='card__member' className='card__member' onClick={modalVisible}>
-        <div id='card__member' className="card__member__div">
-          <div id='card__member'
-            className='card__member__icon'
-            style={{ backgroundImage: `url(${getUrlImage(member.image)})` }}>
-          </div>
-          <div id='card__member' className='card__member__name'>
-            {member.name}
-          </div>
-        </div>
-
-        {intraData.login !== member.name &&
-          <div className='card__friend__menu'>
-            <div id='card__friend__menu__body' className='card__friend__menu__body'
-              style={{
-                height: activeMenu ? heightMenu() : '0px',
-                width: activeMenu ? '80px' : '0px'
-              }}>
+    <div className='group__profile__card__member'>
+      {(data.members && !bannedVisible) && data.members.map((obj: any) => {
+        if (obj.role === 'owner')
+          return (
+            <CardUser key={Math.random()} user={obj} menuHeight={0}>
+              <Crown id='card__owner' size={32} />
+            </CardUser>
+          );
+        if (obj.role === 'admin')
+          return (
+            <CardUser key={Math.random()} user={obj} menuHeight={heightMenu()}>
+              <Alien id='card__admin' size={32} />
               {getPermission('maxLevel') &&
-                <ButtonMakeAdmin id={id} name={member.name} />
-              }
-              {getPermission('middleLevel') &&
                 <>
-                  {member.mutated ?
-                    <ButtonUnMuteMember id={id} name={member.name} /> :
-                    <ButtonMuteMember id={id} name={member.name} />
+                  <ButtonRemoveAdmin id={data.id} name={obj.name} />
+                  {obj.mutated ?
+                    <ButtonUnMuteMember id={data.id} name={obj.name} /> :
+                    <ButtonMuteMember id={data.id} name={obj.name} />
                   }
-                  <ButtonKickMember id={id} name={member.name} />
-                  <ButtonBanMember id={id} name={member.name} />
+                  <ButtonKickMember id={data.id} name={obj.name} />
+                  <ButtonBanMember id={data.id} name={obj.name} />
                 </>
               }
-            </div>
-            <ButtonMenu setActiveMenu={setActiveMenu} />
-          </div>
-        }
-        <ReactTooltip className='chat__friends__header__icon__tip' delayShow={50} />
-      </div >
-      {friendProfileVisible &&
-        <ProfileUserModal
-          login={member.name}
-          setProfileUserVisible={setProfileUserVisible} />
-      }
-    </>
+            </CardUser>
+          );
+        else
+          return (
+            <CardUser key={Math.random()} user={obj} menuHeight={heightMenu()}>
+              <div />
+              {getPermission('middleLevel') &&
+                <>
+                  {getPermission('maxLevel') &&
+                    <ButtonMakeAdmin id={data.id} name={obj.name} />
+                  }
+                  {obj.mutated ?
+                    <ButtonUnMuteMember id={data.id} name={obj.name} /> :
+                    <ButtonMuteMember id={data.id} name={obj.name} />
+                  }
+                  <ButtonKickMember id={data.id} name={obj.name} />
+                  <ButtonBanMember id={data.id} name={obj.name} />
+                </>
+              }
+            </CardUser>
+          );
+      })}
+      {(data.banned && bannedVisible) && data.banned.map((obj: any) =>
+        <CardUser key={Math.random()} user={obj} menuHeight={55}>
+          <div></div>
+          <ButtonUnBanMember id={data.id} name={obj.name} />
+        </CardUser>
+      )}
+    </div>
   );
 }
