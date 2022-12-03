@@ -68,4 +68,4 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: /home/gsilva-v/Projetos/Transcendence/ft_transcendence_42/dataAssets
+      device: /home/mavinici/ft_transcendence_42/dataAssets
