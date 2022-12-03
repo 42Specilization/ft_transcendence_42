@@ -9,7 +9,7 @@ import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUser
 import ReactTooltip from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
-import { ProfileGroupModal } from '../../ProfileGroupModal/ProfileGroupModal';
+import { ProfileGroupModal } from '../../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
 import { getUrlImage } from '../../../others/utils/utils';
 
 // interface ChatTalkProps {

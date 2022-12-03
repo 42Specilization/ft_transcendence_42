@@ -3,7 +3,7 @@ import { LockKey, Shield } from 'phosphor-react';
 import { useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { GroupCardData } from '../../../others/Interfaces/interfaces';
-import { ProfileGroupModal } from '../../ProfileGroupModal/ProfileGroupModal';
+import { ProfileGroupModal } from '../../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
 import { getUrlImage } from '../../../others/utils/utils';
 import { ButtonSendMessage } from '../../Button/ButtonSendMessage';
 import { ButtonLeaveGroup } from '../../Button/ButtonLeaveGroup';

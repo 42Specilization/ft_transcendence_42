@@ -1,19 +1,19 @@
 @import '../../others/styles/global.scss';
 
-.group__profile {
+.profileGroup {
   @include displayFlex(space-around);
   width: 100%;
   height: 100%;
 }
 
-.group__profile__infos {
+.profileGroup__infos {
   @include displayFlex(space-around, column);
   width: 40%;
   height: 80%;
   font-size: 35px;
 }
 
-.group__profile__infos__image {
+.profileGroup__infos__image {
   @include displayFlex(center);
 
   img {
@@ -26,7 +26,7 @@
     border: 5px solid $primaryColor;
   }
 
-  .group__profile__infos__image__text {
+  .profileGroup__infos__image__text {
     display: none;
   }
 
@@ -34,7 +34,7 @@
     filter: grayscale(0.8);
     cursor: pointer;
 
-    .group__profile__infos__image__text {
+    .profileGroup__infos__image__text {
       @include displayFlex(center);
       position: absolute;
     }
@@ -42,13 +42,13 @@
 
 }
 
-.group__profile__infos__name {
+.profileGroup__infos__name {
   @include displayFlex(center, row);
   margin-top: 10px;
   margin-bottom: 10px;
 }
 
-.group__profile__infos__name__button {
+.profileGroup__infos__name__button {
   @include displayFlex(center);
   margin-left: 15px;
   border-radius: 5px;
@@ -58,7 +58,7 @@
   }
 }
 
-.group__profile__infos__security__button {
+.profileGroup__infos__security__button {
   height: 40px;
   font-size: 30px;
   color: white;
@@ -71,16 +71,15 @@
   }
 }
 
+.profileGroup__members {
+  @include displayFlex(center, column);
+  width: 40%;
+  height: 90%;
+}
 
-.group__profile__buttons {
+.profileGroup__buttons {
   @include displayFlex(space-around);
   width: 100%;
   height: 100px;
   color: white;
-}
-
-.group__profile__members {
-  @include displayFlex(center, column);
-  width: 40%;
-  height: 90%;
 }

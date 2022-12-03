@@ -1,4 +1,4 @@
-import './GroupProfile.scss';
+import './ProfileGroup.scss';
 import ReactTooltip from 'react-tooltip';
 import { NotePencil, Prohibit, UsersThree } from 'phosphor-react';
 import { useContext, useEffect, useState } from 'react';
@@ -17,11 +17,11 @@ import { ButtonLeaveGroup } from '../Button/ButtonLeaveGroup';
 import { ButtonInviteMember } from '../Button/ButtonInviteMember';
 
 
-interface GroupProfileProps {
+interface ProfileGroupProps {
   id: string | undefined;
 }
 
-export function GroupProfile({ id }: GroupProfileProps) {
+export function ProfileGroup({ id }: ProfileGroupProps) {
 
   const { api, config } = useContext(IntraDataContext);
   const { updateGroup } = useContext(ChatContext);
@@ -69,23 +69,23 @@ export function GroupProfile({ id }: GroupProfileProps) {
   }
 
   if (status === 'loading')
-    return <div className='group__profile' />;
+    return <div className='profileGroup' />;
 
   return (
-    <div className='group__profile'>
-      <div className='group__profile__infos'>
-        <div className='group__profile__infos__image'>
+    <div className='profileGroup'>
+      <div className='profileGroup__infos'>
+        <div className='profileGroup__infos__image'>
           <img src={getUrlImage(data.image)} alt="Group Image" />
           {getPermission('middleLevel') &&
-            <div className='group__profile__infos__image__text'>
+            <div className='profileGroup__infos__image__text'>
               <Dropzone onFileUploaded={setSelectedFile} />
             </div>
           }
         </div>
-        <div className='group__profile__infos__name'>
+        <div className='profileGroup__infos__name'>
           <strong>{data.name}</strong>
           {getPermission('middleLevel') &&
-            <div className='group__profile__infos__name__button'>
+            <div className='profileGroup__infos__name__button'>
               <NotePencil size={30} onClick={() => setModalChangeName(true)} />
               {modalChangeName &&
                 <ChangeName id={id} setModalChangeName={setModalChangeName} />
@@ -95,7 +95,7 @@ export function GroupProfile({ id }: GroupProfileProps) {
         </div>
         {getPermission('maxLevel') &&
           <>
-            <button className='group__profile__infos__security__button'
+            <button className='profileGroup__infos__security__button'
               onClick={() => setModalChangeSecurity(true)}
             >
               Change Security
@@ -107,8 +107,8 @@ export function GroupProfile({ id }: GroupProfileProps) {
         }
       </div >
 
-      <div className='group__profile__members'>
-        <div className='group__profile__buttons'>
+      <div className='profileGroup__members'>
+        <div className='profileGroup__buttons'>
           {getPermission('lowLevel') &&
             <ButtonSendMessage id={data.id} type={'group'} />
           }

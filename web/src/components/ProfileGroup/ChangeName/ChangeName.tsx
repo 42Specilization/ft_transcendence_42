@@ -42,19 +42,12 @@ export function ChangeName({ id, setModalChangeName }: ChangeNameProps) {
   }
 
   return (
-    <Modal 
-      onClose={() => {
-        setModalChangeName(false);
-        setPlaceHolder('');
-        setName('');
-      }}
-      id={'modal__changeGroupName'}
-    >
-      <form className='changeGroupName__modal' onSubmit={handleKeyEnter}>
-        <div className='changeGroupName__modal__text__div'>
+    <Modal id='changeName__modal' onClose={() => setModalChangeName(false)}>
+      <form className='changeName__modal' onSubmit={handleKeyEnter}>
+        <div className='changeName__modal__text__div'>
           <h3>Insert the new nick</h3>
           <input
-            className='changeGroupName__modal__input'
+            className='changeName__modal__input'
             value={name}
             placeholder={placeHolder}
             style={{ border: placeHolder !== '' ? '3px solid red' : 'none' }}
@@ -65,7 +58,7 @@ export function ChangeName({ id, setModalChangeName }: ChangeNameProps) {
             ref={e => e?.focus()}
           />
         </div>
-        <button className='changeGroupName__modal__button' type='submit'>
+        <button className='changeName__modal__button' type='submit'>
           <PaperPlaneRight size={30} />
         </button>
       </form>

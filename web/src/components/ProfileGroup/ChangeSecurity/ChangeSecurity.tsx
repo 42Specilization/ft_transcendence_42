@@ -36,9 +36,7 @@ export function ChangeSecurity({ id, setModalChangeSecurity }: ChangeSecurityPro
   }
 
   return (
-    <Modal id='group__changeSecurity'
-      onClose={() => { setModalChangeSecurity(false); }}
-    >
+    <Modal id='changeSecurity__modal' onClose={() => setModalChangeSecurity(false)}>
       <form className='group__changeSecurity__modal' onSubmit={handleKeyEnter}>
         <SelectItem onValueChange={(e) => setSecurityType(e)} />
         <div className='group__changeSecurity__modal__text__div'>
