@@ -4,7 +4,8 @@ import { useContext, useEffect, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import ReactTooltip from 'react-tooltip';
 import { actionsStatus } from '../../../adapters/status/statusState';
-import { CardFriend } from '../CardFriend/CardFriend';
+import { CardFriend } from './CardFriend/CardFriend';
+
 
 export function FriendTab() {
   const { intraData } = useContext(IntraDataContext);

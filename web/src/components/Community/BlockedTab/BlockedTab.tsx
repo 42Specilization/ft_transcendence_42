@@ -3,11 +3,11 @@ import { MagnifyingGlass, X } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import ReactTooltip from 'react-tooltip';
-import { CardBlocked } from '../CardBlocked/CardBlocked';
+import { CardUser } from '../../CardUser/CardUser';
 
 export function BlockedTab() {
-  const { intraData } = useContext(IntraDataContext);
 
+  const { intraData } = useContext(IntraDataContext);
   const [isTableSearch, setIsTableSearch] = useState(false);
   const [searchInput, setSearchInput] = useState('');
 
@@ -46,7 +46,9 @@ export function BlockedTab() {
       <div className='blocked__tab__body'>
         {
           intraData.blocked?.sort((a, b) => a.login < b.login ? -1 : 1)
-            .map((obj) => <CardBlocked key={Math.random()} blocked={obj} />)
+            .map((obj) =>
+              <CardUser key={Math.random()} user={{ name: obj.login, image: obj.image_url }} menuHeight={0}>
+              </CardUser>)
         }
       </div>
     </div >);

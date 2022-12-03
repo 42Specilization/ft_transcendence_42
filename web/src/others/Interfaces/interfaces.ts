@@ -26,6 +26,12 @@ export interface BlockedData {
   image_url: string;
 }
 
+export interface UserData {
+  status?: string;
+  name: string;
+  image: string;
+}
+
 export interface MemberData {
   name: string;
   image: string;

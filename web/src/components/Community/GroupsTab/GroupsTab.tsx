@@ -3,7 +3,7 @@ import { MagnifyingGlass, Plus, X } from 'phosphor-react';
 import { useState, useContext } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import { CardGroup } from '../CardGroup/CardGroup';
+import { CardGroup } from './CardGroup/CardGroup';
 import { Modal } from '../../Modal/Modal';
 import { CreateGroup } from './CreateGroup/CreateGroup';
 import { useQuery } from 'react-query';
@@ -18,7 +18,7 @@ export function GroupsTab() {
   const { updateGroup } = useContext(ChatContext);
 
   const { data, status } = useQuery(
-    ['getCommunityGroups', updateGroup ],
+    ['getCommunityGroups', updateGroup],
     async () => {
       const response = await api.get('/chat/getCommunityGroups', config);
       return response.data;

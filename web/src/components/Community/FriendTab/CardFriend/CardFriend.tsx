@@ -1,9 +1,8 @@
 import './CardFriend.scss';
-import { FriendData } from '../../../others/Interfaces/interfaces';
 import { useState } from 'react';
-import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
-import { getUrlImage } from '../../../others/utils/utils';
-
+import { FriendData } from '../../../../others/Interfaces/interfaces';
+import { getUrlImage } from '../../../../others/utils/utils';
+import { ProfileUserModal } from '../../../ProfileUser/ProfileUserModal/ProfileUserModal';
 
 interface CardFriendProps {
   friend: FriendData;

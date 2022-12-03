@@ -1,6 +1,6 @@
 import './CardUser.scss';
 import ReactTooltip from 'react-tooltip';
-import { MemberData } from '../../others/Interfaces/interfaces';
+import { BlockedData, UserData } from '../../others/Interfaces/interfaces';
 import { Children, useContext, useState } from 'react';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 import { getUrlImage } from '../../others/utils/utils';
@@ -8,7 +8,7 @@ import { ProfileUserModal } from '../ProfileUser/ProfileUserModal/ProfileUserMod
 import { ButtonMenu } from '../Button/ButtonMenu';
 
 interface CardUserProps {
-  user: MemberData;
+  user: UserData;
   menuHeight: number;
   children: any | any[];
 }

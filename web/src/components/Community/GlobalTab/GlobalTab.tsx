@@ -1,9 +1,9 @@
+import './GlobalTab.scss';
 import { MagnifyingGlass, X } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import { CardGlobal } from '../CardGlobal/CardGlobal';
-import './GlobalTab.scss';
+import { CardUser } from '../../CardUser/CardUser';
 
 interface CommunityUser {
   image_url: string;
@@ -65,12 +65,9 @@ export function GlobalTab() {
           data && data
             .filter((obj: CommunityUser) => obj.login.includes(searchInput))
             .map((index: CommunityUser) => (
-              <CardGlobal
-                key={Math.random()}
-                image_url={index.image_url}
-                login={index.login}
-                ratio={index.ratio}
-              />
+              <CardUser key={Math.random()} user={{ name: index.login, image: index.image_url }} menuHeight={0}>
+                <span className='cardGlobal__ratio' > Ratio: {index.ratio}</span>
+              </CardUser>
             ))}
       </div>
     </div >
