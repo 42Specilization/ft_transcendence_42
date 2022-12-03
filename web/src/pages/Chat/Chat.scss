@@ -1,5 +1,7 @@
 @import '../../others/styles/global.scss';
 
+$ChatCommunityHeaderHeight: 35px;
+
 .chat {
   @include displayFlex(center);
   width: 80%;
@@ -16,8 +18,6 @@
   border-radius: 50px;
   background-color: $backgroundColor;
 }
-
-$ChatCommunityHeaderHeight: 35px;
 
 .chat__cards__header {
   @include displayFlex();
@@ -42,7 +42,7 @@ $ChatCommunityHeaderHeight: 35px;
   div {
     @include displayFlex();
   }
-  
+
   p {
     @include truncText();
     font-size: 1.3em;
@@ -54,7 +54,7 @@ $ChatCommunityHeaderHeight: 35px;
   }
 }
 
-.chat__cards__header__list__item__count {
+.chat__cards__header__count {
   @include displayFlex();
   margin: 5px;
   width: 25px;
@@ -63,7 +63,7 @@ $ChatCommunityHeaderHeight: 35px;
   border-radius: 50%;
   background-color: $buttonColor;
 }
-.chat__cards__header__list__item__selected {
+.chat__cards__header__selected {
   background-color: $primaryColor;
 
   button {

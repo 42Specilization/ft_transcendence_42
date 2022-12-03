@@ -96,15 +96,15 @@ export function ChatTalk(
         actionsChat.joinChat(chat.id);
         await actionsStatus.newDirect(chat.name, chat.id);
       }
-      setTabSelected('directs');
+      setTabSelected('Direct');
     } else if (selectedChat.type === 'direct') {
       const response = await api.patch('/chat/getDirect', { id: selectedChat?.chat }, config);
       chat = response.data;
-      setTabSelected('directs');
+      setTabSelected('Direct');
     } else {
       const response = await api.patch('/chat/getGroup', { id: selectedChat?.chat }, config);
       chat = response.data;
-      setTabSelected('groups');
+      setTabSelected('Group');
     }
     if (activeChat) {
       exitActiveChat();
