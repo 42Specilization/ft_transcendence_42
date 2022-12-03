@@ -37,17 +37,16 @@
 
 .navBar__icons {
   @include displayFlex(center, column);
-  width:110px;
+  width: 110px;
   color: white;
   margin: 12px;
   font-size: 20px;
+
   &:hover {
     cursor: pointer;
     color: rgb(60, 60, 60);
   }
 }
-
-
 
 .navBar__logo {
   @include displayFlex();
@@ -59,13 +58,11 @@
     width: 90%;
   }
 
-  &:hover  {
+  &:hover {
     cursor: pointer;
     filter: grayscale(0.6);
   }
 }
-
-
 
 .navBar__pages {
   @include displayFlex();
@@ -83,7 +80,81 @@
   height: 280px;
 }
 
+#navBar__menu__icon {
+  .navBar__chat__newMessage {
+    top: 15px;
+    left: 85px;
 
+    &:hover {
+      #navBar__menu__icon {
+        cursor: pointer;
+        color: rgb(60, 60, 60);
+      }
+    }
+  }
+
+  &:hover {
+    .navBar__icons {
+      cursor: pointer;
+      color: rgb(60, 60, 60);
+    }
+
+    .navBar__chat__newMessage {
+      cursor: pointer;
+      color: rgb(60, 60, 60);
+      border-color: rgb(60, 60, 60);
+      background-color: rgb(130, 0, 0);
+    }
+  }
+}
+
+.navBar__chat__newMessage {
+  @include displayFlex();
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: -15px;
+  left: 15px;
+  border-radius: 50%;
+  border: 2.5px solid white;
+  background-color: red;
+
+  &:hover {
+    cursor: pointer;
+    color: rgb(60, 60, 60);
+    border-color: rgb(60, 60, 60);
+    background-color: rgb(130, 0, 0);
+  }
+}
+
+
+#navBar__chat__icon {
+  .navBar__chat__newMessage {
+    &:hover {
+      #navBar__chat__icon {
+        cursor: pointer;
+        color: rgb(60, 60, 60);
+      }
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+    color: rgb(60, 60, 60);
+
+    .navBar__icons {
+      cursor: pointer;
+      color: rgb(60, 60, 60);
+    }
+
+    .navBar__chat__newMessage {
+      cursor: pointer;
+      color: rgb(60, 60, 60);
+      border-color: rgb(60, 60, 60);
+      background-color: rgb(130, 0, 0);
+    }
+  }
+}
 
 
 .navBar__notify {
@@ -104,15 +175,18 @@
 .navBar__notify__icon {
   width: 50px;
   height: 50px;
+
   .navBar__icons {
     margin: 0;
     width: 50px;
   }
+
   &:hover {
     #navBar__notify__icon {
       cursor: pointer;
       color: rgb(60, 60, 60);
     }
+
     .notify__icon__notEmpty {
       cursor: pointer;
       color: rgb(60, 60, 60);
@@ -132,18 +206,19 @@
   border-radius: 50%;
   border: 2.5px solid white;
   background-color: red;
+
   &:hover {
     cursor: pointer;
     color: rgb(60, 60, 60);
     border-color: rgb(60, 60, 60);
     background-color: rgb(130, 0, 0);
+
     #navBar__notify__icon {
       cursor: pointer;
       color: rgb(60, 60, 60);
     }
   }
 }
-
 
 .navBar__profile {
   width: 70px;
@@ -153,21 +228,20 @@
   background-repeat: none;
   background-size: cover;
   background-position: 50% 50%;
-  &:hover{
+
+  &:hover {
     border-color: $primaryColorHover;
   }
 }
 
-
-
 .navBar__logout {
   min-width: 75px;
   color: $primaryColor;
-  &:hover  {
+
+  &:hover {
     color: $primaryColorHover;
   }
 }
-
 
 @media (min-width: 1200px) {
 
@@ -177,9 +251,7 @@
     height: 100%;
   }
 
-
-
-  .navBar__pages{
+  .navBar__pages {
     @include displayFlex(space-around);
     width: 35%;
     border: none;
