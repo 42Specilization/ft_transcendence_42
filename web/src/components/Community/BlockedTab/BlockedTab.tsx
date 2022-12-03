@@ -1,5 +1,4 @@
 import './BlockedTab.scss';
-
 import { useContext, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import ReactTooltip from 'react-tooltip';
@@ -29,7 +28,7 @@ export function BlockedTab() {
         {
           intraData.blocked?.sort((a, b) => a.login < b.login ? -1 : 1)
             .map((obj) =>
-              <CardUser key={Math.random()} user={{ name: obj.login, image: obj.image_url }} menuHeight={0}>
+              <CardUser key={Math.random()} user={obj} menuHeight={0}>
               </CardUser>)
         }
       </div>

@@ -4,7 +4,7 @@ import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { MsgToClient, MsgToServer } from './chat.class';
-import { CreateGroupDto, DirectDto, GroupDto, UpdateGroupDto, ProfileGroupDto, GroupCommunityDto, GroupInviteDto, GroupProtectedJoinDto } from './dto/chat.dto';
+import { CreateGroupDto, ChatDto, UpdateGroupDto, ProfileGroupDto, CardGroupDto, GroupInviteDto, GroupProtectedJoinDto } from './dto/chat.dto';
 import { Direct } from './entities/direct.entity';
 import { Group } from './entities/group.entity';
 import { Message } from './entities/message.entity';
@@ -206,8 +206,8 @@ export class ChatService {
     return newMessages;
   }
 
-  async createDirectDto(direct: Direct, owner: User | undefined, friend: User | undefined, type: string): Promise<DirectDto> {
-    const directDto: DirectDto = {
+  async createDirectDto(direct: Direct, owner: User | undefined, friend: User | undefined, type: string): Promise<ChatDto> {
+    const directDto: ChatDto = {
       id: direct.id,
       type: 'direct',
       name: friend?.nick,
@@ -245,14 +245,14 @@ export class ChatService {
     const owner = await this.userService.findUserDirectByEmail(user_email);
     if (!owner)
       throw new BadRequestException('User Not Found getDirects');
-    const directs: DirectDto[] = await Promise.all(owner.directs.map(async (direct) => {
+    const directs: ChatDto[] = await Promise.all(owner.directs.map(async (direct) => {
       const friend = direct.users.filter((key) => key.nick !== owner.nick).at(0);
       return await this.createDirectDto(direct, owner, friend, 'cardDirect');
     }));
     return directs;
   }
 
-  async getDirect(owner_email: string, id: string): Promise<DirectDto> {
+  async getDirect(owner_email: string, id: string): Promise<ChatDto> {
     const direct = await this.findDirectById(id);
     if (!direct)
       throw new BadRequestException('Invalid direct GetDirect');
@@ -325,7 +325,7 @@ export class ChatService {
   }
 
   async createGroupDto(group: Group, owner: User | undefined, type: string) {
-    const groupDto: GroupDto = {
+    const groupDto: ChatDto = {
       id: group.id,
       type: group.type,
       name: group.name,
@@ -470,8 +470,8 @@ export class ChatService {
       role: this.getRole(group, user.nick),
       members: group.users.map((user: User) => {
         return {
-          name: user.nick,
-          image: user.imgUrl,
+          login: user.nick,
+          image_url: user.imgUrl,
           role: this.getRole(group, user.nick),
           mutated: this.getRelation(group, user.nick, 'mutated'),
         };
@@ -482,8 +482,8 @@ export class ChatService {
         return;
       }).map((relation) => {
         return {
-          name: relation.user_target.nick,
-          image: relation.user_target.imgUrl,
+          login: relation.user_target.nick,
+          image_url: relation.user_target.imgUrl,
           role: 'outside',
           mutated: false,
         };
@@ -501,7 +501,7 @@ export class ChatService {
         if (b.role === 'admin')
           return 1;
       }
-      return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
+      return a.login.toLowerCase() < b.login.toLowerCase() ? -1 : 1;
     });
 
     return profileGroup;
@@ -511,16 +511,16 @@ export class ChatService {
     const owner = await this.userService.findUserGroupByEmail(user_email);
     if (!owner)
       throw new BadRequestException('User Not Found getDirects');
-    const groups: GroupDto[] = await Promise.all(owner.groups.map(async (group) => {
+    const groups: ChatDto[] = await Promise.all(owner.groups.map(async (group) => {
       return await this.createGroupDto(group, owner, 'cardGroup');
     }));
     return groups;
   }
 
-  async getCommunityGroups(user_email: string): Promise<GroupCommunityDto[] | void> {
+  async getAllCardGroup(user_email: string): Promise<CardGroupDto[] | void> {
     const user = await this.userService.findUserGroupByEmail(user_email);
     if (!user)
-      throw new BadRequestException('User Not Found getCommunityGroups');
+      throw new BadRequestException('User Not Found getAllCardGroup');
     let groups = await this.groupRepository.find({
       relations: [
         'users',
@@ -538,7 +538,7 @@ export class ChatService {
     if (!groups)
       return;
 
-    const groupsDto: GroupCommunityDto[] = groups.map((group) => {
+    const groupsDto: CardGroupDto[] = groups.map((group) => {
       return {
         id: group.id,
         type: group.type,

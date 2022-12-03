@@ -2,6 +2,6 @@
 
 .group__profile__card__member {
   width: 100%;
-  height: calc(100% - 100px);
+  height: calc(100% - 105px);
   @include scrollBar(10px, 20px);
 }

@@ -1,11 +1,11 @@
 import './CardChat.scss';
 import { useContext } from 'react';
 import { ChatContext } from '../../../contexts/ChatContext';
-import { DirectData } from '../../../others/Interfaces/interfaces';
+import { ChatData } from '../../../others/Interfaces/interfaces';
 import { getUrlImage } from '../../../others/utils/utils';
 
 interface CardChatProps {
-  chat: DirectData;
+  chat: ChatData;
 }
 
 export function CardChat({ chat }: CardChatProps) {

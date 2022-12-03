@@ -8,6 +8,7 @@ import { ButtonMuteMember } from '../../Button/ButtonMuteMember';
 import { ButtonKickMember } from '../../Button/ButtonKickMember';
 import { ButtonBanMember } from '../../Button/ButtonBanMember';
 import { ButtonMakeAdmin } from '../../Button/ButtonMakeAdmin';
+import { UserData } from '../../../others/Interfaces/interfaces';
 
 interface CardMemberProps {
   data: any;
@@ -27,7 +28,7 @@ export function CardMember({ data, bannedVisible, getPermission }: CardMemberPro
 
   return (
     <div className='group__profile__card__member'>
-      {(data.members && !bannedVisible) && data.members.map((obj: any) => {
+      {(data.members && !bannedVisible) && data.members.map((obj: UserData) => {
         if (obj.role === 'owner')
           return (
             <CardUser key={Math.random()} user={obj} menuHeight={0}>
@@ -40,13 +41,13 @@ export function CardMember({ data, bannedVisible, getPermission }: CardMemberPro
               <Alien id='card__admin' size={32} />
               {getPermission('maxLevel') &&
                 <>
-                  <ButtonRemoveAdmin id={data.id} name={obj.name} />
+                  <ButtonRemoveAdmin id={data.id} name={obj.login} />
                   {obj.mutated ?
-                    <ButtonUnMuteMember id={data.id} name={obj.name} /> :
-                    <ButtonMuteMember id={data.id} name={obj.name} />
+                    <ButtonUnMuteMember id={data.id} name={obj.login} /> :
+                    <ButtonMuteMember id={data.id} name={obj.login} />
                   }
-                  <ButtonKickMember id={data.id} name={obj.name} />
-                  <ButtonBanMember id={data.id} name={obj.name} />
+                  <ButtonKickMember id={data.id} name={obj.login} />
+                  <ButtonBanMember id={data.id} name={obj.login} />
                 </>
               }
             </CardUser>
@@ -58,23 +59,23 @@ export function CardMember({ data, bannedVisible, getPermission }: CardMemberPro
               {getPermission('middleLevel') &&
                 <>
                   {getPermission('maxLevel') &&
-                    <ButtonMakeAdmin id={data.id} name={obj.name} />
+                    <ButtonMakeAdmin id={data.id} name={obj.login} />
                   }
                   {obj.mutated ?
-                    <ButtonUnMuteMember id={data.id} name={obj.name} /> :
-                    <ButtonMuteMember id={data.id} name={obj.name} />
+                    <ButtonUnMuteMember id={data.id} name={obj.login} /> :
+                    <ButtonMuteMember id={data.id} name={obj.login} />
                   }
-                  <ButtonKickMember id={data.id} name={obj.name} />
-                  <ButtonBanMember id={data.id} name={obj.name} />
+                  <ButtonKickMember id={data.id} name={obj.login} />
+                  <ButtonBanMember id={data.id} name={obj.login} />
                 </>
               }
             </CardUser>
           );
       })}
-      {(data.banned && bannedVisible) && data.banned.map((obj: any) =>
+      {(data.banned && bannedVisible) && data.banned.map((obj: UserData) =>
         <CardUser key={Math.random()} user={obj} menuHeight={55}>
           <div></div>
-          <ButtonUnBanMember id={data.id} name={obj.name} />
+          <ButtonUnBanMember id={data.id} name={obj.login} />
         </CardUser>
       )}
     </div>

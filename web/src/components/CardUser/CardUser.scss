@@ -15,9 +15,8 @@
 }
 
 .card__user__leftSide {
-  display: grid;
+  @include displayGrid();
   grid-template-columns: 0.1fr 1fr;
-  align-items: center;
   justify-items: left;
 }
 

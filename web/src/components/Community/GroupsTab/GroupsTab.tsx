@@ -19,9 +19,9 @@ export function GroupsTab() {
   const { updateGroup } = useContext(ChatContext);
 
   const { data, status } = useQuery(
-    ['getCommunityGroups', updateGroup],
+    ['getAllCardGroup', updateGroup],
     async () => {
-      const response = await api.get('/chat/getCommunityGroups', config);
+      const response = await api.get('/chat/getAllCardGroup', config);
       return response.data;
     },
     {
@@ -29,7 +29,6 @@ export function GroupsTab() {
       refetchOnWindowFocus: true,
     }
   );
-
 
   if (status === 'loading')
     return (<div className='groups__tab' />);

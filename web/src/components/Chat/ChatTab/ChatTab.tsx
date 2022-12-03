@@ -3,7 +3,7 @@ import { MagnifyingGlass, X } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import { DirectData } from '../../../others/Interfaces/interfaces';
+import { ChatData } from '../../../others/Interfaces/interfaces';
 import { CardChat } from '../CardChat/CardChat';
 import { ButtonSearch } from '../../Button/ButtonSearch';
 
@@ -36,14 +36,14 @@ export function ChatTab({ tabSelected }: ChatTabProps) {
       < div className='chat__tab__body'>
         {tabSelected === 'Direct' ?
           intraData.directs &&
-          intraData.directs.filter((obj: DirectData) => obj.name?.includes(searchInput))
-            .map((obj: DirectData) => (
+          intraData.directs.filter((obj: ChatData) => obj.name?.includes(searchInput))
+            .map((obj: ChatData) => (
               <CardChat key={Math.random()} chat={obj} />
             ))
           :
           intraData.groups &&
-          intraData.groups.filter((obj: DirectData) => obj.name?.includes(searchInput))
-            .map((obj: DirectData) => (
+          intraData.groups.filter((obj: ChatData) => obj.name?.includes(searchInput))
+            .map((obj: ChatData) => (
               <CardChat key={Math.random()} chat={obj} />
             ))
         }

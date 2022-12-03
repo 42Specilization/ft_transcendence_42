@@ -1,6 +1,6 @@
 import './CardUser.scss';
 import ReactTooltip from 'react-tooltip';
-import { BlockedData, UserData } from '../../others/Interfaces/interfaces';
+import { UserData } from '../../others/Interfaces/interfaces';
 import { Children, useContext, useState } from 'react';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 import { getUrlImage } from '../../others/utils/utils';
@@ -30,10 +30,10 @@ export function CardUser({ user, menuHeight, children }: CardUserProps) {
       <div id='cardUser' className='card__user' onClick={modalVisible}>
         <div id='cardUser' className="card__user__leftSide">
           <div id='cardUser' className='card__user__image'
-            style={{ backgroundImage: `url(${getUrlImage(user.image)})` }}>
+            style={{ backgroundImage: `url(${getUrlImage(user.image_url)})` }}>
           </div>
           <div id='cardUser' className='card__user__name'>
-            {user.name}
+            {user.login}
           </div>
         </div>
         <div className='card__user__rightSide'>
@@ -41,7 +41,7 @@ export function CardUser({ user, menuHeight, children }: CardUserProps) {
             {arrayChildren.at(0)}
           </div>
           {
-            (intraData.login !== user.name && arrayChildren.length === 2) ?
+            (intraData.login !== user.login && arrayChildren.length === 2) ?
               <div className='card__user__menu'>
                 <div className='card__user__menu__body'
                   style={{
@@ -59,7 +59,7 @@ export function CardUser({ user, menuHeight, children }: CardUserProps) {
         </div>
       </div>
       {friendProfileVisible &&
-        <ProfileUserModal login={user.name}
+        <ProfileUserModal login={user.login}
           setProfileUserVisible={setProfileUserVisible} />
       }
     </>

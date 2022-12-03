@@ -108,16 +108,12 @@ export function ProfileGroup({ id }: ProfileGroupProps) {
       </div >
 
       <div className='profileGroup__members'>
-        <div className='profileGroup__buttons'>
+        <div className='profileGroup__buttons__top'>
           {getPermission('lowLevel') &&
             <ButtonSendMessage id={data.id} type={'group'} />
           }
           {getPermission(data.type === 'public' ? 'lowLevel' : 'middleLevel') &&
             <ButtonInviteMember id={data.id} />
-          }
-          {getPermission('lowLevel') ?
-            <ButtonLeaveGroup id={data.id} /> :
-            <ButtonJoinGroup id={data.id} type={data.type} />
           }
           {getPermission('middleLevel') &&
             <button className='button__icon'
@@ -133,6 +129,12 @@ export function ProfileGroup({ id }: ProfileGroupProps) {
           }
         </div>
         <CardMember data={data} bannedVisible={bannedVisible} getPermission={getPermission} />
+        <div className='profileGroup__buttons__botton'>
+          {getPermission('lowLevel') ?
+            <ButtonLeaveGroup id={data.id} /> :
+            <ButtonJoinGroup id={data.id} type={data.type} />
+          }
+        </div>
       </div>
       <ReactTooltip delayShow={50} />
     </div >

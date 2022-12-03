@@ -1,9 +1,10 @@
-export interface NotifyData {
-  id: string;
-  type: string;
-  user_source: string;
-  additional_info: string;
-  date: Date;
+export interface UserData {
+  status?: string;
+  login: string;
+  image_url: string;
+  role?: string;
+  mutated?: boolean;
+  ratio?: string
 }
 
 export interface CreateGroupData {
@@ -13,30 +14,6 @@ export interface CreateGroupData {
   confirmPassword?: string;
   image?: string;
   owner: string;
-}
-
-export interface FriendData {
-  status: string;
-  login: string;
-  image_url: string;
-}
-
-export interface BlockedData {
-  login: string;
-  image_url: string;
-}
-
-export interface UserData {
-  status?: string;
-  name: string;
-  image: string;
-}
-
-export interface MemberData {
-  name: string;
-  image: string;
-  role: string;
-  mutated: boolean;
 }
 
 export interface GroupCardData {
@@ -49,17 +26,15 @@ export interface GroupCardData {
   size: number;
 }
 
-export interface GroupData {
+export interface NotifyData {
   id: string;
   type: string;
-  name?: string;
-  image?: string;
-  messages: MsgToClient[];
+  user_source: string;
+  additional_info: string;
   date: Date;
-  newMessages: number;
 }
 
-export interface DirectData {
+export interface ChatData {
   id: string;
   type: string;
   name?: string;
@@ -101,10 +76,10 @@ export interface IntraData {
   isTFAEnable: boolean;
   tfaValidated: boolean;
   notify: NotifyData[];
-  friends: FriendData[];
-  blocked: BlockedData[];
-  directs: DirectData[];
-  groups: GroupData[];
+  friends: UserData[];
+  blocked: UserData[];
+  directs: ChatData[];
+  groups: ChatData[];
 }
 
 export interface ErrResponse {

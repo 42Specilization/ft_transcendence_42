@@ -19,9 +19,7 @@
 }
 
 .notificationFriend__backSide {
-  @include displayFlex();
-  display: grid;
-  justify-items: center;
+  @include displayGrid(2);
   grid-template-columns: 1fr 1fr;
   height: 70px;
   border-radius: 10px;

@@ -2,10 +2,12 @@ import { IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
 import { MsgToClient } from '../chat.class';
 
 export class UserInfoDto {
-  name: string;
-  image: string;
+  status?: string;
+  login: string;
+  image_url: string;
   role: string;
   mutated: boolean;
+  ratio?: string
 }
 
 export class ProfileGroupDto {
@@ -18,7 +20,7 @@ export class ProfileGroupDto {
   banned: UserInfoDto[];
 }
 
-export class GroupCommunityDto {
+export class CardGroupDto {
   id: string;
   type: string;
   name: string;
@@ -28,7 +30,7 @@ export class GroupCommunityDto {
   size: number;
 }
 
-export class GroupDto {
+export class ChatDto {
   id: string;
   type: string;
   name?: string;
@@ -40,77 +42,67 @@ export class GroupDto {
 
 export class UpdateGroupDto {
   @IsNotEmpty({ message: 'Insert an valid id' })
-    id: string;
-  @IsOptional()
-    type?: string;
-  @IsOptional()
-    name?: string;
-  @IsOptional()
-    image?: string;
-
-  @IsOptional()
-    password?: string;
-}
-
-export class DirectDto {
   id: string;
-  type: string;
+  @IsOptional()
+  type?: string;
+  @IsOptional()
   name?: string;
+  @IsOptional()
   image?: string;
-  messages?: MsgToClient[];
-  date: Date;
-  newMessages: number;
+
+  @IsOptional()
+  password?: string;
 }
 
 export class GetDirectDto {
   @IsNotEmpty({ message: 'Insert an valid id' })
-    id: string;
-}
-export class GetGroupDto {
-  @IsNotEmpty({ message: 'Insert an valid id' })
-    id: string;
-}
-export class RemoveMemberDto {
-  @IsNotEmpty({ message: 'Insert an valid id' })
-    id: string;
-  @IsNotEmpty({ message: 'Insert an valid name' })
-    name: string;
+  id: string;
 }
 
+export class GetGroupDto {
+  @IsNotEmpty({ message: 'Insert an valid id' })
+  id: string;
+}
+
+export class RemoveMemberDto {
+  @IsNotEmpty({ message: 'Insert an valid id' })
+  id: string;
+  @IsNotEmpty({ message: 'Insert an valid name' })
+  name: string;
+}
 
 export class DeleteDirectDto {
   @IsNotEmpty({ message: 'Insert an valid id' })
-    friend_login: string;
+  friend_login: string;
 }
 
 
-// trocar o nome para um mais apropriado
 export class GroupInviteDto {
   @IsNotEmpty({ message: 'Insert an valid name' })
-    name: string;
+  name: string;
   @IsNotEmpty({ message: 'Insert an valid group' })
-    groupId: string;
+  groupId: string;
 }
 
 export class GroupProtectedJoinDto {
   @IsNotEmpty({ message: 'Insert an valid password' })
-    password: string;
+  password: string;
   @IsNotEmpty({ message: 'Insert an valid group' })
-    groupId: string;
+  groupId: string;
 }
 
 export class CreateGroupDto {
   @IsNotEmpty({ message: 'Insert an valid type' })
-    type: string;
+  type: string;
   @IsNotEmpty({ message: 'Insert an valid name' })
   @MaxLength(15, { message: 'Group Name need have only 15 characters' })
-    name: string;
+  name: string;
   @IsOptional()
-    password?: string;
+  password?: string;
   @IsOptional()
-    confirmPassword?: string;
+  confirmPassword?: string;
   @IsOptional()
-    image?: string;
+  image?: string;
   @IsNotEmpty({ message: 'Insert an valid owner' })
-    owner: string;
+  owner: string;
 }

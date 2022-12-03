@@ -12,7 +12,7 @@ import { GetUserFromJwt } from 'src/auth/decorators/get-user.decorator';
 import { UserFromJwt } from 'src/auth/dto/UserFromJwt.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
-import { DirectDto, GetDirectDto, DeleteDirectDto, CreateGroupDto, GetGroupDto, UpdateGroupDto, GroupInviteDto, GroupProtectedJoinDto } from './dto/chat.dto';
+import { ChatDto, GetDirectDto, DeleteDirectDto, CreateGroupDto, GetGroupDto, UpdateGroupDto, GroupInviteDto, GroupProtectedJoinDto } from './dto/chat.dto';
 import { BadRequestException } from '@nestjs/common';
 import { getAssetsPath } from 'src/utils/utils';
 
@@ -25,7 +25,7 @@ export class ChatController {
 
   @Get('/getAllDirects')
   @UseGuards(JwtAuthGuard)
-  async getDirects(@GetUserFromJwt() userFromJwt: UserFromJwt): Promise<DirectDto[] | null> {
+  async getDirects(@GetUserFromJwt() userFromJwt: UserFromJwt): Promise<ChatDto[] | null> {
     const result = await this.chatService.getAllDirects(userFromJwt.email);
     return result;
   }
@@ -37,10 +37,10 @@ export class ChatController {
     return result;
   }
 
-  @Get('/getCommunityGroups')
+  @Get('/getAllCardGroup')
   @UseGuards(JwtAuthGuard)
-  async getCommunityGroups(@GetUserFromJwt() userFromJwt: UserFromJwt) {
-    const result = await this.chatService.getCommunityGroups(userFromJwt.email);
+  async getAllCardGroup(@GetUserFromJwt() userFromJwt: UserFromJwt) {
+    const result = await this.chatService.getAllCardGroup(userFromJwt.email);
     return result;
   }
 
@@ -49,7 +49,7 @@ export class ChatController {
   async getDirect(
     @Body() getDirectDto: GetDirectDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
-  ): Promise<DirectDto> {
+  ): Promise<ChatDto> {
     return await this.chatService.getDirect(userFromJwt.email, getDirectDto.id);
   }
 

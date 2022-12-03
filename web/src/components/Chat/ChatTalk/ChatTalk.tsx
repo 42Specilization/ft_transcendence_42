@@ -1,5 +1,5 @@
 import './ChatTalk.scss';
-import { DirectData, GroupData, MsgToClient, MsgToServer } from '../../../others/Interfaces/interfaces';
+import { ChatData, MsgToClient, MsgToServer } from '../../../others/Interfaces/interfaces';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ArrowBendUpLeft, PaperPlaneRight } from 'phosphor-react';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
@@ -73,7 +73,7 @@ export function ChatTalk(
     setActiveChat(null);
   }
 
-  function initActiveChat(chat: DirectData | GroupData) {
+  function initActiveChat(chat: ChatData) {
     const messages: MsgToClient[] = chat.messages;
     const blocks = Math.floor((messages.length - 1) / 20);
     setActiveChat({
@@ -125,8 +125,6 @@ export function ChatTalk(
         msg: event.target[0].value,
       };
       actionsChat.msgToServer(newMessage, activeChat.chat.type);
-      // await api.patch('/user/notifyMessage', { id: activeChat?.chat.id, target: activeChat?.chat.name, add_info: 'direct' }, config);
-      // actionsStatus.newNotify(activeChat?.chat.name as string, 'message');
     }
     event.target[0].value = '';
   }
