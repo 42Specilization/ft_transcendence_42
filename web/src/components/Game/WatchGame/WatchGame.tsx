@@ -19,7 +19,11 @@ export function WatchGame() {
   function getList() {
     currentState.socket?.emit('get-game-list');
     currentState.socket?.on('get-game-list', (games: Game[]) => {
-      setGameList(games);
+      if (games[0]) {
+        setGameList(games);
+      } else {
+        setGameList([]);
+      }
     });
   }
 

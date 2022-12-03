@@ -268,6 +268,7 @@ export class GameGateway
   ) {
     const game = this.getGameByRoom(room);
     if (!game) {
+      user.emit('game-not-found');
       return;
     }
     if (!game.hasStarted || game.hasEnded) {
@@ -340,7 +341,6 @@ export class GameGateway
   * @param id Socket id of the disconnected player
   */
   finishGame(user: Socket) {
-    this.sendGameList();
     let game;
     for (let i = 0; i < this.queue.length; i++) {
       game = this.queue[i];
@@ -369,6 +369,7 @@ export class GameGateway
         break;
       }
     }
+    this.sendGameList();
   }
 
   /**

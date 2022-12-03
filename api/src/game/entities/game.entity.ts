@@ -32,6 +32,6 @@ export class GameEntity extends BaseEntity {
   loser: User;
 
   @ApiProperty()
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 }
