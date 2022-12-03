@@ -24,7 +24,6 @@
   @include scrollBar(10px, 20px);
 }
 
-
 .blocked__tab__header__icon {
   @include displayFlex(center);
   padding: 4px;
@@ -35,36 +34,6 @@
     cursor: pointer;
     background-color: $buttonColorHover;
   }
-}
-
-.blocked__tab__header__search {
-  @include displayFlex(left);
-  .blocked__tab__header__icon {
-    min-width: 40px;
-    min-height: 40px;
-  }
-  overflow: hidden;
-  transition: width 0.6s, padding 0.6s;
-}
-
-
-.blocked__tab__header__search__input {
-  @include displayFlex();
-  width:100%;
-  text-align: center;
-  color: white;
-  height: 40px;
-  font-size:20px;
-  margin-left: 10px;
-  margin-right: 10px;
-  border-radius: 20px;
-  background-color: $primaryColorHover;
-  transition: width 0.6s;
-}
-
-.transition__search {
-  width: 0px;
-  padding: 0px;
 }
 
 @media (min-width:1200px) {

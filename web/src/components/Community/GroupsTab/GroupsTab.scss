@@ -50,36 +50,6 @@
   }
 }
 
-.groups__tab__header__search {
-  @include displayFlex(left);
-  .groups__tab__header__icon {
-    min-width: 40px;
-    min-height: 40px;
-  }
-  overflow: hidden;
-  transition: width 0.6s, padding 0.6s;
-}
-
-
-.groups__tab__header__search__input {
-  @include displayFlex();
-  width:100%;
-  text-align: center;
-  color: white;
-  height: 40px;
-  font-size:20px;
-  margin-left: 10px;
-  margin-right: 10px;
-  border-radius: 20px;
-  background-color: $primaryColorHover;
-  transition: width 0.6s;
-}
-
-.transition__search {
-  width: 0px;
-  padding: 0px;
-}
-
 @media (min-width:1200px) {
   .groups__tab {
     padding: 20px 100px 50px 100px;

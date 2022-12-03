@@ -1,9 +1,10 @@
 import './GlobalTab.scss';
-import { MagnifyingGlass, X } from 'phosphor-react';
+
 import { useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { CardUser } from '../../CardUser/CardUser';
+import { ButtonSearch } from '../../Button/ButtonSearch';
 
 interface CommunityUser {
   image_url: string;
@@ -13,7 +14,7 @@ interface CommunityUser {
 
 export function GlobalTab() {
   const { api, config } = useContext(IntraDataContext);
-  const [isTableSearch, setIsTableSearch] = useState(false);
+  const [searchActive, setSearchActive] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const { data } = useQuery(
     'getCommunity',
@@ -30,35 +31,14 @@ export function GlobalTab() {
   return (
     <div className='global__tab'>
       <div className='global__tab__header'>
-        <div className='global__tab__header__search'
-          style={{ width: isTableSearch ? '70%' : '40px' }}>
-          < MagnifyingGlass className='global__tab__header__icon'
-            size={40}
-            data-html={true}
-            data-tip={'Search User'}
-            onClick={() => {
-              setIsTableSearch(prev => !prev);
-              setSearchInput('');
-            }}
-          />
-
-          <input
-            className='global__tab__header__search__input'
-            maxLength={15}
-            value={searchInput}
-            onChange={(msg) => {
-              setSearchInput(msg.target.value);
-            }}
-            ref={e => { if (isTableSearch) e?.focus(); }}
-          />
-          <X
-            className='global__tab__header__icon'
-            size={40}
-            onClick={() => {
-              setSearchInput('');
-            }}
-          />
-        </div>
+        <ButtonSearch
+          width={'70%'}
+          tooltip={'Search User'}
+          padding={'0px'}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+          searchActive={searchActive}
+          setSearchActive={setSearchActive} />
       </div>
       <div className='global__tab__body'>
         {
