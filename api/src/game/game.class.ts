@@ -203,7 +203,7 @@ export class Game {
       player = this.ballLastHit === 1 ? this.player2 : this.player1;
       player.paddle.h = 50;
     } else if (powerUp === BIG_BALL) {
-      this.ball.radius = 40;
+      this.ball.radius = 30;
     }
   }
 
