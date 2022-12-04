@@ -84,10 +84,10 @@ export function drawPowerUpBox(context: CanvasRenderingContext2D, x: number, y: 
 export function Canvas({ canvasRef, ...props }: CanvasProps) {
 
   return (
-    <div>
+    <div className='canvas'>
       <canvas
         {...props}
-        className='canvas'
+        className='canvas__canvas'
         ref={canvasRef}
         width={800}
         height={600}

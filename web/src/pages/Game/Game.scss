@@ -3,7 +3,6 @@
 .game {
   @include displayFlex(center);
   width: 100%;
-  height: 100vh;
   background-image: url('/canvas-background.png');
   background-size: cover;
   background-repeat: no-repeat;
@@ -21,4 +20,10 @@
 .modal {
   top: 0;
   height: 100%;
+}
+
+@media (min-height: 610px) {
+  .game {
+  height: 100vh;
+  }
 }

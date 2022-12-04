@@ -9,6 +9,8 @@
   color: white;
   font-size: 0.8rem;
   margin: auto;
+  border-radius: 50px;
+  position: relative;
 }
 
 .gameMenu__buttons {
@@ -23,7 +25,7 @@
 .gameMenu__buttons__button {
   background-color: $primaryColor;
   padding: 15px;
-  border-radius: 4px;
+  border-radius: 20px;
   width: 200px;
   color: white;
 
