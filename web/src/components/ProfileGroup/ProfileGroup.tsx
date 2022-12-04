@@ -58,13 +58,15 @@ export function ProfileGroup({ id }: ProfileGroupProps) {
     actionsChat.updateGroup();
   }
 
-  function getPermission(level: string) {
+  function havePermission(level: string) {
     if (level === 'maxLevel')
       return data.role === 'owner';
     if (level === 'middleLevel')
       return data.role === 'owner' || data.role === 'admin';
     if (level === 'lowLevel')
-      return data.role !== 'outside';
+      return data.role !== 'outside' || data.role !== 'banned';
+    if (level === 'nonLevel')
+      return data.role !== 'banned';
     return false;
   }
 
@@ -76,7 +78,7 @@ export function ProfileGroup({ id }: ProfileGroupProps) {
       <div className='profileGroup__infos'>
         <div className='profileGroup__infos__image'>
           <img src={getUrlImage(data.image)} alt="Group Image" />
-          {getPermission('middleLevel') &&
+          {havePermission('middleLevel') &&
             <div className='profileGroup__infos__image__text'>
               <Dropzone onFileUploaded={setSelectedFile} />
             </div>
@@ -84,7 +86,7 @@ export function ProfileGroup({ id }: ProfileGroupProps) {
         </div>
         <div className='profileGroup__infos__name'>
           <strong>{data.name}</strong>
-          {getPermission('middleLevel') &&
+          {havePermission('middleLevel') &&
             <div className='profileGroup__infos__name__button'>
               <NotePencil size={30} onClick={() => setModalChangeName(true)} />
               {modalChangeName &&
@@ -93,7 +95,7 @@ export function ProfileGroup({ id }: ProfileGroupProps) {
             </div>
           }
         </div>
-        {getPermission('maxLevel') &&
+        {havePermission('maxLevel') &&
           <>
             <button className='profileGroup__infos__security__button'
               onClick={() => setModalChangeSecurity(true)}
@@ -109,13 +111,13 @@ export function ProfileGroup({ id }: ProfileGroupProps) {
 
       <div className='profileGroup__members'>
         <div className='profileGroup__buttons__top'>
-          {getPermission('lowLevel') &&
+          {havePermission('lowLevel') &&
             <ButtonSendMessage id={data.id} type={'group'} />
           }
-          {getPermission(data.type === 'public' ? 'lowLevel' : 'middleLevel') &&
+          {havePermission(data.type === 'public' ? 'lowLevel' : 'middleLevel') &&
             <ButtonInviteMember id={data.id} />
           }
-          {getPermission('middleLevel') &&
+          {havePermission('middleLevel') &&
             <button className='button__icon'
               onClick={() => setBannedVisible(prev => !prev)}
               data-html={true}
@@ -128,9 +130,9 @@ export function ProfileGroup({ id }: ProfileGroupProps) {
             </button>
           }
         </div>
-        <CardMember data={data} bannedVisible={bannedVisible} getPermission={getPermission} />
+        <CardMember data={data} bannedVisible={bannedVisible} havePermission={havePermission} />
         <div className='profileGroup__buttons__botton'>
-          {getPermission('lowLevel') ?
+          {havePermission('nonLevel') ?
             <ButtonLeaveGroup id={data.id} /> :
             <ButtonJoinGroup id={data.id} type={data.type} />
           }

@@ -1,14 +1,20 @@
 @import '../../../others/styles/global.scss';
 
 .profile__general {
+  @include displayFlex();
+  width: 100%;
+  height: 100%;
+  padding: 10px 0px 20px 0px;
+  border-radius: 0px 0px 50px 50px;
+  background-color: $backgroundColor;
+}
+
+.profile__general__grid {
   @include displayGrid(1, 2, 100px);
   width: 100%;
   height: 100%;
   color: white;
-  padding: 50px 0px;
-  border-radius: 0 0 50px 50px;
-  background-color: $backgroundColor;
-  @include scrollBar(20px, 50px);
+  @include scrollBar(20px, 20px);
 }
 
 .profile__general__stats {
@@ -34,9 +40,8 @@
 
 @media (min-width:1199px) {
 
-  .profile__general {
+  .profile__general__grid {
     @include displayGrid(2);
-    padding: 20px 0px;
   }
 
   .profile__general__stats {

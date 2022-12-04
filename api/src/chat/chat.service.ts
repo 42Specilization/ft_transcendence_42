@@ -22,44 +22,6 @@ export class ChatService {
     private userService: UserService,
   ) { }
 
-  async deleteDirectById(user_email: string, friend_login: string) {
-    const user = await this.userService.findUserDirectByEmail(user_email);
-    const friend = await this.userService.findUserDirectByNick(friend_login);
-
-    if (!user || !friend)
-      throw new InternalServerErrorException('User Not Found deleteDirectById');
-
-    const direct = user.directs.filter((key: Direct) => {
-      if (key.users.map((u) => u.nick).indexOf(friend.nick) >= 0)
-        return key;
-      return;
-    }).at(0);
-
-    if (!direct)
-      return;
-
-    user.directs = user.directs.filter((key) => {
-      if (key.id === direct.id)
-        return;
-      return key;
-    });
-
-    friend.directs = friend.directs.filter((key) => {
-      if (key.id === direct.id)
-        return;
-      return key;
-    });
-
-    try {
-      await user.save();
-      await friend.save();
-      await this.directRepository.delete(direct.id);
-    } catch (err) {
-      throw new InternalServerErrorException('Error saving data in db DeleteDirectById', err);
-    }
-
-  }
-
   async findDirectById(id: string): Promise<Direct> {
     const direct: Direct | null = await this.directRepository.findOne({
       where: { id: id },
@@ -101,17 +63,64 @@ export class ChatService {
     return group;
   }
 
-  async getAllChatsId(login: string) {
-    const user = await this.userService.findAllChats(login);
-    if (!user)
-      throw new BadRequestException('User Not Found getDirects');
-    const chats = [...user.directs, ...user.groups];
-    return chats.map((chat) => chat.id);
+  async findGroupInfosById(id: string) {
+    return await this.groupRepository.findOne({
+      where: {
+        id
+      },
+      relations: [
+        'users',
+        'owner',
+        'relations',
+        'relations.user_target',
+      ], order: {
+        relations: {
+          date: 'desc'
+        }
+      }
+    });
+  }
+
+  async deleteDirectById(user_email: string, friend_login: string) {
+    const user = await this.userService.findUserDirectByEmail(user_email);
+    const friend = await this.userService.findUserDirectByNick(friend_login);
+
+    if (!user || !friend)
+      throw new InternalServerErrorException('User Not Found deleteDirectById');
+
+    const direct = user.directs.filter((key: Direct) => {
+      if (key.users.map((u) => u.nick).indexOf(friend.nick) >= 0)
+        return key;
+      return;
+    }).at(0);
+
+    if (!direct)
+      return;
+
+    user.directs = user.directs.filter((key) => {
+      if (key.id === direct.id)
+        return;
+      return key;
+    });
+
+    friend.directs = friend.directs.filter((key) => {
+      if (key.id === direct.id)
+        return;
+      return key;
+    });
+
+    try {
+      await user.save();
+      await friend.save();
+      await this.directRepository.delete(direct.id);
+    } catch (err) {
+      throw new InternalServerErrorException('Error saving data in db DeleteDirectById', err);
+    }
+
   }
 
   async saveMessage(msgServer: MsgToServer, type: string): Promise<MsgToClient | undefined> {
     const user: User = await this.userService.findUserByNick(msgServer.user) as User;
-
     const chat: Direct | Group = type === 'direct' ?
       await this.findDirectById(msgServer.chat) :
       await this.findGroupById(msgServer.chat);
@@ -153,7 +162,19 @@ export class ChatService {
     } catch (err) {
       throw new InternalServerErrorException('Error saving message in db');
     }
+  }
 
+  async getBreakpoint(messages: MsgToClient[] | undefined): Promise<number> {
+
+    let newMessages = 0;
+    const breakpoint: Date | undefined = messages?.filter((msg) => msg.type === 'breakpoint').at(0)?.date;
+    if (breakpoint) {
+      messages?.forEach(msg => {
+        if (msg.date > breakpoint)
+          newMessages++;
+      });
+    }
+    return newMessages;
   }
 
   async setBreakpointController(email: string, chatId: string, type: string) {
@@ -193,17 +214,33 @@ export class ChatService {
 
   }
 
-  async getBreakpoint(messages: MsgToClient[] | undefined): Promise<number> {
+  async getAllChatsId(login: string) {
+    const user = await this.userService.findAllChats(login);
+    if (!user)
+      throw new BadRequestException('User Not Found getDirects');
+    const chats = [...user.directs, ...user.groups];
+    return chats.map((chat) => chat.id);
+  }
 
-    let newMessages = 0;
-    const breakpoint: Date | undefined = messages?.filter((msg) => msg.type === 'breakpoint').at(0)?.date;
-    if (breakpoint) {
-      messages?.forEach(msg => {
-        if (msg.date > breakpoint)
-          newMessages++;
-      });
-    }
-    return newMessages;
+  async getAllDirects(user_email: string) {
+    const owner = await this.userService.findUserDirectByEmail(user_email);
+    if (!owner)
+      throw new BadRequestException('User Not Found getDirects');
+    const directs: ChatDto[] = await Promise.all(owner.directs.map(async (direct) => {
+      const friend = direct.users.filter((key) => key.nick !== owner.nick).at(0);
+      return await this.createDirectDto(direct, owner, friend, 'cardDirect');
+    }));
+    return directs;
+  }
+
+  async getAllGroups(user_email: string) {
+    const owner = await this.userService.findUserGroupByEmail(user_email);
+    if (!owner)
+      throw new BadRequestException('User Not Found getDirects');
+    const groups: ChatDto[] = await Promise.all(owner.groups.map(async (group) => {
+      return await this.createGroupDto(group, owner, 'cardGroup');
+    }));
+    return groups;
   }
 
   async createDirectDto(direct: Direct, owner: User | undefined, friend: User | undefined, type: string): Promise<ChatDto> {
@@ -241,15 +278,39 @@ export class ChatService {
     return directDto;
   }
 
-  async getAllDirects(user_email: string) {
-    const owner = await this.userService.findUserDirectByEmail(user_email);
-    if (!owner)
-      throw new BadRequestException('User Not Found getDirects');
-    const directs: ChatDto[] = await Promise.all(owner.directs.map(async (direct) => {
-      const friend = direct.users.filter((key) => key.nick !== owner.nick).at(0);
-      return await this.createDirectDto(direct, owner, friend, 'cardDirect');
-    }));
-    return directs;
+  async createGroupDto(group: Group, owner: User | undefined, type: string) {
+    const groupDto: ChatDto = {
+      id: group.id,
+      type: group.type,
+      name: group.name,
+      image: group.image,
+      date: group.date,
+      newMessages: 0
+    };
+
+    const messages: MsgToClient[] = group.messages
+      .filter(msg => msg.type !== 'breakpoint'
+        || (msg.type === 'breakpoint' && msg.sender.nick === owner?.nick))
+      .map((message: Message) => {
+        return {
+          id: message.id,
+          chat: group.id,
+          user: {
+            login: message.sender.nick,
+            image: message.sender.imgUrl,
+          },
+          date: message.date,
+          msg: message.msg,
+          type: message.type,
+        };
+      });
+
+    if (type === 'activeGroup')
+      groupDto.messages = messages;
+
+    groupDto.newMessages = await this.getBreakpoint(messages);
+
+    return groupDto;
   }
 
   async getDirect(owner_email: string, id: string): Promise<ChatDto> {
@@ -324,46 +385,21 @@ export class ChatService {
 
   }
 
-  async createGroupDto(group: Group, owner: User | undefined, type: string) {
-    const groupDto: ChatDto = {
-      id: group.id,
-      type: group.type,
-      name: group.name,
-      image: group.image,
-      date: group.date,
-      newMessages: 0
-    };
-
-    const messages: MsgToClient[] = group.messages
-      .filter(msg => msg.type !== 'breakpoint'
-        || (msg.type === 'breakpoint' && msg.sender.nick === owner?.nick))
-      .map((message: Message) => {
-        return {
-          id: message.id,
-          chat: group.id,
-          user: {
-            login: message.sender.nick,
-            image: message.sender.imgUrl,
-          },
-          date: message.date,
-          msg: message.msg,
-          type: message.type,
-        };
-      });
-
-    if (type === 'activeGroup')
-      groupDto.messages = messages;
-
-    groupDto.newMessages = await this.getBreakpoint(messages);
-
-    return groupDto;
+  async getGroup(owner_email: string, id: string) {
+    const group = await this.findGroupById(id);
+    if (!group)
+      throw new BadRequestException('Invalid group GetGroup');
+    const owner = group.users.filter((key: User) => key.email === owner_email).at(0);
+    if (!owner)
+      throw new BadRequestException('Invalid user GetGroup');
+    return this.createGroupDto(group, owner, 'activeGroup');
   }
 
   async createGroup(group: CreateGroupDto) {
     const owner = await this.userService.findUserGroupByNick(group.owner);
 
     if (!owner)
-      throw new BadRequestException('User Not Found getFriendDirect');
+      throw new BadRequestException('User Not Found createGroup');
 
     const newGroup = new Group();
 
@@ -393,41 +429,56 @@ export class ChatService {
     }
   }
 
-  async getGroup(owner_email: string, id: string) {
-    const group = await this.findGroupById(id);
+  async updateGroup(user_email: string, updateGroupDto: UpdateGroupDto) {
+    const group = await this.findGroupById(updateGroupDto.id);
     if (!group)
-      throw new BadRequestException('Invalid group GetGroup');
-    const owner = group.users.filter((key: User) => key.email === owner_email).at(0);
-    if (!owner)
-      throw new BadRequestException('Invalid user GetGroup');
-    return this.createGroupDto(group, owner, 'activeGroup');
-  }
+      throw new BadRequestException('Group not Found updateGroup');
 
-  async findGroupInfosById(id: string) {
-    return await this.groupRepository.findOne({
-      where: {
-        id
-      },
-      relations: [
-        'users',
-        'owner',
-        'relations',
-        'relations.user_target',
-      ], order: {
-        relations: {
-          date: 'desc'
-        }
+    const user = await this.userService.findUserByEmail(user_email);
+    if (!user || (user.nick !== group.owner.nick && !this.getRelation(group, user.nick, 'admin')))
+      throw new UnauthorizedException('Permission denied');
+
+    const {
+      image,
+      name,
+      type,
+      password
+    } = updateGroupDto;
+
+    group.name = name ? name : group.name;
+    if (image) {
+      if (group.image !== 'userDefault.12345678.png') {
+        fs.rm(
+          `${getAssetsPath()}${group.image}`,
+          function (err) {
+            if (err)
+              group.image = 'userDefault.12345678.png';
+          }
+        );
       }
-    });
+      group.image = image;
+    }
+
+    if (user.nick === group.owner.nick) {
+      group.type = type ? type : group.type;
+      group.password = password ? bcrypt.hashSync(password, 8) : group.password;
+    }
+
+    try {
+      await group.save();
+    } catch (error) {
+      throw new InternalServerErrorException('Error saving user update');
+    }
   }
 
-  removeRelation(group: Group, nick: string, relation: string): void {
-    group.relations = group.relations.filter((key) => {
-      if (key.type === relation
-        && key.user_target.nick === nick)
-        return;
-      return key;
-    });
+  getRole(group: Group, nick: string): string {
+    if (group.owner.nick === nick)
+      return 'owner';
+    if (this.getRelation(group, nick, 'admin'))
+      return 'admin';
+    if (group.users.map(e => e.nick).indexOf(nick) >= 0)
+      return 'member';
+    return 'outside';
   }
 
   getRelation(group: Group, nick: string, relation: string): boolean {
@@ -446,14 +497,48 @@ export class ChatService {
     return index >= 0;
   }
 
-  getRole(group: Group, nick: string): string {
-    if (group.owner.nick === nick)
-      return 'owner';
-    if (this.getRelation(group, nick, 'admin'))
-      return 'admin';
-    if (group.users.map(e => e.nick).indexOf(nick) >= 0)
-      return 'member';
-    return 'outside';
+  removeRelation(group: Group, nick: string, relation: string): void {
+    group.relations = group.relations.filter((key) => {
+      if (key.type === relation
+        && key.user_target.nick === nick)
+        return;
+      return key;
+    });
+  }
+
+  async getAllCardGroup(user_email: string): Promise<CardGroupDto[] | void> {
+    const user = await this.userService.findUserGroupByEmail(user_email);
+    if (!user)
+      throw new BadRequestException('User Not Found getAllCardGroup');
+    let groups = await this.groupRepository.find({
+      relations: [
+        'users',
+        'owner',
+        'relations',
+        'relations.user_target',
+      ]
+    });
+
+    groups = groups.filter(group =>
+      !this.getRelation(group, user.nick, 'banned')
+      && (group.type !== 'private'
+        || (group.type === 'private' && this.getRole(group, user.nick) !== 'outside')));
+
+    if (!groups)
+      return;
+
+    const groupsDto: CardGroupDto[] = groups.map((group) => {
+      return {
+        id: group.id,
+        type: group.type,
+        name: group.name,
+        image: group.image,
+        date: group.date,
+        member: group.users.map(e => e.email).indexOf(user_email) >= 0,
+        size: group.users.length,
+      };
+    }).sort((a, b) => a.size < b.size ? 1 : -1);
+    return groupsDto;
   }
 
   async getProfileGroupById(user_email: string, id: string) {
@@ -507,92 +592,7 @@ export class ChatService {
     return profileGroup;
   }
 
-  async getAllGroups(user_email: string) {
-    const owner = await this.userService.findUserGroupByEmail(user_email);
-    if (!owner)
-      throw new BadRequestException('User Not Found getDirects');
-    const groups: ChatDto[] = await Promise.all(owner.groups.map(async (group) => {
-      return await this.createGroupDto(group, owner, 'cardGroup');
-    }));
-    return groups;
-  }
 
-  async getAllCardGroup(user_email: string): Promise<CardGroupDto[] | void> {
-    const user = await this.userService.findUserGroupByEmail(user_email);
-    if (!user)
-      throw new BadRequestException('User Not Found getAllCardGroup');
-    let groups = await this.groupRepository.find({
-      relations: [
-        'users',
-        'owner',
-        'relations',
-        'relations.user_target',
-      ]
-    });
-
-    groups = groups.filter(group =>
-      !this.getRelation(group, user.nick, 'banned')
-      && (group.type !== 'private'
-        || (group.type === 'private' && this.getRole(group, user.nick) !== 'outside')));
-
-    if (!groups)
-      return;
-
-    const groupsDto: CardGroupDto[] = groups.map((group) => {
-      return {
-        id: group.id,
-        type: group.type,
-        name: group.name,
-        image: group.image,
-        date: group.date,
-        member: group.users.map(e => e.email).indexOf(user_email) >= 0,
-        size: group.users.length,
-      };
-    }).sort((a, b) => a.size < b.size ? 1 : -1);
-    return groupsDto;
-  }
-
-  async updateGroup(user_email: string, updateGroupDto: UpdateGroupDto) {
-    const group = await this.findGroupById(updateGroupDto.id);
-    if (!group)
-      throw new BadRequestException('Group not Found updateGroup');
-
-    const user = await this.userService.findUserByEmail(user_email);
-    if (!user || (user.nick !== group.owner.nick && !this.getRelation(group, user.nick, 'admin')))
-      throw new UnauthorizedException('Permission denied');
-
-    const {
-      image,
-      name,
-      type,
-      password
-    } = updateGroupDto;
-
-    group.name = name ? name : group.name;
-    if (image) {
-      if (group.image !== 'userDefault.12345678.png') {
-        fs.rm(
-          `${getAssetsPath()}${group.image}`,
-          function (err) {
-            if (err)
-              group.image = 'userDefault.12345678.png';
-          }
-        );
-      }
-      group.image = image;
-    }
-
-    if (user.nick === group.owner.nick) {
-      group.type = type ? type : group.type;
-      group.password = password ? bcrypt.hashSync(password, 8) : group.password;
-    }
-
-    try {
-      await group.save();
-    } catch (error) {
-      throw new InternalServerErrorException('Error saving user update');
-    }
-  }
 
   async joinGroup(user_email: string, id: string): Promise<MsgToClient | null | undefined> {
     const user = await this.userService.findUserGroupByEmail(user_email);
@@ -648,11 +648,6 @@ export class ChatService {
     }
   }
 
-  getOlderAdmin(group: Group): User | undefined {
-    const admins = group.relations.filter(key => key.type === 'admin');
-    return admins[0].user_target;
-  }
-
   async leaveGroup(user_email: string, id: string): Promise<MsgToClient | null | undefined> {
     const user = await this.userService.findUserGroupByEmail(user_email);
     const group = await this.findGroupById(id);
@@ -665,7 +660,7 @@ export class ChatService {
     const lastUser: boolean = group.users.length === 1;
 
     if (!lastUser && user.email == group.owner.email) {
-      let newOwner: User | undefined = this.getOlderAdmin(group);
+      let newOwner: User | undefined = group.relations.filter(key => key.type === 'admin').at(0)?.user_target;
       if (newOwner) {
         this.removeRelation(group, newOwner.nick, 'admin');
         group.owner = newOwner;
@@ -708,56 +703,6 @@ export class ChatService {
       return msgClient;
     } catch (err) {
       throw new InternalServerErrorException('Error saving group leaveGroup');
-    }
-  }
-
-  async kickMember(user_email: string, removed_login: string, chat: string): Promise<MsgToClient | null> {
-    const user = await this.userService.findUserGroupByEmail(user_email);
-    const removed = await this.userService.findUserGroupByNick(removed_login);
-    const group = await this.findGroupById(chat);
-
-    if (!group || !user || !removed)
-      throw new InternalServerErrorException('Infos not found kickMember');
-
-    if (user.nick !== group.owner.nick && !this.getRelation(group, user.nick, 'admin'))
-      return null;
-
-    if (this.getRole(group, removed.nick) === 'outside'
-      || this.getRole(group, removed.nick) === 'owner')
-      return null;
-
-    if (this.getRelation(group, removed.nick, 'admin') && user.nick !== group.owner.nick)
-      return null;
-
-    if (this.getRelation(group, removed.nick, 'admin')) {
-      this.removeRelation(group, removed.nick, 'admin');
-    }
-
-    const kick = new Message();
-    kick.sender = removed;
-    kick.date = new Date(Date.now());
-    kick.msg = 'has been kicked the group';
-    kick.type = 'action';
-
-    group.users = group.users.filter((key) => key.nick !== removed.nick);
-    group.messages = group.messages.filter(key =>
-      !(key.type === 'breakpoint' && key.sender.nick === removed.nick));
-
-    group.messages.push(kick);
-
-    try {
-      await group.save();
-      const msgClient: MsgToClient = {
-        id: kick.id,
-        chat: chat,
-        user: { login: removed.nick, image: removed.imgUrl },
-        date: kick.date,
-        msg: kick.msg,
-        type: kick.type,
-      };
-      return msgClient;
-    } catch (err) {
-      throw new InternalServerErrorException('Error saving group joinGroup');
     }
   }
 
@@ -817,6 +762,56 @@ export class ChatService {
       await friend.save();
     } catch (err) {
       console.log(err);
+    }
+  }
+
+  async kickMember(user_email: string, removed_login: string, chat: string): Promise<MsgToClient | null> {
+    const user = await this.userService.findUserGroupByEmail(user_email);
+    const removed = await this.userService.findUserGroupByNick(removed_login);
+    const group = await this.findGroupById(chat);
+
+    if (!group || !user || !removed)
+      throw new InternalServerErrorException('Infos not found kickMember');
+
+    if (user.nick !== group.owner.nick && !this.getRelation(group, user.nick, 'admin'))
+      return null;
+
+    if (this.getRole(group, removed.nick) === 'outside'
+      || this.getRole(group, removed.nick) === 'owner')
+      return null;
+
+    if (this.getRelation(group, removed.nick, 'admin') && user.nick !== group.owner.nick)
+      return null;
+
+    if (this.getRelation(group, removed.nick, 'admin')) {
+      this.removeRelation(group, removed.nick, 'admin');
+    }
+
+    const kick = new Message();
+    kick.sender = removed;
+    kick.date = new Date(Date.now());
+    kick.msg = 'has been kicked the group';
+    kick.type = 'action';
+
+    group.users = group.users.filter((key) => key.nick !== removed.nick);
+    group.messages = group.messages.filter(key =>
+      !(key.type === 'breakpoint' && key.sender.nick === removed.nick));
+
+    group.messages.push(kick);
+
+    try {
+      await group.save();
+      const msgClient: MsgToClient = {
+        id: kick.id,
+        chat: chat,
+        user: { login: removed.nick, image: removed.imgUrl },
+        date: kick.date,
+        msg: kick.msg,
+        type: kick.type,
+      };
+      return msgClient;
+    } catch (err) {
+      throw new InternalServerErrorException('Error saving group joinGroup');
     }
   }
 
@@ -890,11 +885,6 @@ export class ChatService {
 
     if (this.getRelation(group, member.nick, 'admin')) {
       this.removeRelation(group, member.nick, 'admin');
-      // group.relations = group.relations.filter((relation) => {
-      //   if (relation.type === 'admin' && relation.user_target.email == user.email)
-      //     return;
-      //   return relation;
-      // });
     }
 
     const relation = new GroupRelations();
@@ -970,7 +960,6 @@ export class ChatService {
       throw new InternalServerErrorException('error saving admin');
     }
   }
-
 
   async addMutated(user_email: string, groupInviteDto: GroupInviteDto) {
     const user = await this.userService.findUserByEmail(user_email);

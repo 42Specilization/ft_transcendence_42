@@ -10,7 +10,7 @@ interface ButtonChallengeProps {
 
 export function ButtonChallenge({ login }: ButtonChallengeProps) {
   const [challengeModal, setChallengeModal] = useState(false);
-  
+
   function handleChallenge() {
     setChallengeModal(true);
   }
@@ -20,7 +20,7 @@ export function ButtonChallenge({ login }: ButtonChallengeProps) {
       <button className='button__icon'
         onClick={handleChallenge}
         data-html={true}
-        data-tip={'Send Message'}
+        data-tip={'Challenge'}
       >
         <Sword size={32} />
       </button>

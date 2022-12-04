@@ -39,7 +39,6 @@ export function GroupsTab() {
         <ButtonSearch
           width={'70%'}
           tooltip={'Search Group'}
-          padding={'0px'}
           searchInput={searchInput}
           setSearchInput={setSearchInput}
           searchActive={searchActive}

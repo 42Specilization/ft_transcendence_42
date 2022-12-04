@@ -19,7 +19,6 @@ import * as fs from 'fs';
 import { GameEntity } from 'src/game/entities/game.entity';
 import { Notify } from '../notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
-import { NewNotifyDto } from '../notification/dto/notify-dto';
 import { getAssetsPath } from 'src/utils/utils';
 import { ChallengeRequestDto } from './dto/challenge-request.dto';
 
@@ -768,35 +767,4 @@ export class UserService {
     }
     throw new BadRequestException('user not found');
   }
-
-  async notifyMessage(user_email: string, receivedNotify: NewNotifyDto) {
-    const user = await this.findUserByEmail(user_email);
-    const target = await this.findUserByNick(receivedNotify.target);
-    if (!user || !target)
-      throw new BadRequestException('User not found notifyMessage');
-
-
-    const newNotify = new Notify();
-    newNotify.type = 'message';
-    newNotify.user_source = user;
-    newNotify.additional_info = receivedNotify.add_info;
-    newNotify.date = new Date(Date.now());
-    if (target.notify?.length === 0) {
-      target.notify = [];
-    }
-
-    target.notify = target.notify.filter((notify) => {
-      if (notify.type === 'message')
-        return;
-      return notify;
-    });
-    target.notify?.push(newNotify);
-
-    try {
-      await target.save();
-    } catch (err) {
-      throw new InternalServerErrorException('Error saving data in db notifyMessage');
-    }
-  }
-
 }

@@ -2,7 +2,6 @@ import './Notifications.scss';
 import { useContext } from 'react';
 import { NotificationChallenge } from './NotificationChallenge/NotificationChallenge';
 import { NotificationFriend } from './NotificationFriend/NotificationFriend';
-import { NotificationMessage } from './NotificationMessage/NotificationMessage';
 import { NotificationGroupInvite } from './NotificationGroupInvite/NotificationGroupInvite';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 
@@ -20,8 +19,6 @@ export function Notifications() {
               {(() => {
                 if (obj.type === 'friend')
                   return <NotificationFriend notify={obj} />;
-                if (obj.type === 'message')
-                  return <NotificationMessage notify={obj} />;
                 if (obj.type === 'group')
                   return <NotificationGroupInvite notify={obj} />;
                 if (obj.type === 'challenge')

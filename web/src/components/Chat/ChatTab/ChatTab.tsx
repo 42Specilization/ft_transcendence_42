@@ -27,7 +27,6 @@ export function ChatTab({ tabSelected }: ChatTabProps) {
         <ButtonSearch
           width={'100%'}
           tooltip={`Search ${tabSelected}`}
-          padding={'10px'}
           searchInput={searchInput}
           setSearchInput={setSearchInput}
           searchActive={searchActive}

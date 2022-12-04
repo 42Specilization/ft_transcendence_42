@@ -25,7 +25,6 @@ export function FriendTab() {
         <ButtonSearch
           width={'70%'}
           tooltip={'Search Friend'}
-          padding={'0px'}
           searchInput={searchInput}
           setSearchInput={setSearchInput}
           searchActive={searchActive}

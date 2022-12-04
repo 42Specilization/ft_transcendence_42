@@ -28,7 +28,6 @@ export function GlobalTab() {
         <ButtonSearch
           width={'70%'}
           tooltip={'Search User'}
-          padding={'0px'}
           searchInput={searchInput}
           setSearchInput={setSearchInput}
           searchActive={searchActive}

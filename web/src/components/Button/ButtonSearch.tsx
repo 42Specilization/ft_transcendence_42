@@ -5,7 +5,6 @@ import { Dispatch, SetStateAction } from 'react';
 interface ButtonSearchProps {
   width: string;
   tooltip: string;
-  padding: string;
   searchActive: boolean;
   setSearchActive: Dispatch<SetStateAction<boolean>>;
   searchInput: string;
@@ -15,7 +14,6 @@ interface ButtonSearchProps {
 export function ButtonSearch({
   width,
   tooltip,
-  padding,
   searchActive,
   setSearchActive,
   searchInput,

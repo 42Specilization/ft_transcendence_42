@@ -13,15 +13,15 @@ import { UserData } from '../../../others/Interfaces/interfaces';
 interface CardMemberProps {
   data: any;
   bannedVisible: boolean;
-  getPermission: (arg0: string) => boolean;
+  havePermission: (arg0: string) => boolean;
 }
 
-export function CardMember({ data, bannedVisible, getPermission }: CardMemberProps) {
+export function CardMember({ data, bannedVisible, havePermission }: CardMemberProps) {
 
   function heightMenu() {
-    if (getPermission('maxLevel'))
+    if (havePermission('maxLevel'))
       return 190;
-    if (getPermission('middleLevel'))
+    if (havePermission('middleLevel'))
       return 145;
     return 55;
   }
@@ -39,7 +39,7 @@ export function CardMember({ data, bannedVisible, getPermission }: CardMemberPro
           return (
             <CardUser key={Math.random()} user={obj} menuHeight={heightMenu()}>
               <Alien id='card__admin' size={32} />
-              {getPermission('maxLevel') &&
+              {havePermission('maxLevel') &&
                 <>
                   <ButtonRemoveAdmin id={data.id} name={obj.login} />
                   {obj.mutated ?
@@ -56,9 +56,9 @@ export function CardMember({ data, bannedVisible, getPermission }: CardMemberPro
           return (
             <CardUser key={Math.random()} user={obj} menuHeight={heightMenu()}>
               <div />
-              {getPermission('middleLevel') &&
+              {havePermission('middleLevel') &&
                 <>
-                  {getPermission('maxLevel') &&
+                  {havePermission('maxLevel') &&
                     <ButtonMakeAdmin id={data.id} name={obj.login} />
                   }
                   {obj.mutated ?

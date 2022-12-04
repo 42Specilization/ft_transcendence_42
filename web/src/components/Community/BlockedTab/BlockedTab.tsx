@@ -18,7 +18,6 @@ export function BlockedTab() {
         <ButtonSearch
           width={'70%'}
           tooltip={'Search Blocked'}
-          padding={'0px'}
           searchInput={searchInput}
           setSearchInput={setSearchInput}
           searchActive={searchActive}
