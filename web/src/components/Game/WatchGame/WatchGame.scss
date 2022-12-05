@@ -1,13 +1,13 @@
 @import '../../../others/styles/global.scss';
 
 .gameMenu__watchGame {
-  @include displayFlex(flex-start, column);
+  @include displayFlex(center, column);
   padding: 15px ;
   gap: 17px;
   height: 100%;
   width: 100%;
   h2 {
-    margin-top: 100px;
+    // margin-top: 100px;
     font-weight: 400;
     font-size: 2rem;
   }
@@ -15,7 +15,7 @@
 
 .gameMenu__watchGame__list {
   list-style-type: none;
-  overflow-y: auto;
+  @include scrollBar();
   height: auto;
   li {
     @include displayFlex(center);

@@ -1,5 +1,13 @@
 @import '../../../others/styles/global.scss';
 
+#card__modal__challengeYourSelf {
+  .modal__container__content {
+    position: absolute;
+    top: 30px;
+    font-size: 24px;
+  }
+}
+
 .friendCard {
   @include displayFlex(space, column);
   font-size: 1.5em;

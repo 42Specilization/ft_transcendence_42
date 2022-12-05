@@ -5,18 +5,17 @@ import { UserModule } from 'src/user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { jwtConstants } from './constants/constants';
 import { HttpModule } from '@nestjs/axios';
+import { ConfigModule } from '@nestjs/config';
 
 
 @Module({
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
   imports: [
+    ConfigModule.forRoot(),
     UserModule,
     PassportModule,
     JwtModule.register({
-      secret: jwtConstants.secret as string,
+      secret: process.env['JWT_SECRET'],
       signOptions: {
         expiresIn: '30d'
       }
@@ -26,7 +25,8 @@ import { HttpModule } from '@nestjs/axios';
         timeout: 5000
       })
     })
-  ]
-
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy],
 })
 export class AuthModule { }

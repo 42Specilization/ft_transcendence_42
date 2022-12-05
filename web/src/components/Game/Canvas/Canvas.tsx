@@ -36,7 +36,7 @@ export interface TextCanvas {
 export function drawCircle(context: CanvasRenderingContext2D, ball: Ball) {
   context.fillStyle = ball.color;
   context.beginPath();
-  context.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, false);
+  context.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, true);
   context.closePath();
   context.fill();
 }
@@ -84,10 +84,10 @@ export function drawPowerUpBox(context: CanvasRenderingContext2D, x: number, y: 
 export function Canvas({ canvasRef, ...props }: CanvasProps) {
 
   return (
-    <div>
+    <div className='canvas'>
       <canvas
         {...props}
-        className='canvas'
+        className='canvas__canvas'
         ref={canvasRef}
         width={800}
         height={600}

@@ -3,4 +3,12 @@
 .home {
 	width: 100%;
 	height: 100%;
+	@include displayFlex(center);
+}
+
+.home__gif {
+	@include displayFlex(center);
+	img {
+		height: calc(100vh - 100px);
+	}
 }
