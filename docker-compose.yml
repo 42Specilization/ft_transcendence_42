@@ -17,7 +17,7 @@ services:
     env_file:
       - ./.production.env
     volumes:
-      - dataAssets:/app/dist/data
+      - ./dataAssets:/app/dist/data
 
   api:
     depends_on:
@@ -35,8 +35,8 @@ services:
     env_file:
       - ./.production.env
     volumes:
-      - dataAssets:/app/data
-    
+      - ./dataAssets:/app/data
+
   pgsql:
     image: postgres:alpine
     ports:
@@ -61,11 +61,3 @@ services:
 networks:
   transcendence-network:
     driver: bridge
-
-volumes:
-  dataAssets:
-    driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: /home/gsilva-v/Projetos/Transcendence/ft_transcendence_42/dataAssets

@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import { Ball } from '../../components/Game/Canvas/Canvas';
+import { actionsStatus } from '../status/statusState';
 import { AppActions, AppState, Game, IPowerUp, Player, Score } from './gameState';
 
 export const socketIOUrl =
@@ -29,6 +30,7 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
   // });
 
   socket.on('start-game', (game: Game) => {
+    actionsStatus.iAmInGame();
     actions.updateGame(game);
     actions.setIsPlayer();
     updateBallEmit();
@@ -63,6 +65,7 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
 
   socket.on('end-game', (game: Game) => {
     clearInterval(syncBall);
+    actionsStatus.iAmOnline();
     actions.updateGame(game);
     actions.disconnectSocket();
   });

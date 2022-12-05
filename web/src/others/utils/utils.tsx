@@ -190,3 +190,11 @@ export function getUrlImage(url: string) {
     return (url);
   }
 }
+
+export function getNameLimited(name: string) {
+  if (name.length > 10) {
+    return (name.substring(0, 7) + '...');
+  } else {
+    return (name);
+  }
+}

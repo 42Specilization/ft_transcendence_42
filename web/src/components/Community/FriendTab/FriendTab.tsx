@@ -1,12 +1,11 @@
 import './FriendTab.scss';
-
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import ReactTooltip from 'react-tooltip';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { CardFriend } from './CardFriend/CardFriend';
 import { ButtonSearch } from '../../Button/ButtonSearch';
-
+import { useQuery } from 'react-query';
 
 export function FriendTab() {
   const { intraData } = useContext(IntraDataContext);
@@ -14,9 +13,17 @@ export function FriendTab() {
   const [searchActive, setSearchActive] = useState(false);
   const [searchInput, setSearchInput] = useState('');
 
-  useEffect(() => {
-    actionsStatus.whoIsOnline();
-  }, []);
+  useQuery(
+    ['getStatus', intraData],
+    async () => {
+      actionsStatus.whoIsOnline();
+      actionsStatus.whoIsInGame();
+    },
+    {
+      retry: false,
+      refetchOnWindowFocus: true,
+    }
+  );
 
   return (
     <div className='friend__tab' >

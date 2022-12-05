@@ -31,8 +31,6 @@ export class Game {
   msgEndGame: string;
   paddleIncrement = 5;
   ballSpeed = 5;
-  ballVelocityY = 5;
-  ballVelocityX = 5;
   score: IScore = {
     player1: 0,
     player2: 0
@@ -72,8 +70,8 @@ export class Game {
     y: CANVAS_HEIGHT / 2,
     radius: 10,
     speed: this.ballSpeed,
-    velocityX: this.ballVelocityX,
-    velocityY: this.ballVelocityY,
+    velocityX: this.getRandomDirection(),
+    velocityY: this.getRandomDirection(),
     color: '#7C1CED'
   };
 
@@ -144,12 +142,21 @@ export class Game {
     this.player2.paddle.h = DEFAULT_PADDLE_HEIGHT;
   }
 
+  getRandomDirection(): number {
+    if (getRandomInt(1, 100) % 2) {
+      return (-5);
+    } else {
+      return (5);
+    }
+  }
+
   resetBall() {
     this.ball.x = CANVAS_WIDTH / 2;
     this.ball.y = CANVAS_HEIGHT / 2;
     this.ball.radius = 10;
     this.ball.speed = this.ballSpeed;
-    this.ball.velocityX = -this.ball.velocityX;
+    this.ball.velocityX = this.getRandomDirection();
+    this.ball.velocityY = this.getRandomDirection();
     if (this.isWithPowerUps) {
       this.resetPowerUp();
     }
@@ -196,7 +203,7 @@ export class Game {
       player = this.ballLastHit === 1 ? this.player2 : this.player1;
       player.paddle.h = 50;
     } else if (powerUp === BIG_BALL) {
-      this.ball.radius = 40;
+      this.ball.radius = 30;
     }
   }
 

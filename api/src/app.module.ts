@@ -16,16 +16,18 @@ import { ChatModule } from './chat/chat.module';
 import { Message } from './chat/entities/message.entity';
 import { Group } from './chat/entities/group.entity';
 import { GroupRelations } from './chat/entities/groupRelations.entity';
+// import configuration from './config/configuration';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env['DATABASE_HOST'],
       port: 5432,
-      username: 'pguser',
-      password: 'pgpassword',
-      database: 'postgres',
+      username: process.env['DATABASE_USERNAME'],
+      password: process.env['DATABASE_PASSWORD'],
+      database: process.env['DATABASE'],
       entities: [
         User,
         Notify,
@@ -40,7 +42,6 @@ import { GroupRelations } from './chat/entities/groupRelations.entity';
       logging: false,
     }),
     AuthModule,
-    ConfigModule.forRoot(),
     UserModule,
     GameModule,
     ChatModule,

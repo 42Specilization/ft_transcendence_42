@@ -10,6 +10,7 @@
 
 .waiting-room {
   @include displayFlex(center, column);
+  border-radius: 50px;
   width: 800px;
   height: 600px;
   border: 2px solid $primaryColor;

@@ -24,7 +24,18 @@ export function CardFriend({ friend }: CardFriendProps) {
         <div id='card__friend' className='card__friend__icon'
           style={{ backgroundImage: `url(${getUrlImage(friend.image_url)})` }}>
           <div id='card__friend' className='card__friend__status'
-            style={{ backgroundColor: friend.status === 'online' ? 'green' : 'rgb(70, 70, 70)' }} />
+            style={{
+              backgroundColor:
+                (() => {
+                  if (friend.status === 'online') {
+                    return ('green');
+                  } else if (friend.status === 'inGame') {
+                    return ('rgb(255, 180, 0)');
+                  } else {
+                    return ('rgb(70, 70, 70)');
+                  }
+                })()
+            }} />
         </div>
         <div id='card__friend' className='card__friend__name'>{friend.login}</div>
       </div >

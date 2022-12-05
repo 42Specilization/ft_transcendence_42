@@ -75,6 +75,11 @@ export class GameGateway
 
   @SubscribeMessage('challenge')
   async challenge(@ConnectedSocket() user: Socket, @MessageBody() challenge: IChallenge) {
+    if (challenge.userSource === challenge.userTarget) {
+      user.emit('game-not-found');
+      return;
+    }
+
     this.queue.push(
       new Game(
         this.checkGameRoom(randomInt(100)),
@@ -268,6 +273,7 @@ export class GameGateway
   ) {
     const game = this.getGameByRoom(room);
     if (!game) {
+      user.emit('game-not-found');
       return;
     }
     if (!game.hasStarted || game.hasEnded) {
@@ -340,7 +346,6 @@ export class GameGateway
   * @param id Socket id of the disconnected player
   */
   finishGame(user: Socket) {
-    this.sendGameList();
     let game;
     for (let i = 0; i < this.queue.length; i++) {
       game = this.queue[i];
@@ -369,6 +374,7 @@ export class GameGateway
         break;
       }
     }
+    this.sendGameList();
   }
 
   /**

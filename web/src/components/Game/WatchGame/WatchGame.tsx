@@ -2,6 +2,7 @@ import './WatchGame.scss';
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
 import { actions, Game, state } from '../../../adapters/game/gameState';
+import { getNameLimited } from '../../../others/utils/utils';
 
 export function WatchGame() {
 
@@ -19,7 +20,11 @@ export function WatchGame() {
   function getList() {
     currentState.socket?.emit('get-game-list');
     currentState.socket?.on('get-game-list', (games: Game[]) => {
-      setGameList(games);
+      if (games[0]) {
+        setGameList(games);
+      } else {
+        setGameList([]);
+      }
     });
   }
 
@@ -36,7 +41,7 @@ export function WatchGame() {
             gameList?.map(game => {
               return (
                 <li onClick={() => { handleWatchLiveGame(game); }} key={game.room}>
-                  {game.player1Name} vs {game.player2Name}
+                  {getNameLimited(game.player1Name)} vs {getNameLimited(game.player2Name)}
                 </li>
               );
             }) : <p>No game Available</p>}
