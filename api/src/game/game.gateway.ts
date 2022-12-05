@@ -75,6 +75,11 @@ export class GameGateway
 
   @SubscribeMessage('challenge')
   async challenge(@ConnectedSocket() user: Socket, @MessageBody() challenge: IChallenge) {
+    if (challenge.userSource === challenge.userTarget) {
+      user.emit('game-not-found');
+      return;
+    }
+
     this.queue.push(
       new Game(
         this.checkGameRoom(randomInt(100)),

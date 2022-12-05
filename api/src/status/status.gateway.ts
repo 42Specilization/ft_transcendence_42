@@ -60,11 +60,31 @@ export class StatusGateway
     // this.mapUserData.debug();
   }
 
+  @SubscribeMessage('iAmInGame')
+  newUserInGame(@ConnectedSocket() client: Socket, @MessageBody() { login, image_url }: { login: string, image_url: string }) {
+    const newUser: UserData = newUserData('inGame', login, image_url);
+    this.mapUserData.set(client.id, newUser);
+
+    if (this.mapUserData.keyNotOf(newUser.login).length == 1) {
+      client.broadcast.emit('updateUserStats', newUser);
+    }
+
+    this.logger.debug(`iAmInGame => Client: ${client.id}, email: |${newUser.login}|`);
+  }
+
   @SubscribeMessage('whoIsOnline')
   whoIsOnline(@ConnectedSocket() client: Socket) {
     client.emit('onlineUsers', Array.from(this.mapUserData.getValues()));
     this.logger.debug(`whoIsOnline => Client: ${client.id}`);
   }
+
+  @SubscribeMessage('whoIsInGame')
+  whoIsInGame(@ConnectedSocket() client: Socket) {
+    client.emit('inGameUsers', Array.from(this.mapUserData.getValues()));
+    this.logger.debug(`whoIsInGame => Client: ${client.id}`);
+  }
+
+
 
   newUserOffline(@ConnectedSocket() client: Socket) {
     const user: UserData = this.mapUserData.valueOf(client.id);

@@ -63,6 +63,18 @@ const actionsStatus = {
     stateStatus.socket?.emit('whoIsOnline');
   },
 
+  async iAmInGame() {
+    const user = await getUserInDb();
+    stateStatus.socket?.emit('iAmInGame', {
+      login: user.login,
+      image_url: user.image_url
+    });
+  },
+
+  whoIsInGame() {
+    stateStatus.socket?.emit('whoIsInGame');
+  },
+
   changeLogin(login: string) {
     stateStatus.socket?.emit('changeLogin', login);
   },
@@ -300,7 +312,7 @@ const actionsStatus = {
     if (stateStatus.setIntraData) {
       const user = await getUserInDb();
       stateStatus.setIntraData((prev) => {
-        return { ...prev,groups: user.groups };
+        return { ...prev, groups: user.groups };
       });
     }
   },
