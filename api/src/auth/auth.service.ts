@@ -47,32 +47,12 @@ export class AuthService {
    */
   async getUserInfos(data: UserFromJwt): Promise<UserDto> {
     const userDto = await this.userService.getUserDTO(data.email);
-    // const UserDto: UserDto = {
-    //   email: user.email,
-    //   first_name: user.first_name,
-    //   image_url: user.imgUrl,
-    //   login: user.nick,
-    //   usual_full_name: user.usual_full_name,
-    //   matches: user.matches,
-    //   wins: user.wins,
-    //   lose: user.lose,
-    //   isTFAEnable: user.isTFAEnable,
-    //   tfaValidated: user.tfaValidated,
-    //   friends: [],
-    // };
-    // const friendsIds: string[] = user.friends ? user.friends.split(',') : [];
-    // for (let i = 0; i < friendsIds.length; i++) {
-    //   const friend: User = (await this.userService.findUserById(friendsIds[i])) as User;
-    //   const friendData: FriendData = {
-    //     status: 'offline',
-    //     login: friend.nick,
-    //     image_url: friend.imgUrl,
-    //   };
-    //   UserDto.friends.push(friendData);
-    // }
-    // UserDto.friends.sort((a, b) => a.login < b.login ? -1 : 1);
-
     return (userDto);
+  }
+ 
+  async validateToken(userFromJwt: UserFromJwt) {
+    const user = await this.userService.findUserByEmail(userFromJwt.email);
+    return (user? true: false);
   }
 
   /**
@@ -156,7 +136,6 @@ export class AuthService {
       await this.userService.updateUser(updateUserDto, user.email);
     }
     return (data);
-
   }
 
   /**

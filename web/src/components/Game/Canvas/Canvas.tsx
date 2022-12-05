@@ -76,7 +76,6 @@ export function drawNet(context: CanvasRenderingContext2D) {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function drawPowerUpBox(context: CanvasRenderingContext2D, x: number, y: number, img: any) {
   context.drawImage(img, x, y);
 }

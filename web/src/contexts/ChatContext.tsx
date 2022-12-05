@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import { Dispatch, SetStateAction, createContext, useState, ReactNode, useEffect } from 'react';
 import { actionsChat } from '../adapters/chat/chatState';
 import { ChatData, MsgToClient } from '../others/Interfaces/interfaces';

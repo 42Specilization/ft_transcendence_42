@@ -424,7 +424,6 @@ export class ChatService {
       await this.groupRepository.save(newGroup);
       return newGroup.id;
     } catch (err) {
-      console.log(err);
       throw new InternalServerErrorException('Error saving group in db');
     }
   }

@@ -37,7 +37,6 @@ import { ChallengeRequestDto } from './dto/challenge-request.dto';
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    // private readonly notificationService: NotificationService
   ) { }
 
   @Post()

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import { Modal } from '../Modal/Modal';
 import './ConfirmActionModal.scss';
 

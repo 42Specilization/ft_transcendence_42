@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import {
   actions,
-  // state
 } from '../../../adapters/game/gameState';
 import { Checkbox } from '../../Checkbox/Checkbox';
 import { Commands } from '../Commands/Commands';

@@ -32,8 +32,7 @@ export class SocketIOAdapter extends IoAdapter {
     const cors = {
       origin: [
         `http://${host}:${clientPort}`,
-        // eslint-disable-next-line no-useless-escape
-        new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${clientPort}$/`),
+        new RegExp(`/^http://192.168.1.([1-9]|[1-9]d):${clientPort}$/`),
       ]
     };
 

@@ -13,19 +13,36 @@ export function getAccessToken() {
 
 export function RequireAuth({ children }: any) {
   const token = window.localStorage.getItem('token');
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const api = axios.create({
+    baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
+  });
+
+  function logout(){
+    window.localStorage.removeItem('token');
+    window.localStorage.removeItem('userData');
+    window.location.href = '/signin';
+  }
+
+  (async () => {
+    await api.get('/auth/validateToken', config)
+      .then((isValid)=>{
+        if(!isValid)
+          logout();
+      })
+      .catch(() =>{
+        logout();
+      });
+  })();
+
   const [isTfaValid, setIsTfaValid] = useState(false);
   const { status } = useQuery(
     'validateTfa',
     async () => {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const api = axios.create({
-        baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
-      });
-
       try {
         const user = await api.get('/user/me', config);
         if (
@@ -144,7 +161,7 @@ export async function getIntraDataNotify(intraData: IntraData, setIntraData: Dis
 
 }
 
-export const defaultIntra: IntraData = {
+const defaultIntra: IntraData = {
   email: 'ft_transcendence@gmail.com',
   first_name: 'ft',
   image_url: 'userDefault.12345678.png',

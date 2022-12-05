@@ -26,9 +26,6 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
     transports: ['websocket', 'polling']
   });
 
-  // socket.on('connect', () => {
-  // });
-
   socket.on('start-game', (game: Game) => {
     actionsStatus.iAmInGame();
     actions.updateGame(game);
