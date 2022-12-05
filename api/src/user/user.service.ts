@@ -674,6 +674,9 @@ export class UserService {
     const user = await this.findUserByEmail(email) as User;
     const friend = await this.findUserByNick(friend_login) as User;
 
+    if (user.nick == friend.nick)
+      throw new BadRequestException('You cant remove yourself');
+
     user.relations = user.relations.filter((relation) => {
       if (relation.type === 'friend' && relation.passive_user.nick == friend.nick)
         return;
