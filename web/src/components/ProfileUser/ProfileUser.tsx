@@ -22,7 +22,7 @@ export function ProfileUser({ login }: ProfileUserProps) {
     },
     {
       retry: false,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
     }
   );
 

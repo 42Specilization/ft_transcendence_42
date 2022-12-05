@@ -34,11 +34,12 @@ export function ProfileGroup({ id }: ProfileGroupProps) {
     ['getGroupInfos', updateGroup],
     async () => {
       const response = await api.patch('/chat/getProfileGroupById', { id: id }, config);
+      console.log(updateGroup)
       return response.data;
     },
     {
       retry: false,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
     }
   );
 
@@ -56,6 +57,7 @@ export function ProfileGroup({ id }: ProfileGroupProps) {
       await api.patch('/chat/updateGroup', { id: data.id, image: selectedFile.name }, config);
     }
     actionsChat.updateGroup();
+    actionsChat.getUpdateGroup(id as string);
   }
 
   function havePermission(level: string) {

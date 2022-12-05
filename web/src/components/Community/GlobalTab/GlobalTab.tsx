@@ -18,7 +18,7 @@ export function GlobalTab() {
     },
     {
       retry: false,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
     }
   );
 

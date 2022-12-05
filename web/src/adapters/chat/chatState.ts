@@ -125,9 +125,12 @@ const actionsChat = {
   },
 
   async updateGroup() {
+    console.log('update group')
     actionsStatus.updateGroup();
-    if (stateChat.setUpdateGroup)
+    if (stateChat.setUpdateGroup){
       stateChat.setUpdateGroup(Date.now());
+      console.log('update group atualizado')
+    }
   },
 
   async removeGroup(id: string, login: string) {

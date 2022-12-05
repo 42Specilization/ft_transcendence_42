@@ -18,7 +18,7 @@ export function ProfileUserHistoric({ login }: ProfileUserHistoricProps) {
     },
     {
       retry: false,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
     }
   );
 

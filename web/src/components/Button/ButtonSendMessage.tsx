@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 interface ButtonSendMessageProps {
   id: string;
   type: string;
+  
 }
 
 export function ButtonSendMessage({ id, type }: ButtonSendMessageProps) {

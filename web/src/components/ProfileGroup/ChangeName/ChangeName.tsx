@@ -26,10 +26,9 @@ export function ChangeName({ id, setModalChangeName }: ChangeNameProps) {
   async function handleChangeName() {
     try {
       const result = await api.patch('/chat/updateGroup', { id: id, name: name }, config);
-
+      console.log(result);
       if (result.status === 200) {
         setModalChangeName(false);
-        actionsStatus.changeLogin(name);
         setPlaceHolder('');
       }
     } catch (e: any) {
@@ -44,8 +43,8 @@ export function ChangeName({ id, setModalChangeName }: ChangeNameProps) {
   return (
     <Modal id='changeName__modal' onClose={() => setModalChangeName(false)}>
       <form className='changeName__modal' onSubmit={handleKeyEnter}>
+        <h3>Insert the new nick</h3>
         <div className='changeName__modal__text__div'>
-          <h3>Insert the new nick</h3>
           <input
             className='changeName__modal__input'
             value={name}
@@ -57,10 +56,10 @@ export function ChangeName({ id, setModalChangeName }: ChangeNameProps) {
             }}
             ref={e => e?.focus()}
           />
+          <button className='changeName__modal__button' type='submit'>
+            <PaperPlaneRight size={30} />
+          </button>
         </div>
-        <button className='changeName__modal__button' type='submit'>
-          <PaperPlaneRight size={30} />
-        </button>
       </form>
     </Modal>
   );

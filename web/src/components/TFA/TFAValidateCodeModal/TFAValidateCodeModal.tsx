@@ -32,6 +32,7 @@ export function TFAValidateCodeModal({
 
   async function handleValidateCode() {
     const body = {
+      isTFAEnable: false,
       tfaCode: code,
       tfaValidated: false,
     };
@@ -39,6 +40,7 @@ export function TFAValidateCodeModal({
       const validateCode = await api.patch('/user/validate-code', body, config);
       if (validateCode.status === 200) {
         body.tfaValidated = true;
+        body.isTFAEnable= true;
         turnOnTFA(body, config);
       }
     } catch (err) {

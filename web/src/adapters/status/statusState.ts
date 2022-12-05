@@ -309,6 +309,7 @@ const actionsStatus = {
         return { ...prev,groups: user.groups };
       });
     }
+  
   },
 
   async updateGroupInfos(message: MsgToClient) {
