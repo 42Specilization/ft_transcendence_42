@@ -5,10 +5,6 @@ import ReactTooltip from 'react-tooltip';
 import { GroupCardData } from '../../../../others/Interfaces/interfaces';
 import { ProfileGroupModal } from '../../../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
 import { getUrlImage } from '../../../../others/utils/utils';
-import { ButtonSendMessage } from '../../../Button/ButtonSendMessage';
-import { ButtonLeaveGroup } from '../../../Button/ButtonLeaveGroup';
-import { ButtonJoinGroup } from '../../../Button/ButtonJoinGroup';
-import { ButtonMenu } from '../../../Button/ButtonMenu';
 
 interface CardGroupProps {
   group: GroupCardData;
@@ -16,7 +12,6 @@ interface CardGroupProps {
 
 export function CardGroup({ group }: CardGroupProps) {
 
-  const [activeMenu, setActiveMenu] = useState(false);
   const [profileGroupVisible, setProfileGroupVisible] = useState(false);
 
   function selectProfileGroupVisible(e: any) {

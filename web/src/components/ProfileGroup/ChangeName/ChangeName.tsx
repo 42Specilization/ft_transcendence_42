@@ -2,7 +2,6 @@ import './ChangeName.scss';
 import { useContext, useState } from 'react';
 import { PaperPlaneRight } from 'phosphor-react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import { actionsStatus } from '../../../adapters/status/statusState';
 import { Modal } from '../../Modal/Modal';
 import { actionsChat } from '../../../adapters/chat/chatState';
 

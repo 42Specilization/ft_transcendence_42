@@ -1,5 +1,4 @@
 import './ChatTab.scss';
-import { MagnifyingGlass, X } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';

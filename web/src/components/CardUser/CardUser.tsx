@@ -15,7 +15,7 @@ interface CardUserProps {
 
 export function CardUser({ user, menuHeight, children }: CardUserProps) {
 
-  const { intraData } = useContext(IntraDataContext)
+  const { intraData } = useContext(IntraDataContext);
   const [friendProfileVisible, setProfileUserVisible] = useState(false);
   const [activeMenu, setActiveMenu] = useState(false);
   const arrayChildren = Children.toArray(children);

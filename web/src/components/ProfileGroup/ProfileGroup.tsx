@@ -34,7 +34,6 @@ export function ProfileGroup({ id }: ProfileGroupProps) {
     ['getGroupInfos', updateGroup],
     async () => {
       const response = await api.patch('/chat/getProfileGroupById', { id: id }, config);
-      console.log(updateGroup)
       return response.data;
     },
     {

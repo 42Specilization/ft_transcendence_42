@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
 import { MsgToClient } from '../chat.class';
 
@@ -7,7 +8,7 @@ export class UserInfoDto {
   image_url: string;
   role: string;
   mutated: boolean;
-  ratio?: string
+  ratio?: string;
 }
 
 export class ProfileGroupDto {
@@ -75,7 +76,6 @@ export class DeleteDirectDto {
   @IsNotEmpty({ message: 'Insert an valid id' })
   friend_login: string;
 }
-
 
 export class GroupInviteDto {
   @IsNotEmpty({ message: 'Insert an valid name' })
