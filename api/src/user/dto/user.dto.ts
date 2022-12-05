@@ -20,13 +20,14 @@ export class UserDto {
 }
 
 export class CommunityDto {
-  image_url: string;
+  status: string;
   login: string;
+  image_url: string;
   ratio: string;
 }
 
 export class UserHistoricDto {
   @ApiProperty()
   @IsNotEmpty({ message: 'Inform a valid nick!' })
-    login: string;
+  login: string;
 }

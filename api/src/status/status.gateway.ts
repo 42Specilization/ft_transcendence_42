@@ -13,6 +13,7 @@ import {
 
 import { Socket, Namespace } from 'socket.io';
 import { WsCatchAllFilter } from 'src/socket/exceptions/ws-catch-all-filter';
+import { UserService } from 'src/user/user.service';
 import { MapUserData, newUserData, UserData } from './status.class';
 
 @UseFilters(new WsCatchAllFilter())
@@ -21,7 +22,7 @@ export class StatusGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
 
   @WebSocketServer() server: Namespace;
-
+  constructor(private readonly userService: UserService) { }
   private logger: Logger = new Logger(StatusGateway.name);
 
   mapUserData: MapUserData = new MapUserData();
@@ -35,7 +36,6 @@ export class StatusGateway
 
     this.logger.log(`WS client with id: ${client.id} connected of StatusSocket!`);
     this.logger.debug(`Number of connected StatusSockets: ${sockets.size}`);
-    // this.mapUserData.debug();
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
@@ -44,16 +44,17 @@ export class StatusGateway
     this.newUserOffline(client);
     this.logger.log(`Disconnected of StatusSocket the socket id: ${client.id}`);
     this.logger.debug(`Number of connected StatusSockets: ${sockets.size}`);
-    // this.mapUserData.debug();
   }
 
   @SubscribeMessage('iAmOnline')
-  newUserOnline(@ConnectedSocket() client: Socket, @MessageBody() { login, image_url }: { login: string, image_url: string }) {
+  async newUserOnline(@ConnectedSocket() client: Socket, @MessageBody() { login, image_url }: { login: string, image_url: string }) {
     const newUser: UserData = newUserData('online', login, image_url);
     this.mapUserData.set(client.id, newUser);
 
     if (this.mapUserData.keyOf(newUser.login).length == 1) {
+      await this.userService.updateStatus(login, 'online');
       client.broadcast.emit('updateUserStatus', newUser);
+      client.broadcast.emit('updateStatus', newUser);
     }
 
     this.logger.debug(`iAmOnline => Client: ${client.id}, email: |${newUser.login}|`);
@@ -61,12 +62,13 @@ export class StatusGateway
   }
 
   @SubscribeMessage('iAmInGame')
-  newUserInGame(@ConnectedSocket() client: Socket, @MessageBody() { login, image_url }: { login: string, image_url: string }) {
-    const newUser: UserData = newUserData('inGame', login, image_url);
+  async newUserInGame(@ConnectedSocket() client: Socket, @MessageBody() { login, image_url }: { login: string, image_url: string }) {
+    const newUser: UserData = newUserData('in a game', login, image_url);
     this.mapUserData.set(client.id, newUser);
-
+    await this.userService.updateStatus(login, 'in a game');
     if (this.mapUserData.keyNotOf(newUser.login).length == 1) {
       client.broadcast.emit('updateUserStats', newUser);
+      client.broadcast.emit('updateStatus', newUser);
     }
 
     this.logger.debug(`iAmInGame => Client: ${client.id}, email: |${newUser.login}|`);
@@ -86,12 +88,13 @@ export class StatusGateway
 
 
 
-  newUserOffline(@ConnectedSocket() client: Socket) {
+  async newUserOffline(@ConnectedSocket() client: Socket) {
     const user: UserData = this.mapUserData.valueOf(client.id);
     user.status = 'offline';
-
     if (this.mapUserData.keyOf(user.login).length == 1) {
+      await this.userService.updateStatus(user.login, 'offline');
       this.server.emit('updateUserStatus', this.mapUserData.valueOf(client.id));
+      client.broadcast.emit('updateStatus', user);
     }
     this.mapUserData.delete(client.id);
 

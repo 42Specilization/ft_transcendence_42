@@ -87,3 +87,13 @@ export interface ErrResponse {
   message: string;
   error: string;
 }
+
+export interface GlobalData {
+  notify: NotifyData[];
+  friends: UserData[];
+  blocked: UserData[];
+  directs: ChatData[];
+  groups: ChatData[];
+  globalUsers: UserData[];
+  globalGroups: GroupCardData[];
+}

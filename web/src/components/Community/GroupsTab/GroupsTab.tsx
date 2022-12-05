@@ -1,37 +1,34 @@
 import './GroupsTab.scss';
 import { Plus } from 'phosphor-react';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { CardGroup } from './CardGroup/CardGroup';
 import { Modal } from '../../Modal/Modal';
 import { CreateGroup } from './CreateGroup/CreateGroup';
-import { useQuery } from 'react-query';
-import { ChatContext } from '../../../contexts/ChatContext';
 import { ButtonSearch } from '../../Button/ButtonSearch';
+import { ProfileGroupModal } from '../../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
 
 export function GroupsTab() {
 
+  const [groupProfile, setGroupProfile] = useState('');
   const [searchActive, setSearchActive] = useState(false);
   const [createGroupModal, setCreateGroupModal] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-  const { api, config } = useContext(IntraDataContext);
-  const { updateGroup } = useContext(ChatContext);
+  const { globalData } = useContext(IntraDataContext);
+  const [profileGroupVisible, setProfileGroupVisible] = useState(false);
 
-  const { data, status } = useQuery(
-    ['getAllCardGroup', updateGroup],
-    async () => {
-      const response = await api.get('/chat/getAllCardGroup', config);
-      return response.data;
-    },
-    {
-      retry: false,
-      refetchOnWindowFocus: false,
-    }
-  );
+  useEffect(() => {
+    if (groupProfile !== '')
+      setProfileGroupVisible(true);
+  }, [groupProfile]);
 
-  if (status === 'loading')
-    return (<div className='groups__tab' />);
+  useEffect(() => {
+    if (profileGroupVisible === false)
+      setGroupProfile('');
+  }, [profileGroupVisible]);
+
+
 
   return (
     <div className='groups__tab' >
@@ -52,14 +49,17 @@ export function GroupsTab() {
         <ReactTooltip delayShow={50} />
       </div>
       <div className='groups__tab__body'>
-        {data &&
-          data.map((key: any) => <CardGroup key={Math.random()} group={key} />)
+        {globalData.globalGroups.map((key: any) =>
+          <CardGroup key={Math.random()} group={key} setGroupProfile={setGroupProfile} />)
         }
       </div>
       {createGroupModal &&
         <Modal id='createGroupModal' onClose={() => (setCreateGroupModal(false))}>
           <CreateGroup setCreateGroupModal={setCreateGroupModal} />
         </Modal>
+      }
+      {profileGroupVisible &&
+        <ProfileGroupModal id={groupProfile} setProfileGroupVisible={setProfileGroupVisible} />
       }
     </div >);
 }

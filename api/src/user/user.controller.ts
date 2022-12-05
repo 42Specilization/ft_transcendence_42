@@ -154,7 +154,7 @@ export class UserController {
   }
 
   /* A method that is used to update the user's nickname. */
-  @Patch('/updateNick/')
+  @Patch('updateNick')
   @UseGuards(JwtAuthGuard)
   async updateNick(
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
@@ -186,7 +186,7 @@ export class UserController {
   }
 
   /* This method is used to update the user's image. */
-  @Post('/updateImage')
+  @Post('updateImage')
   @ApiConsumes('multipart/form-data')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file', {
@@ -214,7 +214,7 @@ export class UserController {
     return { message: 'success', path: file.path };
   }
 
-  @Patch('/sendFriendRequest')
+  @Patch('sendFriendRequest')
   @UseGuards(JwtAuthGuard)
   async sendFriendRequest(
     @Body(ValidationPipe) friendRequestDto: FriendRequestDto,
@@ -224,7 +224,7 @@ export class UserController {
     return { message: 'success' };
   }
 
-  @Patch('/sendChallengeRequest')
+  @Patch('sendChallengeRequest')
   @UseGuards(JwtAuthGuard)
   async sendChallengeRequest(
     @Body(ValidationPipe) challengeRequestDto: ChallengeRequestDto,
@@ -234,7 +234,7 @@ export class UserController {
     return ({ message: 'success' });
   }
 
-  @Patch('/removeNotify')
+  @Patch('removeNotify')
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: NotifyHandlerDto })
   async removeNotify(
@@ -245,7 +245,7 @@ export class UserController {
     return { message: 'success' };
   }
 
-  @Patch('/acceptFriend')
+  @Patch('acceptFriend')
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: NotifyHandlerDto })
   async acceptFriend(
@@ -256,7 +256,7 @@ export class UserController {
     return { message: 'success' };
   }
 
-  @Patch('/blockUserByNotification')
+  @Patch('blockUserByNotification')
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: NotifyHandlerDto })
   async blockUserByNotification(
@@ -267,7 +267,7 @@ export class UserController {
     return { message: 'success' };
   }
 
-  @Patch('/removeFriend')
+  @Patch('removeFriend')
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: GetFriendDto })
   async removeFriend(
@@ -278,7 +278,7 @@ export class UserController {
     return { message: 'success' };
   }
 
-  @Patch('/addBlocked')
+  @Patch('addBlocked')
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: GetFriendDto })
   async addBlocked(
@@ -289,7 +289,7 @@ export class UserController {
     return { message: 'success' };
   }
 
-  @Patch('/removeBlocked')
+  @Patch('removeBlocked')
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: GetFriendDto })
   async removeBlocked(
@@ -313,6 +313,20 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async getCommunity(@GetUserFromJwt() userFromJwt: UserFromJwt) {
     return (await this.userService.getCommunity(userFromJwt.email));
+  }
+
+  @Get('getFriends')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  async getFriends(@GetUserFromJwt() userFromJwt: UserFromJwt) {
+    return (await this.userService.getFriends(userFromJwt.email));
+  }
+
+  @Get('getGlobalInfos')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  async getGlobalInfos(@GetUserFromJwt() userFromJwt: UserFromJwt) {
+    return (await this.userService.getGlobalInfos(userFromJwt.email));
   }
 
 }

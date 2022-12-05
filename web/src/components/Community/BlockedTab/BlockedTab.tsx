@@ -7,7 +7,7 @@ import { ButtonSearch } from '../../Button/ButtonSearch';
 
 export function BlockedTab() {
 
-  const { intraData } = useContext(IntraDataContext);
+  const { globalData } = useContext(IntraDataContext);
   const [searchActive, setSearchActive] = useState(false);
   const [searchInput, setSearchInput] = useState('');
 
@@ -25,7 +25,7 @@ export function BlockedTab() {
       </div>
       <div className='blocked__tab__body'>
         {
-          intraData.blocked?.sort((a, b) => a.login < b.login ? -1 : 1)
+          globalData.blocked?.sort((a, b) => a.login < b.login ? -1 : 1)
             .map((obj) =>
               <CardUser key={Math.random()} user={obj} menuHeight={0}>
               </CardUser>)

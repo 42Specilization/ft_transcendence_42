@@ -66,6 +66,10 @@ export class User extends BaseEntity {
   lose: string;
 
   @ApiProperty()
+  @Column({ default: 'offline', nullable: false, type: 'varchar' })
+  status: string;
+
+  @ApiProperty()
   @CreateDateColumn()
   createdAt: Date;
 

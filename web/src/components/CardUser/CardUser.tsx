@@ -31,6 +31,21 @@ export function CardUser({ user, menuHeight, children }: CardUserProps) {
         <div id='cardUser' className="card__user__leftSide">
           <div id='cardUser' className='card__user__image'
             style={{ backgroundImage: `url(${getUrlImage(user.image_url)})` }}>
+            <div id='cardUser' className='card__user__status'
+              data-html={true}
+              data-tip={user.status}
+              style={{
+                backgroundColor:
+                  (() => {
+                    if (user.status === 'online') {
+                      return ('green');
+                    } else if (user.status === 'in a game') {
+                      return ('rgb(255, 180, 0)');
+                    } else {
+                      return ('rgb(70, 70, 70)');
+                    }
+                  })()
+              }} />
           </div>
           <div id='cardUser' className='card__user__name'>
             {user.login}
@@ -49,7 +64,6 @@ export function CardUser({ user, menuHeight, children }: CardUserProps) {
                     width: activeMenu ? '80px' : '0px'
                   }}>
                   {arrayChildren.at(1)}
-                  <ReactTooltip delayShow={50} />
                 </div>
                 <ButtonMenu setActiveMenu={setActiveMenu} />
               </div>
@@ -57,6 +71,7 @@ export function CardUser({ user, menuHeight, children }: CardUserProps) {
               <div style={{ width: '60px' }}></div>
           }
         </div>
+        <ReactTooltip delayShow={50} />
       </div>
       {friendProfileVisible &&
         <ProfileUserModal login={user.login}

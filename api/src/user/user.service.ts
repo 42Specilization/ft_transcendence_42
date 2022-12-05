@@ -321,7 +321,7 @@ export class UserService {
 
       friends: user.relations.filter((rel) => rel.type === 'friend').map((rel) => {
         return {
-          status: 'offline',
+          status: rel.passive_user.status,
           login: rel.passive_user.nick,
           image_url: rel.passive_user.imgUrl,
         };
@@ -330,6 +330,7 @@ export class UserService {
       blocked: user.relations.filter((rel) => rel.type === 'blocked')
         .map((rel) => {
           return {
+            status: rel.passive_user.status,
             login: rel.passive_user.nick,
             image_url: rel.passive_user.imgUrl,
           };
@@ -399,6 +400,7 @@ export class UserService {
       throw new InternalServerErrorException('User not found');
 
     const profileUser = {
+      status: user.status,
       image_url: user.imgUrl,
       login: user.nick,
       matches: user.matches,
@@ -640,8 +642,8 @@ export class UserService {
     if (user.nick == friend.nick)
       throw new BadRequestException('You cant remove yourself');
 
-    if (!this.alreadyFriends(user,friend))
-      return ;
+    if (!this.alreadyFriends(user, friend))
+      return;
 
     user.relations = user.relations.filter((relation) => {
       if (relation.type === 'friend' && relation.passive_user.nick == friend.nick)
@@ -736,8 +738,9 @@ export class UserService {
       return user;
     }).map((user) => {
       return {
-        image_url: user.imgUrl,
+        status: user.status,
         login: user.nick,
+        image_url: user.imgUrl,
         ratio: ((
           Number(user.wins) /
           (Number(user.lose) > 0 ? Number(user.lose) : 1)
@@ -779,4 +782,66 @@ export class UserService {
     }
     throw new BadRequestException('user not found');
   }
+
+  async updateStatus(login: string, status: string) {
+    const user = await this.findUserByNick(login);
+    if (!user)
+      throw new InternalServerErrorException('User not found in updateStatus');
+    user.status = status;
+    try {
+      await user.save();
+    } catch (err) {
+      throw new InternalServerErrorException('Error saving status');
+    }
+  }
+
+  async getFriends(user_email: string) {
+    const user = await this.findUserByEmail(user_email);
+    if (!user)
+      throw new BadRequestException('User Not Found getFriends');
+    const usersToReturn = user.relations.filter((rel) => rel.type === 'friend').map((rel) => {
+      return {
+        status: rel.passive_user.status,
+        login: rel.passive_user.nick,
+        image_url: rel.passive_user.imgUrl,
+      };
+    });
+    return usersToReturn;
+  }
+
+
+  async getGlobalInfos(email: string) {
+    const user = (await this.findUserByEmail(email)) as User;
+
+    const globalDto = {
+      notify: user.notify.map((notify) => {
+        return {
+          id: notify.id,
+          type: notify.type,
+          user_source: notify.user_source?.nick,
+          additional_info: notify.additional_info,
+          date: notify.date,
+        };
+      }),
+
+      friends: user.relations.filter((rel) => rel.type === 'friend').map((rel) => {
+        return {
+          status: rel.passive_user.status,
+          login: rel.passive_user.nick,
+          image_url: rel.passive_user.imgUrl,
+        };
+      }),
+
+      blocked: user.relations.filter((rel) => rel.type === 'blocked')
+        .map((rel) => {
+          return {
+            status: rel.passive_user.status,
+            login: rel.passive_user.nick,
+            image_url: rel.passive_user.imgUrl,
+          };
+        }),
+    };
+    return globalDto;
+  }
+
 }

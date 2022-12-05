@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
-import { IntraData, MsgToClient } from '../../others/Interfaces/interfaces';
+import { GlobalData, IntraData, MsgToClient } from '../../others/Interfaces/interfaces';
 import { getUserInDb } from '../../others/utils/utils';
 import { actionsChat } from '../chat/chatState';
 
@@ -20,13 +20,18 @@ export interface UserData {
 export interface AppStateStatus {
   socket?: Socket;
   setIntraData?: Dispatch<SetStateAction<IntraData>> | null;
+  setUpdateUser?: Dispatch<SetStateAction<number>> | null;
+  setGlobalData?: Dispatch<SetStateAction<GlobalData>> | null;
 }
 
 const stateStatus = proxy<AppStateStatus>({});
 
 const actionsStatus = {
 
-  initializeSocketStatus: (setIntraData: Dispatch<SetStateAction<IntraData>>): void => {
+  initializeSocketStatus: (
+    setIntraData: Dispatch<SetStateAction<IntraData>>,
+    setGlobalData: Dispatch<SetStateAction<GlobalData>>
+  ): void => {
     if (!stateStatus.socket) {
       const createSocketOptions: CreateSocketStatusOptions = {
         socketStatusIOUrl: socketStatusIOUrl,
@@ -35,12 +40,14 @@ const actionsStatus = {
       };
       stateStatus.socket = ref(createSocketStatus(createSocketOptions));
       stateStatus.setIntraData = ref(setIntraData);
+      stateStatus.setGlobalData = ref(setGlobalData);
       return;
     }
 
     if (!stateStatus.socket.connected) {
       stateStatus.socket.connect();
       stateStatus.setIntraData = ref(setIntraData);
+      stateStatus.setGlobalData = ref(setGlobalData);
       return;
     }
   },
@@ -107,6 +114,22 @@ const actionsStatus = {
     stateStatus.socket?.emit('blockFriend', friend);
   },
 
+  async updateStatus(user: UserData) {
+    user;
+    if (stateStatus.setGlobalData) {
+      const user = await getUserInDb();
+      stateStatus.setGlobalData((prev) => {
+        return {
+          ...prev,
+          directs: user.directs,
+          friends: user.friends,
+        };
+      });
+    }
+    // if (stateStatus.setUpdateUser)
+    // stateStatus.setUpdateUser(Date.now());
+    // trigger
+  },
   async newDirect(name: string, chat: string) {
     stateStatus.socket?.emit('newDirect', { name: name, chat: chat });
     if (stateStatus.setIntraData) {

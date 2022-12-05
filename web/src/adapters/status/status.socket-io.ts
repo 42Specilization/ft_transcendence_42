@@ -28,6 +28,11 @@ export function createSocketStatus({
     actionsStatus.iAmOnline();
   });
 
+  socket.on('updateStatus', (users: UserData) => {
+    actionsStatus.updateStatus(users);
+    // console.log('online users:', users);
+  });
+
   socket.on('onlineUsers', (users: UserData[]) => {
     actionsStatus.onlineUsers(users);
     // console.log('online users:', users);
