@@ -1,7 +1,7 @@
 import './NotificationChallenge.scss';
 import { CheckCircle, XCircle } from 'phosphor-react';
 import { NotifyData } from '../../../others/Interfaces/interfaces';
-import { actions } from '../../../adapters/game/gameState';
+import { actionsGame } from '../../../adapters/game/gameState';
 import { useContext } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { Link } from 'react-router-dom';
@@ -26,8 +26,8 @@ export function NotificationChallenge(
   }
 
   async function handleAcceptChallenge() {
-    actions.initializeSocket();
-    actions.acceptChallenge(Number(notify.additional_info), intraData.login, notify.user_source);
+    actionsGame.initializeSocket();
+    actionsGame.acceptChallenge(Number(notify.additional_info), intraData.login, notify.user_source);
     await api.patch('/user/removeNotify', { id: notify.id }, config);
     removeNotify();
   }
@@ -35,9 +35,9 @@ export function NotificationChallenge(
   async function handleRejectChallenge() {
     await api.patch('/user/removeNotify', { id: notify.id }, config);
     removeNotify();
-    actions.initializeSocket();
-    actions.rejectChallenge(notify.additional_info);
-    actions.disconnectSocket();
+    actionsGame.initializeSocket();
+    actionsGame.rejectChallenge(notify.additional_info);
+    actionsGame.disconnectSocket();
   }
 
   return (

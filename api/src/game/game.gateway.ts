@@ -13,6 +13,7 @@ import { randomInt } from 'crypto';
 import { Socket, Namespace } from 'socket.io';
 import { WsCatchAllFilter } from 'src/socket/exceptions/ws-catch-all-filter';
 import { WsBadRequestException } from 'src/socket/exceptions/ws-exceptions';
+import { UserService } from 'src/user/user.service';
 import { Game } from './game.class';
 import { GameService } from './game.service';
 import { IChallenge } from './interface/game.interfaces';
@@ -34,9 +35,12 @@ interface IPlayerInfos {
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({ namespace: 'game' })
 export class GameGateway
-implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
-  constructor(private readonly gameService: GameService) { }
+  constructor(
+    private readonly gameService: GameService,
+    private readonly userService: UserService
+  ) { }
 
   private readonly logger = new Logger(GameGateway.name);
 
@@ -73,7 +77,12 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('challenge')
   async challenge(@ConnectedSocket() user: Socket, @MessageBody() challenge: IChallenge) {
-    if (challenge.userSource === challenge.userTarget) {
+    const userTarget = await this.userService.findUserByNick(challenge.userTarget);
+    const userSource = await this.userService.findUserByNick(challenge.userTarget);
+
+    if (!userSource || !userTarget || challenge.userSource === challenge.userTarget ||
+      this.userService.isBlocked(userSource, userTarget) ||
+      this.userService.isBlocked(userTarget, userSource)) {
       user.emit('game-not-found');
       return;
     }
@@ -198,14 +207,14 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     }
 
     switch (direction) {
-    case 'up':
-      player.paddle.y -= 20;
-      this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
-      break;
-    case 'down':
-      player.paddle.y += 20;
-      this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
-      break;
+      case 'up':
+        player.paddle.y -= 20;
+        this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
+        break;
+      case 'down':
+        player.paddle.y += 20;
+        this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
+        break;
     }
   }
 

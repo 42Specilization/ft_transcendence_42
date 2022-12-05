@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import {
-  actions,
-} from '../../../adapters/game/gameState';
+import { actionsGame } from '../../../adapters/game/gameState';
 import { Checkbox } from '../../Checkbox/Checkbox';
 import { Commands } from '../Commands/Commands';
 import { WatchGame } from '../WatchGame/WatchGame';
@@ -15,8 +13,8 @@ export function GameMenu() {
   const [powerUp, setPowerUp] = useState<boolean>(false);
 
   const handleStartGame = () => {
-    actions.initializeSocket();
-    actions.initializeGame(powerUp);
+    actionsGame.initializeSocket();
+    actionsGame.initializeGame(powerUp);
   };
 
   const handleCommands = () => {
@@ -30,7 +28,7 @@ export function GameMenu() {
   };
 
   const handleWatchGame = () => {
-    actions.initializeSocket();
+    actionsGame.initializeSocket();
     setCommands(false);
     setWatch(true);
   };

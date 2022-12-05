@@ -1,13 +1,14 @@
+/* eslint-disable indent */
 import { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import { Canvas, drawCircle, drawFillRect, drawNet, drawPowerUpBox, drawText, } from '../Canvas/Canvas';
-import { actions, state } from '../../../adapters/game/gameState';
+import { actionsGame, stateGame } from '../../../adapters/game/gameState';
 import { getEndGameData, getGameData } from './data';
 import './PongGame.scss';
 
 export function PongGame() {
 
-  const currentState = useSnapshot(state);
+  const currentState = useSnapshot(stateGame);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const context: CanvasRenderingContext2D | undefined | null = canvasRef.current?.getContext('2d');
   const img = document.getElementById('powerUp-box');
@@ -76,25 +77,25 @@ export function PongGame() {
   useEffect(() => {
     window.onkeydown = function handleKeyboard(event: KeyboardEvent) {
       switch (event.key) {
-      case 'ArrowUp':
-      case 'w':
-      case 'W':
-        move('up');
-        break;
+        case 'ArrowUp':
+        case 'w':
+        case 'W':
+          move('up');
+          break;
 
-      case 'ArrowDown':
-      case 's':
-      case 'S':
-        move('down');
-        break;
+        case 'ArrowDown':
+        case 's':
+        case 'S':
+          move('down');
+          break;
 
-      case 'q':
-      case 'Escape':
-        window.location.reload();
-        break;
+        case 'q':
+        case 'Escape':
+          window.location.reload();
+          break;
 
-      default:
-        break;
+        default:
+          break;
       }
     };
   }, []);
@@ -102,7 +103,7 @@ export function PongGame() {
   useEffect(() => {
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
-        actions.leaveGame();
+        actionsGame.leaveGame();
       }
     });
   }, []);
