@@ -2,7 +2,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/user/entities/user.entity';
 import { GroupRelations } from './groupRelations.entity';
-// import { MessageGroup } from './messageGroup.entity';
 
 import {
   BaseEntity,

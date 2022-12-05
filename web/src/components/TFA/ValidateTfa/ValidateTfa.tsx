@@ -1,30 +1,21 @@
 import './ValidateTfa.scss';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Modal } from '../../Modal/Modal';
 import { TailSpin } from 'react-loader-spinner';
+import { IntraDataContext } from '../../../contexts/IntraDataContext';
 
 export function ValidateTfa() {
   const [side, setSide] = useState('');
   const [code, setCode] = useState('');
   const [placeHolder, setPlaceHolder] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const {api, config} = useContext(IntraDataContext);
 
   useEffect(() => {
     setTimeout(() => {
       setSide('sendCode');
     }, 1000);
   }, []);
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${window.localStorage.getItem('token')}`,
-    },
-  };
-
-  const api = axios.create({
-    baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
-  });
 
   async function turnOnTFA(body: any, config: any) {
     const updateTfa = await api.patch('/user/turn-on-tfa', body, config);

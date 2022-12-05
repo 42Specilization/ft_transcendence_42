@@ -6,10 +6,6 @@ export class UpdateUserDto {
   @NotContains(',')
   @MinLength(3, { message: 'The nick must have at least 3 characters!' })
   @MaxLength(15, { message: 'The nick must have less then 15 characters' })
-  // @Matches(/[^!@#$%¨&*()].*/, {
-  //   message:
-  //     'Username must contain only alpha-numerics characters',
-  // })
     nick?: string;
 
   @IsOptional()

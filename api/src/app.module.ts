@@ -16,7 +16,6 @@ import { ChatModule } from './chat/chat.module';
 import { Message } from './chat/entities/message.entity';
 import { Group } from './chat/entities/group.entity';
 import { GroupRelations } from './chat/entities/groupRelations.entity';
-// import configuration from './config/configuration';
 
 @Module({
   imports: [

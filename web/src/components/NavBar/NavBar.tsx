@@ -60,13 +60,11 @@ export function NavBar({ Children }: NavBarProps) {
 
   function newMessages() {
     const newMessagesDirects = intraData.directs.reduce((acc, chat) => {
-      // console.log('d', chat.newMessages);
       if (activeChat && chat.id === activeChat.chat.id)
         return acc;
       return acc + chat.newMessages;
     }, 0);
     const newMessagesGroups = intraData.groups.reduce((acc, chat) => {
-      // console.log('g', chat.newMessages);
       if (activeChat && chat.id === activeChat.chat.id)
         return acc;
       return acc + chat.newMessages;

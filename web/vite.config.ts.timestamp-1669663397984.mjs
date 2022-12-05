@@ -1,6 +1,6 @@
 // vite.config.ts
-import { defineConfig } from "file:///home/gsilva-v/Projetos/Transcendence/ft_transcendence_42/node_modules/vite/dist/node/index.js";
-import react from "file:///home/gsilva-v/Projetos/Transcendence/ft_transcendence_42/node_modules/@vitejs/plugin-react/dist/index.mjs";
+import { defineConfig } from 'file:///home/gsilva-v/Projetos/Transcendence/ft_transcendence_42/node_modules/vite/dist/node/index.js';
+import react from 'file:///home/gsilva-v/Projetos/Transcendence/ft_transcendence_42/node_modules/@vitejs/plugin-react/dist/index.mjs';
 var vite_config_default = defineConfig({
   plugins: [react()],
   server: {

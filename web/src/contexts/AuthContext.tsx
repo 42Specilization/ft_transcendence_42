@@ -29,10 +29,7 @@ export function useAuth() {
         response => {
           return (response.data as AccessTokenResponse);
         }
-      ).catch(err => {
-        //TODO: HANDLE ERROR
-        console.log('login error ', err.data);
-      });
+      ).catch(() => {/*TODO: Nothing*/});
       if (!token) {
         if (process.env.NODE_ENV == 'production')
           return (navigate('/signin'));

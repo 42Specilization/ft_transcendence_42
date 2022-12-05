@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import { useEffect, useState } from 'react';
 import { state } from '../../../adapters/game/gameState';
 import { Modal } from '../../Modal/Modal';
@@ -18,11 +17,11 @@ export function WaitingRoom() {
 
   function handleKeydown(event: KeyboardEvent) {
     switch (event.key) {
-      case 'q':
-      case 'Q':
-      case 'Escape':
-        window.location.reload();
-        break;
+    case 'q':
+    case 'Q':
+    case 'Escape':
+      window.location.reload();
+      break;
     }
   }
 

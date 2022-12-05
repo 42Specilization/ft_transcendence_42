@@ -101,10 +101,7 @@ export class ChatController {
   }))
   async getFile(
     @UploadedFile() file: Express.Multer.File,
-    // @GetUserFromJwt() userFromJwt: UserFromJwt
   ) {
-    // const updateUserDto: UpdateUserDto = { imgUrl: file.originalname };
-    // this.userService.updateUser(updateUserDto, userFromJwt.email);
     return { message: 'success', path: file.path };
   }
 
@@ -167,26 +164,6 @@ export class ChatController {
     await this.chatService.addAdmin(userFromJwt.email, groupInviteDto);
     return { message: 'success' };
   }
-
-  // @Patch('/muteMember')
-  // @UseGuards(JwtAuthGuard)
-  // async muteMember(
-  //   @Body() groupInviteDto: GroupInviteDto,
-  //   @GetUserFromJwt() userFromJwt: UserFromJwt
-  // ): Promise<{ message: string }> {
-  //   await this.chatService.addMutated(userFromJwt.email, groupInviteDto);
-  //   return { message: 'success' };
-  // }
-
-  // @Patch('/removeMuteMember')
-  // @UseGuards(JwtAuthGuard)
-  // async removeMuteMember(
-  //   @Body() groupInviteDto: GroupInviteDto,
-  //   @GetUserFromJwt() userFromJwt: UserFromJwt
-  // ): Promise<{ message: string }> {
-  //   await this.chatService.removeMutated(userFromJwt.email, groupInviteDto);
-  //   return { message: 'success' };
-  // }
 
   @Patch('/removeAdmin')
   @UseGuards(JwtAuthGuard)

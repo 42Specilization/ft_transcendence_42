@@ -24,4 +24,4 @@ export class GameController {
     return (await this.gameService.getGames());
   }
 
-}/* It's a constant that is used to get the user data from intra. */
+}

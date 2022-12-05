@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import { Logger, UseFilters } from '@nestjs/common';
 import {
   ConnectedSocket,
@@ -35,7 +34,7 @@ interface IPlayerInfos {
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({ namespace: 'game' })
 export class GameGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(private readonly gameService: GameService) { }
 
@@ -67,7 +66,6 @@ export class GameGateway
    */
   handleDisconnect(user: Socket) {
     const sockets = this.io.sockets;
-    //TODO: Save game instance on db to use on historic
     this.finishGame(user);
     this.logger.log(`Disconnected socket id: ${user.id}`);
     this.logger.debug(`Number of connected sockets: ${sockets.size}`);
@@ -200,14 +198,14 @@ export class GameGateway
     }
 
     switch (direction) {
-      case 'up':
-        player.paddle.y -= 20;
-        this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
-        break;
-      case 'down':
-        player.paddle.y += 20;
-        this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
-        break;
+    case 'up':
+      player.paddle.y -= 20;
+      this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
+      break;
+    case 'down':
+      player.paddle.y += 20;
+      this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
+      break;
     }
   }
 
@@ -353,7 +351,6 @@ export class GameGateway
         game.player1.socketId === user.id ||
         game.player2.socketId === user.id
       ) {
-        //delete who left
         if (!game.winner) {
           if (game.player1.socketId === user.id) {
             game.player1.quit = true;

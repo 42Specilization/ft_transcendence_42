@@ -31,9 +31,7 @@ function TextInputIcon({ children }: TextInputIconProps) {
 TextInputIcon.displayName = 'TextInputIcon';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface TextInputInputProps extends InputHTMLAttributes<HTMLInputElement> {
-
-}
+export interface TextInputInputProps extends InputHTMLAttributes<HTMLInputElement> {}
 
 function TextInputInput(props: TextInputInputProps) {
   return (

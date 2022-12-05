@@ -22,7 +22,6 @@ export function GroupsTab() {
     ['getAllCardGroup', updateGroup],
     async () => {
       const response = await api.get('/chat/getAllCardGroup', config);
-      console.log(updateGroup);
       return response.data;
     },
     {

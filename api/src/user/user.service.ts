@@ -498,7 +498,7 @@ export class UserService {
     if (!friend || !user)
       throw new InternalServerErrorException('User not found');
     if (user && friend && user.nick === friend.nick) {
-      throw new BadRequestException('You cant add yourself');
+      throw new BadRequestException('You cant challenge yourself');
     }
 
     const newNotify = new Notify();
@@ -519,6 +519,10 @@ export class UserService {
 
     if (this.isBlocked(user, friend) || this.isBlocked(friend, user))
       return;
+
+    // Already in game
+
+    // Offline user
 
     friend.notify?.push(newNotify);
     try {
@@ -563,6 +567,7 @@ export class UserService {
       throw new BadRequestException('friend not found');
 
     const friend = await this.findUserByEmail(requestedNotify.at(0)?.user_source.email as string) as User;
+
     const alreadyFriends = this.alreadyFriends(user, friend);
     if (alreadyFriends) {
       this.popNotification(email, id);
@@ -632,6 +637,12 @@ export class UserService {
     const user = await this.findUserByEmail(email) as User;
     const friend = await this.findUserByNick(friend_login) as User;
 
+    if (user.nick == friend.nick)
+      throw new BadRequestException('You cant remove yourself');
+
+    if (!this.alreadyFriends(user,friend))
+      return ;
+
     user.relations = user.relations.filter((relation) => {
       if (relation.type === 'friend' && relation.passive_user.nick == friend.nick)
         return;
@@ -661,7 +672,6 @@ export class UserService {
  */
   async addBlocked(email: string, friend_login: string) {
     const user = await this.findUserByEmail(email) as User;
-
     const friend = await this.findUserByNick(friend_login) as User;
 
     user.relations = user.relations.filter((relation) => {
@@ -675,7 +685,6 @@ export class UserService {
         return;
       return relation;
     });
-
 
     const relationUser = new Relations();
 

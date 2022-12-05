@@ -1,7 +1,7 @@
-/* eslint-disable no-mixed-spaces-and-tabs */
+/* eslint-disable indent */
 import { IsNotEmpty } from 'class-validator';
 
 export class FriendRequestDto {
 	@IsNotEmpty({ message: 'Inform a valid nick!' })
-	  nick: string;
+  nick: string;
 }
