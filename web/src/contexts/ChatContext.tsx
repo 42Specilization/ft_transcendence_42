@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { Dispatch, SetStateAction, createContext, useState, ReactNode, useEffect } from 'react';
 import { actionsChat } from '../adapters/chat/chatState';
-import { DirectData, GroupData, MsgToClient } from '../others/Interfaces/interfaces';
+import { ChatData, MsgToClient } from '../others/Interfaces/interfaces';
 
 export interface ActiveChatData {
-  chat: DirectData | GroupData;
+  chat: ChatData;
   newMessage: boolean;
   historicMsg: MsgToClient[];
   blocks: number;
@@ -31,7 +31,7 @@ export const ChatContext = createContext<IChatContext>({
   selectedChat: null,
   activeChat: null,
   updateGroup: Date.now(),
-  tabSelected: 'directs',
+  tabSelected: 'Direct',
   setSelectedChat: () => { },
   setActiveChat: () => { },
   setUpdateGroup: () => { },
@@ -47,7 +47,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
   const [selectedChat, setSelectedChat] = useState<SelectedChat | null>(null);
   const [activeChat, setActiveChat] = useState<ActiveChatData | null>(null);
   const [updateGroup, setUpdateGroup] = useState<number>(Date.now());
-  const [tabSelected, setTabSelected] = useState('directs');
+  const [tabSelected, setTabSelected] = useState('Direct');
 
   useEffect(() => {
     actionsChat.initializeSocketChat(setActiveChat, setUpdateGroup);

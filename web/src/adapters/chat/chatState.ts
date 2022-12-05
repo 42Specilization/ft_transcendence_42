@@ -71,7 +71,7 @@ const actionsChat = {
   kickMember(id: string, email: string, login: string) {
     stateChat.socket?.emit('kickMember', { id: id, email: email, login: login });
   },
-  
+
   banMember(id: string, email: string, login: string) {
     stateChat.socket?.emit('banMember', { id: id, email: email, login: login });
   },
@@ -126,8 +126,9 @@ const actionsChat = {
 
   async updateGroup() {
     actionsStatus.updateGroup();
-    if (stateChat.setUpdateGroup)
+    if (stateChat.setUpdateGroup){
       stateChat.setUpdateGroup(Date.now());
+    }
   },
 
   async removeGroup(id: string, login: string) {

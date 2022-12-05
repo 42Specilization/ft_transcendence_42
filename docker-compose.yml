@@ -36,7 +36,7 @@ services:
       - ./.production.env
     volumes:
       - ./dataAssets:/app/data
-    
+
   pgsql:
     image: postgres:alpine
     ports:
@@ -61,11 +61,3 @@ services:
 networks:
   transcendence-network:
     driver: bridge
-
-# volumes:
-#   dataAssets:
-#     driver: local
-#     driver_opts:
-#       type: 'none'
-#       o: 'bind'
-#       device: /home/mavinici/ft_transcendence_42/dataAssets

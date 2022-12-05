@@ -19,7 +19,6 @@ import * as fs from 'fs';
 import { GameEntity } from 'src/game/entities/game.entity';
 import { Notify } from '../notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
-import { NewNotifyDto } from '../notification/dto/notify-dto';
 import { getAssetsPath } from 'src/utils/utils';
 import { ChallengeRequestDto } from './dto/challenge-request.dto';
 
@@ -393,31 +392,38 @@ export class UserService {
     }
   }
 
-  async getFriend(user_email: string, friend_nick: string) {
-    const user = await this.findUserByEmail(user_email);
-    const userValidate = await this.findUserByNick(friend_nick);
-    if (!userValidate || !user)
+  async getProfileUser(owner_email: string, user_nick: string) {
+    const owner = await this.findUserByEmail(owner_email);
+    const user = await this.findUserByNick(user_nick);
+    if (!owner || !user)
       throw new InternalServerErrorException('User not found');
 
-    const friendData = {
-      image_url: userValidate.imgUrl,
-      login: userValidate.nick,
-      matches: userValidate.matches,
-      wins: userValidate.wins,
-      lose: userValidate.lose,
-      name: userValidate.usual_full_name,
+    const profileUser = {
+      image_url: user.imgUrl,
+      login: user.nick,
+      matches: user.matches,
+      wins: user.wins,
+      lose: user.lose,
+      name: user.usual_full_name,
       relation: 'none'
     };
 
-    friendData.relation = this.alreadyFriends(user, userValidate) ? 'friend' : friendData.relation;
-    friendData.relation = (this.isBlocked(user, userValidate) || this.isBlocked(userValidate, user)) ? 'blocked' : friendData.relation;
-    return (friendData);
-  }
+    if (user.nick === owner.nick)
+      profileUser.relation = 'owner';
+    else if (this.alreadyFriends(owner, user))
+      profileUser.relation = 'friend';
+    else if (this.isBlocked(owner, user))
+      profileUser.relation = 'blocked';
+    else if (this.isBlocked(user, owner))
+      profileUser.relation = 'blocker';
 
+    return (profileUser);
+  }
 
   isBlocked(user_passive: User, user_active: User) {
     const blocked = user_active.relations.filter((friendRelation) => {
-      if (friendRelation.type == 'blocked' && friendRelation.passive_user.nick == user_passive.nick)
+      if (friendRelation.type == 'blocked'
+        && friendRelation.passive_user.nick == user_passive.nick)
         return friendRelation;
       return;
     });
@@ -761,35 +767,4 @@ export class UserService {
     }
     throw new BadRequestException('user not found');
   }
-
-  async notifyMessage(user_email: string, receivedNotify: NewNotifyDto) {
-    const user = await this.findUserByEmail(user_email);
-    const target = await this.findUserByNick(receivedNotify.target);
-    if (!user || !target)
-      throw new BadRequestException('User not found notifyMessage');
-
-
-    const newNotify = new Notify();
-    newNotify.type = 'message';
-    newNotify.user_source = user;
-    newNotify.additional_info = receivedNotify.add_info;
-    newNotify.date = new Date(Date.now());
-    if (target.notify?.length === 0) {
-      target.notify = [];
-    }
-
-    target.notify = target.notify.filter((notify) => {
-      if (notify.type === 'message')
-        return;
-      return notify;
-    });
-    target.notify?.push(newNotify);
-
-    try {
-      await target.save();
-    } catch (err) {
-      throw new InternalServerErrorException('Error saving data in db notifyMessage');
-    }
-  }
-
 }

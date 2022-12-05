@@ -1,5 +1,5 @@
 import { formatDate, getUrlImage } from '../../../others/utils/utils';
-import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
+import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
 import './HistoricMatch.scss';
 import { useState } from 'react';
 
@@ -16,22 +16,22 @@ export function HistoricMatch({
   result,
   image_url,
 }: HistoricMatchProps) {
-  const [friendProfileVisible, setFriendProfileVisible] = useState(false);
+  const [friendProfileVisible, setProfileUserVisible] = useState(false);
 
   return (
     <div className='historicMatch'>
       <div
         className='historicMatch__player'
-        onClick={() => setFriendProfileVisible(true)}>
+        onClick={() => setProfileUserVisible(true)}>
         <img src={getUrlImage(image_url)} alt='user image' />
         <div className='historicMatch__player__nick'>{nick}</div>
       </div>
       <p className='historicMatch__infos'>{formatDate(date)}</p>
       <p className='historicMatch__infos'>{result}</p>
       {friendProfileVisible &&
-        <ProfileFriendModal
+        <ProfileUserModal
           login={nick}
-          setFriendProfileVisible={setFriendProfileVisible} />
+          setProfileUserVisible={setProfileUserVisible} />
       }
     </div >
   );

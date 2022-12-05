@@ -22,7 +22,7 @@ export function TFATurnOnModal({
 
   async function handleTFA() {
     const body = {
-      isTFAEnable: true,
+      isTFAEnable: false,
       tfaEmail: tfaEmail,
       tfaValidated: false,
     };

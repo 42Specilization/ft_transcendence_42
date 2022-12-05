@@ -1,0 +1,53 @@
+@import '../../others/styles/global.scss';
+
+$profileUserHeaderHeight: 35px;
+
+.profileUser__header {
+  @include displayFlex();
+  width: 100%;
+  height: $profileUserHeaderHeight;
+  color: white;
+  background-color: $backgroundColor;
+  border-radius: 20px 20px 0 0;
+}
+
+.profileUser__header__list {
+  @include displayFlex(space-around);
+  width: 100%;
+}
+
+.profileUser__header__list__item {
+  @include displayFlex();
+  width: 30%;
+  height: $profileUserHeaderHeight;
+  border-radius: 20px;
+  background-color: $backgroundColor;
+
+  button {
+    @include truncText();
+    font-size: 1.5em;
+    color: white;
+    &:hover {
+      cursor: pointer;
+      color: rgb(74, 71, 71);
+   }
+ }
+}
+
+.profileUser__item__selected {
+  background-color: transparent;
+
+  button {
+    &:hover {
+      cursor: default;
+      color: white;
+   }
+ }
+}
+
+.profileUser__body {
+  @include displayFlex(center, column);
+  width: 100%;
+  height: calc(90% - $profileUserHeaderHeight);
+  overflow: hidden;
+}

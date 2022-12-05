@@ -1,5 +1,5 @@
 import './Button.scss';
-import { Alien } from 'phosphor-react';
+import { User } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import { actionsChat } from '../../adapters/chat/chatState';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
@@ -31,7 +31,7 @@ export function ButtonRemoveAdmin({ id, name }: ButtonRemoveAdminProps) {
         data-html={true}
         data-tip={'Remove Admin'}
       >
-        <Alien size={32} />
+        <User size={32} />
       </button>
       {confirmActionVisible &&
         <ConfirmActionModal

@@ -1,0 +1,55 @@
+@import '../../../others/styles/global.scss';
+
+.profileUser__card {
+  @include displayFlex(space, column);
+  font-size: 1.5em;
+}
+
+.profileUser__card__image {
+  @include displayFlex(center);
+  width: 220px;
+  height: 220px;
+  padding: 10px;
+  border-radius: 50%;
+  background-color: $primaryColor;
+}
+
+.profileUser__card__infos__nick {
+  @include displayFlex(center, row);
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 30px;
+  border-radius: 20px;
+  padding: 5px 10px 5px 10px;
+  background-color: $backgroundColor;
+}
+
+.profileUser__card__infos {
+  margin-top: 15px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-bottom: 10px;
+  background-color: $backgroundColor;
+  border-radius: 20px;
+  padding: 5px 10px 5px 10px;
+}
+
+.profileUser__card__buttons {
+  @include displayFlex(space-around);
+  width: 100%;
+  min-width: 290px;
+  height: 35px;
+  color: white;
+  margin-top: 10px;
+}
+
+@media (min-width:1200px) {
+  .profileUser__card {
+    font-size: 1.5em;
+  }
+
+  .profileUser__card__infos {
+    max-width: 400px;
+  }
+}

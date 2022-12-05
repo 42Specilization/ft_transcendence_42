@@ -19,10 +19,7 @@
 }
 
 .notificationGroupInvite__backSide {
-  @include displayFlex();
-  display: grid;
-  justify-items: center;
-  grid-template-columns: 1fr 1fr;
+  @include displayGrid(2);
   height: 70px;
   border-radius: 10px;
   overflow: hidden;

@@ -4,7 +4,7 @@ import { useContext, useState } from 'react';
 import { NotifyData } from '../../../others/Interfaces/interfaces';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsChat } from '../../../adapters/chat/chatState';
-import { ProfileGroupModal } from '../../ProfileGroupModal/ProfileGroupModal';
+import { ProfileGroupModal } from '../../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
 import { ConfirmActionModal } from '../../ConfirmActionModal/ConfirmActionModal';
 
 interface NotificationGroupInviteProps {
@@ -93,7 +93,7 @@ export function NotificationGroupInvite({ notify }: NotificationGroupInviteProps
               onClose={() => setConfirmActionVisible('')}
               confirmationFunction={handleReject}
             />;
-          }       
+          }
         })()}
 
       </div >

@@ -1,0 +1,65 @@
+@import '../../others/styles/global.scss';
+
+.card__user {
+  @include displayFlex(space-between);
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 50px;
+  overflow: hidden;
+  background-color: $backgroundColor;
+
+  &:hover {
+    cursor: pointer;
+    background-color: $primaryColorHover;
+  }
+}
+
+.card__user__leftSide {
+  @include displayGrid();
+  grid-template-columns: 0.1fr 1fr;
+  justify-items: left;
+}
+
+.card__user__image {
+  @include displayFlex(flex-end, row, flex-end);
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
+  border: solid 2px;
+  border-radius: 50%;
+  background-repeat: none;
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.card__user__name {
+  width: 100%;
+  margin-left: 10px;
+  font-size: x-large;
+  @include truncText();
+}
+
+
+.card__user__rightSide {
+  @include displayFlex(center, row);
+}
+
+.card__user__name__info {
+  @include displayFlex(center, row);
+  padding-right: 20px;
+}
+
+.card__user__menu {
+  @include displayFlex();
+
+}
+
+.card__user__menu__body {
+  background-color: $backgroundColor;
+  top: 45px;
+  transition: height 0.6s, width 0.6s;
+  overflow: hidden;
+  border-radius: 10px;
+  padding: 0px 10px 0px 10px;
+}

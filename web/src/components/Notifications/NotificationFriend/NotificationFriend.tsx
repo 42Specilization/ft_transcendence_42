@@ -3,7 +3,7 @@ import { CheckCircle, Prohibit, UserCircle, XCircle } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import { NotifyData } from '../../../others/Interfaces/interfaces';
 import { actionsStatus } from '../../../adapters/status/statusState';
-import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
+import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { ConfirmActionModal } from '../../ConfirmActionModal/ConfirmActionModal';
 
@@ -13,7 +13,7 @@ interface NotificationFriendProps {
 export function NotificationFriend({ notify }: NotificationFriendProps) {
 
   const [side, setSide] = useState(true);
-  const [friendProfileVisible, setFriendProfileVisible] = useState(false);
+  const [friendProfileVisible, setProfileUserVisible] = useState(false);
   const { api, config, setIntraData } = useContext(IntraDataContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState('');
 
@@ -76,43 +76,43 @@ export function NotificationFriend({ notify }: NotificationFriendProps) {
           <p> Accept </p>
           <CheckCircle size={22} />
         </div>
-        <div className='notificationFriend__backSide__button' onClick={()=> setConfirmActionVisible('reject')}>
+        <div className='notificationFriend__backSide__button' onClick={() => setConfirmActionVisible('reject')}>
           <p> Reject </p>
           <XCircle size={22} />
         </div>
-        <div className='notificationFriend__backSide__button' onClick={()=> setConfirmActionVisible('block')}>
+        <div className='notificationFriend__backSide__button' onClick={() => setConfirmActionVisible('block')}>
           <p> Block </p>
           <Prohibit size={22} />
         </div>
 
         <div className='notificationFriend__backSide__button'
-          onClick={() => setFriendProfileVisible(true)}>
+          onClick={() => setProfileUserVisible(true)}>
           <p> Profile
             <UserCircle size={22} />
           </p>
 
         </div>
         {friendProfileVisible &&
-          <ProfileFriendModal
+          <ProfileUserModal
             login={notify.user_source}
-            setFriendProfileVisible={setFriendProfileVisible} />
+            setProfileUserVisible={setProfileUserVisible} />
         }
 
         {(() => {
-          if (confirmActionVisible === 'reject'){
+          if (confirmActionVisible === 'reject') {
             return <ConfirmActionModal
               title={'Reject friend request?'}
               onClose={() => setConfirmActionVisible('')}
               confirmationFunction={handleReject}
             />;
-          }       
-          if (confirmActionVisible === 'block'){
+          }
+          if (confirmActionVisible === 'block') {
             return <ConfirmActionModal
               title={'Reject friend request?'}
               onClose={() => setConfirmActionVisible('')}
               confirmationFunction={handleBlock}
             />;
-          }       
+          }
         })()}
 
       </div >

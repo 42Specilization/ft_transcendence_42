@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { ValidateTfa } from '../../components/TFA/ValidateTfa/ValidateTfa';
-import { DirectData, GroupData, IntraData } from '../Interfaces/interfaces';
+import { ChatData, IntraData } from '../Interfaces/interfaces';
 import { getInfos } from '../../pages/OAuth/OAuth';
 import { useQuery } from 'react-query';
 import { DoubleBubble } from '../../components/DoubleBubble/DoubleBubble';
@@ -103,9 +103,9 @@ export async function getUserInDb(): Promise<IntraData> {
     const response = await axios(`http://${import.meta.env.VITE_API_HOST}:3000/auth/me`, config);
     const user: IntraData = response.data as IntraData;
     const responseDirects = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/chat/getAllDirects`, config);
-    user.directs = responseDirects.data as DirectData[];
+    user.directs = responseDirects.data as ChatData[];
     const responseGroups = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/chat/getAllGroups`, config);
-    user.groups = responseGroups.data as GroupData[];
+    user.groups = responseGroups.data as ChatData[];
     return (user);
   } catch (err) {
     console.log('error on utils getUserInDb', err);

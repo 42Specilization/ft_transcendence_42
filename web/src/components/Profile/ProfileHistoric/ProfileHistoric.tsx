@@ -14,7 +14,7 @@ export function ProfileHistoric() {
     },
     {
       retry: false,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
     }
   );
 

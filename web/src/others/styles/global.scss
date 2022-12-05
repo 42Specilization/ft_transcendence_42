@@ -3,7 +3,7 @@ $secondaryColor: #2A2634;
 $primaryColorHover: #7C1CED;
 $backgroundColor: rgba(140, 95, 250, 0.30);
 $buttonColor: rgb(90, 20, 145);
-$buttonColorHover:rgb(65, 15, 100);
+$buttonColorHover: rgb(65, 15, 100);
 
 
 $heightWithoutNavBar: calc(100vh - 100px);
@@ -13,18 +13,30 @@ $heightWithoutNavBar: calc(100vh - 100px);
   justify-content: $justify_content;
   flex-direction: $flex_direction;
   align-items: $align-items;
- }
+}
+
+@mixin displayGrid($num_columns: 1, $num_rows: 1, $gap: 0px, $justify_content: center, $align-items: center) {
+  display: grid;
+  grid-template-columns: repeat($num_columns, 1fr);
+  grid-template-rows: repeat($num_rows, 1fr);
+  gap: $gap;
+  justify-items: $justify_content;
+  align-items: $align-items;
+}
 
 @mixin scrollBar($marginTop: 20px, $marginBottom: 20px) {
   overflow-y: scroll;
+
   &::-webkit-scrollbar {
     width: 10px;
     border-radius: 20px;
   }
+
   &::-webkit-scrollbar-thumb {
     border-radius: 20px;
     background-color: rgba(0, 0, 0, 0.2);
   }
+
   &::-webkit-scrollbar-track {
     margin-top: $marginTop;
     margin-bottom: $marginBottom;

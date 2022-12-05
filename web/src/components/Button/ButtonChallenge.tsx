@@ -1,4 +1,5 @@
 import './Button.scss';
+import './ButtonChallenge.scss';
 import { Sword } from 'phosphor-react';
 import { Modal } from '../Modal/Modal';
 import { Challenge } from '../Game/Challenge/Challenge';
@@ -24,6 +25,7 @@ export function ButtonChallenge({ login }: ButtonChallengeProps) {
 
   return (
     <>
+
       {intraData.login !== login &&
         <button className='button__icon'
           onClick={handleChallenge}

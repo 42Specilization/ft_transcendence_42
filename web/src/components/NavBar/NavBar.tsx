@@ -8,22 +8,23 @@ import { Notifications } from '../Notifications/Notifications';
 import { actionsStatus } from '../../adapters/status/statusState';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 import { getUrlImage } from '../../others/utils/utils';
+import { ChatContext } from '../../contexts/ChatContext';
 
 interface NavBarProps {
   Children: any;
 }
 
 export function NavBar({ Children }: NavBarProps) {
+
   const { logout } = useAuth();
 
+  const { activeChat } = useContext(ChatContext);
   const { intraData } = useContext(IntraDataContext);
   const [menuVisible, setMenuVisible] = useState(false);
   const [notifyVisible, setNotifyVisible] = useState(false);
 
   const menuRef: React.RefObject<HTMLDivElement> = useRef(null);
   const notifyRef: React.RefObject<HTMLDivElement> = useRef(null);
-
-
 
   useEffect(() => {
     document.addEventListener('click', handleClickOutside, true);
@@ -57,6 +58,23 @@ export function NavBar({ Children }: NavBarProps) {
     logout();
   }
 
+  function newMessages() {
+    const newMessagesDirects = intraData.directs.reduce((acc, chat) => {
+      // console.log('d', chat.newMessages);
+      if (activeChat && chat.id === activeChat.chat.id)
+        return acc;
+      return acc + chat.newMessages;
+    }, 0);
+    const newMessagesGroups = intraData.groups.reduce((acc, chat) => {
+      // console.log('g', chat.newMessages);
+      if (activeChat && chat.id === activeChat.chat.id)
+        return acc;
+      return acc + chat.newMessages;
+    }, 0);
+
+    return newMessagesDirects + newMessagesGroups;
+  }
+
   return (
     <>
       <div className='navBar'>
@@ -71,22 +89,38 @@ export function NavBar({ Children }: NavBarProps) {
           <li className='navBar__divider' />
 
           <li className='navBar__pages' onClick={(e) => handleClickInside(e)}>
-            <div className='navBar__menu__icon'>
+            <div id='navBar__menu__icon' className='navBar__menu__icon'>
               <List id='navBar__menu__icon' size={40} className='navBar__icons' />
+              {(newMessages() !== 0 && !menuVisible) &&
+                <div id='navBar__menu__icon' className='navBar__chat__newMessage'>
+                  {newMessages() < 99 ? newMessages() : 99}
+                </div>
+              }
             </div>
             <nav ref={menuRef} className='navBar__menu'
               style={{ top: (menuVisible ? '97px' : '-280px') }}>
               <Link to='/game' className='navBar__icons'>
-                <GameController size={32} />
+                <div>
+                  <GameController size={32} />
+                </div>
                 Game
               </Link>
-              <Link to='/chat' className='navBar__icons'>
-                <Chats size={32} />
-                <p>Chats</p>
+              <Link to='/chat' id='navBar__chat__icon' className='navBar__icons' >
+                <div id='navBar__chat__icon' style={{ position: 'relative' }}>
+                  <Chats id='navBar__chat__icon' size={32} />
+                  {newMessages() !== 0 &&
+                    <div id='navBar__chat__icon' className='navBar__chat__newMessage'>
+                      {newMessages() < 99 ? newMessages() : 99}
+                    </div>
+                  }
+                </div>
+                Chats
               </Link>
               <Link to='/community' className='navBar__icons'>
-                <UsersThree size={32} />
-                <p>Community</p>
+                <div>
+                  <UsersThree size={32} />
+                </div>
+                Community
               </Link>
             </nav>
           </li>

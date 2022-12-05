@@ -143,7 +143,7 @@ export class Game {
   }
 
   getRandomDirection(): number {
-    if (getRandomInt(1, 100) % 3) {
+    if (getRandomInt(1, 100) % 2) {
       return (-5);
     } else {
       return (5);

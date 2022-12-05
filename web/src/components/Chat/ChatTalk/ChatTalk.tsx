@@ -1,15 +1,15 @@
 import './ChatTalk.scss';
-import { DirectData, GroupData, MsgToClient, MsgToServer } from '../../../others/Interfaces/interfaces';
+import { ChatData, MsgToClient, MsgToServer } from '../../../others/Interfaces/interfaces';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ArrowBendUpLeft, PaperPlaneRight } from 'phosphor-react';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import { ProfileFriendModal } from '../../ProfileFriendsModal/ProfileFriendsModal';
+import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
 import ReactTooltip from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
-import { ProfileGroupModal } from '../../ProfileGroupModal/ProfileGroupModal';
+import { ProfileGroupModal } from '../../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
 import { getUrlImage } from '../../../others/utils/utils';
 
 // interface ChatTalkProps {
@@ -25,7 +25,7 @@ export function ChatTalk(
     setTabSelected
   } = useContext(ChatContext);
   const { intraData, setIntraData, api, config } = useContext(IntraDataContext);
-  const [friendProfileVisible, setFriendProfileVisible] = useState(false);
+  const [friendProfileVisible, setProfileUserVisible] = useState(false);
   const [profileGroupVisible, setProfileGroupVisible] = useState(false);
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export function ChatTalk(
     setActiveChat(null);
   }
 
-  function initActiveChat(chat: DirectData | GroupData) {
+  function initActiveChat(chat: ChatData) {
     const messages: MsgToClient[] = chat.messages;
     const blocks = Math.floor((messages.length - 1) / 20);
     setActiveChat({
@@ -96,15 +96,15 @@ export function ChatTalk(
         actionsChat.joinChat(chat.id);
         await actionsStatus.newDirect(chat.name, chat.id);
       }
-      setTabSelected('directs');
+      setTabSelected('Direct');
     } else if (selectedChat.type === 'direct') {
       const response = await api.patch('/chat/getDirect', { id: selectedChat?.chat }, config);
       chat = response.data;
-      setTabSelected('directs');
+      setTabSelected('Direct');
     } else {
       const response = await api.patch('/chat/getGroup', { id: selectedChat?.chat }, config);
       chat = response.data;
-      setTabSelected('groups');
+      setTabSelected('Group');
     }
     if (activeChat) {
       exitActiveChat();
@@ -125,8 +125,6 @@ export function ChatTalk(
         msg: event.target[0].value,
       };
       actionsChat.msgToServer(newMessage, activeChat.chat.type);
-      // await api.patch('/user/notifyMessage', { id: activeChat?.chat.id, target: activeChat?.chat.name, add_info: 'direct' }, config);
-      // actionsStatus.newNotify(activeChat?.chat.name as string, 'message');
     }
     event.target[0].value = '';
   }
@@ -201,7 +199,7 @@ export function ChatTalk(
       if (activeChat.chat.type !== 'direct') {
         setProfileGroupVisible(true);
       } else {
-        setFriendProfileVisible(true);
+        setProfileUserVisible(true);
       }
     }
   }
@@ -265,9 +263,9 @@ export function ChatTalk(
             }
           </div>
           {friendProfileVisible &&
-            <ProfileFriendModal
+            <ProfileUserModal
               login={activeChat.chat.name}
-              setFriendProfileVisible={setFriendProfileVisible} />
+              setProfileUserVisible={setProfileUserVisible} />
           }
           {profileGroupVisible &&
             < ProfileGroupModal

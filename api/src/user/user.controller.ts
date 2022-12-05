@@ -27,12 +27,10 @@ import { smtpConfig } from '../config/smtp';
 import { UserDto, UserHistoricDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { FriendRequestDto } from './dto/friend-request.dto';
-// import axios from 'axios';
 import { GetFriendDto } from './dto/get-friend.dto';
-import { NewNotifyDto, NotifyHandlerDto } from 'src/notification/dto/notify-dto';
+import { NotifyHandlerDto } from 'src/notification/dto/notify-dto';
 import { getAssetsPath } from 'src/utils/utils';
 import { ChallengeRequestDto } from './dto/challenge-request.dto';
-// import { NotificationService } from 'src/notification/notification.service';
 
 @Controller('user')
 @ApiTags('user')
@@ -177,15 +175,15 @@ export class UserController {
     return (await this.userService.getUserDTO(userFromJwt.email));
   }
 
-  @Patch('friend')
+  @Patch('profile')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: GetFriendDto })
   async getFriend(
-    @Body() getFriendDto: GetFriendDto,
+    @Body() getProfileUserDto: GetFriendDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
   ) {
-    return await this.userService.getFriend(userFromJwt.email, getFriendDto.nick);
+    return await this.userService.getProfileUser(userFromJwt.email, getProfileUserDto.nick);
   }
 
   /* This method is used to update the user's image. */
@@ -318,14 +316,4 @@ export class UserController {
     return (await this.userService.getCommunity(userFromJwt.email));
   }
 
-  @Patch('/notifyMessage')
-  @UseGuards(JwtAuthGuard)
-  @ApiBody({ type: NewNotifyDto })
-  async notifyMessage(
-    @Body(ValidationPipe) newNotifyDto: NewNotifyDto,
-    @GetUserFromJwt() userFromJwt: UserFromJwt
-  ): Promise<{ message: string }> {
-    await this.userService.notifyMessage(userFromJwt.email, newNotifyDto);
-    return { message: 'success' };
-  }
 }
