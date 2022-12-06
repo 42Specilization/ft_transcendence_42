@@ -78,8 +78,9 @@ export function ProfileGroup({ id, setProfileGroupVisible}: ProfileGroupProps) {
 
   if (!data){
     setProfileGroupVisible(false);
-    return ;
+    return <div className='profileGroup'/>;
   }
+
   return (
     <div className='profileGroup'>
       <div className='profileGroup__infos'>
