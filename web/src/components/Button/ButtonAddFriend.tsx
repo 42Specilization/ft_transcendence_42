@@ -18,7 +18,7 @@ export function ButtonAddFriend({ login }: ButtonAddFriendProps) {
   async function handleAddFriend() {
     try {
       await api.patch('/user/sendFriendRequest', { nick: login }, config);
-      actionsStatus.newNotify(login, 'friend');
+      actionsStatus.newNotify(login);
     } catch (err: any) {
       setError(err.response.data.message);
       setModalErrorVisible(true);

@@ -125,7 +125,7 @@ const actionsChat = {
   },
 
   async updateGroup() {
-    actionsStatus.updateGroup();
+    actionsStatus.updateGroups();
     if (stateChat.setUpdateGroup){
       stateChat.setUpdateGroup(Date.now());
     }

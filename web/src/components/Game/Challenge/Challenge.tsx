@@ -37,7 +37,7 @@ export function Challenge({ nick, path }: ChallengeProps) {
           userTarget: nick
         };
         await api.patch('/user/sendChallengeRequest', challenge, config);
-        actionsStatus.newNotify(nick, 'challenge');
+        actionsStatus.newNotify(nick);
       } catch (err: unknown) {
         setModalErrorChallenge(true);
       }

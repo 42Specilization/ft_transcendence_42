@@ -44,7 +44,7 @@ export function ProfileUserCard({ profileUserData }: ProfileUserCardProps) {
                   <ButtonAddFriend login={login} /> :
                   <ButtonRemoveFriend login={login} />
                 }
-                <ButtonBlockUser login={login} image={image_url} />
+                <ButtonBlockUser login={login} handle={null} params={[]} />
               </>
               :
               <ButtonUnBlockedUser login={login} />

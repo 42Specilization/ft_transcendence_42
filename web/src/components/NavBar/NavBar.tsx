@@ -4,7 +4,7 @@ import logoSmall from '../../assets/logo-small.png';
 import { Bell, BellRinging, Chats, GameController, List, SignOut, UsersThree } from 'phosphor-react';
 import { Link } from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Notifications } from '../Notifications/Notifications';
+import { Notify } from '../Notify/Notify';
 import { actionsStatus } from '../../adapters/status/statusState';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 import { getUrlImage } from '../../others/utils/utils';
@@ -143,7 +143,7 @@ export function NavBar({ Children }: NavBarProps) {
             </div>
             <div ref={notifyRef} className='navBar__notify__body'
               style={{ top: (notifyVisible ? '97px' : '-300px') }}>
-              <Notifications />
+              <Notify />
             </div>
           </li>
 

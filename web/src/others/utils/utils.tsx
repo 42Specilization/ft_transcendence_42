@@ -6,6 +6,7 @@ import { ChatData, GlobalData, IntraData } from '../Interfaces/interfaces';
 import { getInfos } from '../../pages/OAuth/OAuth';
 import { useQuery } from 'react-query';
 import { DoubleBubble } from '../../components/DoubleBubble/DoubleBubble';
+import { response } from 'express';
 
 export function getAccessToken() {
   return (window.localStorage.getItem('token'));
@@ -106,6 +107,79 @@ export async function getStoredData(
   const data: IntraData = JSON.parse(localStore);
   setIntraData(data);
 }
+
+// const responseGlobal
+export async function getGlobalInDb(): Promise<IntraData> {
+  const token = window.localStorage.getItem('token');
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+
+  try {
+    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/auth/me`, config);
+    return response.data;
+  } catch (err) {
+    console.log('error on utils getUserInDb', err);
+    return defaultIntra;
+  }
+}
+
+// const responseDirects
+export async function getGlobalDirects() {
+  const token = window.localStorage.getItem('token');
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+  try {
+    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/chat/getAllDirects`, config);
+    return response.data;
+  } catch (err) {
+    console.log('error on utils getGlobalUsers', err);
+    return [];
+  }
+}
+
+//const responseGroups
+export async function getGlobalGroups() {
+  const token = window.localStorage.getItem('token');
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+  try {
+    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/chat/getAllGroups`, config);
+    return response.data;
+  } catch (err) {
+    console.log('error on utils getGlobalUsers', err);
+    return [];
+  }
+}
+
+
+
+//const responseGlobalUsers
+export async function getGlobalUsers() {
+  const token = window.localStorage.getItem('token');
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+  try {
+    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/user/getCommunity`, config);
+    return response.data;
+  } catch (err) {
+    console.log('error on utils getGlobalUsers', err);
+    return [];
+  }
+}
+
+//const responseGlobalGroups
 
 
 export async function getUserInDb(): Promise<IntraData> {

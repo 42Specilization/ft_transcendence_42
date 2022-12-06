@@ -6,6 +6,7 @@ import { ButtonSearch } from '../../Button/ButtonSearch';
 import { UserData } from '../../../others/Interfaces/interfaces';
 
 export function GlobalTab() {
+
   const { globalData } = useContext(IntraDataContext);
   const [searchActive, setSearchActive] = useState(false);
   const [searchInput, setSearchInput] = useState('');

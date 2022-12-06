@@ -12,27 +12,20 @@ import { actionsStatus } from '../../../adapters/status/statusState';
 import { ProfileGroupModal } from '../../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
 import { getUrlImage } from '../../../others/utils/utils';
 
-// interface ChatTalkProps {
-// }
-
-export function ChatTalk(
-  // { }: ChatTalkProps
-) {
+export function ChatTalk() {
 
   const {
     selectedChat, setSelectedChat,
     activeChat, setActiveChat,
     setTabSelected
   } = useContext(ChatContext);
-  const { intraData, setIntraData, api, config } = useContext(IntraDataContext);
+  const { api, config, intraData, setGlobalData } = useContext(IntraDataContext);
   const [friendProfileVisible, setProfileUserVisible] = useState(false);
   const [profileGroupVisible, setProfileGroupVisible] = useState(false);
 
   useEffect(() => {
     return () => {
-      if (activeChat)
-        api.patch('/chat/setBreakpoint', { chatId: activeChat.chat.id, type: activeChat.chat.type }, config);
-      setActiveChat(null);
+      exitActiveChat()
     };
   }, []);
 
@@ -43,32 +36,32 @@ export function ChatTalk(
   }, [selectedChat]);
 
   async function exitActiveChat() {
-    if (!activeChat)
-      return;
-    api.patch('/chat/setBreakpoint', { chatId: activeChat.chat.id, type: activeChat.chat.type }, config);
-    setIntraData(prev => {
-      if (activeChat.chat.type === 'direct') {
-        return {
-          ...prev,
-          directs: prev.directs.map(key => {
-            if (key.id === activeChat.chat.id) {
-              return { ...key, newMessages: 0 };
-            }
-            return key;
-          })
-        };
-      } else {
-        return {
-          ...prev,
-          groups: prev.groups.map(key => {
-            if (key.id === activeChat.chat.id) {
-              return { ...key, newMessages: 0 };
-            }
-            return key;
-          })
-        };
-      }
-    });
+    if (activeChat) {
+      api.patch('/chat/setBreakpoint', { chatId: activeChat.chat.id, type: activeChat.chat.type }, config);
+      setGlobalData(prev => {
+        if (activeChat.chat.type === 'direct') {
+          return {
+            ...prev,
+            directs: prev.directs.map(key => {
+              if (key.id === activeChat.chat.id) {
+                return { ...key, newMessages: 0 };
+              }
+              return key;
+            })
+          };
+        } else {
+          return {
+            ...prev,
+            groups: prev.groups.map(key => {
+              if (key.id === activeChat.chat.id) {
+                return { ...key, newMessages: 0 };
+              }
+              return key;
+            })
+          };
+        }
+      });
+    }
     setSelectedChat(null);
     setActiveChat(null);
   }

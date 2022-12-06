@@ -162,7 +162,14 @@ export class UserService {
           'notify.user_source',
           'relations',
           'relations.passive_user',
-        ]
+        ],
+        order: {
+          relations: {
+            passive_user: {
+              nick: 'asc',
+            }
+          }
+        }
       });
   }
 
@@ -824,13 +831,22 @@ export class UserService {
         };
       }),
 
-      friends: user.relations.filter((rel) => rel.type === 'friend').map((rel) => {
-        return {
-          status: rel.passive_user.status,
-          login: rel.passive_user.nick,
-          image_url: rel.passive_user.imgUrl,
-        };
-      }),
+      friends: user.relations.filter((rel) => rel.type === 'friend')
+        .map((rel) => {
+          return {
+            status: rel.passive_user.status,
+            login: rel.passive_user.nick,
+            image_url: rel.passive_user.imgUrl,
+          };
+        }).sort((a, b) => {
+          if (a.status !== b.status) {
+            if (a.status === 'offline')
+              return 1;
+            if (b.status === 'offline')
+              return -1;
+          }
+          return a.login.toLowerCase() < b.login.toLowerCase() ? -1 : 1;
+        }),
 
       blocked: user.relations.filter((rel) => rel.type === 'blocked')
         .map((rel) => {

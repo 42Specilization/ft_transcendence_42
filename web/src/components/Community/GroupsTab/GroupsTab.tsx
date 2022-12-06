@@ -28,8 +28,6 @@ export function GroupsTab() {
       setGroupProfile('');
   }, [profileGroupVisible]);
 
-
-
   return (
     <div className='groups__tab' >
       <div className='groups__tab__header'>

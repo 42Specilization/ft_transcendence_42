@@ -11,17 +11,11 @@ interface ButtonRemoveFriendProps {
 
 export function ButtonRemoveFriend({ login }: ButtonRemoveFriendProps) {
 
-  const { api, config, setIntraData } = useContext(IntraDataContext);
+  const { api, config } = useContext(IntraDataContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
   async function handleRemoveFriend() {
     await api.patch('/user/removeFriend', { nick: login }, config);
-    setIntraData((prev) => {
-      return {
-        ...prev,
-        friends: prev.friends.filter((key) => key.login != login)
-      };
-    });
     actionsStatus.removeFriend(login);
   }
 

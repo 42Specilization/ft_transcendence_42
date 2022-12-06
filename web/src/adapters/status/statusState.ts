@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
 import { GlobalData, IntraData, MsgToClient } from '../../others/Interfaces/interfaces';
-import { getUserInDb } from '../../others/utils/utils';
+import { getGlobalDirects, getGlobalGroups, getGlobalInDb, getGlobalUsers } from '../../others/utils/utils';
 import { actionsChat } from '../chat/chatState';
 
 import {
@@ -10,12 +10,6 @@ import {
   CreateSocketStatusOptions,
   socketStatusIOUrl,
 } from './status.socket-io';
-
-export interface UserData {
-  status: string;
-  login: string;
-  image_url: string;
-}
 
 export interface AppStateStatus {
   socket?: Socket;
@@ -59,95 +53,146 @@ const actionsStatus = {
   },
 
   async iAmOnline() {
-    const user = await getUserInDb();
-    stateStatus.socket?.emit('iAmOnline', {
-      login: user.login,
-      image_url: user.image_url
-    });
-  },
-
-  whoIsOnline() {
-    stateStatus.socket?.emit('whoIsOnline');
+    const user = await getGlobalInDb();
+    stateStatus.socket?.emit('iAmOnline', user.login);
   },
 
   async iAmInGame() {
-    const user = await getUserInDb();
-    stateStatus.socket?.emit('iAmInGame', {
-      login: user.login,
-      image_url: user.image_url
-    });
+    const user = await getGlobalInDb();
+    stateStatus.socket?.emit('iAmInGame', user.login);
   },
 
-  whoIsInGame() {
-    stateStatus.socket?.emit('whoIsInGame');
+  async updateUserStatus(login: string, status: string) {
+    if (stateStatus.setGlobalData) {
+      const globalUsers = await getGlobalUsers();
+      stateStatus.setGlobalData(prev => {
+        return {
+          ...prev,
+          friends: prev.friends.map(friend =>
+            login === friend.login ? { ...friend, status: status } : friend)
+            .sort((a, b) => {
+              if (a.status !== b.status) {
+                if (a.status === 'offline')
+                  return 1;
+                if (b.status === 'offline')
+                  return -1;
+              }
+              return a.login.toLowerCase() < b.login.toLowerCase() ? -1 : 1;
+            }),
+          blocked: prev.blocked.map(blocked =>
+            login === blocked.login ? { ...blocked, status: status } : blocked),
+          globalUsers: globalUsers,
+        }
+      });
+    }
   },
 
   changeLogin(login: string) {
     stateStatus.socket?.emit('changeLogin', login);
   },
 
+  updateYourSelfLogin(login: string) {
+    if (stateStatus.setIntraData) {
+      stateStatus.setIntraData((prev) => {
+        return { ...prev, login: login };
+      });
+    }
+  },
+
+  async updateUserLogin(oldLogin: string, newLogin: string) {
+    if (stateStatus.setGlobalData) {
+      const globalUsers = await getGlobalUsers();
+      stateStatus.setGlobalData(prev => {
+        return {
+          ...prev,
+          friends: prev.friends.map(friend =>
+            oldLogin === friend.login ? { ...friend, login: newLogin } : friend)
+            .sort((a, b) => {
+              if (a.status !== b.status) {
+                if (a.status === 'offline')
+                  return 1;
+                if (b.status === 'offline')
+                  return -1;
+              }
+              return a.login.toLowerCase() < b.login.toLowerCase() ? -1 : 1;
+            }),
+          blocked: prev.blocked.map(blocked =>
+            oldLogin === blocked.login ? { ...blocked, login: newLogin } : blocked),
+          globalUsers: globalUsers,
+          directs: prev.directs.map(direct =>
+            oldLogin === direct.name ? { ...direct, name: newLogin } : direct),
+        }
+      });
+    }
+  },
+
   changeImage(image_url: string | undefined) {
-    stateStatus.socket?.emit('changeImage', image_url);
+    stateStatus.socket?.emit('changeImage', image_url as String);
+  },
+
+  updateYourSelfImage(image: string) {
+    if (stateStatus.setIntraData) {
+      stateStatus.setIntraData((prev) => {
+        return { ...prev, image_url: image };
+      });
+    }
+  },
+
+  async updateUserImage(login: string, image: string) {
+    if (stateStatus.setGlobalData) {
+      const globalUsers = await getGlobalUsers();
+      stateStatus.setGlobalData(prev => {
+        return {
+          ...prev,
+          friends: prev.friends.map(friend =>
+            login === friend.login ? { ...friend, image_url: image } : friend),
+          blocked: prev.blocked.map(blocked =>
+            login === blocked.login ? { ...blocked, image_url: image } : blocked),
+          globalUsers: globalUsers,
+          directs: prev.directs.map(direct =>
+            login === direct.name ? { ...direct, image: image } : direct),
+        }
+      });
+    }
+  },
+
+  newNotify(userTarget: string) {
+    stateStatus.socket?.emit('newNotify', userTarget);
+  },
+
+  removeNotify() {
+    stateStatus.socket?.emit('removeNotify');
+  },
+
+  async updateNotify() {
+    if (stateStatus.setGlobalData) {
+      const global = await getGlobalInDb();
+      stateStatus.setGlobalData((prev) => {
+        return { ...prev, notify: global.notify };
+      });
+    }
   },
 
   newFriend(userSource: string) {
     stateStatus.socket?.emit('newFriend', userSource);
   },
 
-  newBlocked() {
-    stateStatus.socket?.emit('newBlocked');
-  },
-
-  newNotify(userTarget: string, type: string) {
-    stateStatus.socket?.emit('newNotify', { login_target: userTarget, type: type });
-  },
-
   removeFriend(friend: string) {
     stateStatus.socket?.emit('removeFriend', friend);
   },
 
-  removeBlocked(blocked: string) {
-    stateStatus.socket?.emit('removeBlocked', blocked);
-  },
-
-  blockFriend(friend: string) {
-    stateStatus.socket?.emit('blockFriend', friend);
-  },
-
-  async updateStatus(user: UserData) {
-    user;
+  async updateFriend() {
     if (stateStatus.setGlobalData) {
-      const user = await getUserInDb();
+      const global = await getGlobalInDb();
       stateStatus.setGlobalData((prev) => {
+        if (prev.friends.length < global.friends.length)
+          return {
+            ...prev,
+            friends: global.friends,
+          };
         return {
           ...prev,
-          directs: user.directs,
-          friends: user.friends,
-        };
-      });
-    }
-    // if (stateStatus.setUpdateUser)
-    // stateStatus.setUpdateUser(Date.now());
-    // trigger
-  },
-  async newDirect(name: string, chat: string) {
-    stateStatus.socket?.emit('newDirect', { name: name, chat: chat });
-    if (stateStatus.setIntraData) {
-      const user = await getUserInDb();
-      stateStatus.setIntraData((prevIntraData) => {
-        return {
-          ...prevIntraData,
-          directs: user.directs,
-        };
-      });
-    }
-  },
-
-  sortFriends() {
-    if (stateStatus.setIntraData) {
-      stateStatus.setIntraData((prevIntraData) => {
-        return {
-          ...prevIntraData, friends: prevIntraData.friends.sort((a, b) => {
+          friends: global.friends.sort((a, b) => {
             if (a.status !== b.status) {
               if (a.status === 'offline')
                 return 1;
@@ -155,162 +200,61 @@ const actionsStatus = {
                 return -1;
             }
             return a.login.toLowerCase() < b.login.toLowerCase() ? -1 : 1;
-          })
-        };
-      });
-    }
-  },
-
-  onlineUsers(onlineUsers: UserData[]) {
-    if (stateStatus.setIntraData) {
-      stateStatus.setIntraData((prevIntraData) => {
-        return {
-          ...prevIntraData, friends: prevIntraData.friends.map(friend => {
-            if (onlineUsers.map(e => e.login).indexOf(friend.login) >= 0) {
-              const updateFriend = onlineUsers.find(e => e.login === friend.login);
-              if (updateFriend)
-                return updateFriend;
-            }
-            return friend;
           }),
         };
       });
-      this.sortFriends();
     }
   },
 
-  updateYourSelf(user: UserData) {
-    if (stateStatus.setIntraData) {
-      stateStatus.setIntraData((prevIntraData) => {
-        return { ...prevIntraData, login: user.login, image_url: user.image_url };
-      });
-    }
+  newBlocked(blocked: string) {
+    stateStatus.socket?.emit('newBlocked', blocked);
   },
 
-  updateUserStatus(user: UserData) {
-    if (stateStatus.setIntraData) {
-      stateStatus.setIntraData((prevIntraData) => {
-        return {
-          ...prevIntraData,
-          friends: prevIntraData.friends.map(friend =>
-            user.login === friend.login ? user : friend)
-        };
-      });
-      this.sortFriends();
-    }
-  },
-
-  updateUserLogin(oldUser: UserData, newUser: UserData) {
-    if (stateStatus.setIntraData) {
-      stateStatus.setIntraData((prevIntraData) => {
-        return {
-          ...prevIntraData,
-          friends: prevIntraData.friends.map(friend =>
-            oldUser.login === friend.login ? newUser : friend),
-          blocked: prevIntraData.blocked.map(blocked =>
-            oldUser.login === blocked.login ? newUser : blocked),
-          directs: prevIntraData.directs.map(direct =>
-            oldUser.login === direct.name ? { ...direct, name: newUser.login } : direct)
-        };
-      });
-      this.sortFriends();
-    }
-  },
-
-  updateUserImage(user: UserData) {
-    if (stateStatus.setIntraData) {
-      stateStatus.setIntraData((prevIntraData) => {
-        return {
-          ...prevIntraData,
-          friends: prevIntraData.friends.map(friend =>
-            user.login === friend.login ? user : friend),
-          directs: prevIntraData.directs.map(direct =>
-            user.login === direct.name ? { ...direct, image: user.image_url } : direct)
-        };
-      });
-    }
-  },
-
-  async updateNotify(type: string) {
-    if (stateStatus.setIntraData) {
-      if (type === 'message' && window.location.pathname.includes('/chat'))
-        return;
-      const user = await getUserInDb();
-      stateStatus.setIntraData((prevIntraData) => {
-        return { ...prevIntraData, notify: user.notify };
-      });
-    }
-  },
-
-  async updateFriend() {
-    if (stateStatus.setIntraData) {
-      const user = await getUserInDb();
-      stateStatus.setIntraData((prevIntraData) => {
-        return {
-          ...prevIntraData,
-          friends: user.friends.map((obj) => {
-
-            if (prevIntraData.friends.map(e => e.login).indexOf(obj.login) >= 0) {
-              const updateFriend = prevIntraData.friends.find(e => e.login === obj.login);
-              if (updateFriend)
-                return updateFriend;
-            }
-            return obj;
-          }),
-          directs: user.directs
-        };
-      });
-      this.whoIsOnline();
-    }
+  removeBlocked(blocked: string) {
+    stateStatus.socket?.emit('removeBlocked', blocked);
   },
 
   async updateBlocked() {
-    if (stateStatus.setIntraData) {
-      const user = await getUserInDb();
-      stateStatus.setIntraData((prevIntraData) => {
-        return { ...prevIntraData, blocked: user.blocked };
-      });
+    if (stateStatus.setGlobalData) {
+      const global = await getGlobalInDb();
+      const directs = await getGlobalDirects();
+      stateStatus.setGlobalData((prev) => {
+        return {
+          ...prev,
+          friends: global.friends,
+          blocked: global.blocked,
+          directs: directs,
+        };
+      })
     }
   },
 
-  async updateFriendBlocked() {
-    if (stateStatus.setIntraData) {
-      const user = await getUserInDb();
-      stateStatus.setIntraData((prevIntraData) => {
-        return {
-          ...prevIntraData,
-          friends: user.friends.map((obj) => {
-            if (prevIntraData.friends.map(e => e.login).indexOf(obj.login) >= 0) {
-              const updateFriend = prevIntraData.friends.find(e => e.login === obj.login);
-              if (updateFriend)
-                return updateFriend;
-            }
-            return obj;
-          }),
-          blocked: user.blocked,
-          directs: user.directs
-        };
+  async newDirect(name: string, chat: string) {
+    stateStatus.socket?.emit('newDirect', { login: name, chat: chat });
+    if (stateStatus.setGlobalData) {
+      const directs = await getGlobalDirects();
+      stateStatus.setGlobalData((prev) => {
+        return { ...prev, directs: directs };
       });
-      this.sortFriends();
     }
   },
 
   async updateDirects(chat: string) {
     actionsChat.joinChat(chat);
-    if (stateStatus.setIntraData) {
-      const user = await getUserInDb();
-      stateStatus.setIntraData((prevIntraData) => {
-        return { ...prevIntraData, directs: user.directs };
+    if (stateStatus.setGlobalData) {
+      const directs = await getGlobalDirects();
+      stateStatus.setGlobalData((prev) => {
+        return { ...prev, directs: directs };
       });
     }
   },
 
   async updateDirectInfos(message: MsgToClient) {
-    if (stateStatus.setIntraData) {
-      stateStatus.setIntraData((prevIntraData) => {
+    if (stateStatus.setGlobalData) {
+      stateStatus.setGlobalData((prev) => {
         return {
-          ...prevIntraData,
-          directs: prevIntraData.directs.map((key) => {
+          ...prev,
+          directs: prev.directs.map((key) => {
             if (key.id === message.chat) {
               return {
                 ...key,
@@ -319,30 +263,24 @@ const actionsStatus = {
               };
             }
             return key;
-          }),
-        };
-      });
-      stateStatus.setIntraData((prevIntraData) => {
-        return {
-          ...prevIntraData,
-          directs: prevIntraData.directs.sort((a, b) => a.date < b.date ? 1 : -1)
+          }).sort((a, b) => a.date < b.date ? 1 : -1),
         };
       });
     }
   },
 
-  async updateGroup() {
-    if (stateStatus.setIntraData) {
-      const user = await getUserInDb();
-      stateStatus.setIntraData((prev) => {
-        return { ...prev, groups: user.groups };
+  async updateGroups() {
+    if (stateStatus.setGlobalData) {
+      const groups = await getGlobalGroups();
+      stateStatus.setGlobalData((prev) => {
+        return { ...prev, groups: groups };
       });
     }
   },
 
   async updateGroupInfos(message: MsgToClient) {
-    if (stateStatus.setIntraData) {
-      stateStatus.setIntraData((prev) => {
+    if (stateStatus.setGlobalData) {
+      stateStatus.setGlobalData((prev) => {
         return {
           ...prev,
           groups: prev.groups.map((key) => {
@@ -354,13 +292,7 @@ const actionsStatus = {
               };
             }
             return key;
-          }),
-        };
-      });
-      stateStatus.setIntraData((prev) => {
-        return {
-          ...prev,
-          groups: prev.groups.sort((a, b) => a.date < b.date ? 1 : -1)
+          }).sort((a, b) => a.date < b.date ? 1 : -1),
         };
       });
     }
