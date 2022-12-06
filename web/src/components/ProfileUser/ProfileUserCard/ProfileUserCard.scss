@@ -44,6 +44,20 @@
   margin-top: 10px;
 }
 
+.profileUser__card__button__challengeOff {
+  @include displayFlex();
+  width: 100%;
+  max-width: 60px;
+  height: 35px;
+  color: white;
+  font-size: 20px;
+  margin-top: 10px;
+  text-align: center;
+  border-radius: 10px;
+  background-color: rgb(70,70,70);
+}
+
+
 @media (min-width:1200px) {
   .profileUser__card {
     font-size: 1.5em;

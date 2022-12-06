@@ -7,15 +7,17 @@ import { IntraDataContext } from '../../contexts/IntraDataContext';
 
 interface ButtonLeaveGroupProps {
   id: string;
+  onLeave: any;
 }
 
-export function ButtonLeaveGroup({ id }: ButtonLeaveGroupProps) {
+export function ButtonLeaveGroup({ id, onLeave}: ButtonLeaveGroupProps) {
 
   const { intraData } = useContext(IntraDataContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
   function handleLeaveGroup() {
     actionsChat.leaveGroup(id, intraData.email);
+    onLeave();
   }
 
   return (

@@ -1,18 +1,22 @@
 import axios, { AxiosInstance } from 'axios';
 import { Dispatch, SetStateAction, createContext, useState, ReactNode, useEffect, useMemo } from 'react';
-import { IntraData } from '../others/Interfaces/interfaces';
+import { GlobalData, IntraData } from '../others/Interfaces/interfaces';
 import { actionsStatus } from '../adapters/status/statusState';
-import { getIntraData } from '../others/utils/utils';
+import { getGlobalData, getIntraData } from '../others/utils/utils';
 
 interface IIntraDataContext {
   intraData: IntraData;
   setIntraData: Dispatch<SetStateAction<IntraData>>;
+
   config: {
     headers: {
       Authorization: string
     }
   },
   api: AxiosInstance
+
+  globalData: GlobalData;
+  setGlobalData: Dispatch<SetStateAction<GlobalData>>;
 }
 
 const defaultIntra: IntraData = {
@@ -26,16 +30,22 @@ const defaultIntra: IntraData = {
   lose: '0',
   isTFAEnable: false,
   tfaValidated: false,
+};
+
+const defaultGlobal: GlobalData = {
+  notify: [],
   friends: [],
   blocked: [],
-  notify: [],
   directs: [],
   groups: [],
+  globalUsers: [],
+  globalGroups: [],
 };
 
 export const IntraDataContext = createContext<IIntraDataContext>({
   intraData: defaultIntra,
   setIntraData: () => { },
+
   config: {
     headers: {
       Authorization: ''
@@ -43,7 +53,10 @@ export const IntraDataContext = createContext<IIntraDataContext>({
   },
   api: axios.create({
     baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
-  })
+  }),
+
+  globalData: defaultGlobal,
+  setGlobalData: () => { },
 });
 
 
@@ -53,6 +66,8 @@ interface IntraDataProviderProps {
 
 export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
   const [intraData, setIntraData] = useState(defaultIntra);
+  const [globalData, setGlobalData] = useState(defaultGlobal);
+
   const config = useMemo(() => {
     return {
       headers: {
@@ -68,11 +83,17 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
 
   useEffect(() => {
     getIntraData(setIntraData);
-    actionsStatus.initializeSocketStatus(setIntraData);
+    getGlobalData(setGlobalData);
+    actionsStatus.initializeSocketStatus(setIntraData, setGlobalData);
+
   }, []);
 
   return (
-    <IntraDataContext.Provider value={{ intraData, setIntraData, api, config }}>
+    <IntraDataContext.Provider value={{
+      intraData, setIntraData,
+      api, config,
+      globalData, setGlobalData,
+    }}>
       {children}
     </IntraDataContext.Provider>
   );

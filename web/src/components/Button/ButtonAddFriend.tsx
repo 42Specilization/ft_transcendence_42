@@ -18,7 +18,7 @@ export function ButtonAddFriend({ login }: ButtonAddFriendProps) {
   async function handleAddFriend() {
     try {
       await api.patch('/user/sendFriendRequest', { nick: login }, config);
-      actionsStatus.newNotify(login, 'friend');
+      actionsStatus.newNotify(login);
     } catch (err: any) {
       setError(err.response.data.message);
       setModalErrorVisible(true);
@@ -36,7 +36,7 @@ export function ButtonAddFriend({ login }: ButtonAddFriendProps) {
       </button>
       {modalErrorVisible &&
         <Modal onClose={() => setModalErrorVisible(false)}>
-          <p style={{ fontSize: '2.5em' }}>{error}</p>
+          <p style={{ fontSize: '2em', textAlign: 'center' }}>{error}</p>
         </Modal>
       }
     </>

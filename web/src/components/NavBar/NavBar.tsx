@@ -4,7 +4,7 @@ import logoSmall from '../../assets/logo-small.png';
 import { Bell, BellRinging, Chats, GameController, List, SignOut, UsersThree } from 'phosphor-react';
 import { Link } from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Notifications } from '../Notifications/Notifications';
+import { Notify } from '../Notify/Notify';
 import { actionsStatus } from '../../adapters/status/statusState';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 import { getUrlImage } from '../../others/utils/utils';
@@ -19,7 +19,7 @@ export function NavBar({ Children }: NavBarProps) {
   const { logout } = useAuth();
 
   const { activeChat } = useContext(ChatContext);
-  const { intraData } = useContext(IntraDataContext);
+  const { intraData, globalData } = useContext(IntraDataContext);
   const [menuVisible, setMenuVisible] = useState(false);
   const [notifyVisible, setNotifyVisible] = useState(false);
 
@@ -59,12 +59,13 @@ export function NavBar({ Children }: NavBarProps) {
   }
 
   function newMessages() {
-    const newMessagesDirects = intraData.directs.reduce((acc, chat) => {
+    const newMessagesDirects = globalData.directs.reduce((acc, chat) => {
       if (activeChat && chat.id === activeChat.chat.id)
         return acc;
       return acc + chat.newMessages;
     }, 0);
-    const newMessagesGroups = intraData.groups.reduce((acc, chat) => {
+
+    const newMessagesGroups = globalData.groups.reduce((acc, chat) => {
       if (activeChat && chat.id === activeChat.chat.id)
         return acc;
       return acc + chat.newMessages;
@@ -127,7 +128,7 @@ export function NavBar({ Children }: NavBarProps) {
 
           <li className='navBar__notify' onClick={(e) => handleClickInside(e)}>
             <div id='navBar__notify__icon' className='navBar__notify__icon'>
-              {intraData.notify.length == 0 ?
+              {!globalData.notify || globalData.notify.length == 0 ?
                 <Bell id='navBar__notify__icon'
                   className='navBar__icons' size={40} />
                 :
@@ -136,14 +137,14 @@ export function NavBar({ Children }: NavBarProps) {
                     className='navBar__icons' size={40} />
                   <div id='navBar__notify__icon'
                     className='notify__icon__notEmpty'>
-                    {intraData.notify.length < 99 ? intraData.notify.length : 99}
+                    {globalData.notify.length < 99 ? globalData.notify.length : 99}
                   </div>
                 </>
               }
             </div>
             <div ref={notifyRef} className='navBar__notify__body'
               style={{ top: (notifyVisible ? '97px' : '-300px') }}>
-              <Notifications />
+              <Notify />
             </div>
           </li>
 

@@ -7,29 +7,21 @@ import { actionsStatus } from '../../adapters/status/statusState';
 
 interface ButtonBlockUserProps {
   login: string;
-  image: string;
+  handle: ((...args: any[]) => void) | null
+  params: any[];
 }
 
-export function ButtonBlockUser({ login, image }: ButtonBlockUserProps) {
+export function ButtonBlockUser({ login, handle, params }: ButtonBlockUserProps) {
 
-  const { api, config, setIntraData } = useContext(IntraDataContext);
+  const { api, config } = useContext(IntraDataContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
   async function handleBlockFriend() {
     await api.patch('/user/addBlocked', { nick: login }, config);
     await api.patch('/chat/deleteDirect', { friend_login: login }, config);
-
-    setIntraData((prev) => {
-      if (login && image)
-        prev.blocked.push({ login: login, image_url: image });
-      return {
-        ...prev,
-        directs: prev.directs.filter((key) => key.name != login),
-        friends: prev.friends.filter((key) => key.login != login),
-      };
-    });
-    if (login)
-      actionsStatus.blockFriend(login);
+    actionsStatus.newBlocked(login);
+    if (handle)
+      handle(...params);
   }
 
   return (

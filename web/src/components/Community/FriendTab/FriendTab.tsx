@@ -2,28 +2,15 @@ import './FriendTab.scss';
 import { useContext, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import ReactTooltip from 'react-tooltip';
-import { actionsStatus } from '../../../adapters/status/statusState';
-import { CardFriend } from './CardFriend/CardFriend';
 import { ButtonSearch } from '../../Button/ButtonSearch';
-import { useQuery } from 'react-query';
+import { UserData } from '../../../others/Interfaces/interfaces';
+import { CardUser } from '../../CardUser/CardUser';
 
 export function FriendTab() {
-  const { intraData } = useContext(IntraDataContext);
 
+  const { globalData } = useContext(IntraDataContext);
   const [searchActive, setSearchActive] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-
-  useQuery(
-    ['getStatus', intraData],
-    async () => {
-      actionsStatus.whoIsOnline();
-      actionsStatus.whoIsInGame();
-    },
-    {
-      retry: false,
-      refetchOnWindowFocus: true,
-    }
-  );
 
   return (
     <div className='friend__tab' >
@@ -38,8 +25,10 @@ export function FriendTab() {
           setSearchActive={setSearchActive} />
       </div>
       <div className='friend__tab__body'>
-        {intraData.friends?.filter((obj) => obj.login.includes(searchInput))
-          .map((obj) => <CardFriend key={Math.random()} friend={obj} />)
+        {globalData.friends.filter((obj: UserData) => obj.login.includes(searchInput))
+          .map((obj: UserData) =>
+            <CardUser key={Math.random()} user={obj} menuHeight={0}>
+            </CardUser>)
         }
       </div>
       <ReactTooltip delayShow={50} />

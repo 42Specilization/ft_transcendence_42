@@ -70,7 +70,7 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
       <div className='createGroup__image'>
         {
           selectedFileUrl ?
-            <img src={selectedFileUrl}  className='createGroup__image__icon' alt='Image Preview'/> :
+            <img src={selectedFileUrl} className='createGroup__image__icon' alt='Image Preview' /> :
             <Image className='createGroup__image__icon' size={150} />
         }
         <div className='createGroup__button_text'>

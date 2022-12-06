@@ -26,7 +26,7 @@ export function ButtonInviteMember({ id }: ButtonInviteMemberProps) {
     try {
       if (inviteName.trim()) {
         await api.patch('/chat/sendGroupInvite', { name: inviteName, groupId: id }, config);
-        actionsStatus.newNotify(inviteName, 'group');
+        actionsStatus.newNotify(inviteName);
         setInviteName('');
         setModalInviteMember(false);
       }

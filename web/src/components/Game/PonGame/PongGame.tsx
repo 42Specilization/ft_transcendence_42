@@ -5,6 +5,7 @@ import { Canvas, drawCircle, drawFillRect, drawNet, drawPowerUpBox, drawText, } 
 import { actionsGame, stateGame } from '../../../adapters/game/gameState';
 import { getEndGameData, getGameData } from './data';
 import './PongGame.scss';
+import { actionsStatus } from '../../../adapters/status/statusState';
 
 export function PongGame() {
 
@@ -91,6 +92,7 @@ export function PongGame() {
 
         case 'q':
         case 'Escape':
+          actionsStatus.iAmLeaveGame();
           window.location.reload();
           break;
 

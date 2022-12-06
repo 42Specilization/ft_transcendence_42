@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
-import { NotifyDto } from 'src/notification/dto/notify-dto';
-import { BlockedDto, FriendsDto } from 'src/relations/dto/relations-dto';
 
 export class UserDto {
   email: string;
@@ -14,14 +12,12 @@ export class UserDto {
   lose: string;
   isTFAEnable: boolean;
   tfaValidated: boolean;
-  notify: NotifyDto[];
-  friends: FriendsDto[];
-  blocked: BlockedDto[];
 }
 
 export class CommunityDto {
-  image_url: string;
+  status: string;
   login: string;
+  image_url: string;
   ratio: string;
 }
 

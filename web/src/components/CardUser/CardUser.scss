@@ -33,6 +33,15 @@
   background-position: 50% 50%;
 }
 
+.card__user__status {
+  position: relative;
+  transform: translate(15%, 15%);
+  width: 35%;
+  height: 35%;
+  border: 2px solid;
+  border-radius: 50%;
+}
+
 .card__user__name {
   width: 100%;
   margin-left: 10px;

@@ -12,7 +12,7 @@ interface ChatTabProps {
 
 export function ChatTab({ tabSelected }: ChatTabProps) {
 
-  const { intraData } = useContext(IntraDataContext);
+  const { globalData } = useContext(IntraDataContext);
   const [searchActive, setSearchActive] = useState(false);
   const [searchInput, setSearchInput] = useState('');
 
@@ -33,14 +33,12 @@ export function ChatTab({ tabSelected }: ChatTabProps) {
       </div>
       < div className='chat__tab__body'>
         {tabSelected === 'Direct' ?
-          intraData.directs &&
-          intraData.directs.filter((obj: ChatData) => obj.name?.includes(searchInput))
+          globalData.directs.filter((obj: ChatData) => obj.name?.includes(searchInput))
             .map((obj: ChatData) => (
               <CardChat key={Math.random()} chat={obj} />
             ))
           :
-          intraData.groups &&
-          intraData.groups.filter((obj: ChatData) => obj.name?.includes(searchInput))
+          globalData.groups.filter((obj: ChatData) => obj.name?.includes(searchInput))
             .map((obj: ChatData) => (
               <CardChat key={Math.random()} chat={obj} />
             ))

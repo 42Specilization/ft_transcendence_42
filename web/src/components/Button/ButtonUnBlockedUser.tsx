@@ -11,17 +11,11 @@ interface ButtonUnBlockedUserProps {
 
 export function ButtonUnBlockedUser({ login }: ButtonUnBlockedUserProps) {
 
-  const { api, config, setIntraData } = useContext(IntraDataContext);
+  const { api, config } = useContext(IntraDataContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
   async function handleUnblock() {
     await api.patch('/user/removeBlocked', { nick: login }, config);
-    setIntraData((prevIntraData) => {
-      return {
-        ...prevIntraData,
-        blocked: prevIntraData.blocked.filter((key) => key.login != login)
-      };
-    });
     actionsStatus.removeBlocked(login);
   }
 
@@ -38,7 +32,7 @@ export function ButtonUnBlockedUser({ login }: ButtonUnBlockedUserProps) {
         <ConfirmActionModal
           title={'Unblock user?'}
           onClose={() => setConfirmActionVisible(false)}
-          confirmationFunction={handleUnblock}
+          confirmationFunction={() => { setConfirmActionVisible(false); handleUnblock(); }}
         />
       }
     </>

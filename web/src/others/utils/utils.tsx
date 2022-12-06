@@ -2,8 +2,7 @@ import axios from 'axios';
 import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { ValidateTfa } from '../../components/TFA/ValidateTfa/ValidateTfa';
-import { ChatData, IntraData } from '../Interfaces/interfaces';
-import { getInfos } from '../../pages/OAuth/OAuth';
+import { GlobalData, IntraData } from '../Interfaces/interfaces';
 import { useQuery } from 'react-query';
 import { DoubleBubble } from '../../components/DoubleBubble/DoubleBubble';
 
@@ -22,7 +21,7 @@ export function RequireAuth({ children }: any) {
     baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
   });
 
-  function logout(){
+  function logout() {
     window.localStorage.removeItem('token');
     window.localStorage.removeItem('userData');
     window.location.href = '/signin';
@@ -30,11 +29,11 @@ export function RequireAuth({ children }: any) {
 
   (async () => {
     await api.get('/auth/validateToken', config)
-      .then((isValid)=>{
-        if(!isValid)
+      .then((isValid) => {
+        if (!isValid)
           logout();
       })
-      .catch(() =>{
+      .catch(() => {
         logout();
       });
   })();
@@ -87,26 +86,119 @@ export function ValidateSignin({ children }: any) {
   return token === null ? children : <Navigate to="/" replace />;
 }
 
+export async function getGlobalInDb() {
+  const token = window.localStorage.getItem('token');
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
 
-/**
- * It gets the data from the local storage, if it doesn't exist, it gets it from the API, and if it
- * doesn't exist, it returns
- * @param setIntraData - Dispatch<SetStateAction<IntraData>>
- * @returns the data that is being parsed from the local storage.
- */
-export async function getStoredData(
-  setIntraData: Dispatch<SetStateAction<IntraData>>
-) {
-  let localStore = window.localStorage.getItem('userData');
-  if (!localStore) {
-    await getInfos();
-    localStore = window.localStorage.getItem('userData');
-    if (!localStore) return;
+  try {
+    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/auth/me`, config);
+    return response.data;
+  } catch (err) {
+    console.log('error on utils getGlobalInDb', err);
+    return defaultIntra;
   }
-  const data: IntraData = JSON.parse(localStore);
-  setIntraData(data);
 }
 
+export async function getGlobalDirects() {
+  const token = window.localStorage.getItem('token');
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+  try {
+    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/chat/getAllDirects`, config);
+    return response.data;
+  } catch (err) {
+    console.log('error on utils getGlobalDirects', err);
+    return [];
+  }
+}
+
+export async function getGlobalGroups() {
+  const token = window.localStorage.getItem('token');
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+  try {
+    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/chat/getAllGroups`, config);
+    return response.data;
+  } catch (err) {
+    console.log('error on utils getGlobalGroups', err);
+    return [];
+  }
+}
+
+export async function getGlobalAllUsers() {
+  const token = window.localStorage.getItem('token');
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+  try {
+    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/user/getCommunity`, config);
+    return response.data;
+  } catch (err) {
+    console.log('error on utils getGlobalAllUsers', err);
+    return [];
+  }
+}
+
+export async function getGlobalAllGroups() {
+  const token = window.localStorage.getItem('token');
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+  try {
+    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/chat/getAllCardGroup`, config);
+    return response.data;
+  } catch (err) {
+    console.log('error on utils getGlobalAllGroups', err);
+    return [];
+  }
+}
+
+export async function getGlobalData(setGlobalData: Dispatch<SetStateAction<GlobalData>>) {
+  const globalData: GlobalData = defaultGlobal;
+
+  const token = window.localStorage.getItem('token');
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+
+  try {
+    const responseGlobal = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/user/getGlobalInfos`, config);
+    const responseDirects = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/chat/getAllDirects`, config);
+    const responseGroups = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/chat/getAllGroups`, config);
+    const responseGlobalUsers = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/user/getCommunity`, config);
+    const responseGlobalGroups = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/chat/getAllCardGroup`, config);
+
+    globalData.notify = responseGlobal.data.notify;
+    globalData.friends = responseGlobal.data.friends;
+    globalData.blocked = responseGlobal.data.blocked;
+    globalData.directs = responseDirects.data;
+    globalData.groups = responseGroups.data;
+    globalData.globalUsers = responseGlobalUsers.data;
+    globalData.globalGroups = responseGlobalGroups.data;
+
+  } catch (err) {
+    console.log('error on utils getGlobalData', err);
+  }
+
+  setGlobalData(globalData);
+  return globalData;
+}
 
 export async function getUserInDb(): Promise<IntraData> {
   const token = window.localStorage.getItem('token');
@@ -117,19 +209,14 @@ export async function getUserInDb(): Promise<IntraData> {
   };
 
   try {
-    const response = await axios(`http://${import.meta.env.VITE_API_HOST}:3000/auth/me`, config);
+    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/auth/me`, config);
     const user: IntraData = response.data as IntraData;
-    const responseDirects = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/chat/getAllDirects`, config);
-    user.directs = responseDirects.data as ChatData[];
-    const responseGroups = await axios.get(`http://${import.meta.env.VITE_API_HOST}:3000/chat/getAllGroups`, config);
-    user.groups = responseGroups.data as ChatData[];
     return (user);
   } catch (err) {
     console.log('error on utils getUserInDb', err);
     return defaultIntra;
   }
 }
-
 
 export async function getIntraData(setIntraData: Dispatch<SetStateAction<IntraData>>) {
   const data = await getUserInDb();
@@ -139,27 +226,6 @@ export async function getIntraData(setIntraData: Dispatch<SetStateAction<IntraDa
 }
 
 
-export async function getIntraDataNotify(intraData: IntraData, setIntraData: Dispatch<SetStateAction<IntraData>>) {
-  const token = window.localStorage.getItem('token');
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  };
-  let data: IntraData;
-  await axios(`http://${import.meta.env.VITE_API_HOST}:3000/auth/me`, config)
-    .then(response => {
-      data = response.data as IntraData;
-      return (data);
-    }).catch(err => {
-      data = defaultIntra;
-      console.log('error on getIntraData', err);
-    });
-  setIntraData((prevIntraData: IntraData) => {
-    return { ...prevIntraData, notify: data.notify };
-  });
-
-}
 
 const defaultIntra: IntraData = {
   email: 'ft_transcendence@gmail.com',
@@ -172,11 +238,16 @@ const defaultIntra: IntraData = {
   lose: '0',
   isTFAEnable: false,
   tfaValidated: false,
+};
+
+const defaultGlobal: GlobalData = {
+  notify: [],
   friends: [],
   blocked: [],
-  notify: [],
   directs: [],
   groups: [],
+  globalUsers: [],
+  globalGroups: [],
 };
 
 export function formatDate(date: string): ReactElement {

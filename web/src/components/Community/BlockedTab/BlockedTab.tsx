@@ -4,10 +4,11 @@ import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import ReactTooltip from 'react-tooltip';
 import { CardUser } from '../../CardUser/CardUser';
 import { ButtonSearch } from '../../Button/ButtonSearch';
+import { UserData } from '../../../others/Interfaces/interfaces';
 
 export function BlockedTab() {
 
-  const { intraData } = useContext(IntraDataContext);
+  const { globalData } = useContext(IntraDataContext);
   const [searchActive, setSearchActive] = useState(false);
   const [searchInput, setSearchInput] = useState('');
 
@@ -24,11 +25,10 @@ export function BlockedTab() {
           setSearchActive={setSearchActive} />
       </div>
       <div className='blocked__tab__body'>
-        {
-          intraData.blocked?.sort((a, b) => a.login < b.login ? -1 : 1)
-            .map((obj) =>
-              <CardUser key={Math.random()} user={obj} menuHeight={0}>
-              </CardUser>)
+        {globalData.blocked.filter((obj: UserData) => obj.login.includes(searchInput))
+          .map((obj: UserData) =>
+            <CardUser key={Math.random()} user={obj} menuHeight={0}>
+            </CardUser>)
         }
       </div>
       <ReactTooltip delayShow={50} />

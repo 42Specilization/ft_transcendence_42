@@ -1,7 +1,7 @@
 import './ProfileGroup.scss';
 import ReactTooltip from 'react-tooltip';
 import { NotePencil, Prohibit, UsersThree } from 'phosphor-react';
-import { useContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { actionsChat } from '../../adapters/chat/chatState';
 import { ChatContext } from '../../contexts/ChatContext';
@@ -19,9 +19,10 @@ import { ButtonInviteMember } from '../Button/ButtonInviteMember';
 
 interface ProfileGroupProps {
   id: string | undefined;
+  setProfileGroupVisible: Dispatch<SetStateAction<boolean>>;
 }
 
-export function ProfileGroup({ id }: ProfileGroupProps) {
+export function ProfileGroup({ id, setProfileGroupVisible}: ProfileGroupProps) {
 
   const { api, config } = useContext(IntraDataContext);
   const { updateGroup } = useContext(ChatContext);
@@ -75,6 +76,10 @@ export function ProfileGroup({ id }: ProfileGroupProps) {
   if (status === 'loading')
     return <div className='profileGroup' />;
 
+  if (!data){
+    setProfileGroupVisible(false);
+    return ;
+  }
   return (
     <div className='profileGroup'>
       <div className='profileGroup__infos'>
@@ -114,7 +119,7 @@ export function ProfileGroup({ id }: ProfileGroupProps) {
       <div className='profileGroup__members'>
         <div className='profileGroup__buttons__top'>
           {havePermission('lowLevel') &&
-            <ButtonSendMessage id={data.id} type={'group'} />
+            <ButtonSendMessage id={data.id} type={'group'} onClick={() => setProfileGroupVisible(false)} />
           }
           {havePermission(data.type === 'public' ? 'lowLevel' : 'middleLevel') &&
             <ButtonInviteMember id={data.id} />
@@ -134,8 +139,8 @@ export function ProfileGroup({ id }: ProfileGroupProps) {
         </div>
         <CardMember data={data} bannedVisible={bannedVisible} havePermission={havePermission} />
         <div className='profileGroup__buttons__button'>
-          {!havePermission('nonLevel') && havePermission('lowLevel') ?
-            <ButtonLeaveGroup id={data.id} /> :
+          {havePermission('nonLevel') && havePermission('lowLevel')?
+            <ButtonLeaveGroup id={data.id} onLeave={()=>setProfileGroupVisible(false)} /> :
             <ButtonJoinGroup id={data.id} type={data.type} />
           }
         </div>

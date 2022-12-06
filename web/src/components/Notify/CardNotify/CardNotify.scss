@@ -1,0 +1,41 @@
+@import '../../../others/styles/global.scss';
+
+.card__notify__content {
+  @include displayFlex(left);
+  width: 100%;
+  height: 70px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  position: relative;
+  background-color: $primaryColor;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.card__notify__frontSide {
+  @include displayFlex(center, column);
+  height: 70px;
+  overflow: hidden;
+  position: absolute;
+  transition: width 1s;
+}
+
+.card__notify__frontSide__nick {
+  font-size: 25px;
+  @include truncText();
+}
+
+.card__notify__frontSide__text {
+  font-size: 20px;
+  @include truncText();
+}
+
+.card__notify__backSide {
+  @include displayFlex(space-around);
+  height: 70px;
+  overflow: hidden;
+  position:absolute;
+  border-radius: 10px;
+  transition: width 1s;
+}

@@ -1,22 +1,20 @@
 import './CardGroup.scss';
 import { LockKey, Shield } from 'phosphor-react';
-import { useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { GroupCardData } from '../../../../others/Interfaces/interfaces';
-import { ProfileGroupModal } from '../../../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
 import { getUrlImage } from '../../../../others/utils/utils';
 
 interface CardGroupProps {
   group: GroupCardData;
+  setGroupProfile: Dispatch<SetStateAction<string>>;
 }
 
-export function CardGroup({ group }: CardGroupProps) {
-
-  const [profileGroupVisible, setProfileGroupVisible] = useState(false);
+export function CardGroup({ group, setGroupProfile }: CardGroupProps) {
 
   function selectProfileGroupVisible(e: any) {
     if (e.target.id === 'card__group__community') {
-      setProfileGroupVisible((prev) => !prev);
+      setGroupProfile(group.id);
     }
   }
 
@@ -45,9 +43,6 @@ export function CardGroup({ group }: CardGroupProps) {
         </div>
         <ReactTooltip delayShow={50} />
       </div >
-      {profileGroupVisible &&
-        <ProfileGroupModal id={group.id} setProfileGroupVisible={setProfileGroupVisible} />
-      }
     </>
   );
 }

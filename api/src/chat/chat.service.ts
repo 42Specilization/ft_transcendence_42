@@ -556,6 +556,7 @@ export class ChatService {
       role: this.getRole(group, user.nick),
       members: group.users.map((user: User) => {
         return {
+          status: user.status,
           login: user.nick,
           image_url: user.imgUrl,
           role: this.getRole(group, user.nick),

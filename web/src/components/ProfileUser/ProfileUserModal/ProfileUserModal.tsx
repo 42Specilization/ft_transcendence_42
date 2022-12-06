@@ -19,7 +19,7 @@ export function ProfileUserModal({ login, setProfileUserVisible }: ProfileUserMo
     <div id='profileUser__modal' className='profileUser__modal' onClick={handleOutsideClick}>
       <div className="profileUser__modal__container">
         <div className="profileUser__modal__container__content">
-          <ProfileUser login={login} />
+          <ProfileUser login={login} setProfileUserVisible={setProfileUserVisible}/>
         </div>
         <div className='profileUser__modal__container__closeButton__div' >
           <button className="profileUser__modal__container__closeButton"

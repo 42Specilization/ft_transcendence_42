@@ -10,10 +10,10 @@ interface ConfirmActionsModalProps {
 
 export function ConfirmActionModal({
   title,
-  onClose = ()=> {}, 
-  id='confirmActionModal',
-  confirmationFunction
-} : ConfirmActionsModalProps){
+  onClose = () => { },
+  id = 'confirmActionModal',
+  confirmationFunction,
+}: ConfirmActionsModalProps) {
   return (
     <>
       <Modal
