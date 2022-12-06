@@ -477,6 +477,8 @@ export class ChatService {
       return 'admin';
     if (group.users.map(e => e.nick).indexOf(nick) >= 0)
       return 'member';
+    if (this.getRelation(group, nick, 'banned'))
+      return 'banned';
     return 'outside';
   }
 
@@ -568,7 +570,7 @@ export class ChatService {
         return {
           login: relation.user_target.nick,
           image_url: relation.user_target.imgUrl,
-          role: 'outside',
+          role: 'banned',
           mutated: false,
         };
       })
