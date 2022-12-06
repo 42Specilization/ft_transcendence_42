@@ -61,13 +61,20 @@ export class StatusGateway
   @SubscribeMessage('iAmInGame')
   async newUserInGame(@ConnectedSocket() client: Socket, @MessageBody() login: string) {
 
-    this.mapUserData.set(client.id, login);
     await this.userService.updateStatus(login, 'in a game');
-    if (this.mapUserData.keyNotOf(login).length == 1) {
-      client.broadcast.emit('updateUserStatus', login, 'in a game');
-    }
+    client.broadcast.emit('updateUserStatus', login, 'in a game');
 
     this.logger.debug(`iAmInGame => Client: ${client.id}, login: |${login}|`);
+  }
+
+  @SubscribeMessage('iAmLeaveGame')
+  async newUserLeaveGame(@ConnectedSocket() client: Socket, @MessageBody() login: string) {
+
+    await this.userService.updateStatus(login, 'online');
+
+    client.broadcast.emit('updateUserStatus', login, 'online');
+
+    this.logger.debug(`iAmLeaveGame => Client: ${client.id}, login: |${login}|`);
   }
 
   async newUserOffline(@ConnectedSocket() client: Socket) {
@@ -119,7 +126,6 @@ export class StatusGateway
 
   @SubscribeMessage('removeNotify')
   handleRemoveNotify(@ConnectedSocket() client: Socket) {
-
     const login = this.mapUserData.valueOf(client.id);
     this.mapUserData.keyOf(login).forEach(socketId =>
       this.server.to(socketId).emit('updateNotify')
@@ -159,7 +165,23 @@ export class StatusGateway
   }
 
   @SubscribeMessage('newBlocked')
-  handleBlockFriend(@ConnectedSocket() client: Socket,
+  handleNewBlocked(@ConnectedSocket() client: Socket,
+    @MessageBody() login_target: string) {
+
+    const login: string = this.mapUserData.valueOf(client.id);
+    this.mapUserData.keyOf(login).forEach(socketId => {
+      this.server.to(socketId).emit('updateBlocked');
+    });
+
+    if (this.mapUserData.hasValue(login_target)) {
+      this.mapUserData.keyOf(login_target).forEach(socketId => {
+        this.server.to(socketId).emit('updateBlocked');
+      });
+    }
+  }
+
+  @SubscribeMessage('removeBlocked')
+  handleREmoveBlocked(@ConnectedSocket() client: Socket,
     @MessageBody() login_target: string) {
 
     const login: string = this.mapUserData.valueOf(client.id);

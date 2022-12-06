@@ -8,10 +8,10 @@ import { ChatTab } from '../../components/Chat/ChatTab/ChatTab';
 export default function Chat() {
 
   const { activeChat, tabSelected, setTabSelected } = useContext(ChatContext);
-  const { intraData } = useContext(IntraDataContext);
+  const { globalData } = useContext(IntraDataContext);
 
   function newMessages(type: string) {
-    const chat = type === 'direct' ? intraData.directs : intraData.groups;
+    const chat = type === 'direct' ? globalData.directs : globalData.groups;
     if (typeof chat === 'undefined' || chat.length === 0)
       return 0;
     return chat.reduce((acc, chat) => {

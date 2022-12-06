@@ -20,7 +20,7 @@ export function ProfileGroupModal({ id, setProfileGroupVisible }: ProfileGroupMo
     <div id='profileGroup__modal' className='profileGroup__modal' onClick={handleOutsideClick}>
       <div className='profileGroup__modal__container'>
         <div className='profileGroup__modal__container__content'>
-          <ProfileGroup id={id} />
+          <ProfileGroup setProfileGroupVisible={setProfileGroupVisible} id={id} />
         </div>
         <div className='profileGroup__modal__container__closeButton__div' >
           <button className='profileGroup__modal__container__closeButton'

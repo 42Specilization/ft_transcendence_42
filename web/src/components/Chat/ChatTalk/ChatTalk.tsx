@@ -25,7 +25,7 @@ export function ChatTalk() {
 
   useEffect(() => {
     return () => {
-      exitActiveChat()
+      exitActiveChat();
     };
   }, []);
 

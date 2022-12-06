@@ -36,7 +36,7 @@ export function ButtonAddFriend({ login }: ButtonAddFriendProps) {
       </button>
       {modalErrorVisible &&
         <Modal onClose={() => setModalErrorVisible(false)}>
-          <p style={{ fontSize: '2.5em' }}>{error}</p>
+          <p style={{ fontSize: '2em', textAlign: 'center' }}>{error}</p>
         </Modal>
       }
     </>

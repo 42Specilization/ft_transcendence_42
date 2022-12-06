@@ -7,20 +7,21 @@ import { Link } from 'react-router-dom';
 interface ButtonSendMessageProps {
   id: string;
   type: string;
+  onClick: any;
   
 }
 
-export function ButtonSendMessage({ id, type }: ButtonSendMessageProps) {
+export function ButtonSendMessage({ id, type, onClick}: ButtonSendMessageProps) {
 
   const { setSelectedChat } = useContext(ChatContext);
 
   function handleSendMessage() {
     setSelectedChat({ chat: id, type: type });
+    onClick();
   }
 
   return (
     <Link to='/chat' className='button__link'>
-
       <button className='button__icon'
         onClick={handleSendMessage}
         data-html={true}

@@ -26,26 +26,28 @@ export function createSocketStatus({
 
   socket.on('connect', async () => {
     actionsStatus.iAmOnline();
+    console.log('ou estou online');
   });
 
   socket.on('updateUserStatus', (login: string, status: string) => {
     actionsStatus.updateUserStatus(login, status);
+    console.log('mudou o status', login, status);
   });
 
   socket.on('updateYourselfLogin', (image: string) => {
     actionsStatus.updateYourSelfLogin(image);
   });
 
-  socket.on('updateUserLogin', (login: string, image: string) => {
-    actionsStatus.updateUserLogin(login, image);
+  socket.on('updateUserLogin', (oldLogin: string, newLogin: string) => {
+    actionsStatus.updateUserLogin(oldLogin, newLogin);
   });
-
+  
   socket.on('updateYourselfImage', (image_url: string) => {
     actionsStatus.updateYourSelfImage(image_url);
   });
-
-  socket.on('updateUserImage', (oldLogin: string, newLogin: string) => {
-    actionsStatus.updateUserLogin(oldLogin, newLogin);
+  
+  socket.on('updateUserImage', (login: string, image: string) => {
+    actionsStatus.updateUserImage(login, image);
   });
 
   socket.on('updateNotify', async () => {
@@ -65,5 +67,4 @@ export function createSocketStatus({
   });
 
   return socket;
-
 }

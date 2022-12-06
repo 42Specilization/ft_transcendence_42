@@ -32,7 +32,7 @@ export function ButtonUnBlockedUser({ login }: ButtonUnBlockedUserProps) {
         <ConfirmActionModal
           title={'Unblock user?'}
           onClose={() => setConfirmActionVisible(false)}
-          confirmationFunction={handleUnblock}
+          confirmationFunction={() => { setConfirmActionVisible(false); handleUnblock(); }}
         />
       }
     </>

@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
-import { NotifyDto } from 'src/notification/dto/notify-dto';
-import { BlockedDto, FriendsDto } from 'src/relations/dto/relations-dto';
 
 export class UserDto {
   email: string;
@@ -14,9 +12,6 @@ export class UserDto {
   lose: string;
   isTFAEnable: boolean;
   tfaValidated: boolean;
-  notify: NotifyDto[];
-  friends: FriendsDto[];
-  blocked: BlockedDto[];
 }
 
 export class CommunityDto {
@@ -29,5 +24,5 @@ export class CommunityDto {
 export class UserHistoricDto {
   @ApiProperty()
   @IsNotEmpty({ message: 'Inform a valid nick!' })
-  login: string;
+    login: string;
 }

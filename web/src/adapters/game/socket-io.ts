@@ -62,7 +62,7 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
 
   socket.on('end-game', (game: Game) => {
     clearInterval(syncBall);
-    actionsStatus.iAmOnline();
+    actionsStatus.iAmLeaveGame();
     actions.updateGame(game);
     actions.disconnectSocket();
   });

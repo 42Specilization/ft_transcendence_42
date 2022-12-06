@@ -19,20 +19,23 @@ export function HistoricMatch({
   const [friendProfileVisible, setProfileUserVisible] = useState(false);
 
   return (
-    <div className='historicMatch'>
-      <div
-        className='historicMatch__player'
-        onClick={() => setProfileUserVisible(true)}>
-        <img src={getUrlImage(image_url)} alt='user image' />
-        <div className='historicMatch__player__nick'>{nick}</div>
-      </div>
-      <p className='historicMatch__infos'>{formatDate(date)}</p>
-      <p className='historicMatch__infos'>{result}</p>
-      {friendProfileVisible &&
+    <>
+      <div className='historicMatch'>
+        <div
+          className='historicMatch__player'
+          onClick={() => setProfileUserVisible(true)}>
+          <img src={getUrlImage(image_url)} alt='user image' />
+          <div className='historicMatch__player__nick'>{nick}</div>
+        </div>
+        <p className='historicMatch__infos'>{formatDate(date)}</p>
+        <p className='historicMatch__infos'>{result}</p>
+      </div >
+      {
+        friendProfileVisible &&
         <ProfileUserModal
           login={nick}
           setProfileUserVisible={setProfileUserVisible} />
       }
-    </div >
+    </>
   );
 }

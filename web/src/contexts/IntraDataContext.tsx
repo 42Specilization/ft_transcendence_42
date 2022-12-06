@@ -30,11 +30,6 @@ const defaultIntra: IntraData = {
   lose: '0',
   isTFAEnable: false,
   tfaValidated: false,
-  friends: [],
-  blocked: [],
-  notify: [],
-  directs: [],
-  groups: [],
 };
 
 const defaultGlobal: GlobalData = {
@@ -90,6 +85,7 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
     getIntraData(setIntraData);
     getGlobalData(setGlobalData);
     actionsStatus.initializeSocketStatus(setIntraData, setGlobalData);
+
   }, []);
 
   return (

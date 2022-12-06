@@ -75,11 +75,6 @@ export interface IntraData {
   lose: string;
   isTFAEnable: boolean;
   tfaValidated: boolean;
-  notify: NotifyData[];
-  friends: UserData[];
-  blocked: UserData[];
-  directs: ChatData[];
-  groups: ChatData[];
 }
 
 export interface ErrResponse {

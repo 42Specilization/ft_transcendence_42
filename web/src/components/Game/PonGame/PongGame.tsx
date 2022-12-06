@@ -1,9 +1,11 @@
+/* eslint-disable indent */
 import { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import { Canvas, drawCircle, drawFillRect, drawNet, drawPowerUpBox, drawText, } from '../Canvas/Canvas';
 import { actions, state } from '../../../adapters/game/gameState';
 import { getEndGameData, getGameData } from './data';
 import './PongGame.scss';
+import { actionsStatus } from '../../../adapters/status/statusState';
 
 export function PongGame() {
 
@@ -76,25 +78,26 @@ export function PongGame() {
   useEffect(() => {
     window.onkeydown = function handleKeyboard(event: KeyboardEvent) {
       switch (event.key) {
-      case 'ArrowUp':
-      case 'w':
-      case 'W':
-        move('up');
-        break;
+        case 'ArrowUp':
+        case 'w':
+        case 'W':
+          move('up');
+          break;
 
-      case 'ArrowDown':
-      case 's':
-      case 'S':
-        move('down');
-        break;
+        case 'ArrowDown':
+        case 's':
+        case 'S':
+          move('down');
+          break;
 
-      case 'q':
-      case 'Escape':
-        window.location.reload();
-        break;
+        case 'q':
+        case 'Escape':
+          actionsStatus.iAmLeaveGame();
+          window.location.reload();
+          break;
 
-      default:
-        break;
+        default:
+          break;
       }
     };
   }, []);

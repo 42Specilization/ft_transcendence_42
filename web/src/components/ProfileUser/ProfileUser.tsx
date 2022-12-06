@@ -1,5 +1,5 @@
 import './ProfileUser.scss';
-import { useState, useContext } from 'react';
+import { useState, useContext, SetStateAction, Dispatch } from 'react';
 import { useQuery } from 'react-query';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 import { ProfileUserGeneral } from './ProfileUserGeneral/ProfileUserGeneral';
@@ -7,9 +7,10 @@ import { ProfileUserHistoric } from './ProfileUserHistoric/ProfileUserHistoric';
 
 interface ProfileUserProps {
   login: string | undefined;
+  setProfileUserVisible: Dispatch<SetStateAction<boolean>>;
 }
 
-export function ProfileUser({ login }: ProfileUserProps) {
+export function ProfileUser({ login,setProfileUserVisible }: ProfileUserProps) {
 
   const [tabSelected, setTabSelected] = useState('General');
   const { api, config } = useContext(IntraDataContext);
@@ -50,7 +51,7 @@ export function ProfileUser({ login }: ProfileUserProps) {
       <div className='profileUser__body'>
         {(() => {
           if (tabSelected === 'General')
-            return <ProfileUserGeneral profileUserData={data} />;
+            return <ProfileUserGeneral setProfileUserVisible={setProfileUserVisible} profileUserData={data} />;
           if (tabSelected === 'Historic')
             return <ProfileUserHistoric login={data.login} />;
         })()}

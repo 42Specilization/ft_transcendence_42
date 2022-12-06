@@ -316,32 +316,6 @@ export class UserService {
       lose: user.lose,
       isTFAEnable: user.isTFAEnable as boolean,
       tfaValidated: user.tfaValidated as boolean,
-      notify: user.notify.map((notify) => {
-        return {
-          id: notify.id,
-          type: notify.type,
-          user_source: notify.user_source?.nick,
-          additional_info: notify.additional_info,
-          date: notify.date,
-        };
-      }),
-
-      friends: user.relations.filter((rel) => rel.type === 'friend').map((rel) => {
-        return {
-          status: rel.passive_user.status,
-          login: rel.passive_user.nick,
-          image_url: rel.passive_user.imgUrl,
-        };
-      }),
-
-      blocked: user.relations.filter((rel) => rel.type === 'blocked')
-        .map((rel) => {
-          return {
-            status: rel.passive_user.status,
-            login: rel.passive_user.nick,
-            image_url: rel.passive_user.imgUrl,
-          };
-        }),
     };
     return userDto;
   }
@@ -578,10 +552,12 @@ export class UserService {
     const friend = await this.findUserByEmail(requestedNotify.at(0)?.user_source.email as string) as User;
 
     const alreadyFriends = this.alreadyFriends(user, friend);
-    if (alreadyFriends) {
-      this.popNotification(email, id);
+    this.popNotification(email, id);
+    if (alreadyFriends) 
       throw new BadRequestException('User already is your friend');
-    }
+
+    if (this.isBlocked(user, friend) || this.isBlocked(friend, user))
+      return ;
 
     const relationUser = new Relations();
     const relationFriend = new Relations();
@@ -815,7 +791,6 @@ export class UserService {
     });
     return usersToReturn;
   }
-
 
   async getGlobalInfos(email: string) {
     const user = (await this.findUserByEmail(email)) as User;

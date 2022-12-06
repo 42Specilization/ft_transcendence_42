@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
-import { GlobalData, IntraData, MsgToClient } from '../../others/Interfaces/interfaces';
-import { getGlobalDirects, getGlobalGroups, getGlobalInDb, getGlobalUsers } from '../../others/utils/utils';
+import { GlobalData, IntraData, MsgToClient, UserData } from '../../others/Interfaces/interfaces';
+import { getGlobalDirects, getGlobalGroups, getGlobalInDb, getGlobalData } from '../../others/utils/utils';
 import { actionsChat } from '../chat/chatState';
 
 import {
@@ -62,9 +62,13 @@ const actionsStatus = {
     stateStatus.socket?.emit('iAmInGame', user.login);
   },
 
+  async iAmLeaveGame() {
+    const user = await getGlobalInDb();
+    stateStatus.socket?.emit('iAmLeaveGame', user.login);
+  },
+
   async updateUserStatus(login: string, status: string) {
     if (stateStatus.setGlobalData) {
-      const globalUsers = await getGlobalUsers();
       stateStatus.setGlobalData(prev => {
         return {
           ...prev,
@@ -81,8 +85,9 @@ const actionsStatus = {
             }),
           blocked: prev.blocked.map(blocked =>
             login === blocked.login ? { ...blocked, status: status } : blocked),
-          globalUsers: globalUsers,
-        }
+          globalUsers: prev.globalUsers.map(globalUser =>
+            login === globalUser.login ? { ...globalUser, status: status } : globalUser),
+        };
       });
     }
   },
@@ -101,7 +106,6 @@ const actionsStatus = {
 
   async updateUserLogin(oldLogin: string, newLogin: string) {
     if (stateStatus.setGlobalData) {
-      const globalUsers = await getGlobalUsers();
       stateStatus.setGlobalData(prev => {
         return {
           ...prev,
@@ -117,17 +121,19 @@ const actionsStatus = {
               return a.login.toLowerCase() < b.login.toLowerCase() ? -1 : 1;
             }),
           blocked: prev.blocked.map(blocked =>
-            oldLogin === blocked.login ? { ...blocked, login: newLogin } : blocked),
-          globalUsers: globalUsers,
+            oldLogin === blocked.login ? { ...blocked, login: newLogin } : blocked)
+            .sort((a,b)=> a.login.toLowerCase() < b.login.toLowerCase() ? -1: 1 ),
+          globalUsers: prev.globalUsers.map(globalUser =>
+            oldLogin === globalUser.login ? { ...globalUser, login: newLogin } : globalUser),
           directs: prev.directs.map(direct =>
             oldLogin === direct.name ? { ...direct, name: newLogin } : direct),
-        }
+        };
       });
     }
   },
 
   changeImage(image_url: string | undefined) {
-    stateStatus.socket?.emit('changeImage', image_url as String);
+    stateStatus.socket?.emit('changeImage', image_url as string);
   },
 
   updateYourSelfImage(image: string) {
@@ -140,7 +146,6 @@ const actionsStatus = {
 
   async updateUserImage(login: string, image: string) {
     if (stateStatus.setGlobalData) {
-      const globalUsers = await getGlobalUsers();
       stateStatus.setGlobalData(prev => {
         return {
           ...prev,
@@ -148,10 +153,11 @@ const actionsStatus = {
             login === friend.login ? { ...friend, image_url: image } : friend),
           blocked: prev.blocked.map(blocked =>
             login === blocked.login ? { ...blocked, image_url: image } : blocked),
-          globalUsers: globalUsers,
+          globalUsers: prev.globalUsers.map(globalUser =>
+            login === globalUser.login ? { ...globalUser, image_url: image } : globalUser),
           directs: prev.directs.map(direct =>
             login === direct.name ? { ...direct, image: image } : direct),
-        }
+        };
       });
     }
   },
@@ -166,7 +172,7 @@ const actionsStatus = {
 
   async updateNotify() {
     if (stateStatus.setGlobalData) {
-      const global = await getGlobalInDb();
+      const global = await getGlobalData(stateStatus.setGlobalData);
       stateStatus.setGlobalData((prev) => {
         return { ...prev, notify: global.notify };
       });
@@ -183,16 +189,17 @@ const actionsStatus = {
 
   async updateFriend() {
     if (stateStatus.setGlobalData) {
-      const global = await getGlobalInDb();
+      const global = await getGlobalData(stateStatus.setGlobalData);
       stateStatus.setGlobalData((prev) => {
-        if (prev.friends.length < global.friends.length)
+        if (prev.friends && prev.friends.length < global.friends.length) {
           return {
             ...prev,
             friends: global.friends,
           };
+        }
         return {
           ...prev,
-          friends: global.friends.sort((a, b) => {
+          friends: global.friends.sort((a: UserData, b: UserData) => {
             if (a.status !== b.status) {
               if (a.status === 'offline')
                 return 1;
@@ -216,7 +223,7 @@ const actionsStatus = {
 
   async updateBlocked() {
     if (stateStatus.setGlobalData) {
-      const global = await getGlobalInDb();
+      const global = await getGlobalData(stateStatus.setGlobalData);
       const directs = await getGlobalDirects();
       stateStatus.setGlobalData((prev) => {
         return {
@@ -225,7 +232,7 @@ const actionsStatus = {
           blocked: global.blocked,
           directs: directs,
         };
-      })
+      });
     }
   },
 
