@@ -6,11 +6,11 @@ import { NotifyData } from '../../others/Interfaces/interfaces';
 import { CardNotify } from './CardNotify/CardNotify';
 import { ButtonBlockUser } from '../Button/ButtonBlockUser';
 import { ButtonNotifyProfile } from '../Button/ButtonNotifyProfile';
-import { actions } from '../../adapters/game/gameState';
 import { ButtonNotifyAction } from '../Button/ButtonNotifyAction';
 import { actionsChat } from '../../adapters/chat/chatState';
 import { actionsStatus } from '../../adapters/status/statusState';
 import { Link } from 'react-router-dom';
+import { actionsGame } from '../../adapters/game/gameState';
 
 export function Notify() {
 
@@ -64,15 +64,15 @@ export function Notify() {
   }
 
   async function handleAcceptChallenge(notify: NotifyData) {
-    actions.initializeSocket();
-    actions.acceptChallenge(Number(notify.additional_info), intraData.login, notify.user_source);
+    actionsGame.initializeSocket();
+    actionsGame.acceptChallenge(Number(notify.additional_info), intraData.login, notify.user_source);
     removeNotify(notify.id);
   }
 
   async function handleRejectChallenge(notify: NotifyData) {
-    actions.initializeSocket();
-    actions.rejectChallenge(notify.additional_info);
-    actions.disconnectSocket();
+    actionsGame.initializeSocket();
+    actionsGame.rejectChallenge(notify.additional_info);
+    actionsGame.disconnectSocket();
     removeNotify(notify.id);
   }
 

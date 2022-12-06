@@ -13,7 +13,6 @@ interface ProfileUserHistoricMatchProps {
 }
 
 export function ProfileUserHistoricMatch({ opponentData }: ProfileUserHistoricMatchProps) {
-
   const { result, date, opponent } = opponentData;
   return (
     <div className='profileUser__historicMatch'>

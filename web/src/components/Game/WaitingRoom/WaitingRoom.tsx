@@ -1,5 +1,6 @@
+/* eslint-disable indent */
 import { useEffect, useState } from 'react';
-import { state } from '../../../adapters/game/gameState';
+import { stateGame } from '../../../adapters/game/gameState';
 import { Modal } from '../../Modal/Modal';
 import { Loader } from '../Loader/Loader';
 import './WaitingRoom.scss';
@@ -10,18 +11,18 @@ export function WaitingRoom() {
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeydown);
-    state.socket?.on('reject-challenge', () => {
+    stateGame.socket?.on('reject-challenge', () => {
       setModalReject(true);
     });
   }, []);
 
   function handleKeydown(event: KeyboardEvent) {
     switch (event.key) {
-    case 'q':
-    case 'Q':
-    case 'Escape':
-      window.location.reload();
-      break;
+      case 'q':
+      case 'Q':
+      case 'Escape':
+        window.location.reload();
+        break;
     }
   }
 

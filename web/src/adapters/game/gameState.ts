@@ -2,7 +2,7 @@ import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
 import { Ball, Rect } from '../../components/Game/Canvas/Canvas';
 import { getAccessToken } from '../../others/utils/utils';
-import { createSocket, CreateSocketOptions, socketIOUrl } from './socket-io';
+import { createSocket, CreateSocketOptions, socketIOUrl } from './game-socket-io';
 
 export interface Score {
   player1: number;
@@ -64,50 +64,50 @@ export interface AppState {
   errorToConnect?: boolean;
 }
 
-const state = proxy<AppState>();
+const stateGame = proxy<AppState>();
 
-const actions = {
+const actionsGame = {
   initializeGame: (isWithPowerUps: boolean): void => {
-    if (state.errorToConnect !== undefined && !state.errorToConnect) {
+    if (stateGame.errorToConnect !== undefined && !stateGame.errorToConnect) {
       return;
     }
     const playerInfos: IPlayerInfos = {
       isWithPowerUps: isWithPowerUps,
-      name: state.name as string
+      name: stateGame.name as string
     };
-    state.socket?.emit('join-game', playerInfos);
+    stateGame.socket?.emit('join-game', playerInfos);
   },
   initializeSocket: (): Socket | void => {
-    if (!state.socket) {
+    if (!stateGame.socket) {
       const createSocketOptions: CreateSocketOptions = {
         accessToken: getAccessToken(),
         socketIOUrl: socketIOUrl,
-        actions: actions,
-        state: state,
+        actionsGame: actionsGame,
+        stateGame: stateGame,
       };
-      state.socket = ref(createSocket(createSocketOptions));
-      return (state.socket);
+      stateGame.socket = ref(createSocket(createSocketOptions));
+      return (stateGame.socket);
     }
 
-    if (!state.socket.connected) {
-      state.socket.connect();
+    if (!stateGame.socket.connected) {
+      stateGame.socket.connect();
       return;
     }
   },
   challengeFriend(nick: string, isWithPowerUps: boolean) {
-    if (state.errorToConnect !== undefined && !state.errorToConnect) {
+    if (stateGame.errorToConnect !== undefined && !stateGame.errorToConnect) {
       return;
     }
     const challengeInfos: IChallenge = {
       isWithPowerUps: isWithPowerUps,
-      userSource: state.name as string,
+      userSource: stateGame.name as string,
       userTarget: nick,
       room: -1
     };
-    state.socket?.emit('challenge', challengeInfos);
+    stateGame.socket?.emit('challenge', challengeInfos);
   },
   acceptChallenge(room: number, userSource: string, userTarget: string) {
-    if (state.errorToConnect !== undefined && !state.errorToConnect) {
+    if (stateGame.errorToConnect !== undefined && !stateGame.errorToConnect) {
       return;
     }
     const challengeInfos: IChallenge = {
@@ -116,74 +116,74 @@ const actions = {
       userTarget: userTarget,
       room: room
     };
-    state.socket?.emit('accept-challenge', challengeInfos);
+    stateGame.socket?.emit('accept-challenge', challengeInfos);
   },
   rejectChallenge(room: string) {
-    if (state.errorToConnect !== undefined && !state.errorToConnect) {
+    if (stateGame.errorToConnect !== undefined && !stateGame.errorToConnect) {
       return;
     }
-    state.socket?.emit('reject-challenge', room);
+    stateGame.socket?.emit('reject-challenge', room);
   },
   updateGame(game?: Game) {
-    state.game = game;
+    stateGame.game = game;
   },
   updateBall(ball: Ball) {
-    if (!state.ball) {
-      state.ball = ball;
+    if (!stateGame.ball) {
+      stateGame.ball = ball;
     } else {
-      state.ball.x = ball.x;
-      state.ball.y = ball.y;
-      state.ball.radius = ball.radius;
+      stateGame.ball.x = ball.x;
+      stateGame.ball.y = ball.y;
+      stateGame.ball.radius = ball.radius;
     }
   },
   updatePlayer(player1: Player, player2: Player) {
-    if (!state.player1 || !state.player2) {
-      state.player1 = player1;
-      state.player2 = player2;
+    if (!stateGame.player1 || !stateGame.player2) {
+      stateGame.player1 = player1;
+      stateGame.player2 = player2;
     } else {
-      state.player1.paddle = player1.paddle;
-      state.player2.paddle = player2.paddle;
+      stateGame.player1.paddle = player1.paddle;
+      stateGame.player2.paddle = player2.paddle;
     }
   },
   updateScore(score: Score) {
-    state.score = score;
+    stateGame.score = score;
   },
   updatePowerUp(powerUp: IPowerUp) {
-    state.powerUp = powerUp;
+    stateGame.powerUp = powerUp;
   },
   disconnectSocket() {
-    if (state.socket?.connected) {
-      state.socket?.disconnect();
+    if (stateGame.socket?.connected) {
+      stateGame.socket?.disconnect();
     }
   },
   leaveGame() {
-    if (state.game) {
-      state.game.hasEnded = true;
-      state.game.msgEndGame = 'You have been disconnected!';
+    if (stateGame.game) {
+      stateGame.game.hasEnded = true;
+      stateGame.game.msgEndGame = 'You have been disconnected!';
     }
     this.disconnectSocket();
   },
   setIsPlayer() {
-    if (state.socket && state.game) {
-      if (state.socket?.id === state.player1?.socketId
-        || state.socket?.id === state.player2?.socketId) {
-        state.isPlayer = true;
+    if (stateGame.socket && stateGame.game) {
+      if (stateGame.socket?.id === stateGame.player1?.socketId
+        || stateGame.socket?.id === stateGame.player2?.socketId) {
+        stateGame.isPlayer = true;
       } else {
-        state.isPlayer = false;
+        stateGame.isPlayer = false;
       }
     } else {
-      state.isPlayer = false;
+      stateGame.isPlayer = false;
     }
   },
   updateServerError(serverError: boolean) {
-    state.serverError = serverError;
+    stateGame.serverError = serverError;
     this.leaveGame();
   },
   updateName(name: string) {
-    state.name = name;
+    stateGame.name = name;
   }
 };
 
-export type AppActions = typeof actions;
+export type AppActions = typeof actionsGame;
 
-export { state, actions };
+export { stateGame, actionsGame };

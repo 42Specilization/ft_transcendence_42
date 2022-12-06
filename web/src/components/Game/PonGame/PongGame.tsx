@@ -2,14 +2,14 @@
 import { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import { Canvas, drawCircle, drawFillRect, drawNet, drawPowerUpBox, drawText, } from '../Canvas/Canvas';
-import { actions, state } from '../../../adapters/game/gameState';
+import { actionsGame, stateGame } from '../../../adapters/game/gameState';
 import { getEndGameData, getGameData } from './data';
 import './PongGame.scss';
 import { actionsStatus } from '../../../adapters/status/statusState';
 
 export function PongGame() {
 
-  const currentState = useSnapshot(state);
+  const currentState = useSnapshot(stateGame);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const context: CanvasRenderingContext2D | undefined | null = canvasRef.current?.getContext('2d');
   const img = document.getElementById('powerUp-box');
@@ -105,7 +105,7 @@ export function PongGame() {
   useEffect(() => {
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
-        actions.leaveGame();
+        actionsGame.leaveGame();
       }
     });
   }, []);

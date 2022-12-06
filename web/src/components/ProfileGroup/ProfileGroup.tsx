@@ -43,6 +43,7 @@ export function ProfileGroup({ id, setProfileGroupVisible}: ProfileGroupProps) {
     }
   );
 
+  console.log(data);
   useEffect(() => {
     if (selectedFile)
       handleSubmit();
@@ -66,9 +67,9 @@ export function ProfileGroup({ id, setProfileGroupVisible}: ProfileGroupProps) {
     if (level === 'middleLevel')
       return data.role === 'owner' || data.role === 'admin';
     if (level === 'lowLevel')
-      return data.role !== 'outside' || data.role !== 'banned';
+      return data.role === 'owner' || data.role === 'admin' || data.role === 'member';
     if (level === 'nonLevel')
-      return data.role !== 'banned';
+      return data.role === 'banned';
     return false;
   }
 
@@ -137,9 +138,9 @@ export function ProfileGroup({ id, setProfileGroupVisible}: ProfileGroupProps) {
           }
         </div>
         <CardMember data={data} bannedVisible={bannedVisible} havePermission={havePermission} />
-        <div className='profileGroup__buttons__botton'>
-          {havePermission('nonLevel') ?
-            <ButtonLeaveGroup id={data.id} onLeave={()=>setProfileGroupVisible(false)}/> :
+        <div className='profileGroup__buttons__button'>
+          {havePermission('nonLevel') && havePermission('lowLevel')?
+            <ButtonLeaveGroup id={data.id} onLeave={()=>setProfileGroupVisible(false)} /> :
             <ButtonJoinGroup id={data.id} type={data.type} />
           }
         </div>

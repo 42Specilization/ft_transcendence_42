@@ -1,7 +1,7 @@
 import './Challenge.scss';
 import { useSnapshot } from 'valtio';
 import { useContext, useEffect, useState } from 'react';
-import { actions, state } from '../../../adapters/game/gameState';
+import { actionsGame, stateGame } from '../../../adapters/game/gameState';
 import { Checkbox } from '../../Checkbox/Checkbox';
 import { Link } from 'react-router-dom';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
@@ -18,17 +18,17 @@ export function Challenge({ nick, path }: ChallengeProps) {
   const [powerUp, setPowerUp] = useState<boolean>(false);
   const [modalErrorChallenge, setModalErrorChallenge] = useState<boolean>(false);
   const { intraData, api, config } = useContext(IntraDataContext);
-  const currentState = useSnapshot(state);
+  const currentState = useSnapshot(stateGame);
 
   useEffect(() => {
     if (currentState.name !== intraData.login) {
-      actions.updateName(intraData.login);
+      actionsGame.updateName(intraData.login);
     }
   }, [intraData]);
 
   function handleChallengeGame() {
-    const socket = actions.initializeSocket();
-    actions.challengeFriend(nick, powerUp);
+    const socket = actionsGame.initializeSocket();
+    actionsGame.challengeFriend(nick, powerUp);
     socket?.on('game-room', async (room) => {
       try {
         const challenge = {

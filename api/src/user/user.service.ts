@@ -552,12 +552,16 @@ export class UserService {
     const friend = await this.findUserByEmail(requestedNotify.at(0)?.user_source.email as string) as User;
 
     const alreadyFriends = this.alreadyFriends(user, friend);
-    this.popNotification(email, id);
-    if (alreadyFriends) 
+    if (alreadyFriends) {
+      this.popNotification(email, id);
       throw new BadRequestException('User already is your friend');
-
-    if (this.isBlocked(user, friend) || this.isBlocked(friend, user))
+    }
+    
+    if (this.isBlocked(user, friend) || this.isBlocked(friend, user)){
+      this.popNotification(email, id);
       return ;
+    }
+  
 
     const relationUser = new Relations();
     const relationFriend = new Relations();
@@ -643,7 +647,6 @@ export class UserService {
     try {
       await user.save();
       await friend.save();
-      return;
     } catch (err) {
       throw new InternalServerErrorException('Error saving notify remove');
     }
