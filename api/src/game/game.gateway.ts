@@ -35,7 +35,7 @@ interface IPlayerInfos {
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({ namespace: 'game' })
 export class GameGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(
     private readonly gameService: GameService,
@@ -207,14 +207,14 @@ export class GameGateway
     }
 
     switch (direction) {
-      case 'up':
-        player.paddle.y -= 20;
-        this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
-        break;
-      case 'down':
-        player.paddle.y += 20;
-        this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
-        break;
+    case 'up':
+      player.paddle.y -= 20;
+      this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
+      break;
+    case 'down':
+      player.paddle.y += 20;
+      this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
+      break;
     }
   }
 
