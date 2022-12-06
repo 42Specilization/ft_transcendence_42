@@ -1,19 +1,19 @@
 import './WatchGame.scss';
 import { useSnapshot } from 'valtio';
 import { useEffect, useState } from 'react';
-import { actions, Game, state } from '../../../adapters/game/gameState';
+import { actionsGame, Game, stateGame } from '../../../adapters/game/gameState';
 import { getNameLimited } from '../../../others/utils/utils';
 
 export function WatchGame() {
 
-  const currentState = useSnapshot(state);
+  const currentState = useSnapshot(stateGame);
   const [gameList, setGameList] = useState<Game[]>([]);
 
   const handleWatchLiveGame = (game: Game) => {
     if (game.hasEnded) {
       return;
     }
-    actions.updateGame(game);
+    actionsGame.updateGame(game);
     currentState.socket?.emit('watch-game', game.room);
   };
 

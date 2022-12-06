@@ -14,14 +14,14 @@ import { IntraDataProvider } from './contexts/IntraDataContext';
 import { ChatProvider } from './contexts/ChatContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { useEffect } from 'react';
-import { state } from './adapters/game/gameState';
+import { stateGame } from './adapters/game/gameState';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 export default function AppRouter() {
   const queryClient = new QueryClient();
   useEffect(() => {
     window.onpopstate = () => {
-      if (state.socket || state.game) {
+      if (stateGame.socket || stateGame.game) {
         window.location.reload();
       }
     };

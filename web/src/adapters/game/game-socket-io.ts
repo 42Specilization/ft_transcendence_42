@@ -9,13 +9,13 @@ export const socketIOUrl =
 export interface CreateSocketOptions {
   accessToken?: string | undefined | null;
   socketIOUrl: string;
-  state: AppState;
-  actions: AppActions;
+  stateGame: AppState;
+  actionsGame: AppActions;
 }
 
 const FPS = 40;
 
-export function createSocket({ accessToken, socketIOUrl, actions, state }: CreateSocketOptions): Socket {
+export function createSocket({ accessToken, socketIOUrl, actionsGame, stateGame }: CreateSocketOptions): Socket {
 
   let syncBall: NodeJS.Timer;
 
@@ -28,20 +28,20 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
 
   socket.on('start-game', (game: Game) => {
     actionsStatus.iAmInGame();
-    actions.updateGame(game);
-    actions.setIsPlayer();
+    actionsGame.updateGame(game);
+    actionsGame.setIsPlayer();
     updateBallEmit();
     setTimeout(() => { syncBall = setInterval(updateBallEmit, 1000 / FPS); }, 1000);
   });
 
 
   socket.on('update-game', (game: Game) => {
-    actions.updateGame(game);
-    actions.setIsPlayer();
+    actionsGame.updateGame(game);
+    actionsGame.setIsPlayer();
   });
 
   socket.on('update-player', (player1: Player, player2: Player) => {
-    actions.updatePlayer(player1, player2);
+    actionsGame.updatePlayer(player1, player2);
   });
 
   socket.on('update-ball', (ball: Ball, updateResult: boolean) => {
@@ -49,43 +49,43 @@ export function createSocket({ accessToken, socketIOUrl, actions, state }: Creat
       clearInterval(syncBall);
       setTimeout(() => { syncBall = setInterval(updateBallEmit, 1000 / FPS); }, 1000);
     }
-    actions.updateBall(ball);
+    actionsGame.updateBall(ball);
   });
 
   socket.on('update-score', (score: Score) => {
-    actions.updateScore(score);
+    actionsGame.updateScore(score);
   });
 
   socket.on('update-powerUp', (powerUp: IPowerUp) => {
-    actions.updatePowerUp(powerUp);
+    actionsGame.updatePowerUp(powerUp);
   });
 
   socket.on('end-game', (game: Game) => {
     clearInterval(syncBall);
     actionsStatus.iAmOnline();
-    actions.updateGame(game);
-    actions.disconnectSocket();
+    actionsGame.updateGame(game);
+    actionsGame.disconnectSocket();
   });
 
   socket.on('specs', (game: Game) => {
-    if (!state.isPlayer) {
-      actions.updateGame(game);
+    if (!stateGame.isPlayer) {
+      actionsGame.updateGame(game);
     }
   });
 
   socket.on('connect_error', () => {
-    actions.updateServerError(true);
+    actionsGame.updateServerError(true);
     setTimeout(() => window.location.reload(), 10000);
   });
 
   socket.on('user-already-on-connected', () => {
-    actions.updateServerError(true);
+    actionsGame.updateServerError(true);
     setTimeout(() => window.location.reload(), 10000);
   });
 
   function updateBallEmit() {
-    if (state.game?.hasStarted && !state.game.hasEnded && state.isPlayer && state.player1?.socketId === state.socket?.id) {
-      state.socket?.emit('update-ball', state.game?.room);
+    if (stateGame.game?.hasStarted && !stateGame.game.hasEnded && stateGame.isPlayer && stateGame.player1?.socketId === stateGame.socket?.id) {
+      stateGame.socket?.emit('update-ball', stateGame.game?.room);
     }
   }
 

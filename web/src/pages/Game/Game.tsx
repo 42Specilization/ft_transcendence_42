@@ -2,7 +2,7 @@ import { useSnapshot } from 'valtio';
 import { GameMenu } from '../../components/Game/GameMenu/GameMenu';
 import { PongGame } from '../../components/Game/PonGame/PongGame';
 import { WaitingRoom } from '../../components/Game/WaitingRoom/WaitingRoom';
-import { actions, state } from '../../adapters/game/gameState';
+import { actionsGame, stateGame } from '../../adapters/game/gameState';
 import './Game.scss';
 import { useContext, useEffect, useState } from 'react';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
@@ -12,13 +12,13 @@ import { Modal } from '../../components/Modal/Modal';
 export default function Game() {
 
   const { intraData } = useContext(IntraDataContext);
-  const currentState = useSnapshot(state);
+  const currentState = useSnapshot(stateGame);
 
   const [gameNotFound, setGameNotFound] = useState<boolean>(false);
 
   useEffect(() => {
     if (currentState.name !== intraData.login) {
-      actions.updateName(intraData.login);
+      actionsGame.updateName(intraData.login);
     }
   }, [intraData]);
 

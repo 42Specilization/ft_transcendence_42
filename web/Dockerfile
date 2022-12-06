@@ -2,7 +2,7 @@
 # BUILD FOR PRODUCTION #
 ########################
 
-FROM node:18.12.1-alpine as builder
+FROM node:lts-alpine as builder
 
 ENV NODE_ENV build
 
@@ -21,7 +21,7 @@ RUN npm run build \
 #      PRODUCTION      #
 ########################
 
-FROM node:18.12.1-alpine as production
+FROM node:lts-alpine as production
 
 EXPOSE 80
 
