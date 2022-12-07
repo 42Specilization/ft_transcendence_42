@@ -4,6 +4,7 @@ import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { CreateGameDto } from './dto/createGame.dto';
 import { GameEntity } from './entities/game.entity';
+import { IPlayer } from './interface/game.interfaces';
 
 @Injectable()
 export class GameService {
@@ -35,6 +36,14 @@ export class GameService {
     await this.userService.saveNewGame(winner, game);
     await this.userService.saveNewGame(loser, game);
 
+  }
+
+  async isBlocked(player1: IPlayer, player2: IPlayer) {
+    const user1 = await this.userService.findUserByNick(player1.name);
+    const user2 = await this.userService.findUserByNick(player2.name);
+    if (!user1 || !user2)
+      return true;
+    return this.userService.isBlocked(user1, user2) || this.userService.isBlocked(user2, user1);
   }
 
   async getGames() {

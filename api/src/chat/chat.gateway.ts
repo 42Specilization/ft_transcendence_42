@@ -63,7 +63,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   async handleLeaveChat(@ConnectedSocket() client: Socket, @MessageBody() chat: string) {
 
     client.leave(chat);
-
     this.logger.debug(`Client ${client.id} leave a chat: |${chat}|`);
   }
 
@@ -155,6 +154,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   @SubscribeMessage('getUpdateGroup')
   async handleGetUpdateGroup(@MessageBody() id: string) {
     this.server.to(id).emit('updateGroup');
+  }
+
+  @SubscribeMessage('getGlobalUpdateGroup')
+  async handleGlobalUpdateGroup(
+    // @MessageBody() id: string
+  ) {
+    this.server.emit('updateGlobalGroup');
   }
 
   @SubscribeMessage('msgToServer')

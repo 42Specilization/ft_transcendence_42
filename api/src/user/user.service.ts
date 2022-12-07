@@ -556,12 +556,12 @@ export class UserService {
       this.popNotification(email, id);
       throw new BadRequestException('User already is your friend');
     }
-    
-    if (this.isBlocked(user, friend) || this.isBlocked(friend, user)){
+
+    if (this.isBlocked(user, friend) || this.isBlocked(friend, user)) {
       this.popNotification(email, id);
-      return ;
+      return;
     }
-  
+
 
     const relationUser = new Relations();
     const relationFriend = new Relations();

@@ -36,6 +36,10 @@ export function createSocketChat({
     actionsChat.updateGroup();
   });
 
+  socket.on('updateGlobalGroup', () => {
+    actionsChat.updateGlobalGroup();
+  });
+
   socket.on('removeGroup', (id: string, login: string) => {
     actionsChat.removeGroup(id, login);
   });
