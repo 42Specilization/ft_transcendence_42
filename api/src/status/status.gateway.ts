@@ -53,8 +53,8 @@ export class StatusGateway
     if (this.mapUserData.keyOf(login).length == 1) {
       await this.userService.updateStatus(login, 'online');
       client.broadcast.emit('updateUserStatus', login, 'online');
+      this.server.emit('updateUserProfile', login);
     }
-
     this.logger.debug(`iAmOnline => Client: ${client.id}, login: |${login}|`);
   }
 
@@ -63,6 +63,7 @@ export class StatusGateway
 
     await this.userService.updateStatus(login, 'in a game');
     client.broadcast.emit('updateUserStatus', login, 'in a game');
+    this.server.emit('updateUserProfile', login);
 
     this.logger.debug(`iAmInGame => Client: ${client.id}, login: |${login}|`);
   }
@@ -73,6 +74,7 @@ export class StatusGateway
     await this.userService.updateStatus(login, 'online');
 
     client.broadcast.emit('updateUserStatus', login, 'online');
+    this.server.emit('updateUserProfile', login);
 
     this.logger.debug(`iAmLeaveGame => Client: ${client.id}, login: |${login}|`);
   }
@@ -82,7 +84,8 @@ export class StatusGateway
     const login: string = this.mapUserData.valueOf(client.id);
     if (this.mapUserData.keyOf(login).length == 1) {
       await this.userService.updateStatus(login, 'offline');
-      client.broadcast.emit('updateUserStatus', login, 'offline',);
+      client.broadcast.emit('updateUserStatus', login, 'offline');
+      this.server.emit('updateUserProfile', login);
     }
     this.mapUserData.delete(client.id);
 
@@ -102,6 +105,7 @@ export class StatusGateway
     this.mapUserData.keyNotOf(newLogin).forEach(socketId =>
       this.server.to(socketId).emit('updateUserLogin', oldLogin, newLogin)
     );
+    this.server.emit('updateUserProfile', newLogin);
   }
 
   @SubscribeMessage('changeImage')
@@ -115,6 +119,7 @@ export class StatusGateway
     this.mapUserData.keyNotOf(login).forEach(socketId =>
       this.server.to(socketId).emit('updateUserImage', login, image_url)
     );
+    this.server.emit('updateUserProfile', login);
   }
 
   @SubscribeMessage('newNotify')
@@ -204,6 +209,22 @@ export class StatusGateway
     if (this.mapUserData.hasValue(login)) {
       this.mapUserData.keyOf(login).forEach(socketId => {
         this.server.to(socketId).emit('updateDirects', chat);
+      });
+    }
+  }
+
+  @SubscribeMessage('updateSelectedUserProfile')
+  handleUpdateSelectedUserProfile(@ConnectedSocket() client: Socket,
+    @MessageBody() login_target: string) {
+
+    const login: string = this.mapUserData.valueOf(client.id);
+    this.mapUserData.keyOf(login).forEach(socketId => {
+      this.server.to(socketId).emit('updateUserProfile', login_target);
+    });
+
+    if (this.mapUserData.hasValue(login_target)) {
+      this.mapUserData.keyOf(login_target).forEach(socketId => {
+        this.server.to(socketId).emit('updateUserProfile', login);
       });
     }
   }

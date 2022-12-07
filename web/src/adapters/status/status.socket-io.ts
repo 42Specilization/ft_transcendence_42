@@ -85,5 +85,9 @@ export function createSocketStatus({
     actionsStatus.updateGroupProfile(id);
   });
 
+  socket.on('updateUserProfile', (login: string) => {
+    actionsStatus.updateUserProfile(login);
+  });
+
   return socket;
 }

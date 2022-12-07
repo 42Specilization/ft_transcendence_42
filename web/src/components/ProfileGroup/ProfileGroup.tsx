@@ -3,7 +3,6 @@ import ReactTooltip from 'react-tooltip';
 import { NotePencil, Prohibit, UsersThree } from 'phosphor-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { ChatContext } from '../../contexts/ChatContext';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 import { CardMember } from './CardMember/CardMember';
 import { ChangeName } from './ChangeName/ChangeName';
@@ -15,6 +14,7 @@ import { ButtonJoinGroup } from '../Button/ButtonJoinGroup';
 import { ButtonLeaveGroup } from '../Button/ButtonLeaveGroup';
 import { ButtonInviteMember } from '../Button/ButtonInviteMember';
 import { actionsStatus } from '../../adapters/status/statusState';
+import { UserData } from '../../others/Interfaces/interfaces';
 
 
 interface ProfileGroupProps {
@@ -24,18 +24,12 @@ interface ProfileGroupProps {
 
 export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) {
 
-  const { api, config } = useContext(IntraDataContext);
-  const { updateGroupProfile } = useContext(ChatContext);
+  const { api, config, updateUserProfile, updateGroupProfile } = useContext(IntraDataContext);
   const [updateQuery, setUpdateQuery] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File>();
   const [modalChangeName, setModalChangeName] = useState(false);
   const [modalChangeSecurity, setModalChangeSecurity] = useState(false);
   const [bannedVisible, setBannedVisible] = useState(false);
-
-  useEffect(() => {
-    if (updateGroupProfile.id === id)
-      setUpdateQuery(updateGroupProfile.change);
-  }, [updateGroupProfile]);
 
   const { data, status } = useQuery(
     ['getGroupInfos', updateQuery],
@@ -48,6 +42,16 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
       refetchOnWindowFocus: false,
     }
   );
+
+  useEffect(() => {
+    if (data && data.members && data.members.map((e: UserData) => e.login).indexOf(updateUserProfile.login) >= 0)
+      setUpdateQuery(updateUserProfile.change);
+  }, [updateUserProfile]);
+
+  useEffect(() => {
+    if (updateGroupProfile.id === id)
+      setUpdateQuery(updateGroupProfile.change);
+  }, [updateGroupProfile]);
 
   useEffect(() => {
     if (selectedFile)

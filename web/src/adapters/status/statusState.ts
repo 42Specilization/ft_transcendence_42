@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
-import { ActiveChatData, UpdateGroupProfile } from '../../contexts/ChatContext';
+import { ActiveChatData } from '../../contexts/ChatContext';
+import { UpdateGroupProfile, UpdateUserProfile } from '../../contexts/IntraDataContext';
 import { GlobalData, IntraData, MsgToClient, UserData } from '../../others/Interfaces/interfaces';
 import { getGlobalDirects, getGlobalGroups, getGlobalInDb, getGlobalData, getGlobalAllGroups, getGlobalAllUsers } from '../../others/utils/utils';
 import { actionsChat } from '../chat/chatState';
@@ -17,7 +18,8 @@ export interface AppStateStatus {
   setIntraData?: Dispatch<SetStateAction<IntraData>> | null;
   setGlobalData?: Dispatch<SetStateAction<GlobalData>> | null;
   setActiveChat?: Dispatch<SetStateAction<ActiveChatData | null>> | null;
-  setUpdateProfileGroup?: Dispatch<SetStateAction<UpdateGroupProfile>> | null;
+  setUpdateUserProfile?: Dispatch<SetStateAction<UpdateUserProfile>> | null;
+  setUpdateGroupProfile?: Dispatch<SetStateAction<UpdateGroupProfile>> | null;
 }
 
 const stateStatus = proxy<AppStateStatus>({});
@@ -28,7 +30,8 @@ const actionsStatus = {
     setIntraData: Dispatch<SetStateAction<IntraData>>,
     setGlobalData: Dispatch<SetStateAction<GlobalData>>,
     setActiveChat: Dispatch<SetStateAction<ActiveChatData | null>>,
-    setUpdateProfileGroup: Dispatch<SetStateAction<UpdateGroupProfile>>
+    setUpdateUserProfile: Dispatch<SetStateAction<UpdateUserProfile>>,
+    setUpdateGroupProfile: Dispatch<SetStateAction<UpdateGroupProfile>>
   ): void => {
     if (!stateStatus.socket) {
       const createSocketOptions: CreateSocketStatusOptions = {
@@ -40,7 +43,8 @@ const actionsStatus = {
       stateStatus.setIntraData = ref(setIntraData);
       stateStatus.setGlobalData = ref(setGlobalData);
       stateStatus.setActiveChat = ref(setActiveChat);
-      stateStatus.setUpdateProfileGroup = ref(setUpdateProfileGroup);
+      stateStatus.setUpdateGroupProfile = ref(setUpdateGroupProfile);
+      stateStatus.setUpdateUserProfile = ref(setUpdateUserProfile);
       return;
     }
 
@@ -49,7 +53,8 @@ const actionsStatus = {
       stateStatus.setIntraData = ref(setIntraData);
       stateStatus.setGlobalData = ref(setGlobalData);
       stateStatus.setActiveChat = ref(setActiveChat);
-      stateStatus.setUpdateProfileGroup = ref(setUpdateProfileGroup);
+      stateStatus.setUpdateGroupProfile = ref(setUpdateGroupProfile);
+      stateStatus.setUpdateUserProfile = ref(setUpdateUserProfile);
       return;
     }
   },
@@ -420,9 +425,18 @@ const actionsStatus = {
   },
 
   updateGroupProfile(id: string) {
-    if (stateStatus.setUpdateProfileGroup) {
-      stateStatus.setUpdateProfileGroup({ change: Date.now(), id: id });
+    if (stateStatus.setUpdateGroupProfile) {
+      stateStatus.setUpdateGroupProfile({ change: Date.now(), id: id });
     }
+  },
+
+  updateSelectedUserProfile(login_target: string) {
+    stateStatus.socket?.emit('updateSelectedUserProfile', login_target);
+  },
+
+  updateUserProfile(login: string) {
+    if (stateStatus.setUpdateUserProfile)
+      stateStatus.setUpdateUserProfile({ change: Date.now(), login: login });
   },
 
 };
