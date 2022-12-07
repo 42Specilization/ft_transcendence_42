@@ -24,8 +24,8 @@ export function ButtonUnBlockedUser({ login }: ButtonUnBlockedUserProps) {
     <>
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
-        data-html={true}
-        data-tooltip-content={'Unblock'}
+      //data-html={true}
+      //data-tooltip-content={'Unblock'}
       >
         <UserMinus size={32} />
       </button>

@@ -29,8 +29,8 @@ export function ButtonBlockUser({ login, handle, params }: ButtonBlockUserProps)
     <>
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
-        data-html={true}
-        data-tooltip-content={'Block User'}
+      //data-html={true}
+      //data-tooltip-content={'Block User'}
       >
         <Prohibit size={32} />
       </button>

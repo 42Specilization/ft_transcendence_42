@@ -17,8 +17,8 @@ export function ButtonNotifyAction({ type, handle, params }: ButtonNotifyActionP
     <>
       <button className='button__icon'
         onClick={handleAction}
-        data-html={true}
-        data-tooltip-content={type}
+      //data-html={true}
+      //data-tooltip-content={type}
       >
         {type === 'Accept' ?
           <Check size={32} /> :

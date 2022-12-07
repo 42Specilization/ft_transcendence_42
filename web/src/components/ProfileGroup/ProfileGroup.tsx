@@ -1,5 +1,5 @@
 import './ProfileGroup.scss';
-import { Tooltip } from 'react-tooltip';
+//import { Tooltip } from 'react-tooltip';
 import { NotePencil, Prohibit, UsersThree } from 'phosphor-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
@@ -154,8 +154,8 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
             {havePermission('middleLevel') &&
               <button className='button__icon'
                 onClick={() => setBannedVisible(prev => !prev)}
-                data-html={true}
-                data-tooltip-content={bannedVisible ? 'Member List' : 'Banned List'}
+              //data-html={true}
+              //data-tooltip-content={bannedVisible ? 'Member List' : 'Banned List'}
               >
                 {bannedVisible ?
                   <UsersThree size={32} /> :
@@ -176,7 +176,7 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
             }
           </div>
         </div>
-        <Tooltip delayShow={50} />
+        {/* <Tooltip delayShow={50} /> */}
       </div >
       {
         profileUserVisible !== '' &&

@@ -33,8 +33,8 @@ export function ButtonNotifyProfile({ id, type }: ButtonNotifyProfileProps) {
     <>
       <button className='button__icon'
         onClick={handleShowProfile}
-        data-html={true}
-        data-tooltip-content={`${type} Profile`}
+      //data-html={true}
+      //data-tooltip-content={`${type} Profile`}
       >
         {type === 'User' ?
           <User size={32} /> :

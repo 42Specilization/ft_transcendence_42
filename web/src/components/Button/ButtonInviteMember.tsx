@@ -40,8 +40,8 @@ export function ButtonInviteMember({ id }: ButtonInviteMemberProps) {
     <>
       <button className='button__icon'
         onClick={() => setModalInviteMember(true)}
-        data-html={true}
-        data-tooltip-content={'Invite User'}
+      //data-html={true}
+      //data-tooltip-content={'Invite User'}
       >
         <UserPlus size={32} />
       </button>

@@ -24,8 +24,8 @@ export function ButtonRemoveFriend({ login }: ButtonRemoveFriendProps) {
     <>
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
-        data-html={true}
-        data-tooltip-content={'Remove Friend'}
+      //data-html={true}
+      //data-tooltip-content={'Remove Friend'}
       >
         <UserMinus size={32} />
       </button>

@@ -47,8 +47,8 @@ export function ButtonJoinGroup({ id, type }: ButtonJoinGroupProps) {
     <>
       <button className='button__icon'
         onClick={selectJoinGroup}
-        data-html={true}
-        data-tooltip-content={'Join Group'}
+      //data-html={true}
+      //data-tooltip-content={'Join Group'}
       >
         <SignIn size={32} />
       </button>

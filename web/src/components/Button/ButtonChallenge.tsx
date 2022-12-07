@@ -29,8 +29,8 @@ export function ButtonChallenge({ login }: ButtonChallengeProps) {
       {intraData.login !== login &&
         <button className='button__icon'
           onClick={handleChallenge}
-          data-html={true}
-          data-tooltip-content={'Challenge Player'}
+        //data-html={true}
+        //data-tooltip-content={'Challenge Player'}
         >
           <Sword size={32} />
         </button>}

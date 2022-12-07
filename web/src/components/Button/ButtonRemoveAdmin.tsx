@@ -29,8 +29,8 @@ export function ButtonRemoveAdmin({ id, name }: ButtonRemoveAdminProps) {
     <>
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
-        data-html={true}
-        data-tooltip-content={'Remove Admin'}
+      //data-html={true}
+      //data-tooltip-content={'Remove Admin'}
       >
         <User size={32} />
       </button>

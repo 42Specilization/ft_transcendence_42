@@ -1,6 +1,6 @@
 import './ChatMessage.scss';
 import ReactDOMServer from 'react-dom/server';
-import { Tooltip } from 'react-tooltip';
+//import { Tooltip } from 'react-tooltip';
 import { MsgToClient } from '../../../others/Interfaces/interfaces';
 import { formatDate, getUrlImage } from '../../../others/utils/utils';
 
@@ -22,12 +22,12 @@ export function ChatMessage({ user, message }: ChatMessageProps) {
         style={{ backgroundImage: `url(${getUrlImage(message.user.image)})` }}
       />
       <p
-        data-html={true}
-        data-tooltip-content={ReactDOMServer.renderToString(formatDate(message.date.toString()))}
+      //data-html={true}
+      //data-tooltip-content={ReactDOMServer.renderToString(formatDate(message.date.toString()))}
       >
         {message.msg}
       </p>
-      <Tooltip className='chat__message__date' delayShow={250} />
+      {/* <Tooltip delayShow={250} /> */}
     </div>
   );
 }

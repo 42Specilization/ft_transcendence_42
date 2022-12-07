@@ -10,7 +10,7 @@ interface ButtonLeaveGroupProps {
   onLeave: any;
 }
 
-export function ButtonLeaveGroup({ id, onLeave}: ButtonLeaveGroupProps) {
+export function ButtonLeaveGroup({ id, onLeave }: ButtonLeaveGroupProps) {
 
   const { intraData } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
@@ -24,8 +24,8 @@ export function ButtonLeaveGroup({ id, onLeave}: ButtonLeaveGroupProps) {
     <>
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
-        data-html={true}
-        data-tooltip-content={'Leave Group'}
+      //data-html={true}
+      //data-tooltip-content={'Leave Group'}
       >
         <SignOut size={32} />
       </button>

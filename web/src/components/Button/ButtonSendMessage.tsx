@@ -8,10 +8,10 @@ interface ButtonSendMessageProps {
   id: string;
   type: string;
   onClick: any;
-  
+
 }
 
-export function ButtonSendMessage({ id, type, onClick}: ButtonSendMessageProps) {
+export function ButtonSendMessage({ id, type, onClick }: ButtonSendMessageProps) {
 
   const { setSelectedChat } = useContext(ChatContext);
 
@@ -24,8 +24,8 @@ export function ButtonSendMessage({ id, type, onClick}: ButtonSendMessageProps) 
     <Link to='/chat' className='button__link'>
       <button className='button__icon'
         onClick={handleSendMessage}
-        data-html={true}
-        data-tooltip-content={'Send Message'}
+      //data-html={true}
+      //data-tooltip-content={'Send Message'}
       >
         <TelegramLogo size={32} />
       </button>

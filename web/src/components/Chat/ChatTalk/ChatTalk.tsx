@@ -5,7 +5,7 @@ import { PaperPlaneRight, X } from 'phosphor-react';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { GlobalContext } from '../../../contexts/GlobalContext';
 import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
-import { Tooltip } from 'react-tooltip';
+//import { Tooltip } from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { ProfileGroupModal } from '../../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
@@ -137,8 +137,8 @@ export function ChatTalk() {
             <div
               className='chat__talk__header__user'
               onClick={() => selectGroupOrFriendVisible()}
-              data-html={true}
-              data-tooltip-content={`${activeChat.chat?.name} profile`}
+            //data-html={true}
+            //data-tooltip-content={`${activeChat.chat?.name} profile`}
             >
               <div
                 className='chat__talk__header__user__icon'
@@ -162,7 +162,7 @@ export function ChatTalk() {
               <PaperPlaneRight size={30} />
             </button>
           </form>
-          <Tooltip className='chat__friends__header__icon__tip' delayShow={50} />
+          {/* <Tooltip delayShow={50} /> */}
           {profileUserVisible !== '' &&
             <ProfileUserModal
               login={activeChat.chat.name}
