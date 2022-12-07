@@ -1,6 +1,6 @@
 import './ChatTab.scss';
 import { useContext, useState } from 'react';
-import { Tooltip } from 'react-tooltip';
+//import { Tooltip } from 'react-tooltip';
 import { GlobalContext } from '../../../contexts/GlobalContext';
 import { ChatData } from '../../../others/Interfaces/interfaces';
 import { CardChat } from '../CardChat/CardChat';
@@ -44,7 +44,6 @@ export function ChatTab({ tabSelected }: ChatTabProps) {
             ))
         }
       </div>
-      <Tooltip delayShow={50} />
     </div>
   );
 }

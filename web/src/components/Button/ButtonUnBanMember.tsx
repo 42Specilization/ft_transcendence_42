@@ -4,6 +4,8 @@ import { useContext, useState } from 'react';
 import { actionsChat } from '../../adapters/chat/chatState';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 
 interface ButtonUnBanMemberProps {
   id: string;
@@ -21,12 +23,14 @@ export function ButtonUnBanMember({ id, name }: ButtonUnBanMemberProps) {
 
   return (
     <>
-      <button className='button__icon'
+      <button
+        id='unBanMember_button'
+        className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
-        data-html={true}
         data-tooltip-content={'UnBan Member'}
       >
         <UserMinus size={32} />
+        <Tooltip anchorId='unBanMember_button' delayShow={50} />
       </button>
       {confirmActionVisible &&
         <ConfirmActionModal

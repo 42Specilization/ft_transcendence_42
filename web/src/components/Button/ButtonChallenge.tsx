@@ -5,6 +5,8 @@ import { Modal } from '../Modal/Modal';
 import { Challenge } from '../Game/Challenge/Challenge';
 import { useContext, useState } from 'react';
 import { GlobalContext } from '../../contexts/GlobalContext';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 
 interface ButtonChallengeProps {
   login: string;
@@ -27,12 +29,14 @@ export function ButtonChallenge({ login }: ButtonChallengeProps) {
     <>
 
       {intraData.login !== login &&
-        <button className='button__icon'
+        <button
+          id='challenge_button'
+          className='button__icon'
           onClick={handleChallenge}
-          data-html={true}
           data-tooltip-content={'Challenge Player'}
         >
           <Sword size={32} />
+          <Tooltip anchorId='challenge_button' delayShow={50} />
         </button>}
       {
         challengeModal &&

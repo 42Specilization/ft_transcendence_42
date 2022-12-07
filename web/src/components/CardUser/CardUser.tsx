@@ -4,7 +4,6 @@ import { Children, Dispatch, SetStateAction, useContext, useState } from 'react'
 import { GlobalContext } from '../../contexts/GlobalContext';
 import { getUrlImage } from '../../others/utils/utils';
 import { ButtonMenu } from '../Button/ButtonMenu';
-import { Tooltip } from 'react-tooltip';
 
 interface CardUserProps {
   user: UserData;
@@ -30,7 +29,6 @@ export function CardUser({ user, menuHeight, setProfileUserVisible, children }: 
         <div id='cardUser' className='card__user__image'
           style={{ backgroundImage: `url(${getUrlImage(user.image_url)})` }}>
           <div id='cardUser' className='card__user__status'
-            data-html={true}
             data-tooltip-content={user.status}
             style={{
               backgroundColor:
@@ -69,7 +67,6 @@ export function CardUser({ user, menuHeight, setProfileUserVisible, children }: 
             <div style={{ width: '60px' }}></div>
         }
       </div>
-      <Tooltip delayShow={50} />
     </div>
   );
 }

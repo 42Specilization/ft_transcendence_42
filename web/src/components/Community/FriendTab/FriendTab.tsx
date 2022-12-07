@@ -1,7 +1,7 @@
 import './FriendTab.scss';
 import { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '../../../contexts/GlobalContext';
-import { Tooltip } from 'react-tooltip';
+//import { Tooltip } from 'react-tooltip';
 import { ButtonSearch } from '../../Button/ButtonSearch';
 import { UserData } from '../../../others/Interfaces/interfaces';
 import { CardUser } from '../../CardUser/CardUser';
@@ -44,7 +44,6 @@ export function FriendTab() {
               </CardUser>)
           }
         </div>
-        <Tooltip delayShow={50} />
       </div >
       {profileUserVisible !== '' &&
         <ProfileUserModal login={profileUserVisible}

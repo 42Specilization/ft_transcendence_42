@@ -4,6 +4,8 @@ import { GlobalContext } from '../../contexts/GlobalContext';
 import { actionsStatus } from '../../adapters/status/statusState';
 import { useContext, useState } from 'react';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 
 interface ButtonRemoveFriendProps {
   login: string;
@@ -22,12 +24,14 @@ export function ButtonRemoveFriend({ login }: ButtonRemoveFriendProps) {
 
   return (
     <>
-      <button className='button__icon'
+      <button
+        id='removeFriend_button'
+        className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
-        data-html={true}
         data-tooltip-content={'Remove Friend'}
       >
         <UserMinus size={32} />
+        <Tooltip anchorId='removeFriend_button' delayShow={50} />
       </button>
       {confirmActionVisible &&
         <ConfirmActionModal

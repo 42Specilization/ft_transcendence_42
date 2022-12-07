@@ -10,7 +10,7 @@ export function ChatTalkBody() {
   const { activeChat, setActiveChat } = useContext(ChatContext);
   const { intraData } = useContext(GlobalContext);
 
-  function changeBlock(start: number, size: number, newCurrent: number) {
+  function changeViewMessage(start: number, size: number, current: number) {
     setActiveChat(prev => {
       if (!prev)
         return prev;
@@ -20,39 +20,32 @@ export function ChatTalkBody() {
           ...prev.chat,
           messages: prev.historicMsg.slice(start, size)
         },
-        currentBlock: newCurrent,
+        currentMessage: current,
       };
     });
-    setTimeout(() => {
-      const body = refBody.current;
-      if (body && body.scrollHeight > body.offsetHeight) {
-        body.scrollTop = body.scrollHeight / 2;
-      }
-    }, 500);
+    // setTimeout(() => {
+    // }, 1);
+    const body = refBody.current;
+    if (body && body.scrollHeight > body.offsetHeight) {
+      body.scrollTop = body.scrollHeight / 2;
+    }
   }
 
 
   async function handleScroll(e: any) {
-    if (!activeChat || activeChat.historicMsg.length <= 20)
+    if (!activeChat || activeChat.historicMsg.length <= 30)
       return;
+    const current = activeChat.currentMessage;
 
-    const residue = activeChat.historicMsg.length % 20;
-    let current = activeChat.currentBlock;
-
-    if (e.target.scrollTop === 0 && current !== -1) {
-      if (current === 0)
-        changeBlock(0, 40 + residue, -1);
-      else {
-        const start = (current - 1) * 20 + residue;
-        changeBlock(start, start + 40, current - 1);
-      }
+    if (e.target.scrollTop === 0 && current >= 15) {
+      if (current - 30 < 0)
+        changeViewMessage(0, 30, 14);
+      else
+        changeViewMessage(current - 30, current, current - 15);
     }
     if (e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 1
-      && current !== activeChat.blocks - 1) {
-      if (current === -1)
-        current = 0;
-      const start = current * 20 + residue;
-      changeBlock(start, start + 40, current + 1);
+      && current <= activeChat.historicMsg.length - 16) {
+      changeViewMessage(current, current + 30, current + 15);
     }
   }
 

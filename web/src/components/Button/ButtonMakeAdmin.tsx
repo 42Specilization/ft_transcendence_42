@@ -4,6 +4,8 @@ import { useContext, useState } from 'react';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import { actionsStatus } from '../../adapters/status/statusState';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 
 interface ButtonMakeAdminProps {
   id: string;
@@ -26,12 +28,14 @@ export function ButtonMakeAdmin({ id, name }: ButtonMakeAdminProps) {
 
   return (
     <>
-      <button className='button__icon'
+      <button
+        id='makeAdmin_button'
+        className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
-        data-html={true}
         data-tooltip-content={'Make Admin'}
       >
         <Alien size={32} />
+        <Tooltip anchorId='makeAdmin_button' delayShow={50} />
       </button>
       {confirmActionVisible &&
         <ConfirmActionModal

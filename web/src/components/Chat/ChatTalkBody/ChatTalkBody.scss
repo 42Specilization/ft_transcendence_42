@@ -5,7 +5,7 @@
   width: 100%;
   height: calc(100% - 130px);
   padding: 0px 10px 0px 10px;
-  scroll-behavior: smooth;
+  // scroll-behavior: smooth;
   @include scrollBar();
 }
 

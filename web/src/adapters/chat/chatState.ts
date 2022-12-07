@@ -97,17 +97,15 @@ const actionsChat = {
       stateChat.setActiveChat((prev: ActiveChatData | null) => {
         if (prev && prev.chat.id === message.chat) {
           const messages: MsgToClient[] = [...prev.historicMsg, message];
-          const blocks = Math.floor(messages.length / 20);
           return {
             chat: {
               ...prev.chat,
-              messages: messages.slice(-20),
+              messages: messages.slice(-30),
               date: message.date
             },
             newMessage: true,
             historicMsg: messages,
-            blocks: blocks,
-            currentBlock: blocks - 1,
+            currentMessage: messages.length - 1,
           };
         }
         return prev;
