@@ -36,7 +36,8 @@ export function Challenge({ nick, path }: ChallengeProps) {
           userSource: intraData.login,
           userTarget: nick
         };
-        await api.patch('/user/sendChallengeRequest', challenge, config);
+        const notifyRes = await api.patch('/user/sendChallengeRequest', challenge, config);
+        actionsGame.updateChallengeNotify(notifyRes.data.notify);
         actionsStatus.newNotify(nick);
       } catch (err: unknown) {
         setModalErrorChallenge(true);

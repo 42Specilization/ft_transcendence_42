@@ -21,6 +21,7 @@ import { Notify } from '../notification/entities/notify.entity';
 import { Relations } from 'src/relations/entity/relations.entity';
 import { getAssetsPath } from 'src/utils/utils';
 import { ChallengeRequestDto } from './dto/challenge-request.dto';
+import { NotifyDto } from 'src/notification/dto/notify-dto';
 
 @Injectable()
 export class UserService {
@@ -506,26 +507,43 @@ export class UserService {
     // Already in game
 
     // Offline user
-
     friend.notify?.push(newNotify);
     try {
       friend.save();
     } catch (err) {
       console.log(err);
     }
+
+    return (
+      {
+        type: newNotify.type, user_source: newNotify.user_source.nick, user_target: friend.nick,
+        additional_info: newNotify.additional_info, date: newNotify.date
+      }
+    );
+
   }
 
   /**
 * It finds a user by email, filters out the notification with the given id, and saves the user
 * @param {string} email - string - The email of the user you want to find.
 * @param {string} id - the id of the notification
+* @param {NotifyDto} notifyDto - notify dto use on challenge notification
 * @returns The user is being returned.
 */
-  async popNotification(email: string, id: string) {
-    const user = await this.findUserByEmail(email) as User;
+  async popNotification(email: string, id: string, notifyDto: NotifyDto | undefined = undefined) {
+    let user;
+    if (notifyDto) {
+      user = await this.findUserByNick(notifyDto.user_target as string) as User;
+    } else {
+      user = await this.findUserByEmail(email) as User;
+    }
     user.notify = user.notify.filter((notify) => {
       if (notify.id == id)
         return;
+      if (notifyDto && notifyDto.additional_info === notify.additional_info &&
+        notifyDto.type === notify.type && notifyDto.user_source === notify.user_source.nick) {
+        return;
+      }
       return notify;
     });
     try {

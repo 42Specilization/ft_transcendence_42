@@ -197,8 +197,12 @@ const actionsStatus = {
     stateStatus.socket?.emit('newNotify', userTarget);
   },
 
-  removeNotify() {
-    stateStatus.socket?.emit('removeNotify');
+  removeNotify(login: string | undefined = undefined) {
+    if (login) {
+      stateStatus.socket?.emit('removeNotify', login);
+    } else {
+      stateStatus.socket?.emit('removeNotify');
+    }
   },
 
   async updateNotify() {

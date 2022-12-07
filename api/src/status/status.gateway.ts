@@ -125,8 +125,14 @@ export class StatusGateway
   }
 
   @SubscribeMessage('removeNotify')
-  handleRemoveNotify(@ConnectedSocket() client: Socket) {
-    const login = this.mapUserData.valueOf(client.id);
+  handleRemoveNotify(@ConnectedSocket() client: Socket, @MessageBody() loginTarget: string) {
+    let login;
+
+    if (loginTarget) {
+      login = loginTarget;
+    } else {
+      login = this.mapUserData.valueOf(client.id);
+    }
     this.mapUserData.keyOf(login).forEach(socketId =>
       this.server.to(socketId).emit('updateNotify')
     );
@@ -175,7 +181,7 @@ export class StatusGateway
 
     if (this.mapUserData.hasValue(login_target)) {
       this.mapUserData.keyOf(login_target).forEach(socketId => {
-        this.server.to(socketId).emit('updateBlocked');
+        this.server.to(socketId).emit('updateBlocked', login);
       });
     }
   }

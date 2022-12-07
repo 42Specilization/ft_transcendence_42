@@ -1,6 +1,6 @@
 import './ChatMessage.scss';
 import ReactDOMServer from 'react-dom/server';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import { MsgToClient } from '../../../others/Interfaces/interfaces';
 import { formatDate, getUrlImage } from '../../../others/utils/utils';
 
@@ -26,7 +26,7 @@ export function ChatMessage({ user, message }: ChatMessageProps) {
       >
         {message.msg}
       </p>
-      <ReactTooltip className='chat__message__date' delayShow={250} />
+      <Tooltip className='chat__message__date' delayShow={250} />
     </div>
   );
 }

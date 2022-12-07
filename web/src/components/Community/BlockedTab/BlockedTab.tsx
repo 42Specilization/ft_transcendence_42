@@ -1,7 +1,7 @@
 import './BlockedTab.scss';
 import { useContext, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import { CardUser } from '../../CardUser/CardUser';
 import { ButtonSearch } from '../../Button/ButtonSearch';
 import { UserData } from '../../../others/Interfaces/interfaces';
@@ -31,7 +31,7 @@ export function BlockedTab() {
             </CardUser>)
         }
       </div>
-      <ReactTooltip delayShow={50} />
+      <Tooltip delayShow={50} />
     </div >
   );
 }

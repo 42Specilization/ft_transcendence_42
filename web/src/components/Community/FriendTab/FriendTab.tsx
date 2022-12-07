@@ -1,7 +1,7 @@
 import './FriendTab.scss';
 import { useContext, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import { ButtonSearch } from '../../Button/ButtonSearch';
 import { UserData } from '../../../others/Interfaces/interfaces';
 import { CardUser } from '../../CardUser/CardUser';
@@ -31,7 +31,7 @@ export function FriendTab() {
             </CardUser>)
         }
       </div>
-      <ReactTooltip delayShow={50} />
+      <Tooltip delayShow={50} />
     </div >
   );
 }

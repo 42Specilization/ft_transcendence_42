@@ -73,7 +73,9 @@ export function createSocket({ accessToken, socketIOUrl, actionsGame, stateGame 
     }
   });
 
-  socket.on('connect_error', () => {
+  socket.on('connect_error', async () => {
+    if (stateGame.challengeNotify)
+      await actionsGame.cancelChallengeNotify();
     actionsGame.updateServerError(true);
     setTimeout(() => window.location.reload(), 10000);
   });

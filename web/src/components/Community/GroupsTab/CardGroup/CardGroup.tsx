@@ -1,7 +1,7 @@
 import './CardGroup.scss';
 import { LockKey, Shield } from 'phosphor-react';
 import { Dispatch, SetStateAction } from 'react';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import { GroupCardData } from '../../../../others/Interfaces/interfaces';
 import { getUrlImage } from '../../../../others/utils/utils';
 
@@ -41,7 +41,7 @@ export function CardGroup({ group, setGroupProfile }: CardGroupProps) {
                 data-tip={'Protected Group'} />;
           })()}
         </div>
-        <ReactTooltip delayShow={50} />
+        <Tooltip delayShow={50} />
       </div >
     </>
   );

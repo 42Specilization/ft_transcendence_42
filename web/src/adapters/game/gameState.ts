@@ -1,7 +1,10 @@
+import axios from 'axios';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
 import { Ball, Rect } from '../../components/Game/Canvas/Canvas';
+import { NotifyData } from '../../others/Interfaces/interfaces';
 import { getAccessToken } from '../../others/utils/utils';
+import { actionsStatus } from '../status/statusState';
 import { createSocket, CreateSocketOptions, socketIOUrl } from './game-socket-io';
 
 export interface Score {
@@ -62,6 +65,7 @@ export interface AppState {
   powerUp?: IPowerUp;
   serverError?: boolean;
   errorToConnect?: boolean;
+  challengeNotify?: NotifyData
 }
 
 const stateGame = proxy<AppState>();
@@ -91,8 +95,22 @@ const actionsGame = {
 
     if (!stateGame.socket.connected) {
       stateGame.socket.connect();
-      return;
+      return (stateGame.socket);
     }
+    return (stateGame.socket);
+  },
+  updateChallengeNotify(notify: NotifyData) {
+    stateGame.challengeNotify = notify;
+  },
+  async cancelChallengeNotify() {
+    const token = window.localStorage.getItem('token');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+    await axios.patch(`http://${import.meta.env.VITE_API_HOST}:3000/user/removeNotify`, { id: 0, notify: stateGame.challengeNotify }, config);
+    actionsStatus.removeNotify(stateGame.challengeNotify?.user_target);
   },
   challengeFriend(nick: string, isWithPowerUps: boolean) {
     if (stateGame.errorToConnect !== undefined && !stateGame.errorToConnect) {
