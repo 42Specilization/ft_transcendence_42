@@ -14,15 +14,13 @@ import {
 export interface AppStateChat {
   socket?: Socket;
   setActiveChat?: Dispatch<SetStateAction<ActiveChatData | null>> | null;
-  setUpdateGroup?: Dispatch<SetStateAction<number>>;
 }
 
 const stateChat = proxy<AppStateChat>({});
 
 const actionsChat = {
   initializeSocketChat: (
-    setActiveChat: Dispatch<SetStateAction<ActiveChatData | null>>,
-    setUpdateGroup: Dispatch<SetStateAction<number>>
+    setActiveChat: Dispatch<SetStateAction<ActiveChatData | null>>
   ): void => {
 
     if (!stateChat.socket) {
@@ -34,13 +32,11 @@ const actionsChat = {
       };
       stateChat.socket = ref(createSocketChat(createSocketOptions));
       stateChat.setActiveChat = ref(setActiveChat);
-      stateChat.setUpdateGroup = ref(setUpdateGroup);
       return;
     }
     if (!stateChat.socket.connected) {
       stateChat.socket.connect();
       stateChat.setActiveChat = ref(setActiveChat);
-      stateChat.setUpdateGroup = ref(setUpdateGroup);
       return;
     }
   },
@@ -58,6 +54,10 @@ const actionsChat = {
 
   joinChat(id: string) {
     stateChat.socket?.emit('joinChat', id);
+  },
+
+  JoinNewGroup(id: string, email: string) {
+    stateChat.socket?.emit('JoinNewGroup', { id: id, email: email });
   },
 
   joinGroup(id: string, email: string) {
@@ -86,14 +86,6 @@ const actionsChat = {
 
   unmuteMember(id: string, email: string, login: string) {
     stateChat.socket?.emit('unmuteMember', { id: id, email: email, login: login });
-  },
-
-  getUpdateGroup(id: string) {
-    stateChat.socket?.emit('getUpdateGroup', id);
-  },
-
-  getGlobalUpdateGroup() {
-    stateChat.socket?.emit('getGlobalUpdateGroup');
   },
 
   async msgToServer(message: MsgToServer, type: string) {
@@ -127,23 +119,12 @@ const actionsChat = {
       actionsStatus.updateGroupInfos(message);
   },
 
-  async updateGroup() {
-    actionsStatus.updateGroups();
-    if (stateChat.setUpdateGroup) {
-      stateChat.setUpdateGroup(Date.now());
-    }
-  },
-
-  async updateGlobalGroup() {
-    actionsStatus.updateGlobalGroups();
-  },
-
   async removeGroup(id: string, login: string) {
     const user = await getUserInDb();
     if (user.login === login) {
       stateChat.socket?.emit('leaveChat', id);
-      this.updateGroup();
     }
+    actionsStatus.updateGroupChat();
   },
 };
 

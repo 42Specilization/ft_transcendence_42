@@ -70,5 +70,28 @@ export function createSocketStatus({
     actionsStatus.updateDirects(chat);
   });
 
+
+
+
+  socket.on('updateGroupName', (id: string, name: string) => {
+    actionsStatus.updateGroupName(id, name);
+  });
+
+  socket.on('updateGroupImage', (id: string, image: string) => {
+    actionsStatus.updateGroupImage(id, image);
+  });
+
+  socket.on('updateGroupPrivacy', () => {
+    actionsStatus.updateGroupCommunity();
+  });
+
+  socket.on('updateGroupProfile', (id: string) => {
+    actionsStatus.updateGroupProfile(id);
+  });
+
+  socket.on('updateUserProfile', (login: string) => {
+    actionsStatus.updateUserProfile(login);
+  });
+
   return socket;
 }

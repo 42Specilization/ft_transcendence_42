@@ -5,21 +5,6 @@ import { actionsStatus } from '../adapters/status/statusState';
 import { getGlobalData, getIntraData } from '../others/utils/utils';
 import { ChatContext } from './ChatContext';
 
-interface IIntraDataContext {
-  intraData: IntraData;
-  setIntraData: Dispatch<SetStateAction<IntraData>>;
-
-  config: {
-    headers: {
-      Authorization: string
-    }
-  },
-  api: AxiosInstance
-
-  globalData: GlobalData;
-  setGlobalData: Dispatch<SetStateAction<GlobalData>>;
-}
-
 const defaultIntra: IntraData = {
   email: 'ft_transcendence@gmail.com',
   first_name: 'ft',
@@ -43,10 +28,36 @@ const defaultGlobal: GlobalData = {
   globalGroups: [],
 };
 
-export const IntraDataContext = createContext<IIntraDataContext>({
-  intraData: defaultIntra,
-  setIntraData: () => { },
+export interface UpdateGroupProfile {
+  change: number;
+  id: string;
+}
 
+export interface UpdateUserProfile {
+  change: number;
+  login: string;
+}
+
+interface IIntraDataContext {
+  config: {
+    headers: {
+      Authorization: string
+    }
+  },
+  api: AxiosInstance;
+  intraData: IntraData;
+  setIntraData: Dispatch<SetStateAction<IntraData>>;
+  globalData: GlobalData;
+  setGlobalData: Dispatch<SetStateAction<GlobalData>>;
+  updateUserProfile: UpdateUserProfile;
+  setUpdateUserProfile: Dispatch<SetStateAction<UpdateUserProfile>>;
+  updateGroupProfile: UpdateGroupProfile;
+  setUpdateGroupProfile: Dispatch<SetStateAction<UpdateGroupProfile>>;
+}
+
+
+
+export const IntraDataContext = createContext<IIntraDataContext>({
   config: {
     headers: {
       Authorization: ''
@@ -55,9 +66,14 @@ export const IntraDataContext = createContext<IIntraDataContext>({
   api: axios.create({
     baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
   }),
-
+  intraData: defaultIntra,
+  setIntraData: () => { },
   globalData: defaultGlobal,
   setGlobalData: () => { },
+  updateUserProfile: { change: Date.now(), login: '' },
+  setUpdateUserProfile: () => { },
+  updateGroupProfile: { change: Date.now(), id: '' },
+  setUpdateGroupProfile: () => { },
 });
 
 
@@ -70,7 +86,12 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
   const { setActiveChat } = useContext(ChatContext);
   const [intraData, setIntraData] = useState(defaultIntra);
   const [globalData, setGlobalData] = useState(defaultGlobal);
-
+  const [
+    updateUserProfile, setUpdateUserProfile
+  ] = useState<UpdateUserProfile>({ change: Date.now(), login: '' });
+  const [
+    updateGroupProfile, setUpdateGroupProfile
+  ] = useState<UpdateGroupProfile>({ change: Date.now(), id: '' });
 
   const config = useMemo(() => {
     return {
@@ -88,15 +109,22 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
   useEffect(() => {
     getIntraData(setIntraData);
     getGlobalData(setGlobalData);
-    actionsStatus.initializeSocketStatus(setIntraData, setGlobalData, setActiveChat);
-
+    actionsStatus.initializeSocketStatus(
+      setIntraData,
+      setGlobalData,
+      setActiveChat,
+      setUpdateUserProfile,
+      setUpdateGroupProfile,
+    );
   }, []);
 
   return (
     <IntraDataContext.Provider value={{
-      intraData, setIntraData,
       api, config,
+      intraData, setIntraData,
       globalData, setGlobalData,
+      updateUserProfile, setUpdateUserProfile,
+      updateGroupProfile, setUpdateGroupProfile,
     }}>
       {children}
     </IntraDataContext.Provider>

@@ -1,5 +1,5 @@
 import './ProfileUser.scss';
-import { useState, useContext, SetStateAction, Dispatch } from 'react';
+import { useState, useContext, SetStateAction, Dispatch, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 import { ProfileUserGeneral } from './ProfileUserGeneral/ProfileUserGeneral';
@@ -10,13 +10,19 @@ interface ProfileUserProps {
   setProfileUserVisible: Dispatch<SetStateAction<boolean>>;
 }
 
-export function ProfileUser({ login,setProfileUserVisible }: ProfileUserProps) {
+export function ProfileUser({ login, setProfileUserVisible }: ProfileUserProps) {
 
+  const { api, config, updateUserProfile } = useContext(IntraDataContext);
+  const [updateQuery, setUpdateQuery] = useState(0);
   const [tabSelected, setTabSelected] = useState('General');
-  const { api, config } = useContext(IntraDataContext);
+
+  useEffect(() => {
+    if (updateUserProfile.login === login)
+      setUpdateQuery(updateUserProfile.change);
+  }, [updateUserProfile]);
 
   const { data, status } = useQuery(
-    ['profileUser'],
+    ['profileUser', updateQuery],
     async () => {
       const response = await api.patch('/user/profile', { nick: login }, config);
       return response.data;

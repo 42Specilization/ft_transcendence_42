@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import { MsgToClient } from '../../others/Interfaces/interfaces';
+import { actionsStatus } from '../status/statusState';
 import { AppActionsChat, AppStateChat } from './chatState';
 
 export const socketChatIOUrl = `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT
@@ -32,12 +33,20 @@ export function createSocketChat({
     actionsChat.msgToClient(message, type);
   });
 
-  socket.on('updateGroup', () => {
-    actionsChat.updateGroup();
+  socket.on('updateGroupChat', () => {
+    actionsStatus.updateGroupChat();
   });
 
-  socket.on('updateGlobalGroup', () => {
-    actionsChat.updateGlobalGroup();
+  socket.on('updateGroupCommunity', () => {
+    actionsStatus.updateGroupCommunity();
+  });
+
+  socket.on('updateGroupProfile', (id: string) => {
+    actionsStatus.updateGroupProfile(id);
+  });
+
+  socket.on('closeGroupProfile', (id: string) => {
+    console.log('closeGroupProfile', id);
   });
 
   socket.on('removeGroup', (id: string, login: string) => {

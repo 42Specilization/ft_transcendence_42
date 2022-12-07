@@ -66,16 +66,31 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.logger.debug(`Client ${client.id} leave a chat: |${chat}|`);
   }
 
+  @SubscribeMessage('joinNewGroup')
+  async handleJoinNewGroup(@ConnectedSocket() client: Socket,
+    @MessageBody() { id, email }: { id: string, email: string }) {
+
+    const permission = await this.chatService.joinNewGroup(email, id);
+    if (!permission)
+      return;
+
+    client.join(id);
+    client.emit('updateGroupChat');
+    this.server.emit('updateGroupCommunity');
+
+    this.logger.debug(`Client ${client.id} join a group: |${id}|`);
+  }
+
   @SubscribeMessage('joinGroup')
   async handleJoinGroup(@ConnectedSocket() client: Socket,
     @MessageBody() { id, email }: { id: string, email: string }) {
     const msgToClient: MsgToClient | null | undefined = await this.chatService.joinGroup(email, id);
     if (typeof msgToClient === 'undefined')
       return;
-    if (msgToClient)
-      this.server.to(id).emit('msgToClient', msgToClient);
+    this.server.to(id).emit('msgToClient', msgToClient);
     client.join(id);
-    this.server.to(id).emit('updateGroup');
+    client.emit('updateGroupChat');
+    this.server.emit('updateGroupProfile', id);
     this.logger.debug(`Client ${client.id} join a group: |${id}|`);
   }
 
@@ -85,11 +100,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     const msgToClient: MsgToClient | null | undefined = await this.chatService.leaveGroup(email, id);
     if (typeof msgToClient === 'undefined')
       return;
-    if (msgToClient)
+    if (msgToClient) {
+      client.emit('updateGroupChat');
+      this.server.emit('updateGroupProfile', id);
       this.server.to(id).emit('msgToClient', msgToClient);
+    }
+    else {
+      this.server.emit('updateGroupCommunity');
+      this.server.emit('closeGroupProfile', id);
+      client.emit('updateGroupChat');
+    }
     client.leave(id);
-    client.emit('updateGroup');
-    this.server.to(id).emit('updateGroup');
     this.logger.debug(`Client ${client.id} leave a group: |${id}|`);
   }
 
@@ -101,7 +122,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       return;
     this.server.to(id).emit('msgToClient', msgToClient);
     this.server.to(id).emit('removeGroup', id, login);
-    this.server.to(id).emit('updateGroup');
+    this.server.emit('updateGroupProfile', id);
     this.logger.debug(`Client ${client.id} login: |${login}| has been kicked the group: |${id}|`);
   }
 
@@ -112,8 +133,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     if (!msgToClient)
       return;
     this.server.to(id).emit('msgToClient', msgToClient);
-    this.server.to(id).emit('removeGroup', id, login);
-    this.server.to(id).emit('updateGroup');
+    this.server.emit('updateGroupProfile', id);
     this.logger.debug(`Client ${client.id} login: |${login}| has been banned the group: |${id}|`);
   }
 
@@ -125,7 +145,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       return;
     this.server.to(id).emit('msgToClient', msgToClient);
     this.server.to(id).emit('removeGroup', id, login);
-    this.server.to(id).emit('updateGroup');
+    this.server.emit('updateGroupProfile', id);
     this.logger.debug(`Client ${client.id} login: |${login}| has been banned the group: |${id}|`);
   }
 
@@ -136,7 +156,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     if (!msgToClient)
       return;
     this.server.to(id).emit('msgToClient', msgToClient);
-    this.server.to(id).emit('updateGroup');
+    this.server.emit('updateGroupProfile', id);
     this.logger.debug(`Client ${client.id} login: |${login}| has been mutated the group: |${id}|`);
   }
 
@@ -147,20 +167,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     if (!msgToClient)
       return;
     this.server.to(id).emit('msgToClient', msgToClient);
-    this.server.to(id).emit('updateGroup');
+    this.server.emit('updateGroupProfile', id);
     this.logger.debug(`Client ${client.id} login: |${login}| has been unmuted the group: |${id}|`);
-  }
-
-  @SubscribeMessage('getUpdateGroup')
-  async handleGetUpdateGroup(@MessageBody() id: string) {
-    this.server.to(id).emit('updateGroup');
-  }
-
-  @SubscribeMessage('getGlobalUpdateGroup')
-  async handleGlobalUpdateGroup(
-    // @MessageBody() id: string
-  ) {
-    this.server.emit('updateGlobalGroup');
   }
 
   @SubscribeMessage('msgToServer')

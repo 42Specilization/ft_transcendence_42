@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { Modal } from '../../Modal/Modal';
 import { SelectItem } from '../../SelectItem/SelectItem';
-import { actionsChat } from '../../../adapters/chat/chatState';
+import { actionsStatus } from '../../../adapters/status/statusState';
 
 interface ChangeSecurityProps {
   id: string | undefined;
@@ -31,8 +31,7 @@ export function ChangeSecurity({ id, setModalChangeSecurity }: ChangeSecurityPro
       }
     }
     await api.patch('/chat/updateGroup', { id: id, type: securityType, password: password }, config);
-    actionsChat.getGlobalUpdateGroup();
-
+    actionsStatus.changeGroupPrivacy(id as string);
     setModalChangeSecurity(false);
     setSecurityType('');
     setPassword('');
