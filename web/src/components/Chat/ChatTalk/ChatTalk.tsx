@@ -6,7 +6,7 @@ import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { ProfileGroupModal } from '../../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
@@ -276,7 +276,7 @@ export function ChatTalk() {
               <PaperPlaneRight size={30} />
             </button>
           </form>
-          <ReactTooltip className='chat__friends__header__icon__tip' delayShow={50} />
+          <Tooltip className='chat__friends__header__icon__tip' delayShow={50} />
         </>
       }
     </div >

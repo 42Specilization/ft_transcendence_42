@@ -1,7 +1,7 @@
 import './GroupsTab.scss';
 import { Plus } from 'phosphor-react';
 import { useState, useContext, useEffect } from 'react';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { CardGroup } from './CardGroup/CardGroup';
 import { Modal } from '../../Modal/Modal';
@@ -44,7 +44,7 @@ export function GroupsTab() {
           className='groups__tab__header__icon'
           onClick={() => setCreateGroupModal(true)}
         />
-        <ReactTooltip delayShow={50} />
+        <Tooltip delayShow={50} />
       </div>
       <div className='groups__tab__body'>
         {globalData.globalGroups?.map((key: any) =>

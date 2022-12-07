@@ -1,5 +1,5 @@
 import './Notify.scss';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import { useContext } from 'react';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 import { NotifyData } from '../../others/Interfaces/interfaces';
@@ -14,8 +14,8 @@ import { actionsGame } from '../../adapters/game/gameState';
 
 export function Notify() {
 
-  const { 
-    api, 
+  const {
+    api,
     config,
     intraData,
     globalData,
@@ -116,7 +116,7 @@ export function Notify() {
           :
           <p className='notify__empty'>empty</p>
         }
-        <ReactTooltip delayShow={50} />
+        <Tooltip delayShow={50} />
       </>
     </div>
   );

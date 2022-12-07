@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { Modal } from '../../Modal/Modal';
-import { NotifyData } from '../../../others/Interfaces/interfaces';
 
 interface ChallengeProps {
   nick: string;

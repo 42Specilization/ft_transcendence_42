@@ -1,11 +1,11 @@
 import './CardUser.scss';
-import ReactTooltip from 'react-tooltip';
 import { UserData } from '../../others/Interfaces/interfaces';
 import { Children, useContext, useState } from 'react';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 import { getUrlImage } from '../../others/utils/utils';
 import { ProfileUserModal } from '../ProfileUser/ProfileUserModal/ProfileUserModal';
 import { ButtonMenu } from '../Button/ButtonMenu';
+import { Tooltip } from 'react-tooltip';
 
 interface CardUserProps {
   user: UserData;
@@ -71,7 +71,7 @@ export function CardUser({ user, menuHeight, children }: CardUserProps) {
               <div style={{ width: '60px' }}></div>
           }
         </div>
-        <ReactTooltip delayShow={50} />
+        <Tooltip delayShow={50} />
       </div>
       {friendProfileVisible &&
         <ProfileUserModal login={user.login}

@@ -6,7 +6,7 @@ import { ButtonBlockUser } from '../../Button/ButtonBlockUser';
 import { ButtonAddFriend } from '../../Button/ButtonAddFriend';
 import { ButtonRemoveFriend } from '../../Button/ButtonRemoveFriend';
 import { ButtonUnBlockedUser } from '../../Button/ButtonUnBlockedUser';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import { Sword } from 'phosphor-react';
 import { Dispatch, SetStateAction, useContext } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
@@ -77,7 +77,7 @@ export function ProfileUserCard({ profileUserData, setProfileUserVisible }: Prof
           </>
         }
       </div>
-      <ReactTooltip delayShow={50} />
+      <Tooltip delayShow={50} />
     </div >
   );
 }

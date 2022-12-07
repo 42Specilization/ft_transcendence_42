@@ -1,5 +1,5 @@
 import './ProfileGroup.scss';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import { NotePencil, Prohibit, UsersThree } from 'phosphor-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
@@ -146,7 +146,7 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
           }
         </div>
       </div>
-      <ReactTooltip delayShow={50} />
+      <Tooltip delayShow={50} />
     </div >
   );
 }
