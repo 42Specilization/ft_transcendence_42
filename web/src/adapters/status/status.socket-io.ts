@@ -41,11 +41,11 @@ export function createSocketStatus({
   socket.on('updateUserLogin', (oldLogin: string, newLogin: string) => {
     actionsStatus.updateUserLogin(oldLogin, newLogin);
   });
-  
+
   socket.on('updateYourselfImage', (image_url: string) => {
     actionsStatus.updateYourSelfImage(image_url);
   });
-  
+
   socket.on('updateUserImage', (login: string, image: string) => {
     actionsStatus.updateUserImage(login, image);
   });
@@ -64,6 +64,25 @@ export function createSocketStatus({
 
   socket.on('updateDirects', async (chat: string) => {
     actionsStatus.updateDirects(chat);
+  });
+
+
+
+
+  socket.on('updateGroupName', (id: string, name: string) => {
+    actionsStatus.updateGroupName(id, name);
+  });
+
+  socket.on('updateGroupImage', (id: string, image: string) => {
+    actionsStatus.updateGroupImage(id, image);
+  });
+
+  socket.on('updateGroupPrivacy', () => {
+    actionsStatus.updateGroupCommunity();
+  });
+
+  socket.on('updateGroupProfile', (id: string) => {
+    actionsStatus.updateGroupProfile(id);
   });
 
   return socket;

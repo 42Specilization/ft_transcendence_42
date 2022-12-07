@@ -196,12 +196,42 @@ export class StatusGateway
     }
   }
 
+
+
   @SubscribeMessage('newDirect')
-  handleNewDirect(@MessageBody() { login, chat }: { login: string, chat: string }) {
+  handleNewDirect(
+    @MessageBody() { login, chat }: { login: string, chat: string }) {
     if (this.mapUserData.hasValue(login)) {
       this.mapUserData.keyOf(login).forEach(socketId => {
         this.server.to(socketId).emit('updateDirects', chat);
       });
     }
   }
+
+  @SubscribeMessage('changeGroupName')
+  handleChangeGroupName(
+    @MessageBody() { id, name }: { id: string, name: string }) {
+    this.server.emit('updateGroupName', id, name);
+    this.server.emit('updateGroupProfile', id);
+  }
+
+  @SubscribeMessage('changeGroupImage')
+  handleChangeGroupImage(
+    @MessageBody() { id, image }: { id: string, image: string }) {
+    this.server.emit('updateGroupImage', id, image);
+    this.server.emit('updateGroupProfile', id);
+  }
+
+  @SubscribeMessage('changeGroupPrivacy')
+  handleChangeGroupPrivacy(
+    @MessageBody() id: string) {
+    this.server.emit('updateGroupPrivacy', id);
+    this.server.emit('updateGroupProfile', id);
+  }
+
+  @SubscribeMessage('changeGroupAdmins')
+  handleChangeGroupAdmins(@MessageBody() id: string) {
+    this.server.emit('updateGroupProfile', id);
+  }
+
 }

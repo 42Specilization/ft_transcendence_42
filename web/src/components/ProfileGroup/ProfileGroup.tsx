@@ -3,7 +3,6 @@ import ReactTooltip from 'react-tooltip';
 import { NotePencil, Prohibit, UsersThree } from 'phosphor-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { actionsChat } from '../../adapters/chat/chatState';
 import { ChatContext } from '../../contexts/ChatContext';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 import { CardMember } from './CardMember/CardMember';
@@ -15,6 +14,7 @@ import { ButtonSendMessage } from '../Button/ButtonSendMessage';
 import { ButtonJoinGroup } from '../Button/ButtonJoinGroup';
 import { ButtonLeaveGroup } from '../Button/ButtonLeaveGroup';
 import { ButtonInviteMember } from '../Button/ButtonInviteMember';
+import { actionsStatus } from '../../adapters/status/statusState';
 
 
 interface ProfileGroupProps {
@@ -25,14 +25,20 @@ interface ProfileGroupProps {
 export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) {
 
   const { api, config } = useContext(IntraDataContext);
-  const { updateGroup } = useContext(ChatContext);
+  const { updateGroupProfile } = useContext(ChatContext);
+  const [updateQuery, setUpdateQuery] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File>();
   const [modalChangeName, setModalChangeName] = useState(false);
   const [modalChangeSecurity, setModalChangeSecurity] = useState(false);
   const [bannedVisible, setBannedVisible] = useState(false);
 
+  useEffect(() => {
+    if (updateGroupProfile.id === id)
+      setUpdateQuery(updateGroupProfile.change);
+  }, [updateGroupProfile]);
+
   const { data, status } = useQuery(
-    ['getGroupInfos', updateGroup],
+    ['getGroupInfos', updateQuery],
     async () => {
       const response = await api.patch('/chat/getProfileGroupById', { id: id }, config);
       return response.data;
@@ -55,10 +61,8 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
       file.append('file', selectedFile);
       await api.post('/chat/updateGroupImage', file, config);
       await api.patch('/chat/updateGroup', { id: data.id, image: selectedFile.name }, config);
-      actionsChat.getGlobalUpdateGroup();
+      actionsStatus.changeGroupImage(data.id, selectedFile.name);
     }
-    actionsChat.updateGroup();
-    actionsChat.getUpdateGroup(id as string);
   }
 
   function havePermission(level: string) {
@@ -140,9 +144,13 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
         </div>
         <CardMember data={data} bannedVisible={bannedVisible} havePermission={havePermission} />
         <div className='profileGroup__buttons__button'>
-          {havePermission('nonLevel') && havePermission('lowLevel') ?
-            <ButtonLeaveGroup id={data.id} onLeave={() => setProfileGroupVisible(false)} /> :
-            <ButtonJoinGroup id={data.id} type={data.type} />
+          {!havePermission('nonLevel') &&
+            <>
+              {havePermission('lowLevel') ?
+                <ButtonLeaveGroup id={data.id} onLeave={() => setProfileGroupVisible(false)} /> :
+                <ButtonJoinGroup id={data.id} type={data.type} />
+              }
+            </>
           }
         </div>
       </div>

@@ -15,26 +15,31 @@ export interface SelectedChat {
   type: string;
 }
 
+export interface UpdateGroupProfile {
+  change: number;
+  id: string;
+}
+
 interface IChatContext {
   selectedChat: SelectedChat | null;
-  activeChat: ActiveChatData | null;
-  updateGroup: number;
-  tabSelected: string;
   setSelectedChat: Dispatch<SetStateAction<SelectedChat | null>>;
+  activeChat: ActiveChatData | null;
   setActiveChat: Dispatch<SetStateAction<ActiveChatData | null>>;
-  setUpdateGroup: Dispatch<SetStateAction<number>>;
+  tabSelected: string;
   setTabSelected: Dispatch<SetStateAction<string>>;
+  updateGroupProfile: UpdateGroupProfile;
+  setUpdateGroupProfile: Dispatch<SetStateAction<UpdateGroupProfile>>;
 }
 
 export const ChatContext = createContext<IChatContext>({
   selectedChat: null,
-  activeChat: null,
-  updateGroup: Date.now(),
-  tabSelected: 'Direct',
   setSelectedChat: () => { },
+  activeChat: null,
   setActiveChat: () => { },
-  setUpdateGroup: () => { },
+  tabSelected: 'Direct',
   setTabSelected: () => { },
+  updateGroupProfile: { change: Date.now(), id: '' },
+  setUpdateGroupProfile: () => { },
 });
 
 interface ChatProviderProps {
@@ -45,11 +50,13 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
 
   const [selectedChat, setSelectedChat] = useState<SelectedChat | null>(null);
   const [activeChat, setActiveChat] = useState<ActiveChatData | null>(null);
-  const [updateGroup, setUpdateGroup] = useState<number>(Date.now());
   const [tabSelected, setTabSelected] = useState('Direct');
+  const [
+    updateGroupProfile, setUpdateGroupProfile
+  ] = useState<UpdateGroupProfile>({ change: Date.now(), id: '' });
 
   useEffect(() => {
-    actionsChat.initializeSocketChat(setActiveChat, setUpdateGroup);
+    actionsChat.initializeSocketChat(setActiveChat);
     return () => {
       actionsChat.disconnectSocketChat();
     };
@@ -59,8 +66,8 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     <ChatContext.Provider value={{
       selectedChat, setSelectedChat,
       activeChat, setActiveChat,
-      updateGroup, setUpdateGroup,
       tabSelected, setTabSelected,
+      updateGroupProfile, setUpdateGroupProfile,
     }}>
       {children}
     </ChatContext.Provider>

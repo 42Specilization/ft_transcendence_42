@@ -412,13 +412,13 @@ export class ChatService {
     newGroup.messages = [];
     newGroup.date = new Date(Date.now());
 
-    if (newGroup.type === 'protected') {
-      const relation = new GroupRelations();
-      relation.date = new Date(Date.now());
-      relation.user_target = owner;
-      relation.type = 'join allowed';
-      newGroup.relations = [relation];
-    }
+    const breakpoint = new Message();
+    breakpoint.sender = owner;
+    breakpoint.date = new Date(Date.now() + 1);
+    breakpoint.msg = '';
+    breakpoint.type = 'breakpoint';
+
+    newGroup.users.push(owner);
 
     try {
       await this.groupRepository.save(newGroup);
@@ -594,7 +594,15 @@ export class ChatService {
     return profileGroup;
   }
 
+  async joinNewGroup(user_email: string, id: string): Promise<boolean> {
+    const group = await this.findGroupById(id);
+    if (!group)
+      throw new BadRequestException('Invalid Request joinGroup');
 
+    if (group.owner.email === user_email)
+      return true;
+    return false;
+  }
 
   async joinGroup(user_email: string, id: string): Promise<MsgToClient | null | undefined> {
     const user = await this.userService.findUserGroupByEmail(user_email);
@@ -610,8 +618,6 @@ export class ChatService {
       && !this.getRelation(group, user.nick, 'join allowed'))
       return undefined;
 
-    const firstUser: boolean = group.users.length === 0;
-
     const join = new Message();
     join.sender = user;
     join.date = new Date(Date.now());
@@ -625,8 +631,7 @@ export class ChatService {
     breakpoint.type = 'breakpoint';
 
     group.users.push(user);
-    if (!firstUser)
-      group.messages.push(join);
+    group.messages.push(join);
     group.messages.push(breakpoint);
 
     if (group.type === 'protected')
@@ -634,8 +639,6 @@ export class ChatService {
 
     try {
       await group.save();
-      if (firstUser)
-        return null;
       const msgClient: MsgToClient = {
         id: join.id,
         chat: id,

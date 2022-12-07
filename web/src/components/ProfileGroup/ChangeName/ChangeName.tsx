@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import { PaperPlaneRight } from 'phosphor-react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { Modal } from '../../Modal/Modal';
-import { actionsChat } from '../../../adapters/chat/chatState';
+import { actionsStatus } from '../../../adapters/status/statusState';
 
 
 interface ChangeNameProps {
@@ -27,7 +27,7 @@ export function ChangeName({ id, setModalChangeName }: ChangeNameProps) {
       const result = await api.patch('/chat/updateGroup', { id: id, name: name }, config);
       console.log(result);
       if (result.status === 200) {
-        actionsChat.getGlobalUpdateGroup();
+        actionsStatus.changeGroupName(id as string, name);
         setModalChangeName(false);
         setPlaceHolder('');
       }
@@ -37,7 +37,6 @@ export function ChangeName({ id, setModalChangeName }: ChangeNameProps) {
       }
     }
     setName('');
-    actionsChat.updateGroup();
   }
 
   return (

@@ -33,7 +33,7 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
       .then((response) => {
         if (response.status === 201) {
           setCreateGroupModal(false);
-          actionsChat.joinGroup(response.data, intraData.email);
+          actionsChat.JoinNewGroup(response.data, intraData.email);
         }
       }).catch((err) => {
         setPassword(err.response.data.message);

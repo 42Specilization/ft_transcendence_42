@@ -1,9 +1,9 @@
 import './Button.scss';
 import { User } from 'phosphor-react';
 import { useContext, useState } from 'react';
-import { actionsChat } from '../../adapters/chat/chatState';
 import { IntraDataContext } from '../../contexts/IntraDataContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
+import { actionsStatus } from '../../adapters/status/statusState';
 
 interface ButtonRemoveAdminProps {
   id: string;
@@ -18,7 +18,8 @@ export function ButtonRemoveAdmin({ id, name }: ButtonRemoveAdminProps) {
   async function handleRemoveAdmin() {
     try {
       await api.patch('/chat/removeAdmin', { name: name, groupId: id }, config);
-      actionsChat.getUpdateGroup(id);
+      actionsStatus.changeGroupAdmins(id);
+
     } catch (err) {
       console.log(err);
     }

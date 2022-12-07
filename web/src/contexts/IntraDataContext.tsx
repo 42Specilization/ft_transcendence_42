@@ -67,7 +67,7 @@ interface IntraDataProviderProps {
 
 export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
 
-  const { setActiveChat } = useContext(ChatContext);
+  const { setActiveChat, setUpdateGroupProfile } = useContext(ChatContext);
   const [intraData, setIntraData] = useState(defaultIntra);
   const [globalData, setGlobalData] = useState(defaultGlobal);
 
@@ -88,8 +88,9 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
   useEffect(() => {
     getIntraData(setIntraData);
     getGlobalData(setGlobalData);
-    actionsStatus.initializeSocketStatus(setIntraData, setGlobalData, setActiveChat);
-
+    actionsStatus.initializeSocketStatus(
+      setIntraData, setGlobalData, setActiveChat, setUpdateGroupProfile
+    );
   }, []);
 
   return (
