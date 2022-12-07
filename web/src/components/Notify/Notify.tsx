@@ -117,7 +117,6 @@ export function Notify() {
           :
           <p className='notify__empty'>empty</p>
         }
-        {/* <Tooltip delayShow={50} /> */}
       </>
     </div>
   );

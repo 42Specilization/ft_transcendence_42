@@ -44,7 +44,6 @@ export function ChatTab({ tabSelected }: ChatTabProps) {
             ))
         }
       </div>
-      {/* <Tooltip delayShow={50} /> */}
     </div>
   );
 }

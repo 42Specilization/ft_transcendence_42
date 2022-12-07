@@ -44,7 +44,6 @@ export function FriendTab() {
               </CardUser>)
           }
         </div>
-        {/* <Tooltip delayShow={50} /> */}
       </div >
       {profileUserVisible !== '' &&
         <ProfileUserModal login={profileUserVisible}

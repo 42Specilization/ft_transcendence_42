@@ -20,15 +20,14 @@
     "react-dropzone": "latest",
     "react-loader-spinner": "latest",
     "react-query": "latest",
-    "socket.io-client": "latest",
     "react-tooltip": "latest",
+    "socket.io-client": "latest",
     "valtio": "latest",
     "yarn": "latest"
   },
   "devDependencies": {
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
-    "@mui/material": "latest",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",

@@ -67,7 +67,6 @@ export function ProfileUserCard({ profileUserData, setProfileUserVisible }: Prof
           </>
         }
       </div>
-      {/* <Tooltip delayShow={50} /> */}
     </div >
   );
 }
