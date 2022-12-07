@@ -1,7 +1,7 @@
 import './ProfileUser.scss';
 import { useState, useContext, SetStateAction, Dispatch, useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { ProfileUserGeneral } from './ProfileUserGeneral/ProfileUserGeneral';
 import { ProfileUserHistoric } from './ProfileUserHistoric/ProfileUserHistoric';
 
@@ -12,7 +12,7 @@ interface ProfileUserProps {
 
 export function ProfileUser({ login, setProfileUserVisible }: ProfileUserProps) {
 
-  const { api, config, updateUserProfile } = useContext(IntraDataContext);
+  const { api, config, updateUserProfile } = useContext(GlobalContext);
   const [updateQuery, setUpdateQuery] = useState(0);
   const [tabSelected, setTabSelected] = useState('General');
 

@@ -2,14 +2,14 @@ import './ValidateTfa.scss';
 import { useEffect, useState, useContext } from 'react';
 import { Modal } from '../../Modal/Modal';
 import { TailSpin } from 'react-loader-spinner';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 
 export function ValidateTfa() {
   const [side, setSide] = useState('');
   const [code, setCode] = useState('');
   const [placeHolder, setPlaceHolder] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const {api, config} = useContext(IntraDataContext);
+  const {api, config} = useContext(GlobalContext);
 
   useEffect(() => {
     setTimeout(() => {

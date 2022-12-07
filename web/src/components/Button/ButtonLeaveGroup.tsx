@@ -3,7 +3,7 @@ import { SignOut } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import { actionsChat } from '../../adapters/chat/chatState';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 
 interface ButtonLeaveGroupProps {
   id: string;
@@ -12,7 +12,7 @@ interface ButtonLeaveGroupProps {
 
 export function ButtonLeaveGroup({ id, onLeave}: ButtonLeaveGroupProps) {
 
-  const { intraData } = useContext(IntraDataContext);
+  const { intraData } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
   function handleLeaveGroup() {

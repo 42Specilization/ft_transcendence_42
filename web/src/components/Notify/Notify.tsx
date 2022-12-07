@@ -1,7 +1,7 @@
 import './Notify.scss';
 import { Tooltip } from 'react-tooltip';
 import { useContext } from 'react';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { NotifyData } from '../../others/Interfaces/interfaces';
 import { CardNotify } from './CardNotify/CardNotify';
 import { ButtonBlockUser } from '../Button/ButtonBlockUser';
@@ -20,7 +20,7 @@ export function Notify() {
     intraData,
     globalData,
     setGlobalData
-  } = useContext(IntraDataContext);
+  } = useContext(GlobalContext);
 
 
   async function removeNotify(id: string) {

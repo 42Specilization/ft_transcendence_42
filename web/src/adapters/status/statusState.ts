@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
 import { ActiveChatData } from '../../contexts/ChatContext';
-import { UpdateGroupProfile, UpdateUserProfile } from '../../contexts/IntraDataContext';
+import { UpdateGroupProfile, UpdateUserProfile } from '../../contexts/GlobalContext';
 import { GlobalData, IntraData, MsgToClient, UserData } from '../../others/Interfaces/interfaces';
 import { getGlobalDirects, getGlobalGroups, getGlobalInDb, getGlobalData, getGlobalAllGroups, getGlobalAllUsers } from '../../others/utils/utils';
 import { actionsChat } from '../chat/chatState';

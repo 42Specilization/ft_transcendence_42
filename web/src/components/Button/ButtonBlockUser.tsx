@@ -1,7 +1,7 @@
 import './Button.scss';
 import { Prohibit } from 'phosphor-react';
 import { useContext, useState } from 'react';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import { actionsStatus } from '../../adapters/status/statusState';
 
@@ -13,7 +13,7 @@ interface ButtonBlockUserProps {
 
 export function ButtonBlockUser({ login, handle, params }: ButtonBlockUserProps) {
 
-  const { api, config } = useContext(IntraDataContext);
+  const { api, config } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
   async function handleBlockFriend() {

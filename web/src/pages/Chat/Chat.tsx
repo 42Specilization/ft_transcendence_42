@@ -1,14 +1,14 @@
 import './Chat.scss';
 import { useContext } from 'react';
 import { ChatTalk } from '../../components/Chat/ChatTalk/ChatTalk';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { ChatContext } from '../../contexts/ChatContext';
 import { ChatTab } from '../../components/Chat/ChatTab/ChatTab';
 
 export default function Chat() {
 
   const { activeChat, tabSelected, setTabSelected } = useContext(ChatContext);
-  const { globalData } = useContext(IntraDataContext);
+  const { globalData } = useContext(GlobalContext);
 
   function newMessages(type: string) {
     const chat = type === 'direct' ? globalData.directs : globalData.groups;

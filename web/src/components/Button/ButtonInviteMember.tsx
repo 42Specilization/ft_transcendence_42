@@ -1,7 +1,7 @@
 import './Button.scss';
 import './ButtonInviteMember.scss';
 import { PaperPlaneRight, UserPlus } from 'phosphor-react';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { actionsStatus } from '../../adapters/status/statusState';
 import { useContext, useState } from 'react';
 import { Modal } from '../Modal/Modal';
@@ -12,7 +12,7 @@ interface ButtonInviteMemberProps {
 
 export function ButtonInviteMember({ id }: ButtonInviteMemberProps) {
 
-  const { api, config } = useContext(IntraDataContext);
+  const { api, config } = useContext(GlobalContext);
   const [modalInviteMember, setModalInviteMember] = useState(false);
   const [inviteName, setInviteName] = useState('');
   const [placeHolder, setPlaceHolder] = useState('');

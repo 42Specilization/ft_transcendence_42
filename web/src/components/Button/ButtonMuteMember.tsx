@@ -2,7 +2,7 @@ import './Button.scss';
 import { SpeakerSlash } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import { actionsChat } from '../../adapters/chat/chatState';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 
 interface ButtonMuteMemberProps {
@@ -12,7 +12,7 @@ interface ButtonMuteMemberProps {
 
 export function ButtonMuteMember({ id, name }: ButtonMuteMemberProps) {
 
-  const { intraData } = useContext(IntraDataContext);
+  const { intraData } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
   async function handleMuteMember() {

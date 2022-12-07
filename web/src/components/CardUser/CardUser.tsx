@@ -1,7 +1,7 @@
 import './CardUser.scss';
 import { UserData } from '../../others/Interfaces/interfaces';
 import { Children, Dispatch, SetStateAction, useContext, useState } from 'react';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { getUrlImage } from '../../others/utils/utils';
 import { ButtonMenu } from '../Button/ButtonMenu';
 import { Tooltip } from 'react-tooltip';
@@ -15,7 +15,7 @@ interface CardUserProps {
 
 export function CardUser({ user, menuHeight, setProfileUserVisible, children }: CardUserProps) {
 
-  const { intraData } = useContext(IntraDataContext);
+  const { intraData } = useContext(GlobalContext);
   const [activeMenu, setActiveMenu] = useState(false);
   const arrayChildren = Children.toArray(children);
 

@@ -1,7 +1,7 @@
 import { NotePencil } from 'phosphor-react';
 import { Dispatch, SetStateAction, useCallback, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 
 
 interface DropzoneProps {
@@ -10,7 +10,7 @@ interface DropzoneProps {
 }
 
 export function Dropzone({setSelectedFileUrl, onFileUploaded }: DropzoneProps) {
-  const { intraData } = useContext(IntraDataContext);
+  const { intraData } = useContext(GlobalContext);
 
   const onDrop = useCallback(
     (acceptedFiles: any) => {

@@ -39,7 +39,7 @@ export interface UpdateGroupProfile {
   id: string;
 }
 
-interface IIntraDataContext {
+interface IGlobalContext {
   config: {
     headers: {
       Authorization: string
@@ -59,7 +59,7 @@ interface IIntraDataContext {
 }
 
 
-export const IntraDataContext = createContext<IIntraDataContext>({
+export const GlobalContext = createContext<IGlobalContext>({
   config: {
     headers: {
       Authorization: ''
@@ -127,7 +127,7 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
   }, []);
 
   return (
-    <IntraDataContext.Provider value={{
+    <GlobalContext.Provider value={{
       api, config,
       intraData, setIntraData,
       globalData, setGlobalData,
@@ -136,6 +136,6 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
       closeGroupProfile, setCloseGroupProfile
     }}>
       {children}
-    </IntraDataContext.Provider>
+    </GlobalContext.Provider>
   );
 };

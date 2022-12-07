@@ -4,7 +4,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { ArrowBendUpLeft, PaperPlaneRight } from 'phosphor-react';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { actionsChat } from '../../../adapters/chat/chatState';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
 import { Tooltip } from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
@@ -19,7 +19,7 @@ export function ChatTalk() {
     activeChat, setActiveChat,
     setTabSelected
   } = useContext(ChatContext);
-  const { api, config, intraData, setGlobalData, updateUserProfile } = useContext(IntraDataContext);
+  const { api, config, intraData, setGlobalData, updateUserProfile } = useContext(GlobalContext);
   const [profileGroupVisible, setProfileGroupVisible] = useState('');
   const [profileUserVisible, setProfileUserVisible] = useState('');
 

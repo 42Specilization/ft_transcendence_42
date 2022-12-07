@@ -4,10 +4,10 @@ import { TFATurnOffModal } from '../TFATurnOffModal/TFATurnOffModal';
 import { TFATurnOnModal } from '../TFATurnOnModal/TFATurnOnModal';
 import { TFAValidateCodeModal } from '../TFAValidateCodeModal/TFAValidateCodeModal';
 import { ToggleLeft, ToggleRight } from 'phosphor-react';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 
 export function TFAButton() {
-  const { api, config } = useContext(IntraDataContext);
+  const { api, config } = useContext(GlobalContext);
   const [tfaEmail, setTfaEmail] = useState('');
   const [tfaModal, setTfaModal] = useState('');
 

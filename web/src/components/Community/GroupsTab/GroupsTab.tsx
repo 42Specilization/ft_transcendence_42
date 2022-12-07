@@ -2,7 +2,7 @@ import './GroupsTab.scss';
 import { Plus } from 'phosphor-react';
 import { useState, useContext } from 'react';
 import { Tooltip } from 'react-tooltip';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 import { CardGroup } from './CardGroup/CardGroup';
 import { Modal } from '../../Modal/Modal';
 import { CreateGroup } from './CreateGroup/CreateGroup';
@@ -14,7 +14,7 @@ export function GroupsTab() {
   const [searchActive, setSearchActive] = useState(false);
   const [createGroupModal, setCreateGroupModal] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-  const { globalData } = useContext(IntraDataContext);
+  const { globalData } = useContext(GlobalContext);
   const [profileGroupVisible, setProfileGroupVisible] = useState('');
 
   return (

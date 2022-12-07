@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import { actionsGame, stateGame } from '../../../adapters/game/gameState';
 import { Checkbox } from '../../Checkbox/Checkbox';
 import { Link } from 'react-router-dom';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { Modal } from '../../Modal/Modal';
 
@@ -17,7 +17,7 @@ export function Challenge({ nick, path }: ChallengeProps) {
 
   const [powerUp, setPowerUp] = useState<boolean>(false);
   const [modalErrorChallenge, setModalErrorChallenge] = useState<boolean>(false);
-  const { intraData, api, config } = useContext(IntraDataContext);
+  const { intraData, api, config } = useContext(GlobalContext);
   const currentState = useSnapshot(stateGame);
 
   useEffect(() => {

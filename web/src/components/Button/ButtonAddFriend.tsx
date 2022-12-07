@@ -1,6 +1,6 @@
 import './Button.scss';
 import { UserPlus } from 'phosphor-react';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { actionsStatus } from '../../adapters/status/statusState';
 import { useContext, useState } from 'react';
 import { Modal } from '../Modal/Modal';
@@ -11,7 +11,7 @@ interface ButtonAddFriendProps {
 
 export function ButtonAddFriend({ login }: ButtonAddFriendProps) {
 
-  const { api, config } = useContext(IntraDataContext);
+  const { api, config } = useContext(GlobalContext);
   const [modalErrorVisible, setModalErrorVisible] = useState(false);
   const [error, setError] = useState('');
 

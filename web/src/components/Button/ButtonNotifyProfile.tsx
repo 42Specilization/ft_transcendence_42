@@ -3,7 +3,7 @@ import { User, UserList } from 'phosphor-react';
 import { useContext, useEffect, useState } from 'react';
 import { ProfileGroupModal } from '../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
 import { ProfileUserModal } from '../ProfileUser/ProfileUserModal/ProfileUserModal';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 
 interface ButtonNotifyProfileProps {
   id: string;
@@ -12,7 +12,7 @@ interface ButtonNotifyProfileProps {
 
 export function ButtonNotifyProfile({ id, type }: ButtonNotifyProfileProps) {
 
-  const { updateUserProfile } = useContext(IntraDataContext);
+  const { updateUserProfile } = useContext(GlobalContext);
   const [profileGroupVisible, setProfileGroupVisible] = useState('');
   const [profileUserVisible, setProfileUserVisible] = useState('');
 

@@ -1,6 +1,6 @@
 import './GlobalTab.scss';
 import { useContext, useEffect, useState } from 'react';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 import { CardUser } from '../../CardUser/CardUser';
 import { ButtonSearch } from '../../Button/ButtonSearch';
 import { UserData } from '../../../others/Interfaces/interfaces';
@@ -8,7 +8,7 @@ import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUser
 
 export function GlobalTab() {
 
-  const { globalData, updateUserProfile } = useContext(IntraDataContext);
+  const { globalData, updateUserProfile } = useContext(GlobalContext);
   const [searchActive, setSearchActive] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const [profileUserVisible, setProfileUserVisible] = useState('');

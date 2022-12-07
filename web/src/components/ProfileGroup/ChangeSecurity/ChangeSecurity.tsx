@@ -1,6 +1,6 @@
 import './ChangeSecurity.scss';
 import { Dispatch, SetStateAction, useContext, useState } from 'react';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 import { Modal } from '../../Modal/Modal';
 import { SelectItem } from '../../SelectItem/SelectItem';
 import { actionsStatus } from '../../../adapters/status/statusState';
@@ -12,7 +12,7 @@ interface ChangeSecurityProps {
 
 export function ChangeSecurity({ id, setModalChangeSecurity }: ChangeSecurityProps) {
 
-  const { api, config } = useContext(IntraDataContext);
+  const { api, config } = useContext(GlobalContext);
   const [password, setPassword] = useState('');
   const [placeHolder, setPlaceHolder] = useState('');
   const [securityType, setSecurityType] = useState('');

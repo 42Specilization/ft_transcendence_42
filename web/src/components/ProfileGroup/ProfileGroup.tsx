@@ -3,7 +3,7 @@ import { Tooltip } from 'react-tooltip';
 import { NotePencil, Prohibit, UsersThree } from 'phosphor-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { CardMember } from './CardMember/CardMember';
 import { ChangeName } from './ChangeName/ChangeName';
 import { Dropzone } from '../Dropzone/Dropzone';
@@ -25,7 +25,7 @@ interface ProfileGroupProps {
 
 export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) {
 
-  const { api, config, updateUserProfile, updateGroupProfile, closeGroupProfile, setCloseGroupProfile } = useContext(IntraDataContext);
+  const { api, config, updateUserProfile, updateGroupProfile, closeGroupProfile, setCloseGroupProfile } = useContext(GlobalContext);
   const [updateQuery, setUpdateQuery] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File>();
   const [modalChangeName, setModalChangeName] = useState(false);

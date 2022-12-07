@@ -4,10 +4,10 @@ import { NotePencil } from 'phosphor-react';
 import { TFAButton } from '../../TFA/TFAButton/TFAButton';
 import { ChangeNick } from '../ChangeNick/ChangeNick';
 import { useContext, useState } from 'react';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 
 export function ProfileCard() {
-  const { intraData } = useContext(IntraDataContext);
+  const { intraData } = useContext(GlobalContext);
   const [isModalChangeNickVisible, setIsModalChangeNickVisible] = useState(false);
 
 

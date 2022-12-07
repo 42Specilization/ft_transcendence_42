@@ -1,14 +1,14 @@
 import './ProfileHistoric.scss';
 import { HistoricMatch } from '../HistoricMatch/HistoricMatch';
 import { useContext, useEffect, useState } from 'react';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 import { useQuery } from 'react-query';
 import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
 
 export function ProfileHistoric() {
 
-  const { updateUserProfile } = useContext(IntraDataContext);
-  const { intraData, api, config } = useContext(IntraDataContext);
+  const { updateUserProfile } = useContext(GlobalContext);
+  const { intraData, api, config } = useContext(GlobalContext);
   const [profileUserVisible, setProfileUserVisible] = useState('');
 
   useEffect(() => {

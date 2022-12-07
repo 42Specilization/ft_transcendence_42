@@ -5,13 +5,13 @@ import { WaitingRoom } from '../../components/Game/WaitingRoom/WaitingRoom';
 import { actionsGame, stateGame } from '../../adapters/game/gameState';
 import './Game.scss';
 import { useContext, useEffect, useState } from 'react';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { ErrorGameModal } from '../../components/Game/ErrorGameModal/ErrorGameModal';
 import { Modal } from '../../components/Modal/Modal';
 
 export default function Game() {
 
-  const { intraData } = useContext(IntraDataContext);
+  const { intraData } = useContext(GlobalContext);
   const currentState = useSnapshot(stateGame);
 
   const [gameNotFound, setGameNotFound] = useState<boolean>(false);

@@ -3,7 +3,7 @@ import './ButtonJoinGroup.scss';
 import { SignIn } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import { actionsChat } from '../../adapters/chat/chatState';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { Modal } from '../Modal/Modal';
 
 interface ButtonJoinGroupProps {
@@ -13,7 +13,7 @@ interface ButtonJoinGroupProps {
 
 export function ButtonJoinGroup({ id, type }: ButtonJoinGroupProps) {
 
-  const { api, config, intraData } = useContext(IntraDataContext);
+  const { api, config, intraData } = useContext(GlobalContext);
   const [securityJoinVisible, setSecurityJoinVisible] = useState(false);
   const [placeHolder, setPlaceHolder] = useState('');
   const [password, setPassword] = useState('');

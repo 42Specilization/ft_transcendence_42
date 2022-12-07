@@ -1,6 +1,6 @@
 import './FriendTab.scss';
 import { useContext, useEffect, useState } from 'react';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 import { Tooltip } from 'react-tooltip';
 import { ButtonSearch } from '../../Button/ButtonSearch';
 import { UserData } from '../../../others/Interfaces/interfaces';
@@ -9,7 +9,7 @@ import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUser
 
 export function FriendTab() {
 
-  const { globalData, updateUserProfile } = useContext(IntraDataContext);
+  const { globalData, updateUserProfile } = useContext(GlobalContext);
   const [searchActive, setSearchActive] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const [profileUserVisible, setProfileUserVisible] = useState('');

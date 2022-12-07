@@ -10,7 +10,7 @@ import Chat from './pages/Chat/Chat';
 import Community from './pages/Community/Community';
 import { NavBar } from './components/NavBar/NavBar';
 import { RequireAuth, ValidateSignin } from './others/utils/utils';
-import { IntraDataProvider } from './contexts/IntraDataContext';
+import { IntraDataProvider } from './contexts/GlobalContext';
 import { ChatProvider } from './contexts/ChatContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { useEffect } from 'react';

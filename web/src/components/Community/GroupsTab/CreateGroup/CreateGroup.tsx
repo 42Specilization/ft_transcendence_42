@@ -1,6 +1,6 @@
 import './CreateGroup.scss';
 import { Dispatch, SetStateAction, useContext, useState } from 'react';
-import { IntraDataContext } from '../../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../../contexts/GlobalContext';
 import { Dropzone } from '../../../Dropzone/Dropzone';
 import { CreateGroupData } from '../../../../others/Interfaces/interfaces';
 import { Checkbox } from '../../../Checkbox/Checkbox';
@@ -12,7 +12,7 @@ interface CreateGroupProps {
 }
 
 export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
-  const { api, config, intraData } = useContext(IntraDataContext);
+  const { api, config, intraData } = useContext(GlobalContext);
   const [selectedFile, setSelectedFile] = useState<File>();
   const [privateGroup, setPrivateGroup] = useState<boolean>(false);
   const [placeHolder, setPlaceHolder] = useState('Group Name');
