@@ -22,7 +22,7 @@ interface ProfileGroupProps {
   setProfileGroupVisible: Dispatch<SetStateAction<boolean>>;
 }
 
-export function ProfileGroup({ id, setProfileGroupVisible}: ProfileGroupProps) {
+export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) {
 
   const { api, config } = useContext(IntraDataContext);
   const { updateGroup } = useContext(ChatContext);
@@ -43,7 +43,6 @@ export function ProfileGroup({ id, setProfileGroupVisible}: ProfileGroupProps) {
     }
   );
 
-  console.log(data);
   useEffect(() => {
     if (selectedFile)
       handleSubmit();
@@ -56,6 +55,7 @@ export function ProfileGroup({ id, setProfileGroupVisible}: ProfileGroupProps) {
       file.append('file', selectedFile);
       await api.post('/chat/updateGroupImage', file, config);
       await api.patch('/chat/updateGroup', { id: data.id, image: selectedFile.name }, config);
+      actionsChat.getGlobalUpdateGroup();
     }
     actionsChat.updateGroup();
     actionsChat.getUpdateGroup(id as string);
@@ -76,9 +76,9 @@ export function ProfileGroup({ id, setProfileGroupVisible}: ProfileGroupProps) {
   if (status === 'loading')
     return <div className='profileGroup' />;
 
-  if (!data){
+  if (!data) {
     setProfileGroupVisible(false);
-    return <div className='profileGroup'/>;
+    return <div className='profileGroup' />;
   }
 
   return (
@@ -140,8 +140,8 @@ export function ProfileGroup({ id, setProfileGroupVisible}: ProfileGroupProps) {
         </div>
         <CardMember data={data} bannedVisible={bannedVisible} havePermission={havePermission} />
         <div className='profileGroup__buttons__button'>
-          {havePermission('nonLevel') && havePermission('lowLevel')?
-            <ButtonLeaveGroup id={data.id} onLeave={()=>setProfileGroupVisible(false)} /> :
+          {havePermission('nonLevel') && havePermission('lowLevel') ?
+            <ButtonLeaveGroup id={data.id} onLeave={() => setProfileGroupVisible(false)} /> :
             <ButtonJoinGroup id={data.id} type={data.type} />
           }
         </div>

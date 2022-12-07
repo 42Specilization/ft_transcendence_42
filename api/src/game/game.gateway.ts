@@ -13,7 +13,6 @@ import { randomInt } from 'crypto';
 import { Socket, Namespace } from 'socket.io';
 import { WsCatchAllFilter } from 'src/socket/exceptions/ws-catch-all-filter';
 import { WsBadRequestException } from 'src/socket/exceptions/ws-exceptions';
-import { UserService } from 'src/user/user.service';
 import { Game } from './game.class';
 import { GameService } from './game.service';
 import { IChallenge } from './interface/game.interfaces';
@@ -37,10 +36,7 @@ interface IPlayerInfos {
 export class GameGateway
 implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
-  constructor(
-    private readonly gameService: GameService,
-    private readonly userService: UserService
-  ) { }
+  constructor(private readonly gameService: GameService) { }
 
   private readonly logger = new Logger(GameGateway.name);
 
@@ -77,12 +73,7 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('challenge')
   async challenge(@ConnectedSocket() user: Socket, @MessageBody() challenge: IChallenge) {
-    const userTarget = await this.userService.findUserByNick(challenge.userTarget);
-    const userSource = await this.userService.findUserByNick(challenge.userTarget);
-
-    if (!userSource || !userTarget || challenge.userSource === challenge.userTarget ||
-      this.userService.isBlocked(userSource, userTarget) ||
-      this.userService.isBlocked(userTarget, userSource)) {
+    if (challenge.userSource === challenge.userTarget) {
       user.emit('game-not-found');
       return;
     }
@@ -115,6 +106,11 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
       user.emit('game-not-found');
       return;
     }
+    
+    if (await this.gameService.isBlocked(game.player1, game.player2))
+      return ;
+
+
     if (game.player2.name === challenge.userSource && game.player1.name === challenge.userTarget) {
       game.player2.socketId = user.id;
       game.player2.name = challenge.userSource;
@@ -123,6 +119,8 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
       this.logger.debug(
         `${challenge.userSource} socket id:${user.id}. challenge ${challenge.userTarget} Game room:${game.room} custom ${challenge.isWithPowerUps}`
       );
+
+
       game.hasStarted = true;
       game.waiting = false;
       this.sendUpdatesEmits(game);
@@ -218,12 +216,12 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  /**
-   * This function will call the update game function and emit the update-ball event.
-   * If the game has a winner, will emit an end-game event.
-   * If a user receive a score point, will emit an update-score event.
-   * All of this will be checked only if the user is a player, and if is the player one.
-   * @param room Room of the game.
+  /**  
+   * T  his function will call the update game function and emit the update-ball event.
+   *   If the game has a winner, will emit an end-game event.
+   * I  f a user receive a score point, will emit an update-score event.
+   * A  ll of this will be checked only if the user is a player, and if is the player one.
+   * @  param room Room of the game.
    * @param user The player socket.
    */
   @SubscribeMessage('update-ball')

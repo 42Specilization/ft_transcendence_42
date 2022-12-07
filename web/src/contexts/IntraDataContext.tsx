@@ -1,8 +1,9 @@
 import axios, { AxiosInstance } from 'axios';
-import { Dispatch, SetStateAction, createContext, useState, ReactNode, useEffect, useMemo } from 'react';
+import { Dispatch, SetStateAction, createContext, useState, ReactNode, useEffect, useMemo, useContext } from 'react';
 import { GlobalData, IntraData } from '../others/Interfaces/interfaces';
 import { actionsStatus } from '../adapters/status/statusState';
 import { getGlobalData, getIntraData } from '../others/utils/utils';
+import { ChatContext } from './ChatContext';
 
 interface IIntraDataContext {
   intraData: IntraData;
@@ -65,8 +66,11 @@ interface IntraDataProviderProps {
 }
 
 export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
+
+  const { setActiveChat } = useContext(ChatContext);
   const [intraData, setIntraData] = useState(defaultIntra);
   const [globalData, setGlobalData] = useState(defaultGlobal);
+
 
   const config = useMemo(() => {
     return {
@@ -84,7 +88,7 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
   useEffect(() => {
     getIntraData(setIntraData);
     getGlobalData(setGlobalData);
-    actionsStatus.initializeSocketStatus(setIntraData, setGlobalData);
+    actionsStatus.initializeSocketStatus(setIntraData, setGlobalData, setActiveChat);
 
   }, []);
 

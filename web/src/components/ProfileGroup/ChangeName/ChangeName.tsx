@@ -27,6 +27,7 @@ export function ChangeName({ id, setModalChangeName }: ChangeNameProps) {
       const result = await api.patch('/chat/updateGroup', { id: id, name: name }, config);
       console.log(result);
       if (result.status === 200) {
+        actionsChat.getGlobalUpdateGroup();
         setModalChangeName(false);
         setPlaceHolder('');
       }

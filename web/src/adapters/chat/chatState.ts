@@ -92,9 +92,12 @@ const actionsChat = {
     stateChat.socket?.emit('getUpdateGroup', id);
   },
 
+  getGlobalUpdateGroup() {
+    stateChat.socket?.emit('getGlobalUpdateGroup');
+  },
+
   async msgToServer(message: MsgToServer, type: string) {
     stateChat.socket?.emit('msgToServer', { message: message, type: type });
-
   },
 
   async msgToClient(message: MsgToClient, type: string) {
@@ -126,9 +129,13 @@ const actionsChat = {
 
   async updateGroup() {
     actionsStatus.updateGroups();
-    if (stateChat.setUpdateGroup){
+    if (stateChat.setUpdateGroup) {
       stateChat.setUpdateGroup(Date.now());
     }
+  },
+
+  async updateGlobalGroup() {
+    actionsStatus.updateGlobalGroups();
   },
 
   async removeGroup(id: string, login: string) {

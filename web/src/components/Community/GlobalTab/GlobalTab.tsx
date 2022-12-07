@@ -23,7 +23,7 @@ export function GlobalTab() {
           setSearchActive={setSearchActive} />
       </div>
       <div className='global__tab__body'>
-        {globalData.globalUsers.filter((obj: UserData) => obj.login.includes(searchInput))
+        {globalData.globalUsers?.filter((obj: UserData) => obj.login.includes(searchInput))
           .map((obj: UserData) => (
             <CardUser key={Math.random()} user={obj} menuHeight={0}>
               <span className='global__tab__ratio' > Ratio: {obj.ratio}</span>

@@ -47,7 +47,7 @@ export function GroupsTab() {
         <ReactTooltip delayShow={50} />
       </div>
       <div className='groups__tab__body'>
-        {globalData.globalGroups.map((key: any) =>
+        {globalData.globalGroups?.map((key: any) =>
           <CardGroup key={Math.random()} group={key} setGroupProfile={setGroupProfile} />)
         }
       </div>

@@ -1,8 +1,9 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Socket } from 'socket.io-client';
 import { proxy, ref } from 'valtio';
+import { ActiveChatData } from '../../contexts/ChatContext';
 import { GlobalData, IntraData, MsgToClient, UserData } from '../../others/Interfaces/interfaces';
-import { getGlobalDirects, getGlobalGroups, getGlobalInDb, getGlobalData } from '../../others/utils/utils';
+import { getGlobalDirects, getGlobalGroups, getGlobalInDb, getGlobalData, getGlobalAllGroups, getGlobalAllUsers } from '../../others/utils/utils';
 import { actionsChat } from '../chat/chatState';
 
 import {
@@ -16,6 +17,7 @@ export interface AppStateStatus {
   setIntraData?: Dispatch<SetStateAction<IntraData>> | null;
   setUpdateUser?: Dispatch<SetStateAction<number>> | null;
   setGlobalData?: Dispatch<SetStateAction<GlobalData>> | null;
+  setActiveChat?: Dispatch<SetStateAction<ActiveChatData | null>> | null;
 }
 
 const stateStatus = proxy<AppStateStatus>({});
@@ -24,7 +26,8 @@ const actionsStatus = {
 
   initializeSocketStatus: (
     setIntraData: Dispatch<SetStateAction<IntraData>>,
-    setGlobalData: Dispatch<SetStateAction<GlobalData>>
+    setGlobalData: Dispatch<SetStateAction<GlobalData>>,
+    setActiveChat: Dispatch<SetStateAction<ActiveChatData | null>>
   ): void => {
     if (!stateStatus.socket) {
       const createSocketOptions: CreateSocketStatusOptions = {
@@ -35,6 +38,7 @@ const actionsStatus = {
       stateStatus.socket = ref(createSocketStatus(createSocketOptions));
       stateStatus.setIntraData = ref(setIntraData);
       stateStatus.setGlobalData = ref(setGlobalData);
+      stateStatus.setActiveChat = ref(setActiveChat);
       return;
     }
 
@@ -42,6 +46,7 @@ const actionsStatus = {
       stateStatus.socket.connect();
       stateStatus.setIntraData = ref(setIntraData);
       stateStatus.setGlobalData = ref(setGlobalData);
+      stateStatus.setActiveChat = ref(setActiveChat);
       return;
     }
   },
@@ -69,6 +74,7 @@ const actionsStatus = {
 
   async updateUserStatus(login: string, status: string) {
     if (stateStatus.setGlobalData) {
+      const global = await getGlobalAllUsers();
       stateStatus.setGlobalData(prev => {
         return {
           ...prev,
@@ -85,8 +91,7 @@ const actionsStatus = {
             }),
           blocked: prev.blocked.map(blocked =>
             login === blocked.login ? { ...blocked, status: status } : blocked),
-          globalUsers: prev.globalUsers.map(globalUser =>
-            login === globalUser.login ? { ...globalUser, status: status } : globalUser),
+          globalUsers: global,
         };
       });
     }
@@ -122,12 +127,25 @@ const actionsStatus = {
             }),
           blocked: prev.blocked.map(blocked =>
             oldLogin === blocked.login ? { ...blocked, login: newLogin } : blocked)
-            .sort((a,b)=> a.login.toLowerCase() < b.login.toLowerCase() ? -1: 1 ),
+            .sort((a, b) => a.login.toLowerCase() < b.login.toLowerCase() ? -1 : 1),
           globalUsers: prev.globalUsers.map(globalUser =>
             oldLogin === globalUser.login ? { ...globalUser, login: newLogin } : globalUser),
           directs: prev.directs.map(direct =>
             oldLogin === direct.name ? { ...direct, name: newLogin } : direct),
         };
+      });
+    }
+    if (stateStatus.setActiveChat) {
+      stateStatus.setActiveChat((prev) => {
+        if (prev && prev.chat.name === oldLogin)
+          return {
+            ...prev,
+            chat: {
+              ...prev.chat,
+              name: newLogin,
+            }
+          };
+        return prev;
       });
     }
   },
@@ -158,6 +176,19 @@ const actionsStatus = {
           directs: prev.directs.map(direct =>
             login === direct.name ? { ...direct, image: image } : direct),
         };
+      });
+    }
+    if (stateStatus.setActiveChat) {
+      stateStatus.setActiveChat((prev) => {
+        if (prev && prev.chat.name === login)
+          return {
+            ...prev,
+            chat: {
+              ...prev.chat,
+              image: image,
+            }
+          };
+        return prev;
       });
     }
   },
@@ -281,6 +312,15 @@ const actionsStatus = {
       const groups = await getGlobalGroups();
       stateStatus.setGlobalData((prev) => {
         return { ...prev, groups: groups };
+      });
+    }
+  },
+
+  async updateGlobalGroups() {
+    if (stateStatus.setGlobalData) {
+      const groups = await getGlobalAllGroups();
+      stateStatus.setGlobalData((prev) => {
+        return { ...prev, globalGroups: groups };
       });
     }
   },
