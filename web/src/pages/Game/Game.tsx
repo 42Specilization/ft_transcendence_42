@@ -15,6 +15,7 @@ export default function Game() {
   const currentState = useSnapshot(stateGame);
 
   const [gameNotFound, setGameNotFound] = useState<boolean>(false);
+  const [gameModalMessage, setGameModalMessage] = useState<string>('Game Not Found!');
 
   useEffect(() => {
     if (currentState.name !== intraData.login) {
@@ -23,8 +24,13 @@ export default function Game() {
   }, [intraData]);
 
   useEffect(() => {
-    currentState.socket?.on('game-not-found', () => {
+    currentState.socket?.on('game-not-found', async (msg) => {
       setGameNotFound(true);
+      if (msg) {
+        setGameModalMessage(msg);
+      }
+      await actionsGame.cancelChallengeNotify();
+      actionsGame.disconnectSocket();
     });
   }, []);
 
@@ -43,7 +49,7 @@ export default function Game() {
       })()}
       {gameNotFound &&
         <Modal onClose={() => window.location.reload()} id='game__modal'>
-          Game Not Found!
+          {gameModalMessage}
         </Modal>
       }
     </div>

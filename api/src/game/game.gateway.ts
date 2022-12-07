@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { Logger, UseFilters } from '@nestjs/common';
 import {
   ConnectedSocket,
@@ -34,7 +35,7 @@ interface IPlayerInfos {
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({ namespace: 'game' })
 export class GameGateway
-implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(private readonly gameService: GameService) { }
 
@@ -71,10 +72,25 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     this.logger.debug(`Number of connected sockets: ${sockets.size}`);
   }
 
+  @SubscribeMessage('game-not-found')
+  gameNotFound(@ConnectedSocket() user: Socket, @MessageBody() msg: string) {
+    user.emit('game-not-found', msg);
+  }
+
   @SubscribeMessage('challenge')
   async challenge(@ConnectedSocket() user: Socket, @MessageBody() challenge: IChallenge) {
     if (challenge.userSource === challenge.userTarget) {
       user.emit('game-not-found');
+      return;
+    }
+
+    if (await this.gameService.isBlocked(challenge.userSource, challenge.userTarget)) {
+      user.emit('game-not-found', 'This user is blocked!');
+      return;
+    }
+
+    if (!(await this.gameService.isUserOnline(challenge.userTarget))) {
+      user.emit('game-not-found', 'This user is not available!');
       return;
     }
 
@@ -106,9 +122,9 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
       user.emit('game-not-found');
       return;
     }
-    
-    if (await this.gameService.isBlocked(game.player1, game.player2))
-      return ;
+
+    if (await this.gameService.isBlocked(game.player1.name, game.player2.name))
+      return;
 
 
     if (game.player2.name === challenge.userSource && game.player1.name === challenge.userTarget) {
@@ -205,14 +221,14 @@ implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     }
 
     switch (direction) {
-    case 'up':
-      player.paddle.y -= 20;
-      this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
-      break;
-    case 'down':
-      player.paddle.y += 20;
-      this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
-      break;
+      case 'up':
+        player.paddle.y -= 20;
+        this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
+        break;
+      case 'down':
+        player.paddle.y += 20;
+        this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
+        break;
     }
   }
 

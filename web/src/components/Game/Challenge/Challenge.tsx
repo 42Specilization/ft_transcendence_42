@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { Modal } from '../../Modal/Modal';
+import { NotifyData } from '../../../others/Interfaces/interfaces';
 
 interface ChallengeProps {
   nick: string;
@@ -36,7 +37,8 @@ export function Challenge({ nick, path }: ChallengeProps) {
           userSource: intraData.login,
           userTarget: nick
         };
-        await api.patch('/user/sendChallengeRequest', challenge, config);
+        const notifyRes = await api.patch('/user/sendChallengeRequest', challenge, config);
+        actionsGame.updateChallengeNotify(notifyRes.data.notify);
         actionsStatus.newNotify(nick);
       } catch (err: unknown) {
         setModalErrorChallenge(true);

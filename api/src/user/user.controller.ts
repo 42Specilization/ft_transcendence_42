@@ -229,9 +229,9 @@ export class UserController {
   async sendChallengeRequest(
     @Body(ValidationPipe) challengeRequestDto: ChallengeRequestDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
-  ): Promise<{ message: 'success' }> {
-    await this.userService.sendChallengeRequest(userFromJwt.email, challengeRequestDto);
-    return ({ message: 'success' });
+  ): Promise<{ message: 'success', notify: any }> {
+    const newNotify = await this.userService.sendChallengeRequest(userFromJwt.email, challengeRequestDto);
+    return ({ message: 'success', notify: newNotify });
   }
 
   @Patch('removeNotify')
@@ -241,7 +241,7 @@ export class UserController {
     @Body(ValidationPipe) notifyHandlerDto: NotifyHandlerDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
   ): Promise<{ message: string }> {
-    await this.userService.popNotification(userFromJwt.email, notifyHandlerDto.id);
+    await this.userService.popNotification(userFromJwt.email, notifyHandlerDto.id, notifyHandlerDto.notify);
     return { message: 'success' };
   }
 

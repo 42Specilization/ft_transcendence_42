@@ -1,4 +1,5 @@
 import { io, Socket } from 'socket.io-client';
+import { stateGame } from '../game/gameState';
 import { AppActionsStatus, AppStateStatus } from './statusState';
 
 export const socketStatusIOUrl =
@@ -41,11 +42,11 @@ export function createSocketStatus({
   socket.on('updateUserLogin', (oldLogin: string, newLogin: string) => {
     actionsStatus.updateUserLogin(oldLogin, newLogin);
   });
-  
+
   socket.on('updateYourselfImage', (image_url: string) => {
     actionsStatus.updateYourSelfImage(image_url);
   });
-  
+
   socket.on('updateUserImage', (login: string, image: string) => {
     actionsStatus.updateUserImage(login, image);
   });
@@ -58,8 +59,11 @@ export function createSocketStatus({
     actionsStatus.updateFriend();
   });
 
-  socket.on('updateBlocked', async () => {
+  socket.on('updateBlocked', async (loginSource) => {
     actionsStatus.updateBlocked();
+    if (stateGame.game && loginSource === stateGame.game.player2Name) {
+      stateGame.socket?.emit('game-not-found', `${loginSource} blocked you!`);
+    }
   });
 
   socket.on('updateDirects', async (chat: string) => {

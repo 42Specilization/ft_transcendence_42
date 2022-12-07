@@ -30,6 +30,7 @@ export interface NotifyData {
   id: string;
   type: string;
   user_source: string;
+  user_target?: string;
   additional_info: string;
   date: Date;
 }
