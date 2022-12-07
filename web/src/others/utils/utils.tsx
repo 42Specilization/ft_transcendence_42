@@ -253,7 +253,7 @@ const defaultGlobal: GlobalData = {
 export function formatDate(date: string): ReactElement {
   const newDate = new Date(date);
   return (
-    <>
+    <div className='chat__message__date'>
       {String(newDate.getHours()).padStart(2, '0') +
         ':' +
         String(newDate.getMinutes()).padStart(2, '0')}{' '}
@@ -263,7 +263,7 @@ export function formatDate(date: string): ReactElement {
         String(newDate.getMonth() + 1).padStart(2, '0') +
         '/' +
         newDate.getFullYear()}
-    </>
+    </div>
   );
 }
 

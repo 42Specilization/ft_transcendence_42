@@ -36,6 +36,7 @@
 }
 
 .chat__message__date {
+  @include displayFlex(center, column);
   text-align: center !important;
   border-radius: 20px !important;
 }

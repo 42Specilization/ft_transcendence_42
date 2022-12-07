@@ -4,6 +4,8 @@ import { GlobalContext } from '../../contexts/GlobalContext';
 import { actionsStatus } from '../../adapters/status/statusState';
 import { useContext, useState } from 'react';
 import { Modal } from '../Modal/Modal';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 
 interface ButtonAddFriendProps {
   login: string;
@@ -27,12 +29,14 @@ export function ButtonAddFriend({ login }: ButtonAddFriendProps) {
 
   return (
     <>
-      <button className='button__icon'
+      <button
+        id='addFriend_button'
+        className='button__icon'
         onClick={handleAddFriend}
-      // //data-html={true}
-      // ////data-tooltip-content={'Add Friend'}
+        data-tooltip-content={'Add Friend'}
       >
         <UserPlus size={32} />
+        <Tooltip anchorId='addFriend_button' delayShow={50} />
       </button>
       {modalErrorVisible &&
         <Modal onClose={() => setModalErrorVisible(false)}>

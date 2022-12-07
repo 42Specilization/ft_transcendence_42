@@ -4,6 +4,8 @@ import { useContext, useEffect, useState } from 'react';
 import { ProfileGroupModal } from '../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
 import { ProfileUserModal } from '../ProfileUser/ProfileUserModal/ProfileUserModal';
 import { GlobalContext } from '../../contexts/GlobalContext';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 
 interface ButtonNotifyProfileProps {
   id: string;
@@ -31,15 +33,17 @@ export function ButtonNotifyProfile({ id, type }: ButtonNotifyProfileProps) {
 
   return (
     <>
-      <button className='button__icon'
+      <button
+        id='notifyProfile_button'
+        className='button__icon'
         onClick={handleShowProfile}
-      //data-html={true}
-      //data-tooltip-content={`${type} Profile`}
+        data-tooltip-content={`${type} Profile`}
       >
         {type === 'User' ?
           <User size={32} /> :
           <UserList size={32} />
         }
+        <Tooltip anchorId='notifyProfile_button' delayShow={50} />
       </button>
       {
         profileGroupVisible !== '' &&

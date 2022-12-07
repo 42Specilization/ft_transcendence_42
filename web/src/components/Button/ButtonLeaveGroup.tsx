@@ -4,6 +4,8 @@ import { useContext, useState } from 'react';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import { actionsChat } from '../../adapters/chat/chatState';
 import { GlobalContext } from '../../contexts/GlobalContext';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 
 interface ButtonLeaveGroupProps {
   id: string;
@@ -22,12 +24,14 @@ export function ButtonLeaveGroup({ id, onLeave }: ButtonLeaveGroupProps) {
 
   return (
     <>
-      <button className='button__icon'
+      <button
+        id='leaveGroup_button'
+        className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
-      //data-html={true}
-      //data-tooltip-content={'Leave Group'}
+        data-tooltip-content={'Leave Group'}
       >
         <SignOut size={32} />
+        <Tooltip anchorId='leaveGroup_button' delayShow={50} />
       </button>
       {confirmActionVisible &&
         <ConfirmActionModal

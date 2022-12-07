@@ -1,5 +1,4 @@
 import './ProfileGroup.scss';
-//import { Tooltip } from 'react-tooltip';
 import { NotePencil, Prohibit, UsersThree } from 'phosphor-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
@@ -16,7 +15,8 @@ import { ButtonInviteMember } from '../Button/ButtonInviteMember';
 import { actionsStatus } from '../../adapters/status/statusState';
 import { UserData } from '../../others/Interfaces/interfaces';
 import { ProfileUserModal } from '../ProfileUser/ProfileUserModal/ProfileUserModal';
-
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 
 interface ProfileGroupProps {
   id: string | undefined;
@@ -152,16 +152,20 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
               <ButtonInviteMember id={data.id} />
             }
             {havePermission('middleLevel') &&
-              <button className='button__icon'
-                onClick={() => setBannedVisible(prev => !prev)}
-              //data-html={true}
-              //data-tooltip-content={bannedVisible ? 'Member List' : 'Banned List'}
-              >
-                {bannedVisible ?
-                  <UsersThree size={32} /> :
-                  <Prohibit size={32} />
-                }
-              </button>
+              <>
+                <button
+                  id='members_or_banned_tab'
+                  className='button__icon'
+                  onClick={() => setBannedVisible(prev => !prev)}
+                  data-tooltip-content={bannedVisible ? 'Member List' : 'Banned List'}
+                >
+                  {bannedVisible ?
+                    <UsersThree size={32} /> :
+                    <Prohibit size={32} />
+                  }
+                </button>
+                <Tooltip anchorId='members_or_banned_tab' delayShow={50} />
+              </>
             }
           </div>
           <CardMember data={data} bannedVisible={bannedVisible} havePermission={havePermission} setProfileUserVisible={setProfileUserVisible} />
@@ -176,7 +180,7 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
             }
           </div>
         </div>
-        {/* <Tooltip delayShow={50} /> */}
+        <Tooltip anchorId='my-element' />
       </div >
       {
         profileUserVisible !== '' &&

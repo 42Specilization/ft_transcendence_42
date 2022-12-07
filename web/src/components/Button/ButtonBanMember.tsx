@@ -4,6 +4,8 @@ import { useContext, useState } from 'react';
 import { actionsChat } from '../../adapters/chat/chatState';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 
 interface ButtonBanMemberProps {
   id: string;
@@ -21,12 +23,14 @@ export function ButtonBanMember({ id, name }: ButtonBanMemberProps) {
 
   return (
     <>
-      <button className='button__icon'
+      <button
+        id='banMember_button'
+        className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
-      //data-html={true}
-      //data-tooltip-content={'Ban Member'}
+        data-tooltip-content={'Ban Member'}
       >
         <Prohibit size={32} />
+        <Tooltip anchorId='banMember_button' delayShow={50} />
       </button>
       {confirmActionVisible &&
         <ConfirmActionModal

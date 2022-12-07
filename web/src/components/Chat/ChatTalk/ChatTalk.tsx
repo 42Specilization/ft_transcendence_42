@@ -5,12 +5,13 @@ import { PaperPlaneRight, X } from 'phosphor-react';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { GlobalContext } from '../../../contexts/GlobalContext';
 import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
-//import { Tooltip } from 'react-tooltip';
 import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { ProfileGroupModal } from '../../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
 import { getUrlImage } from '../../../others/utils/utils';
 import { ChatTalkBody } from '../ChatTalkBody/ChatTalkBody';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 
 export function ChatTalk() {
 
@@ -135,19 +136,20 @@ export function ChatTalk() {
         <>
           <div className='chat__talk__header'>
             <div
-              className='chat__talk__header__user'
+              id='activeChat_profile_header'
+              className='chat__talk__header__profile'
               onClick={() => selectGroupOrFriendVisible()}
-            //data-html={true}
-            //data-tooltip-content={`${activeChat.chat?.name} profile`}
+              data-tooltip-content={`${activeChat.chat?.name} profile`}
             >
               <div
-                className='chat__talk__header__user__icon'
+                className='chat__talk__header__profile__icon'
                 style={{ backgroundImage: `url(${getUrlImage(activeChat.chat?.image as string)})` }}
               />
-              <div className='chat__talk__header__user__name'>
+              <div className='chat__talk__header__profile__name'>
                 {activeChat.chat?.name}
               </div>
             </div>
+            <Tooltip anchorId='activeChat_profile_header' delayShow={50} />
             <X size={32} weight="bold" onClick={exitActiveChat} className='chat__talk__header__exit' />
           </div>
           <ChatTalkBody />
@@ -162,7 +164,6 @@ export function ChatTalk() {
               <PaperPlaneRight size={30} />
             </button>
           </form>
-          {/* <Tooltip delayShow={50} /> */}
           {profileUserVisible !== '' &&
             <ProfileUserModal
               login={activeChat.chat.name}

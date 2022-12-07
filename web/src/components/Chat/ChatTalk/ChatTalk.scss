@@ -33,7 +33,7 @@
   }
 }
 
-.chat__talk__header__user {
+.chat__talk__header__profile {
   @include displayFlex();
   padding: 10px;
   margin: 10px;
@@ -45,7 +45,7 @@
   }
 }
 
-.chat__talk__header__user__icon {
+.chat__talk__header__profile__icon {
   min-width: 45px;
   min-height: 45px;
   border: solid 2px;
@@ -55,7 +55,7 @@
   background-position: 50% 50%;
 }
 
-.chat__talk__header__user__name {
+.chat__talk__header__profile__name {
   font-size: x-large;
   margin-left: 10px;
   overflow-x: hidden;
