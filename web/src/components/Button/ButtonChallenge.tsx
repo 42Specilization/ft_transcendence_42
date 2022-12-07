@@ -30,7 +30,7 @@ export function ButtonChallenge({ login }: ButtonChallengeProps) {
         <button className='button__icon'
           onClick={handleChallenge}
           data-html={true}
-          data-tip={'Challenge Player'}
+          data-tooltip-content={'Challenge Player'}
         >
           <Sword size={32} />
         </button>}

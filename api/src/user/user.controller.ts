@@ -229,7 +229,7 @@ export class UserController {
   async sendChallengeRequest(
     @Body(ValidationPipe) challengeRequestDto: ChallengeRequestDto,
     @GetUserFromJwt() userFromJwt: UserFromJwt
-  ): Promise<{ message: 'success', notify: any }> {
+  ) {
     const newNotify = await this.userService.sendChallengeRequest(userFromJwt.email, challengeRequestDto);
     return ({ message: 'success', notify: newNotify });
   }

@@ -44,6 +44,7 @@ export function Notify() {
         };
       });
       actionsStatus.newFriend(notify.user_source);
+      actionsStatus.updateSelectedUserProfile(notify.user_source);
       actionsStatus.removeNotify();
     } catch (err: any) {
       if (err.response.data.message == 'User already is your friend') {

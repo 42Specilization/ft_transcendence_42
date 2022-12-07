@@ -24,7 +24,7 @@ export function ButtonMuteMember({ id, name }: ButtonMuteMemberProps) {
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
         data-html={true}
-        data-tip={'Mute Member(15 minutes)'}
+        data-tooltip-content={'Mute Member(15 minutes)'}
       >
         <SpeakerSlash size={32} />
       </button>

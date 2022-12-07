@@ -16,6 +16,7 @@ export function ButtonUnBlockedUser({ login }: ButtonUnBlockedUserProps) {
 
   async function handleUnblock() {
     await api.patch('/user/removeBlocked', { nick: login }, config);
+    actionsStatus.updateSelectedUserProfile(login);
     actionsStatus.removeBlocked(login);
   }
 
@@ -24,7 +25,7 @@ export function ButtonUnBlockedUser({ login }: ButtonUnBlockedUserProps) {
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
         data-html={true}
-        data-tip={'Unblock'}
+        data-tooltip-content={'Unblock'}
       >
         <UserMinus size={32} />
       </button>

@@ -19,10 +19,15 @@ export function ChatTalk() {
     activeChat, setActiveChat,
     setTabSelected
   } = useContext(ChatContext);
-  const { api, config, intraData, setGlobalData } = useContext(IntraDataContext);
-  const [friendProfileVisible, setProfileUserVisible] = useState(false);
-  const [profileGroupVisible, setProfileGroupVisible] = useState(false);
+  const { api, config, intraData, setGlobalData, updateUserProfile } = useContext(IntraDataContext);
+  const [profileGroupVisible, setProfileGroupVisible] = useState('');
+  const [profileUserVisible, setProfileUserVisible] = useState('');
 
+  useEffect(() => {
+    if (updateUserProfile.newLogin && updateUserProfile.login === profileUserVisible) {
+      setProfileUserVisible(updateUserProfile.newLogin);
+    }
+  }, [updateUserProfile]);
   useEffect(() => {
     return () => {
       exitActiveChat();
@@ -190,9 +195,9 @@ export function ChatTalk() {
   function selectGroupOrFriendVisible() {
     if (activeChat) {
       if (activeChat.chat.type !== 'direct') {
-        setProfileGroupVisible(true);
+        setProfileGroupVisible(activeChat.chat.name as string);
       } else {
-        setProfileUserVisible(true);
+        setProfileUserVisible(activeChat.chat.name as string);
       }
     }
   }
@@ -207,7 +212,7 @@ export function ChatTalk() {
               className='chat__talk__header__user'
               onClick={() => selectGroupOrFriendVisible()}
               data-html={true}
-              data-tip={`${activeChat.chat?.name} profile`}
+              data-tooltip-content={`${activeChat.chat?.name} profile`}
             >
               <div
                 className='chat__talk__header__user__icon'
@@ -255,12 +260,12 @@ export function ChatTalk() {
               })
             }
           </div>
-          {friendProfileVisible &&
+          {profileUserVisible !== '' &&
             <ProfileUserModal
               login={activeChat.chat.name}
               setProfileUserVisible={setProfileUserVisible} />
           }
-          {profileGroupVisible &&
+          {profileGroupVisible !== '' &&
             < ProfileGroupModal
               id={activeChat.chat.id}
               setProfileGroupVisible={setProfileGroupVisible} />

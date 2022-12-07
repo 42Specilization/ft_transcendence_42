@@ -7,14 +7,14 @@ import { getUrlImage } from '../../../../others/utils/utils';
 
 interface CardGroupProps {
   group: GroupCardData;
-  setGroupProfile: Dispatch<SetStateAction<string>>;
+  setProfileGroupVisible: Dispatch<SetStateAction<string>>;
 }
 
-export function CardGroup({ group, setGroupProfile }: CardGroupProps) {
+export function CardGroup({ group, setProfileGroupVisible }: CardGroupProps) {
 
   function selectProfileGroupVisible(e: any) {
     if (e.target.id === 'card__group__community') {
-      setGroupProfile(group.id);
+      setProfileGroupVisible(group.id);
     }
   }
 
@@ -33,12 +33,12 @@ export function CardGroup({ group, setGroupProfile }: CardGroupProps) {
             if (group.type === 'private') {
               return <LockKey size={32}
                 data-html={true}
-                data-tip={'Private Group'} />;
+                data-tooltip-content={'Private Group'} />;
             }
             else if (group.type === 'protected')
               return <Shield size={32}
                 data-html={true}
-                data-tip={'Protected Group'} />;
+                data-tooltip-content={'Protected Group'} />;
           })()}
         </div>
         <Tooltip delayShow={50} />

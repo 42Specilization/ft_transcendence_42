@@ -19,6 +19,7 @@ export function ButtonBlockUser({ login, handle, params }: ButtonBlockUserProps)
   async function handleBlockFriend() {
     await api.patch('/user/addBlocked', { nick: login }, config);
     await api.patch('/chat/deleteDirect', { friend_login: login }, config);
+    actionsStatus.updateSelectedUserProfile(login);
     actionsStatus.newBlocked(login);
     if (handle)
       handle(...params);
@@ -29,7 +30,7 @@ export function ButtonBlockUser({ login, handle, params }: ButtonBlockUserProps)
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
         data-html={true}
-        data-tip={'Block User'}
+        data-tooltip-content={'Block User'}
       >
         <Prohibit size={32} />
       </button>

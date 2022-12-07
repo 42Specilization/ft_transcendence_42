@@ -1,8 +1,9 @@
 import './Button.scss';
 import { User, UserList } from 'phosphor-react';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ProfileGroupModal } from '../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
 import { ProfileUserModal } from '../ProfileUser/ProfileUserModal/ProfileUserModal';
+import { IntraDataContext } from '../../contexts/IntraDataContext';
 
 interface ButtonNotifyProfileProps {
   id: string;
@@ -11,14 +12,21 @@ interface ButtonNotifyProfileProps {
 
 export function ButtonNotifyProfile({ id, type }: ButtonNotifyProfileProps) {
 
-  const [friendProfileVisible, setProfileUserVisible] = useState(false);
-  const [profileGroupVisible, setProfileGroupVisible] = useState(false);
+  const { updateUserProfile } = useContext(IntraDataContext);
+  const [profileGroupVisible, setProfileGroupVisible] = useState('');
+  const [profileUserVisible, setProfileUserVisible] = useState('');
+
+  useEffect(() => {
+    if (updateUserProfile.newLogin && updateUserProfile.login === profileUserVisible) {
+      setProfileUserVisible(updateUserProfile.newLogin);
+    }
+  }, [updateUserProfile]);
 
   function handleShowProfile() {
     if (type === 'User')
-      setProfileUserVisible(true);
+      setProfileUserVisible(id);
     else
-      setProfileGroupVisible(true);
+      setProfileGroupVisible(id);
   }
 
   return (
@@ -26,7 +34,7 @@ export function ButtonNotifyProfile({ id, type }: ButtonNotifyProfileProps) {
       <button className='button__icon'
         onClick={handleShowProfile}
         data-html={true}
-        data-tip={`${type} Profile`}
+        data-tooltip-content={`${type} Profile`}
       >
         {type === 'User' ?
           <User size={32} /> :
@@ -34,12 +42,12 @@ export function ButtonNotifyProfile({ id, type }: ButtonNotifyProfileProps) {
         }
       </button>
       {
-        profileGroupVisible &&
+        profileGroupVisible !== '' &&
         <ProfileGroupModal id={id}
           setProfileGroupVisible={setProfileGroupVisible} />
       }
       {
-        friendProfileVisible &&
+        profileUserVisible !== '' &&
         <ProfileUserModal login={id}
           setProfileUserVisible={setProfileUserVisible} />
       }

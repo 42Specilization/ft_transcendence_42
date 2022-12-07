@@ -30,7 +30,7 @@ export function ButtonAddFriend({ login }: ButtonAddFriendProps) {
       <button className='button__icon'
         onClick={handleAddFriend}
         data-html={true}
-        data-tip={'Add Friend'}
+        data-tooltip-content={'Add Friend'}
       >
         <UserPlus size={32} />
       </button>

@@ -24,7 +24,7 @@ export function ButtonUnMuteMember({ id, name }: ButtonUnMuteMemberProps) {
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
         data-html={true}
-        data-tip={'Unmute Member'}
+        data-tooltip-content={'Unmute Member'}
       >
         <SpeakerHigh size={32} />
       </button>

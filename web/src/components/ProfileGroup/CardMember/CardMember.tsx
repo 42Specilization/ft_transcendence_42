@@ -9,14 +9,16 @@ import { ButtonKickMember } from '../../Button/ButtonKickMember';
 import { ButtonBanMember } from '../../Button/ButtonBanMember';
 import { ButtonMakeAdmin } from '../../Button/ButtonMakeAdmin';
 import { UserData } from '../../../others/Interfaces/interfaces';
+import { Dispatch, SetStateAction } from 'react';
 
 interface CardMemberProps {
   data: any;
   bannedVisible: boolean;
   havePermission: (arg0: string) => boolean;
+  setProfileUserVisible: Dispatch<SetStateAction<string>>;
 }
 
-export function CardMember({ data, bannedVisible, havePermission }: CardMemberProps) {
+export function CardMember({ data, bannedVisible, havePermission, setProfileUserVisible }: CardMemberProps) {
 
   function heightMenu() {
     if (havePermission('maxLevel'))
@@ -31,13 +33,13 @@ export function CardMember({ data, bannedVisible, havePermission }: CardMemberPr
       {(data.members && !bannedVisible) && data.members.map((obj: UserData) => {
         if (obj.role === 'owner')
           return (
-            <CardUser key={Math.random()} user={obj} menuHeight={0}>
+            <CardUser key={Math.random()} user={obj} menuHeight={0} setProfileUserVisible={setProfileUserVisible}>
               <Crown id='card__owner' size={32} />
             </CardUser>
           );
         if (obj.role === 'admin')
           return (
-            <CardUser key={Math.random()} user={obj} menuHeight={heightMenu()}>
+            <CardUser key={Math.random()} user={obj} menuHeight={heightMenu()} setProfileUserVisible={setProfileUserVisible}>
               <Alien id='card__admin' size={32} />
               {havePermission('maxLevel') &&
                 <>
@@ -54,7 +56,7 @@ export function CardMember({ data, bannedVisible, havePermission }: CardMemberPr
           );
         else
           return (
-            <CardUser key={Math.random()} user={obj} menuHeight={heightMenu()}>
+            <CardUser key={Math.random()} user={obj} menuHeight={heightMenu()} setProfileUserVisible={setProfileUserVisible}>
               <div />
               {havePermission('middleLevel') &&
                 <>
@@ -73,7 +75,7 @@ export function CardMember({ data, bannedVisible, havePermission }: CardMemberPr
           );
       })}
       {(data.banned && bannedVisible) && data.banned.map((obj: UserData) =>
-        <CardUser key={Math.random()} user={obj} menuHeight={55}>
+        <CardUser key={Math.random()} user={obj} menuHeight={55} setProfileUserVisible={setProfileUserVisible}>
           <div></div>
           <ButtonUnBanMember id={data.id} name={obj.login} />
         </CardUser>

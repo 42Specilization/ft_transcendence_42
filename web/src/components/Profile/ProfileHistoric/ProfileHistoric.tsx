@@ -1,11 +1,22 @@
 import './ProfileHistoric.scss';
 import { HistoricMatch } from '../HistoricMatch/HistoricMatch';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { IntraDataContext } from '../../../contexts/IntraDataContext';
 import { useQuery } from 'react-query';
+import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
 
 export function ProfileHistoric() {
+
+  const { updateUserProfile } = useContext(IntraDataContext);
   const { intraData, api, config } = useContext(IntraDataContext);
+  const [profileUserVisible, setProfileUserVisible] = useState('');
+
+  useEffect(() => {
+    if (updateUserProfile.newLogin && updateUserProfile.login === profileUserVisible) {
+      setProfileUserVisible(updateUserProfile.newLogin);
+    }
+  }, [updateUserProfile]);
+
   const { data } = useQuery(
     'userHistoric',
     async () => {
@@ -19,23 +30,32 @@ export function ProfileHistoric() {
   );
 
   return (
-    <div className='profile__historic'>
-      <div className='profile__historic__header'>
-        <p className='profile__historic__header__item'>Player</p>
-        <p className='profile__historic__header__item'>Date</p>
-        <p className='profile__historic__header__item'>Result</p>
-      </div>
-      <div className='profile__historic__body'>
-        {data && data.map((index: any) => (
-          <HistoricMatch
-            key={Math.random()}
-            image_url={index.opponent.imgUrl}
-            nick={index.opponent.login}
-            date={index.date}
-            result={index.result}
-          />
-        ))}
-      </div>
-    </div >
+    <>
+      <div className='profile__historic'>
+        <div className='profile__historic__header'>
+          <p className='profile__historic__header__item'>Player</p>
+          <p className='profile__historic__header__item'>Date</p>
+          <p className='profile__historic__header__item'>Result</p>
+        </div>
+        <div className='profile__historic__body'>
+          {data && data.map((index: any) => (
+            <HistoricMatch
+              key={Math.random()}
+              image_url={index.opponent.imgUrl}
+              nick={index.opponent.login}
+              date={index.date}
+              result={index.result}
+              setProfileUserVisible={setProfileUserVisible}
+            />
+          ))}
+        </div>
+      </div >
+      {
+        profileUserVisible !== '' &&
+        <ProfileUserModal
+          login={profileUserVisible}
+          setProfileUserVisible={setProfileUserVisible} />
+      }
+    </>
   );
 }

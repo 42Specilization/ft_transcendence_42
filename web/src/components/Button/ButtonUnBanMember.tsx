@@ -24,7 +24,7 @@ export function ButtonUnBanMember({ id, name }: ButtonUnBanMemberProps) {
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
         data-html={true}
-        data-tip={'UnBan Member'}
+        data-tooltip-content={'UnBan Member'}
       >
         <UserMinus size={32} />
       </button>

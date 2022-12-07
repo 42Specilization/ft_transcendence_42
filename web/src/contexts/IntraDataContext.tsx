@@ -28,14 +28,15 @@ const defaultGlobal: GlobalData = {
   globalGroups: [],
 };
 
-export interface UpdateGroupProfile {
-  change: number;
-  id: string;
-}
-
 export interface UpdateUserProfile {
   change: number;
   login: string;
+  newLogin?: string;
+}
+
+export interface UpdateGroupProfile {
+  change: number;
+  id: string;
 }
 
 interface IIntraDataContext {
@@ -53,8 +54,9 @@ interface IIntraDataContext {
   setUpdateUserProfile: Dispatch<SetStateAction<UpdateUserProfile>>;
   updateGroupProfile: UpdateGroupProfile;
   setUpdateGroupProfile: Dispatch<SetStateAction<UpdateGroupProfile>>;
+  closeGroupProfile: UpdateGroupProfile;
+  setCloseGroupProfile: Dispatch<SetStateAction<UpdateGroupProfile>>;
 }
-
 
 
 export const IntraDataContext = createContext<IIntraDataContext>({
@@ -74,6 +76,8 @@ export const IntraDataContext = createContext<IIntraDataContext>({
   setUpdateUserProfile: () => { },
   updateGroupProfile: { change: Date.now(), id: '' },
   setUpdateGroupProfile: () => { },
+  closeGroupProfile: { change: Date.now(), id: '' },
+  setCloseGroupProfile: () => { },
 });
 
 
@@ -91,6 +95,9 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
   ] = useState<UpdateUserProfile>({ change: Date.now(), login: '' });
   const [
     updateGroupProfile, setUpdateGroupProfile
+  ] = useState<UpdateGroupProfile>({ change: Date.now(), id: '' });
+  const [
+    closeGroupProfile, setCloseGroupProfile
   ] = useState<UpdateGroupProfile>({ change: Date.now(), id: '' });
 
   const config = useMemo(() => {
@@ -115,6 +122,7 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
       setActiveChat,
       setUpdateUserProfile,
       setUpdateGroupProfile,
+      setCloseGroupProfile
     );
   }, []);
 
@@ -125,6 +133,7 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
       globalData, setGlobalData,
       updateUserProfile, setUpdateUserProfile,
       updateGroupProfile, setUpdateGroupProfile,
+      closeGroupProfile, setCloseGroupProfile
     }}>
       {children}
     </IntraDataContext.Provider>

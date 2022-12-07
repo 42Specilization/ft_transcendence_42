@@ -31,7 +31,7 @@ export function ChangeSecurity({ id, setModalChangeSecurity }: ChangeSecurityPro
       }
     }
     await api.patch('/chat/updateGroup', { id: id, type: securityType, password: password }, config);
-    actionsStatus.changeGroupPrivacy(id as string);
+    actionsStatus.changeGroupPrivacy(id as string, securityType);
     setModalChangeSecurity(false);
     setSecurityType('');
     setPassword('');

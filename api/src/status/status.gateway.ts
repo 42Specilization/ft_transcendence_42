@@ -105,7 +105,7 @@ export class StatusGateway
     this.mapUserData.keyNotOf(newLogin).forEach(socketId =>
       this.server.to(socketId).emit('updateUserLogin', oldLogin, newLogin)
     );
-    this.server.emit('updateUserProfile', newLogin);
+    this.server.emit('updateUserProfileLogin', oldLogin, newLogin);
   }
 
   @SubscribeMessage('changeImage')
@@ -251,9 +251,11 @@ export class StatusGateway
 
   @SubscribeMessage('changeGroupPrivacy')
   handleChangeGroupPrivacy(
-    @MessageBody() id: string) {
+    @MessageBody() { id, privacy }: { id: string, privacy: string }) {
     this.server.emit('updateGroupPrivacy', id);
     this.server.emit('updateGroupProfile', id);
+    if (privacy === 'private')
+      this.server.emit('closeGroupProfile', id);
   }
 
   @SubscribeMessage('changeGroupAdmins')

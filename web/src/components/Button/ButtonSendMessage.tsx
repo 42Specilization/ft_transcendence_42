@@ -25,7 +25,7 @@ export function ButtonSendMessage({ id, type, onClick}: ButtonSendMessageProps) 
       <button className='button__icon'
         onClick={handleSendMessage}
         data-html={true}
-        data-tip={'Send Message'}
+        data-tooltip-content={'Send Message'}
       >
         <TelegramLogo size={32} />
       </button>

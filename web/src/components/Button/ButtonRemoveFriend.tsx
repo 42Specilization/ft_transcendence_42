@@ -17,6 +17,7 @@ export function ButtonRemoveFriend({ login }: ButtonRemoveFriendProps) {
   async function handleRemoveFriend() {
     await api.patch('/user/removeFriend', { nick: login }, config);
     actionsStatus.removeFriend(login);
+    actionsStatus.updateSelectedUserProfile(login);
   }
 
   return (
@@ -24,7 +25,7 @@ export function ButtonRemoveFriend({ login }: ButtonRemoveFriendProps) {
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
         data-html={true}
-        data-tip={'Remove Friend'}
+        data-tooltip-content={'Remove Friend'}
       >
         <UserMinus size={32} />
       </button>

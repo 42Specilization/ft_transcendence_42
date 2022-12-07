@@ -24,7 +24,7 @@ export function ButtonBanMember({ id, name }: ButtonBanMemberProps) {
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
         data-html={true}
-        data-tip={'Ban Member'}
+        data-tooltip-content={'Ban Member'}
       >
         <Prohibit size={32} />
       </button>

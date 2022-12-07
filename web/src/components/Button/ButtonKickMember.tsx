@@ -24,7 +24,7 @@ export function ButtonKickMember({ id, name }: ButtonKickMemberProps) {
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
         data-html={true}
-        data-tip={'Kick Member'}
+        data-tooltip-content={'Kick Member'}
       >
         <UserMinus size={32} />
       </button>

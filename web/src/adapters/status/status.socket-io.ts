@@ -27,12 +27,10 @@ export function createSocketStatus({
 
   socket.on('connect', async () => {
     actionsStatus.iAmOnline();
-    console.log('ou estou online');
   });
 
   socket.on('updateUserStatus', (login: string, status: string) => {
     actionsStatus.updateUserStatus(login, status);
-    console.log('mudou o status', login, status);
   });
 
   socket.on('updateYourselfLogin', (image: string) => {
@@ -40,6 +38,7 @@ export function createSocketStatus({
   });
 
   socket.on('updateUserLogin', (oldLogin: string, newLogin: string) => {
+    console.log('update user login', oldLogin, newLogin);
     actionsStatus.updateUserLogin(oldLogin, newLogin);
   });
 
@@ -70,9 +69,6 @@ export function createSocketStatus({
     actionsStatus.updateDirects(chat);
   });
 
-
-
-
   socket.on('updateGroupName', (id: string, name: string) => {
     actionsStatus.updateGroupName(id, name);
   });
@@ -89,8 +85,16 @@ export function createSocketStatus({
     actionsStatus.updateGroupProfile(id);
   });
 
+  socket.on('updateUserProfileLogin', (oldLogin: string, newLogin: string) => {
+    actionsStatus.updateUserProfileLogin(oldLogin, newLogin);
+  });
+
   socket.on('updateUserProfile', (login: string) => {
     actionsStatus.updateUserProfile(login);
+  });
+
+  socket.on('closeGroupProfile', (id: string) => {
+    actionsStatus.closeGroupProfile(id);
   });
 
   return socket;

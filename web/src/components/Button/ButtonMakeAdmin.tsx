@@ -29,7 +29,7 @@ export function ButtonMakeAdmin({ id, name }: ButtonMakeAdminProps) {
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
         data-html={true}
-        data-tip={'Make Admin'}
+        data-tooltip-content={'Make Admin'}
       >
         <Alien size={32} />
       </button>

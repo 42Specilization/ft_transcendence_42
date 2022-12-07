@@ -53,5 +53,9 @@ export function createSocketChat({
     actionsChat.removeGroup(id, login);
   });
 
+  socket.on('closeGroupProfile', (id: string) => {
+    actionsStatus.closeGroupProfile(id);
+  });
+
   return socket;
 }
