@@ -533,9 +533,12 @@ export class UserService {
   async popNotification(email: string, id: string, notifyDto: NotifyDto | undefined = undefined) {
     let user;
     if (notifyDto) {
-      user = await this.findUserByNick(notifyDto.user_target as string) as User;
+      user = await this.findUserByNick(notifyDto.user_target as string);
     } else {
-      user = await this.findUserByEmail(email) as User;
+      user = await this.findUserByEmail(email);
+    }
+    if (!user) {
+      return;
     }
     user.notify = user.notify.filter((notify) => {
       if (notify.id == id)

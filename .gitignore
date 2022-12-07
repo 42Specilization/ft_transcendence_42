@@ -108,3 +108,4 @@ dist
 
 .production.env
 dataAssets/*.jpg
+./db/pgsql/
