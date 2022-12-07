@@ -130,11 +130,14 @@ export class StatusGateway
   }
 
   @SubscribeMessage('removeNotify')
-  handleRemoveNotify(@ConnectedSocket() client: Socket, @MessageBody() loginTarget: string) {
+  async handleRemoveNotify(@ConnectedSocket() client: Socket, @MessageBody() emailTarget: string) {
     let login;
 
-    if (loginTarget) {
-      login = loginTarget;
+    if (emailTarget) {
+      const user = await this.userService.findUserByEmail(emailTarget);
+      if (!user)
+        return;
+      login = user.nick;
     } else {
       login = this.mapUserData.valueOf(client.id);
     }

@@ -517,7 +517,7 @@ export class UserService {
     return (
       {
         type: newNotify.type, user_source: newNotify.user_source.nick, user_target: friend.nick,
-        additional_info: newNotify.additional_info, date: newNotify.date
+        additional_info: newNotify.additional_info, date: newNotify.date, user_target_email: friend.email
       }
     );
 
@@ -533,7 +533,7 @@ export class UserService {
   async popNotification(email: string, id: string, notifyDto: NotifyDto | undefined = undefined) {
     let user;
     if (notifyDto) {
-      user = await this.findUserByNick(notifyDto.user_target as string);
+      user = await this.findUserByEmail(notifyDto.user_target_email as string);
     } else {
       user = await this.findUserByEmail(email);
     }

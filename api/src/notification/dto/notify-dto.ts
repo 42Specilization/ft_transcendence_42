@@ -6,6 +6,7 @@ export class NotifyDto {
   type: string;
   user_source: string;
   user_target: string | null;
+  user_target_email: string | null;
   additional_info: string | null;
   date: Date;
 }
