@@ -1,7 +1,7 @@
 import './ChatMessage.scss';
 import ReactDOMServer from 'react-dom/server';
 import { MsgToClient } from '../../../others/Interfaces/interfaces';
-import { Tooltip } from '@mui/material';
+// import { Tooltip } from '@mui/material';
 import {
   formatDate,
   getUrlImage
@@ -25,13 +25,13 @@ export function ChatMessage({ user, message }: ChatMessageProps) {
         className='chat__message__icon'
         style={{ backgroundImage: `url(${getUrlImage(message.user.image)})` }}
       />
-      <Tooltip title={ReactDOMServer.renderToString(formatDate(message.date.toString()))}>
-        <p
-          id={`message_${message.id}`}
-        >
-          {message.msg}
-        </p>
-      </Tooltip>
+      {/* <Tooltip title={ReactDOMServer.renderToString(formatDate(message.date.toString()))}> */}
+      <p
+        id={`message_${message.id}`}
+      >
+        {message.msg}
+      </p>
+      {/* </Tooltip> */}
     </div >
   );
 }
