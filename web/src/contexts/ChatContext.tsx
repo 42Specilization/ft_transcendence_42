@@ -6,8 +6,7 @@ export interface ActiveChatData {
   chat: ChatData;
   newMessage: boolean;
   historicMsg: MsgToClient[];
-  blocks: number;
-  currentBlock: number;
+  currentMessage: number;
 }
 
 export interface SelectedChat {

@@ -10,6 +10,7 @@ interface ChatMessageProps {
 }
 
 export function ChatMessage({ user, message }: ChatMessageProps) {
+
   function self(): boolean {
     return user === message.user.login;
   }

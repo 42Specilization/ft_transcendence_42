@@ -42,40 +42,6 @@ export function ChatTalk() {
     }
   }, [selectedChat]);
 
-  function initActiveChat(chat: ChatData) {
-    const messages: MsgToClient[] = chat.messages;
-    const blocks = Math.floor((messages.length - 1) / 20);
-    setActiveChat({
-      chat: { ...chat, messages: messages.slice(-20) },
-      newMessage: true,
-      historicMsg: messages.filter((msg: any) => msg.type !== 'breakpoint'),
-      blocks: blocks,
-      currentBlock: blocks - 1
-    });
-  }
-
-  async function exitActiveChat() {
-    if (activeChat) {
-      api.patch('/chat/setBreakpoint', { chatId: activeChat.chat.id, type: activeChat.chat.type }, config);
-      if (activeChat.chat.type === 'direct')
-        setGlobalData(prev => {
-          return {
-            ...prev,
-            directs: prev.directs.map(key => key.id === activeChat.chat.id ? { ...key, newMessages: 0 } : key)
-          };
-        });
-      else
-        setGlobalData(prev => {
-          return {
-            ...prev,
-            groups: prev.groups.map(key => key.id === activeChat.chat.id ? { ...key, newMessages: 0 } : key)
-          };
-        });
-    }
-    setSelectedChat(null);
-    setActiveChat(null);
-  }
-
   async function setNewChat() {
     let chat;
     if (!selectedChat)
@@ -101,6 +67,38 @@ export function ChatTalk() {
       exitActiveChat();
     }
     initActiveChat(chat);
+  }
+
+  function initActiveChat(chat: ChatData) {
+    const messages: MsgToClient[] = chat.messages;
+    setActiveChat({
+      chat: { ...chat, messages: messages.slice(-30) },
+      newMessage: true,
+      historicMsg: messages.filter((msg: any) => msg.type !== 'breakpoint'),
+      currentMessage: messages.length - 1
+    });
+  }
+
+  async function exitActiveChat() {
+    if (activeChat) {
+      api.patch('/chat/setBreakpoint', { chatId: activeChat.chat.id, type: activeChat.chat.type }, config);
+      if (activeChat.chat.type === 'direct')
+        setGlobalData(prev => {
+          return {
+            ...prev,
+            directs: prev.directs.map(key => key.id === activeChat.chat.id ? { ...key, newMessages: 0 } : key)
+          };
+        });
+      else
+        setGlobalData(prev => {
+          return {
+            ...prev,
+            groups: prev.groups.map(key => key.id === activeChat.chat.id ? { ...key, newMessages: 0 } : key)
+          };
+        });
+    }
+    setSelectedChat(null);
+    setActiveChat(null);
   }
 
 
