@@ -144,6 +144,8 @@ export class GameGateway
         .to(game.room.toString())
         .emit('start-game', game);
       this.sendGameList();
+    } else {
+      user.emit('game-not-found');
     }
   }
 
