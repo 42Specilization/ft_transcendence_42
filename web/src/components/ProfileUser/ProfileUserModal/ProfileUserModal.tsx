@@ -5,25 +5,25 @@ import { ProfileUser } from '../ProfileUser';
 
 interface ProfileUserModalProps {
   login: string | undefined;
-  setProfileUserVisible: Dispatch<SetStateAction<boolean>>;
+  setProfileUserVisible: Dispatch<SetStateAction<string>>;
 }
 
 export function ProfileUserModal({ login, setProfileUserVisible }: ProfileUserModalProps) {
 
   const handleOutsideClick = (e: any) => {
     if (e.target.id == 'profileUser__modal')
-      setProfileUserVisible(false);
+      setProfileUserVisible('');
   };
 
   return (
     <div id='profileUser__modal' className='profileUser__modal' onClick={handleOutsideClick}>
       <div className="profileUser__modal__container">
         <div className="profileUser__modal__container__content">
-          <ProfileUser login={login} setProfileUserVisible={setProfileUserVisible}/>
+          <ProfileUser login={login} setProfileUserVisible={setProfileUserVisible} />
         </div>
         <div className='profileUser__modal__container__closeButton__div' >
           <button className="profileUser__modal__container__closeButton"
-            onClick={() => setProfileUserVisible(false)}>
+            onClick={() => setProfileUserVisible('')}>
             <XCircle size={40} />
           </button>
         </div>

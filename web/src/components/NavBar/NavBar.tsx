@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Notify } from '../Notify/Notify';
 import { actionsStatus } from '../../adapters/status/statusState';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { getUrlImage } from '../../others/utils/utils';
 import { ChatContext } from '../../contexts/ChatContext';
 
@@ -19,7 +19,7 @@ export function NavBar({ Children }: NavBarProps) {
   const { logout } = useAuth();
 
   const { activeChat } = useContext(ChatContext);
-  const { intraData, globalData } = useContext(IntraDataContext);
+  const { intraData, globalData } = useContext(GlobalContext);
   const [menuVisible, setMenuVisible] = useState(false);
   const [notifyVisible, setNotifyVisible] = useState(false);
 

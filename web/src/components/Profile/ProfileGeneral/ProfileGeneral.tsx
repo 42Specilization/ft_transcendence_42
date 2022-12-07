@@ -1,11 +1,11 @@
 import './ProfileGeneral.scss';
 import { ProfileCard } from '../ProfileCard/ProfileCard';
 import { useContext } from 'react';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 
 export function ProfileGeneral() {
 
-  const { intraData } = useContext(IntraDataContext);
+  const { intraData } = useContext(GlobalContext);
 
   return (
     <div className='profile__general'>

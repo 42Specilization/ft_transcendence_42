@@ -1,7 +1,7 @@
 import './Button.scss';
 import { User } from 'phosphor-react';
 import { useContext, useState } from 'react';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import { actionsStatus } from '../../adapters/status/statusState';
 
@@ -12,7 +12,7 @@ interface ButtonRemoveAdminProps {
 
 export function ButtonRemoveAdmin({ id, name }: ButtonRemoveAdminProps) {
 
-  const { api, config } = useContext(IntraDataContext);
+  const { api, config } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
   async function handleRemoveAdmin() {
@@ -30,7 +30,7 @@ export function ButtonRemoveAdmin({ id, name }: ButtonRemoveAdminProps) {
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
         data-html={true}
-        data-tip={'Remove Admin'}
+        data-tooltip-content={'Remove Admin'}
       >
         <User size={32} />
       </button>

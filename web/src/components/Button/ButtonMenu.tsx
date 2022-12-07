@@ -14,7 +14,7 @@ export function ButtonMenu({ setActiveMenu }: ButtonMenuProps) {
       size={40}
       onClick={() => setActiveMenu(prev => !prev)}
       data-html={true}
-      data-tip={'Menu'}
+      data-tooltip-content={'Menu'}
     />
   );
 }

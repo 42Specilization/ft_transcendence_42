@@ -1,6 +1,6 @@
 import './ProfileUserHistoric.scss';
 import { useContext } from 'react';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 import { useQuery } from 'react-query';
 import { ProfileUserHistoricMatch } from '../ProfileUserHistoricMatch/ProfileUserHistoricMatch';
 
@@ -9,7 +9,7 @@ interface ProfileUserHistoricProps {
 }
 
 export function ProfileUserHistoric({ login }: ProfileUserHistoricProps) {
-  const { api, config } = useContext(IntraDataContext);
+  const { api, config } = useContext(GlobalContext);
   const { data, status } = useQuery(
     'friendHistoric',
     async () => {

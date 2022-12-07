@@ -1,6 +1,6 @@
 import './Button.scss';
 import { UserMinus } from 'phosphor-react';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { actionsStatus } from '../../adapters/status/statusState';
 import { useContext, useState } from 'react';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
@@ -11,12 +11,13 @@ interface ButtonRemoveFriendProps {
 
 export function ButtonRemoveFriend({ login }: ButtonRemoveFriendProps) {
 
-  const { api, config } = useContext(IntraDataContext);
+  const { api, config } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
   async function handleRemoveFriend() {
     await api.patch('/user/removeFriend', { nick: login }, config);
     actionsStatus.removeFriend(login);
+    actionsStatus.updateSelectedUserProfile(login);
   }
 
   return (
@@ -24,7 +25,7 @@ export function ButtonRemoveFriend({ login }: ButtonRemoveFriendProps) {
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
         data-html={true}
-        data-tip={'Remove Friend'}
+        data-tooltip-content={'Remove Friend'}
       >
         <UserMinus size={32} />
       </button>

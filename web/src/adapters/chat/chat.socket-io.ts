@@ -4,7 +4,7 @@ import { actionsStatus } from '../status/statusState';
 import { AppActionsChat, AppStateChat } from './chatState';
 
 export const socketChatIOUrl = `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT
-}/${import.meta.env.VITE_CHAT_NAMESPACE}`;
+  }/${import.meta.env.VITE_CHAT_NAMESPACE}`;
 
 export interface CreateSocketChatOptions {
   accessToken?: string | undefined | null;
@@ -51,6 +51,10 @@ export function createSocketChat({
 
   socket.on('removeGroup', (id: string, login: string) => {
     actionsChat.removeGroup(id, login);
+  });
+
+  socket.on('closeGroupProfile', (id: string) => {
+    actionsStatus.closeGroupProfile(id);
   });
 
   return socket;

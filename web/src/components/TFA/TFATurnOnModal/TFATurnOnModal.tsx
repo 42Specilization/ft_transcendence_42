@@ -1,7 +1,7 @@
 import { PaperPlaneRight } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import { TailSpin } from 'react-loader-spinner';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 import { Modal } from '../../Modal/Modal';
 import './TFATurnOnModal.scss';
 
@@ -16,7 +16,7 @@ export function TFATurnOnModal({
   setTfaEmail,
   setTfaModal }: TFATurnOnModalProps) {
 
-  const { api, config } = useContext(IntraDataContext);
+  const { api, config } = useContext(GlobalContext);
   const [placeHolder, setPlaceHolder] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 

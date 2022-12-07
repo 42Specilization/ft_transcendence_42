@@ -1,13 +1,13 @@
 import './UserImage.scss';
 import { useContext, useEffect, useState } from 'react';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { Dropzone } from '../../Dropzone/Dropzone';
 import { getUrlImage } from '../../../others/utils/utils';
 
 export function UserImage() {
 
-  const { api, config, intraData } = useContext(IntraDataContext);
+  const { api, config, intraData } = useContext(GlobalContext);
   const [selectedFile, setSelectedFile] = useState<File>();
 
   async function handleSubmit() {

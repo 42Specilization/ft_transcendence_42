@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import { Modal } from '../../Modal/Modal';
 import { PaperPlaneRight } from 'phosphor-react';
 import { actionsStatus } from '../../../adapters/status/statusState';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 
 
 interface ChangeNickProps {
@@ -12,7 +12,7 @@ interface ChangeNickProps {
 
 export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
 
-  const { api, config } = useContext(IntraDataContext);
+  const { api, config } = useContext(GlobalContext);
   const [nick, setNick] = useState<string>('');
   const [placeHolder, setPlaceHolder] = useState('');
 

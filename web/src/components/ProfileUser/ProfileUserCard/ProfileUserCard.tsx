@@ -8,8 +8,7 @@ import { ButtonRemoveFriend } from '../../Button/ButtonRemoveFriend';
 import { ButtonUnBlockedUser } from '../../Button/ButtonUnBlockedUser';
 import { Tooltip } from 'react-tooltip';
 import { Sword } from 'phosphor-react';
-import { Dispatch, SetStateAction, useContext } from 'react';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { Dispatch, SetStateAction } from 'react';
 
 interface ProfileUserCardProps {
   profileUserData: {
@@ -22,23 +21,12 @@ interface ProfileUserCardProps {
     lose: string,
     relation: string,
   };
-  setProfileUserVisible: Dispatch<SetStateAction<boolean>>;
+  setProfileUserVisible: Dispatch<SetStateAction<string>>;
 }
 
 export function ProfileUserCard({ profileUserData, setProfileUserVisible }: ProfileUserCardProps) {
 
   const { status, name, login, image_url, relation } = profileUserData;
-  const { globalData } = useContext(IntraDataContext);
-
-  function checkNotificationChallenge(login: string) {
-    for (let i = 0; globalData.notify[i]; i++) {
-      if (globalData.notify[i].type === 'challenge'
-        && globalData.notify[i].user_source === login) {
-        return (true);
-      }
-    }
-    return (false);
-  }
 
   return (
     <div className='profileUser__card'>
@@ -54,13 +42,12 @@ export function ProfileUserCard({ profileUserData, setProfileUserVisible }: Prof
           <>
             {relation !== 'blocker' ?
               <>
-                <ButtonSendMessage id={login} type={'person'} onClick={() => setProfileUserVisible(false)} />
-                {(status === 'online' && !checkNotificationChallenge(login)) ?
+                <ButtonSendMessage id={login} type={'person'} onClick={() => setProfileUserVisible('')} />
+                {status === 'online' ?
                   <ButtonChallenge login={login} /> :
                   <div className='profileUser__card__button__challengeOff'
                     data-html={true}
-                    data-tip={`Player ${status === 'online' && checkNotificationChallenge(login) ?
-                      'already challenge you!' : status}`}
+                    data-tooltip-content={`Player ${status}`}
                   >
                     <Sword size={32} />
                   </div>

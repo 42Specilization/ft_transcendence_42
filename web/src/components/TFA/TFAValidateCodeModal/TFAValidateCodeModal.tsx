@@ -1,7 +1,7 @@
 import './TFAValidateCodeModal.scss';
 import { useContext, useState } from 'react';
 import { Modal } from '../../Modal/Modal';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 
 interface TFAValidateCodeModalProps {
   tfaEmail: string;
@@ -17,7 +17,7 @@ export function TFAValidateCodeModal({
   setTfaEnable,
 }: TFAValidateCodeModalProps) {
 
-  const { api, config } = useContext(IntraDataContext);
+  const { api, config } = useContext(GlobalContext);
   const [code, setCode] = useState('');
   const [placeHolder, setPlaceHolder] = useState('');
 

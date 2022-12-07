@@ -1,7 +1,7 @@
 import './Button.scss';
 import { Alien } from 'phosphor-react';
 import { useContext, useState } from 'react';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import { actionsStatus } from '../../adapters/status/statusState';
 
@@ -12,7 +12,7 @@ interface ButtonMakeAdminProps {
 
 export function ButtonMakeAdmin({ id, name }: ButtonMakeAdminProps) {
 
-  const { api, config } = useContext(IntraDataContext);
+  const { api, config } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
   async function handleMakeAdmin() {
@@ -29,7 +29,7 @@ export function ButtonMakeAdmin({ id, name }: ButtonMakeAdminProps) {
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
         data-html={true}
-        data-tip={'Make Admin'}
+        data-tooltip-content={'Make Admin'}
       >
         <Alien size={32} />
       </button>

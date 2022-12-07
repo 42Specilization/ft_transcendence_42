@@ -13,7 +13,7 @@ interface ProfileUserGeneralProps {
     lose: string,
     relation: string,
   };
-  setProfileUserVisible: Dispatch<SetStateAction<boolean>>;
+  setProfileUserVisible: Dispatch<SetStateAction<string>>;
 }
 
 export function ProfileUserGeneral({ profileUserData, setProfileUserVisible }: ProfileUserGeneralProps) {

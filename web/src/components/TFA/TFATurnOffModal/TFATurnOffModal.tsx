@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 import { Modal } from '../../Modal/Modal';
 import './TFATurnOffModal.scss';
 interface TFATurnOffModalProps {
@@ -12,7 +12,7 @@ export function TFATurnOffModal({
   setTfaEnable,
 }: TFATurnOffModalProps) {
 
-  const { api, config } = useContext(IntraDataContext);
+  const { api, config } = useContext(GlobalContext);
 
   async function handleTurnOff() {
     const body = {

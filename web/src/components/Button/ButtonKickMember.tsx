@@ -2,7 +2,7 @@ import './Button.scss';
 import { UserMinus } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import { actionsChat } from '../../adapters/chat/chatState';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 
 interface ButtonKickMemberProps {
@@ -12,7 +12,7 @@ interface ButtonKickMemberProps {
 
 export function ButtonKickMember({ id, name }: ButtonKickMemberProps) {
 
-  const { intraData } = useContext(IntraDataContext);
+  const { intraData } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
   async function handleKickMember() {
@@ -24,7 +24,7 @@ export function ButtonKickMember({ id, name }: ButtonKickMemberProps) {
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
         data-html={true}
-        data-tip={'Kick Member'}
+        data-tooltip-content={'Kick Member'}
       >
         <UserMinus size={32} />
       </button>

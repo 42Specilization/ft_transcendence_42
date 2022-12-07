@@ -1,8 +1,8 @@
 import './GroupsTab.scss';
 import { Plus } from 'phosphor-react';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { Tooltip } from 'react-tooltip';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 import { CardGroup } from './CardGroup/CardGroup';
 import { Modal } from '../../Modal/Modal';
 import { CreateGroup } from './CreateGroup/CreateGroup';
@@ -11,22 +11,11 @@ import { ProfileGroupModal } from '../../ProfileGroup/ProfileGroupModal/ProfileG
 
 export function GroupsTab() {
 
-  const [groupProfile, setGroupProfile] = useState('');
   const [searchActive, setSearchActive] = useState(false);
   const [createGroupModal, setCreateGroupModal] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-  const { globalData } = useContext(IntraDataContext);
-  const [profileGroupVisible, setProfileGroupVisible] = useState(false);
-
-  useEffect(() => {
-    if (groupProfile !== '')
-      setProfileGroupVisible(true);
-  }, [groupProfile]);
-
-  useEffect(() => {
-    if (profileGroupVisible === false)
-      setGroupProfile('');
-  }, [profileGroupVisible]);
+  const { globalData } = useContext(GlobalContext);
+  const [profileGroupVisible, setProfileGroupVisible] = useState('');
 
   return (
     <div className='groups__tab' >
@@ -48,7 +37,7 @@ export function GroupsTab() {
       </div>
       <div className='groups__tab__body'>
         {globalData.globalGroups?.map((key: any) =>
-          <CardGroup key={Math.random()} group={key} setGroupProfile={setGroupProfile} />)
+          <CardGroup key={Math.random()} group={key} setProfileGroupVisible={setProfileGroupVisible} />)
         }
       </div>
       {createGroupModal &&
@@ -56,8 +45,8 @@ export function GroupsTab() {
           <CreateGroup setCreateGroupModal={setCreateGroupModal} />
         </Modal>
       }
-      {profileGroupVisible &&
-        <ProfileGroupModal id={groupProfile} setProfileGroupVisible={setProfileGroupVisible} />
+      {profileGroupVisible !== '' &&
+        <ProfileGroupModal id={profileGroupVisible} setProfileGroupVisible={setProfileGroupVisible} />
       }
     </div >);
 }

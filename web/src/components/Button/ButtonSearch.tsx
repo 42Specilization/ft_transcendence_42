@@ -28,7 +28,7 @@ export function ButtonSearch({
       <MagnifyingGlass className='button__search__icon'
         size={40}
         data-html={true}
-        data-tip={tooltip}
+        data-tooltip-content={tooltip}
         onClick={() => {
           setSearchActive(prev => !prev);
           setSearchInput('');

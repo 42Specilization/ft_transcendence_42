@@ -2,7 +2,7 @@ import './Button.scss';
 import { Prohibit } from 'phosphor-react';
 import { useContext, useState } from 'react';
 import { actionsChat } from '../../adapters/chat/chatState';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 
 interface ButtonBanMemberProps {
@@ -12,7 +12,7 @@ interface ButtonBanMemberProps {
 
 export function ButtonBanMember({ id, name }: ButtonBanMemberProps) {
 
-  const { intraData } = useContext(IntraDataContext);
+  const { intraData } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
   async function handleBanMember() {
@@ -24,7 +24,7 @@ export function ButtonBanMember({ id, name }: ButtonBanMemberProps) {
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
         data-html={true}
-        data-tip={'Ban Member'}
+        data-tooltip-content={'Ban Member'}
       >
         <Prohibit size={32} />
       </button>

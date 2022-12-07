@@ -1,7 +1,7 @@
 import './Button.scss';
 import { Prohibit } from 'phosphor-react';
 import { useContext, useState } from 'react';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import { actionsStatus } from '../../adapters/status/statusState';
 
@@ -13,12 +13,13 @@ interface ButtonBlockUserProps {
 
 export function ButtonBlockUser({ login, handle, params }: ButtonBlockUserProps) {
 
-  const { api, config } = useContext(IntraDataContext);
+  const { api, config } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
   async function handleBlockFriend() {
     await api.patch('/user/addBlocked', { nick: login }, config);
     await api.patch('/chat/deleteDirect', { friend_login: login }, config);
+    actionsStatus.updateSelectedUserProfile(login);
     actionsStatus.newBlocked(login);
     if (handle)
       handle(...params);
@@ -29,7 +30,7 @@ export function ButtonBlockUser({ login, handle, params }: ButtonBlockUserProps)
       <button className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
         data-html={true}
-        data-tip={'Block User'}
+        data-tooltip-content={'Block User'}
       >
         <Prohibit size={32} />
       </button>

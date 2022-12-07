@@ -1,29 +1,32 @@
 import './ProfileUser.scss';
 import { useState, useContext, SetStateAction, Dispatch, useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { ProfileUserGeneral } from './ProfileUserGeneral/ProfileUserGeneral';
 import { ProfileUserHistoric } from './ProfileUserHistoric/ProfileUserHistoric';
 
 interface ProfileUserProps {
   login: string | undefined;
-  setProfileUserVisible: Dispatch<SetStateAction<boolean>>;
+  setProfileUserVisible: Dispatch<SetStateAction<string>>;
 }
 
 export function ProfileUser({ login, setProfileUserVisible }: ProfileUserProps) {
 
-  const { api, config, updateUserProfile } = useContext(IntraDataContext);
+  const { api, config, updateUserProfile } = useContext(GlobalContext);
   const [updateQuery, setUpdateQuery] = useState(0);
   const [tabSelected, setTabSelected] = useState('General');
 
   useEffect(() => {
-    if (updateUserProfile.login === login)
+    console.log(updateUserProfile);
+    if (updateUserProfile.login === login) {
       setUpdateQuery(updateUserProfile.change);
+    }
   }, [updateUserProfile]);
 
   const { data, status } = useQuery(
-    ['profileUser', updateQuery],
+    ['profileUser', updateQuery, login],
     async () => {
+      console.log('useQuery: ', login);
       const response = await api.patch('/user/profile', { nick: login }, config);
       return response.data;
     },
@@ -34,6 +37,9 @@ export function ProfileUser({ login, setProfileUserVisible }: ProfileUserProps) 
   );
 
   if (status == 'loading')
+    return <></>;
+
+  if (!data)
     return <></>;
 
   return (

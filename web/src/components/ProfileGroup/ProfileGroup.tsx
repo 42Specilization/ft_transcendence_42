@@ -3,7 +3,7 @@ import { Tooltip } from 'react-tooltip';
 import { NotePencil, Prohibit, UsersThree } from 'phosphor-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { IntraDataContext } from '../../contexts/IntraDataContext';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { CardMember } from './CardMember/CardMember';
 import { ChangeName } from './ChangeName/ChangeName';
 import { Dropzone } from '../Dropzone/Dropzone';
@@ -15,21 +15,37 @@ import { ButtonLeaveGroup } from '../Button/ButtonLeaveGroup';
 import { ButtonInviteMember } from '../Button/ButtonInviteMember';
 import { actionsStatus } from '../../adapters/status/statusState';
 import { UserData } from '../../others/Interfaces/interfaces';
+import { ProfileUserModal } from '../ProfileUser/ProfileUserModal/ProfileUserModal';
 
 
 interface ProfileGroupProps {
   id: string | undefined;
-  setProfileGroupVisible: Dispatch<SetStateAction<boolean>>;
+  setProfileGroupVisible: Dispatch<SetStateAction<string>>;
 }
 
 export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) {
 
-  const { api, config, updateUserProfile, updateGroupProfile } = useContext(IntraDataContext);
+  const { api, config, updateUserProfile, updateGroupProfile, closeGroupProfile, setCloseGroupProfile } = useContext(GlobalContext);
   const [updateQuery, setUpdateQuery] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File>();
   const [modalChangeName, setModalChangeName] = useState(false);
   const [modalChangeSecurity, setModalChangeSecurity] = useState(false);
   const [bannedVisible, setBannedVisible] = useState(false);
+  const [profileUserVisible, setProfileUserVisible] = useState('');
+
+  useEffect(() => {
+    if (updateUserProfile.newLogin && updateUserProfile.login === profileUserVisible) {
+      setProfileUserVisible(updateUserProfile.newLogin);
+    }
+  }, [updateUserProfile]);
+
+  useEffect(() => {
+    if (closeGroupProfile.id === id) {
+      setProfileGroupVisible('');
+      setCloseGroupProfile({ change: 0, id: '' });
+    }
+  }, [closeGroupProfile]);
+
 
   const { data, status } = useQuery(
     ['getGroupInfos', updateQuery],
@@ -85,80 +101,88 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
     return <div className='profileGroup' />;
 
   if (!data) {
-    setProfileGroupVisible(false);
+    setProfileGroupVisible('');
     return <div className='profileGroup' />;
   }
 
   return (
-    <div className='profileGroup'>
-      <div className='profileGroup__infos'>
-        <div className='profileGroup__infos__image'>
-          <img src={getUrlImage(data.image)} alt="Group Image" />
-          {havePermission('middleLevel') &&
-            <div className='profileGroup__infos__image__text'>
-              <Dropzone onFileUploaded={setSelectedFile} />
-            </div>
-          }
-        </div>
-        <div className='profileGroup__infos__name'>
-          <strong>{data.name}</strong>
-          {havePermission('middleLevel') &&
-            <div className='profileGroup__infos__name__button'>
-              <NotePencil size={30} onClick={() => setModalChangeName(true)} />
-              {modalChangeName &&
-                <ChangeName id={id} setModalChangeName={setModalChangeName} />
-              }
-            </div>
-          }
-        </div>
-        {havePermission('maxLevel') &&
-          <>
-            <button className='profileGroup__infos__security__button'
-              onClick={() => setModalChangeSecurity(true)}
-            >
-              Change Security
-            </button>
-            {modalChangeSecurity &&
-              <ChangeSecurity id={id} setModalChangeSecurity={setModalChangeSecurity} />
-            }
-          </>
-        }
-      </div >
+    <>
 
-      <div className='profileGroup__members'>
-        <div className='profileGroup__buttons__top'>
-          {havePermission('lowLevel') &&
-            <ButtonSendMessage id={data.id} type={'group'} onClick={() => setProfileGroupVisible(false)} />
-          }
-          {havePermission(data.type === 'public' ? 'lowLevel' : 'middleLevel') &&
-            <ButtonInviteMember id={data.id} />
-          }
-          {havePermission('middleLevel') &&
-            <button className='button__icon'
-              onClick={() => setBannedVisible(prev => !prev)}
-              data-html={true}
-              data-tip={bannedVisible ? 'Member List' : 'Banned List'}
-            >
-              {bannedVisible ?
-                <UsersThree size={32} /> :
-                <Prohibit size={32} />
-              }
-            </button>
-          }
-        </div>
-        <CardMember data={data} bannedVisible={bannedVisible} havePermission={havePermission} />
-        <div className='profileGroup__buttons__button'>
-          {!havePermission('nonLevel') &&
+      <div className='profileGroup'>
+        <div className='profileGroup__infos'>
+          <div className='profileGroup__infos__image'>
+            <img src={getUrlImage(data.image)} alt="Group Image" />
+            {havePermission('middleLevel') &&
+              <div className='profileGroup__infos__image__text'>
+                <Dropzone onFileUploaded={setSelectedFile} />
+              </div>
+            }
+          </div>
+          <div className='profileGroup__infos__name'>
+            <strong>{data.name}</strong>
+            {havePermission('middleLevel') &&
+              <div className='profileGroup__infos__name__button'>
+                <NotePencil size={30} onClick={() => setModalChangeName(true)} />
+                {modalChangeName &&
+                  <ChangeName id={id} setModalChangeName={setModalChangeName} />
+                }
+              </div>
+            }
+          </div>
+          {havePermission('maxLevel') &&
             <>
-              {havePermission('lowLevel') ?
-                <ButtonLeaveGroup id={data.id} onLeave={() => setProfileGroupVisible(false)} /> :
-                <ButtonJoinGroup id={data.id} type={data.type} />
+              <button className='profileGroup__infos__security__button'
+                onClick={() => setModalChangeSecurity(true)}
+              >
+                Change Security
+              </button>
+              {modalChangeSecurity &&
+                <ChangeSecurity id={id} setModalChangeSecurity={setModalChangeSecurity} />
               }
             </>
           }
+        </div >
+
+        <div className='profileGroup__members'>
+          <div className='profileGroup__buttons__top'>
+            {havePermission('lowLevel') &&
+              <ButtonSendMessage id={data.id} type={'group'} onClick={() => setProfileGroupVisible('')} />
+            }
+            {havePermission(data.type === 'public' ? 'lowLevel' : 'middleLevel') &&
+              <ButtonInviteMember id={data.id} />
+            }
+            {havePermission('middleLevel') &&
+              <button className='button__icon'
+                onClick={() => setBannedVisible(prev => !prev)}
+                data-html={true}
+                data-tooltip-content={bannedVisible ? 'Member List' : 'Banned List'}
+              >
+                {bannedVisible ?
+                  <UsersThree size={32} /> :
+                  <Prohibit size={32} />
+                }
+              </button>
+            }
+          </div>
+          <CardMember data={data} bannedVisible={bannedVisible} havePermission={havePermission} setProfileUserVisible={setProfileUserVisible} />
+          <div className='profileGroup__buttons__button'>
+            {!havePermission('nonLevel') &&
+              <>
+                {havePermission('lowLevel') ?
+                  <ButtonLeaveGroup id={data.id} onLeave={() => setProfileGroupVisible('')} /> :
+                  <ButtonJoinGroup id={data.id} type={data.type} />
+                }
+              </>
+            }
+          </div>
         </div>
-      </div>
-      <Tooltip delayShow={50} />
-    </div >
+        <Tooltip delayShow={50} />
+      </div >
+      {
+        profileUserVisible !== '' &&
+        <ProfileUserModal login={profileUserVisible}
+          setProfileUserVisible={setProfileUserVisible} />
+      }
+    </>
   );
-}
+} 

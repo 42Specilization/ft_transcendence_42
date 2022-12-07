@@ -1,7 +1,7 @@
 import './ChangeName.scss';
 import { useContext, useState } from 'react';
 import { PaperPlaneRight } from 'phosphor-react';
-import { IntraDataContext } from '../../../contexts/IntraDataContext';
+import { GlobalContext } from '../../../contexts/GlobalContext';
 import { Modal } from '../../Modal/Modal';
 import { actionsStatus } from '../../../adapters/status/statusState';
 
@@ -13,7 +13,7 @@ interface ChangeNameProps {
 
 export function ChangeName({ id, setModalChangeName }: ChangeNameProps) {
 
-  const { api, config } = useContext(IntraDataContext);
+  const { api, config } = useContext(GlobalContext);
   const [name, setName] = useState<string>('');
   const [placeHolder, setPlaceHolder] = useState('');
 

@@ -22,7 +22,7 @@ export function ChatMessage({ user, message }: ChatMessageProps) {
       />
       <p
         data-html={true}
-        data-tip={ReactDOMServer.renderToString(formatDate(message.date.toString()))}
+        data-tooltip-content={ReactDOMServer.renderToString(formatDate(message.date.toString()))}
       >
         {message.msg}
       </p>
