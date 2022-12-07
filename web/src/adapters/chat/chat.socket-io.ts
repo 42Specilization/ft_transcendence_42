@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { io, Socket } from 'socket.io-client';
 import { MsgToClient } from '../../others/Interfaces/interfaces';
 import { actionsStatus } from '../status/statusState';

@@ -107,4 +107,5 @@ dist
 .editorconfig
 
 .production.env
-dataAssets/*
+dataAssets/*.jpg
+./db/pgsql/

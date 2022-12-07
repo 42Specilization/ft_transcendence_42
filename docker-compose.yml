@@ -48,6 +48,8 @@ services:
     environment:
       POSTGRES_USER: pguser
       POSTGRES_PASSWORD: pgpassword
+    volumes:
+      - ./db/pgsql/data:/var/lib/postgresql/data
 
   adminer:
     image: adminer
