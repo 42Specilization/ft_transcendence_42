@@ -1,8 +1,7 @@
 import './ChatTalk.scss';
 import { ChatData, MsgToClient, MsgToServer } from '../../../others/Interfaces/interfaces';
-import { useContext, useEffect, useRef, useState } from 'react';
-import { ArrowBendUpLeft, PaperPlaneRight } from 'phosphor-react';
-import { ChatMessage } from '../ChatMessage/ChatMessage';
+import { useContext, useEffect, useState } from 'react';
+import { PaperPlaneRight, X } from 'phosphor-react';
 import { actionsChat } from '../../../adapters/chat/chatState';
 import { GlobalContext } from '../../../contexts/GlobalContext';
 import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
@@ -11,23 +10,20 @@ import { ChatContext } from '../../../contexts/ChatContext';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { ProfileGroupModal } from '../../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
 import { getUrlImage } from '../../../others/utils/utils';
+import { ChatTalkBody } from '../ChatTalkBody/ChatTalkBody';
 
 export function ChatTalk() {
 
   const {
-    selectedChat, setSelectedChat,
-    activeChat, setActiveChat,
-    setTabSelected
+    selectedChat, setSelectedChat, activeChat, setActiveChat, setTabSelected
   } = useContext(ChatContext);
-  const { api, config, intraData, setGlobalData, updateUserProfile } = useContext(GlobalContext);
+  const {
+    api, config, intraData, setGlobalData, updateUserProfile
+  } = useContext(GlobalContext);
+
   const [profileGroupVisible, setProfileGroupVisible] = useState('');
   const [profileUserVisible, setProfileUserVisible] = useState('');
 
-  useEffect(() => {
-    if (updateUserProfile.newLogin && updateUserProfile.login === profileUserVisible) {
-      setProfileUserVisible(updateUserProfile.newLogin);
-    }
-  }, [updateUserProfile]);
   useEffect(() => {
     return () => {
       exitActiveChat();
@@ -35,41 +31,16 @@ export function ChatTalk() {
   }, []);
 
   useEffect(() => {
+    if (updateUserProfile.newLogin && updateUserProfile.login === profileUserVisible) {
+      setProfileUserVisible(updateUserProfile.newLogin);
+    }
+  }, [updateUserProfile]);
+
+  useEffect(() => {
     if (selectedChat) {
       setNewChat();
     }
   }, [selectedChat]);
-
-  async function exitActiveChat() {
-    if (activeChat) {
-      api.patch('/chat/setBreakpoint', { chatId: activeChat.chat.id, type: activeChat.chat.type }, config);
-      setGlobalData(prev => {
-        if (activeChat.chat.type === 'direct') {
-          return {
-            ...prev,
-            directs: prev.directs.map(key => {
-              if (key.id === activeChat.chat.id) {
-                return { ...key, newMessages: 0 };
-              }
-              return key;
-            })
-          };
-        } else {
-          return {
-            ...prev,
-            groups: prev.groups.map(key => {
-              if (key.id === activeChat.chat.id) {
-                return { ...key, newMessages: 0 };
-              }
-              return key;
-            })
-          };
-        }
-      });
-    }
-    setSelectedChat(null);
-    setActiveChat(null);
-  }
 
   function initActiveChat(chat: ChatData) {
     const messages: MsgToClient[] = chat.messages;
@@ -81,6 +52,28 @@ export function ChatTalk() {
       blocks: blocks,
       currentBlock: blocks - 1
     });
+  }
+
+  async function exitActiveChat() {
+    if (activeChat) {
+      api.patch('/chat/setBreakpoint', { chatId: activeChat.chat.id, type: activeChat.chat.type }, config);
+      if (activeChat.chat.type === 'direct')
+        setGlobalData(prev => {
+          return {
+            ...prev,
+            directs: prev.directs.map(key => key.id === activeChat.chat.id ? { ...key, newMessages: 0 } : key)
+          };
+        });
+      else
+        setGlobalData(prev => {
+          return {
+            ...prev,
+            groups: prev.groups.map(key => key.id === activeChat.chat.id ? { ...key, newMessages: 0 } : key)
+          };
+        });
+    }
+    setSelectedChat(null);
+    setActiveChat(null);
   }
 
   async function setNewChat() {
@@ -110,6 +103,7 @@ export function ChatTalk() {
     initActiveChat(chat);
   }
 
+
   function handleKeyEnter(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     submitMessage(event);
@@ -127,71 +121,6 @@ export function ChatTalk() {
     event.target[0].value = '';
   }
 
-
-  function changeBlock(start: number, size: number, newCurrent: number) {
-    setActiveChat(prev => {
-      if (!prev)
-        return prev;
-      return {
-        ...prev,
-        chat: {
-          ...prev.chat,
-          messages: prev.historicMsg.slice(start, size)
-        },
-        currentBlock: newCurrent,
-      };
-    });
-    setTimeout(() => {
-      const body = refBody.current;
-      if (body && body.scrollHeight > body.offsetHeight) {
-        body.scrollTop = body.scrollHeight / 2;
-      }
-    }, 500);
-  }
-
-  async function handleScroll(e: any) {
-    if (!activeChat || activeChat.historicMsg.length <= 20)
-      return;
-
-    const residue = activeChat.historicMsg.length % 20;
-    let current = activeChat.currentBlock;
-
-    if (e.target.scrollTop === 0 && current !== -1) {
-      if (current === 0)
-        changeBlock(0, 40 + residue, -1);
-      else {
-        const start = (current - 1) * 20 + residue;
-        changeBlock(start, start + 40, current - 1);
-      }
-    }
-    if (e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 1
-      && current !== activeChat.blocks - 1) {
-      if (current === -1)
-        current = 0;
-      const start = current * 20 + residue;
-      changeBlock(start, start + 40, current + 1);
-    }
-  }
-
-  const refBody: React.RefObject<HTMLDivElement> = useRef(null);
-
-  useEffect(() => {
-    if (activeChat?.newMessage) {
-      const body = refBody.current;
-      if (body && body.scrollHeight > body.offsetHeight) {
-        body.scrollTop = body.scrollHeight - body.offsetHeight;
-      }
-      setActiveChat(prev => {
-        if (!prev)
-          return prev;
-        return {
-          ...prev,
-          newMessage: false
-        };
-      });
-    }
-  }, [activeChat]);
-
   function selectGroupOrFriendVisible() {
     if (activeChat) {
       if (activeChat.chat.type !== 'direct') {
@@ -207,7 +136,6 @@ export function ChatTalk() {
       {activeChat != null &&
         <>
           <div className='chat__talk__header'>
-            <ArrowBendUpLeft size={32} onClick={exitActiveChat} />
             <div
               className='chat__talk__header__user'
               onClick={() => selectGroupOrFriendVisible()}
@@ -222,54 +150,9 @@ export function ChatTalk() {
                 {activeChat.chat?.name}
               </div>
             </div>
+            <X size={32} weight="bold" onClick={exitActiveChat} className='chat__talk__header__exit' />
           </div>
-          <div id='chat__talk__body'
-            className='chat__talk__body'
-            onScroll={(e) => handleScroll(e)}
-            ref={refBody}
-          >
-            {activeChat.chat?.messages
-              .map((msg: MsgToClient, index: number) => {
-                const len = activeChat.chat?.messages?.length - 1;
-
-                if (msg.type === 'breakpoint') {
-                  return (
-                    <div className='chat__talk__unread__message'
-                      style={{ display: index !== len ? '' : 'none' }}
-                      key={Math.random()}
-                    >
-                      <div /><p>unread message: {len - index}</p><div />
-                    </div>
-                  );
-                } else if (msg.type === 'action') {
-                  return (
-                    <div className='chat__talk__action__message'
-                      key={Math.random()}
-                    >
-                      <p>{msg.user.login} {msg.msg}</p>
-                    </div>
-                  );
-                } else {
-                  return (
-                    <ChatMessage
-                      key={Math.random()}
-                      user={intraData.login}
-                      message={msg} />
-                  );
-                }
-              })
-            }
-          </div>
-          {profileUserVisible !== '' &&
-            <ProfileUserModal
-              login={activeChat.chat.name}
-              setProfileUserVisible={setProfileUserVisible} />
-          }
-          {profileGroupVisible !== '' &&
-            < ProfileGroupModal
-              id={activeChat.chat.id}
-              setProfileGroupVisible={setProfileGroupVisible} />
-          }
+          <ChatTalkBody />
           <form autoComplete='off' className='chat__talk__footer' onSubmit={handleKeyEnter}>
             <input
               className='chat__talk__footer__input'
@@ -282,6 +165,16 @@ export function ChatTalk() {
             </button>
           </form>
           <Tooltip className='chat__friends__header__icon__tip' delayShow={50} />
+          {profileUserVisible !== '' &&
+            <ProfileUserModal
+              login={activeChat.chat.name}
+              setProfileUserVisible={setProfileUserVisible} />
+          }
+          {profileGroupVisible !== '' &&
+            <ProfileGroupModal
+              id={activeChat.chat.id}
+              setProfileGroupVisible={setProfileGroupVisible} />
+          }
         </>
       }
     </div >
