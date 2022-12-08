@@ -4,8 +4,8 @@ import { useContext, useState } from 'react';
 import { actionsChat } from '../../adapters/chat/chatState';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import ReactTooltip from 'react-tooltip';
+
 
 interface ButtonMuteMemberProps {
   id: string;
@@ -27,10 +27,10 @@ export function ButtonMuteMember({ id, name }: ButtonMuteMemberProps) {
         id='muteMember_button'
         className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
-        data-tooltip-content={'Mute Member(15 minutes)'}
+        data-tip={'Mute Member(15 minutes)'}
       >
         <SpeakerSlash size={32} />
-        <Tooltip anchorId='muteMember_button' delayShow={50} />
+        <ReactTooltip delayShow={50} />
       </button>
       {confirmActionVisible &&
         <ConfirmActionModal

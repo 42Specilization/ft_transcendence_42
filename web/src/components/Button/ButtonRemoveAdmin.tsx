@@ -4,8 +4,8 @@ import { useContext, useState } from 'react';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import { actionsStatus } from '../../adapters/status/statusState';
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import ReactTooltip from 'react-tooltip';
+
 
 interface ButtonRemoveAdminProps {
   id: string;
@@ -33,10 +33,10 @@ export function ButtonRemoveAdmin({ id, name }: ButtonRemoveAdminProps) {
         id='removeAdmin_button'
         className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
-        data-tooltip-content={'Remove Admin'}
+        data-tip={'Remove Admin'}
       >
         <User size={32} />
-        <Tooltip anchorId='removeAdmin_button' delayShow={50} />
+        <ReactTooltip delayShow={50} />
       </button>
       {confirmActionVisible &&
         <ConfirmActionModal

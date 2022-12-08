@@ -1,7 +1,7 @@
 import './BlockedTab.scss';
 import { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '../../../contexts/GlobalContext';
-//import { Tooltip } from 'react-tooltip';
+//import ReactTooltip from 'react-tooltip';
 import { CardUser } from '../../CardUser/CardUser';
 import { ButtonSearch } from '../../Button/ButtonSearch';
 import { UserData } from '../../../others/Interfaces/interfaces';

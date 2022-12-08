@@ -4,8 +4,8 @@ import { useContext, useState } from 'react';
 import { actionsChat } from '../../adapters/chat/chatState';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import ReactTooltip from 'react-tooltip';
+
 
 interface ButtonKickMemberProps {
   id: string;
@@ -27,10 +27,10 @@ export function ButtonKickMember({ id, name }: ButtonKickMemberProps) {
         id='kickMember_button'
         className='button__icon'
         onClick={() => setConfirmActionVisible(true)}
-        data-tooltip-content={'Kick Member'}
+        data-tip={'Kick Member'}
       >
         <UserMinus size={32} />
-        <Tooltip anchorId='kickMember_button' delayShow={50} />
+        <ReactTooltip delayShow={50} />
       </button>
       {confirmActionVisible &&
         <ConfirmActionModal

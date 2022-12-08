@@ -1,7 +1,7 @@
 import './FriendTab.scss';
 import { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '../../../contexts/GlobalContext';
-//import { Tooltip } from 'react-tooltip';
+//import ReactTooltip from 'react-tooltip';
 import { ButtonSearch } from '../../Button/ButtonSearch';
 import { UserData } from '../../../others/Interfaces/interfaces';
 import { CardUser } from '../../CardUser/CardUser';

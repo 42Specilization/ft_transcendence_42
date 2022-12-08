@@ -1,7 +1,7 @@
 import './GroupsTab.scss';
 import { Plus } from 'phosphor-react';
 import { useState, useContext } from 'react';
-//import { Tooltip } from 'react-tooltip';
+//import ReactTooltip from 'react-tooltip';
 import { GlobalContext } from '../../../contexts/GlobalContext';
 import { CardGroup } from './CardGroup/CardGroup';
 import { Modal } from '../../Modal/Modal';

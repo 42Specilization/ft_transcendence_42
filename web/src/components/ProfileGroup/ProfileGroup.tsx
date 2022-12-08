@@ -15,8 +15,8 @@ import { ButtonInviteMember } from '../Button/ButtonInviteMember';
 import { actionsStatus } from '../../adapters/status/statusState';
 import { UserData } from '../../others/Interfaces/interfaces';
 import { ProfileUserModal } from '../ProfileUser/ProfileUserModal/ProfileUserModal';
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import ReactTooltip from 'react-tooltip';
+
 
 interface ProfileGroupProps {
   id: string | undefined;
@@ -154,14 +154,14 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
                   id='members_or_banned_tab'
                   className='button__icon'
                   onClick={() => setBannedVisible(prev => !prev)}
-                  data-tooltip-content={bannedVisible ? 'Member List' : 'Banned List'}
+                  data-tip={bannedVisible ? 'Member List' : 'Banned List'}
                 >
                   {bannedVisible ?
                     <UsersThree size={32} /> :
                     <Prohibit size={32} />
                   }
                 </button>
-                <Tooltip anchorId='members_or_banned_tab' delayShow={50} />
+                <ReactTooltip delayShow={50} />
               </>
             }
           </div>
@@ -177,8 +177,8 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
             }
           </div>
         </div>
-        <Tooltip anchorId='my-element' />
-      </div >
+        <ReactTooltip />
+      </div>
       {
         profileUserVisible !== '' &&
         <ProfileUserModal login={profileUserVisible}

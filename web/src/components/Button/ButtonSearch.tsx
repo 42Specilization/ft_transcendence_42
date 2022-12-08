@@ -1,8 +1,8 @@
 import './ButtonSearch.scss';
 import { MagnifyingGlass, X } from 'phosphor-react';
 import { Dispatch, SetStateAction } from 'react';
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import ReactTooltip from 'react-tooltip';
+
 
 interface ButtonSearchProps {
   width: string;
@@ -31,13 +31,13 @@ export function ButtonSearch({
         id='search_button'
         className='button__search__icon'
         size={40}
-        data-tooltip-content={tooltip}
+        data-tip={tooltip}
         onClick={() => {
           setSearchActive(prev => !prev);
           setSearchInput('');
         }}
       />
-      <Tooltip anchorId='search_button' delayShow={50} />
+      <ReactTooltip delayShow={50} />
 
       <input
         className='button__search__input'

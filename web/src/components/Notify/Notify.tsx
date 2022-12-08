@@ -1,5 +1,5 @@
 import './Notify.scss';
-//import { Tooltip } from 'react-tooltip';
+//import ReactTooltip from 'react-tooltip';
 import { useContext } from 'react';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import { NotifyData } from '../../others/Interfaces/interfaces';

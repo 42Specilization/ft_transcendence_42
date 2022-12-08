@@ -5,8 +5,8 @@ import { Modal } from '../Modal/Modal';
 import { Challenge } from '../Game/Challenge/Challenge';
 import { useContext, useState } from 'react';
 import { GlobalContext } from '../../contexts/GlobalContext';
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import ReactTooltip from 'react-tooltip';
+
 
 interface ButtonChallengeProps {
   login: string;
@@ -33,10 +33,10 @@ export function ButtonChallenge({ login }: ButtonChallengeProps) {
           id='challenge_button'
           className='button__icon'
           onClick={handleChallenge}
-          data-tooltip-content={'Challenge Player'}
+          data-tip={'Challenge Player'}
         >
           <Sword size={32} />
-          <Tooltip anchorId='challenge_button' delayShow={50} />
+          <ReactTooltip delayShow={50} />
         </button>}
       {
         challengeModal &&

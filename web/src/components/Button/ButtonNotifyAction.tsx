@@ -1,7 +1,7 @@
 import './Button.scss';
 import { Check, X } from 'phosphor-react';
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import ReactTooltip from 'react-tooltip';
+
 
 interface ButtonNotifyActionProps {
   type: string;
@@ -21,13 +21,13 @@ export function ButtonNotifyAction({ type, handle, params }: ButtonNotifyActionP
         id='notifyAction_button'
         className='button__icon'
         onClick={handleAction}
-        data-tooltip-content={type}
+        data-tip={type}
       >
         {type === 'Accept' ?
           <Check size={32} /> :
           <X size={32} />
         }
-        <Tooltip anchorId='notifyAction_button' delayShow={50} />
+        <ReactTooltip delayShow={50} />
       </button>
     </>
   );

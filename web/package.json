@@ -20,7 +20,7 @@
     "react-dropzone": "latest",
     "react-loader-spinner": "latest",
     "react-query": "latest",
-    "react-tooltip": "latest",
+    "react-tooltip": "4.5.1",
     "socket.io-client": "latest",
     "valtio": "latest",
     "yarn": "latest"
