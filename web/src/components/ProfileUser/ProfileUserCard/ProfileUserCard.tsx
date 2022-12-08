@@ -8,8 +8,7 @@ import { ButtonRemoveFriend } from '../../Button/ButtonRemoveFriend';
 import { ButtonUnBlockedUser } from '../../Button/ButtonUnBlockedUser';
 import { Sword } from 'phosphor-react';
 import { Dispatch, SetStateAction } from 'react';
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import ReactTooltip from 'react-tooltip';
 
 interface ProfileUserCardProps {
   profileUserData: {
@@ -49,10 +48,10 @@ export function ProfileUserCard({ profileUserData, setProfileUserVisible }: Prof
                   <div
                     id='challenge_off'
                     className='profileUser__card__button__challengeOff'
-                    data-tooltip-content={`Player ${status}`}
+                    data-tip={`Player ${status}`}
                   >
                     <Sword size={32} />
-                    <Tooltip anchorId='challenge_off' delayShow={50} />
+                    <ReactTooltip delayShow={50} />
                   </div>
                 }
                 {relation !== 'friend' ?

@@ -6,10 +6,8 @@ interface DoubleBubbleProps {
 }
 
 export function DoubleBubble(props: DoubleBubbleProps) {
-
   return (
     <div className="spinner-container">
-
       <svg width="100%" viewBox="0 0 248 247" fill="none" xmlns="http://www.w3.org/2000/svg"  >
         <g id="spinner2">
           <g id="outer" style={{ animationDuration: props.speed + 's' }}>
@@ -28,9 +26,7 @@ export function DoubleBubble(props: DoubleBubbleProps) {
           </g>
         </g>
       </svg>
-
       <p>{props.customText}</p>
     </div>
-
   );
 }

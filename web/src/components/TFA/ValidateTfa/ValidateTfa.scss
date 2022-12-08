@@ -4,12 +4,15 @@
   .modal {
     background-color: rgba(0, 0, 0, 0.2);
   }
+
   .modal__container {
     @include displayFlex(flex-end, column);
   }
+
   .modal__container__content {
     height: 100%;
   }
+
   .modal__container__closeButton__div {
     display: none;
   }
@@ -40,6 +43,7 @@
   color: white;
   border-radius: 10px;
   background-color: green;
+
   &:hover {
     background-color: rgb(10, 90, 10);
   }
@@ -49,8 +53,9 @@
   @include displayFlex(space-around, column);
   height: 100%;
   width: 100%;
+
   button {
-    color : white;
+    color: white;
     font-size: 17px;
   }
 }
@@ -67,7 +72,7 @@
   width: 90%;
   color: white;
   height: 40px;
-  font-size:20px;
+  font-size: 20px;
   border-radius: 20px;
   padding: 0px 30px 0px 30px;
   background-color: $backgroundColor;
@@ -82,6 +87,7 @@
   color: white;
   border-radius: 10px;
   background-color: green;
+
   &:hover {
     background-color: rgb(10, 90, 10);
   }
@@ -98,36 +104,3 @@
   width: 200px;
   font-size: 20px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

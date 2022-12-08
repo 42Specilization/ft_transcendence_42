@@ -1,6 +1,6 @@
 import './ProfileUserModal.scss';
 import { XCircle } from 'phosphor-react';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { ProfileUser } from '../ProfileUser';
 
 interface ProfileUserModalProps {
@@ -9,6 +9,12 @@ interface ProfileUserModalProps {
 }
 
 export function ProfileUserModal({ login, setProfileUserVisible }: ProfileUserModalProps) {
+
+  useEffect(() => {
+    const close = (event: any) => { if (event.keyCode === 27) setProfileUserVisible(''); };
+    window.addEventListener('keydown', close, true);
+    return (() => window.removeEventListener('keydown', close, true));
+  }, []);
 
   const handleOutsideClick = (e: any) => {
     if (e.target.id == 'profileUser__modal')

@@ -19,7 +19,7 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
   const [password, setPassword] = useState('Password (Optional)');
   const [selectedFileUrl, setSelectedFileUrl] = useState('');
 
-  async function handleSubmit(groupData: CreateGroupData) {
+  async function handleSubmit(event: any,groupData: CreateGroupData) {
     const data = new FormData();
     data.append('name', 'chatImage');
     if (selectedFile) {
@@ -36,7 +36,10 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
           actionsChat.JoinNewGroup(response.data, intraData.email);
         }
       }).catch((err) => {
-        setPassword(err.response.data.message);
+        event.target[0].value = '';
+        event.target[1].value = '';
+        event.target[2].value = '';
+        setPlaceHolder(err.response.data.message);
       });
   }
 
@@ -60,7 +63,7 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
       password: event.target[1].value,
       confirmPassword: event.target[2].value,
     };
-    handleSubmit(groupData);
+    handleSubmit(event, groupData);
     event.target[1].value = '';
     event.target[2].value = '';
   }

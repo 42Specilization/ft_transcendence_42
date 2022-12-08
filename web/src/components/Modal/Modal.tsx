@@ -1,5 +1,5 @@
 import { XCircle } from 'phosphor-react';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import './Modal.scss';
 
 interface ModalProps {
@@ -9,6 +9,12 @@ interface ModalProps {
 }
 
 export function Modal({ id = 'modal', children, onClose = () => { } }: ModalProps) {
+  useEffect(() => {
+    const close = (event: any) => { if (event.keyCode === 27) onClose(); };
+    window.addEventListener('keydown', close, true);
+    return (() => window.removeEventListener('keydown', close, true));
+  }, []);
+
   const handleOutsideClick = (e: any) => {
     if (e.target.id == id) {
       onClose();

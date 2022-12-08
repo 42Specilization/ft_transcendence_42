@@ -3,13 +3,12 @@ import { Dispatch, SetStateAction, useCallback, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { GlobalContext } from '../../contexts/GlobalContext';
 
-
 interface DropzoneProps {
   setSelectedFileUrl?: Dispatch<SetStateAction<string>> | null;
   onFileUploaded: (file: File) => void;
 }
 
-export function Dropzone({setSelectedFileUrl, onFileUploaded }: DropzoneProps) {
+export function Dropzone({ setSelectedFileUrl, onFileUploaded }: DropzoneProps) {
   const { intraData } = useContext(GlobalContext);
 
   const onDrop = useCallback(
@@ -27,7 +26,7 @@ export function Dropzone({setSelectedFileUrl, onFileUploaded }: DropzoneProps) {
       const hash = generateCode(8);
       const file = new File([acceptedFiles[0]], `${id}.${hash}.jpg`);
       const fileUrl = URL.createObjectURL(file);
-      if(setSelectedFileUrl)
+      if (setSelectedFileUrl)
         setSelectedFileUrl(fileUrl);
       onFileUploaded(file);
     },
@@ -46,7 +45,7 @@ export function Dropzone({setSelectedFileUrl, onFileUploaded }: DropzoneProps) {
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()} accept='image/*' />
-      <NotePencil size={120} className='dropzone__button'/>
+      <NotePencil size={120} className='dropzone__button' />
     </div>
   );
 }

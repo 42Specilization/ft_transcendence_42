@@ -5,12 +5,11 @@
     max-width: none;
     min-width: none;
     width: 750px;
-    min-height:400px;
+    min-height: 400px;
     height: 1500px;
     color: white !important;
     padding-bottom: 20px;
   }
-
 }
 
 .groups__tab {
@@ -44,7 +43,8 @@
   border-radius: 50%;
   background-color: $buttonColor;
   transition: width 0.6s, padding 0.6s;
-  &:hover  {
+
+  &:hover {
     cursor: pointer;
     background-color: $buttonColorHover;
   }

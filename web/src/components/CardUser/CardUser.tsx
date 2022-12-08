@@ -4,6 +4,7 @@ import { Children, Dispatch, SetStateAction, useContext, useState } from 'react'
 import { GlobalContext } from '../../contexts/GlobalContext';
 import { getUrlImage } from '../../others/utils/utils';
 import { ButtonMenu } from '../Button/ButtonMenu';
+import ReactTooltip from 'react-tooltip';
 
 interface CardUserProps {
   user: UserData;
@@ -13,7 +14,6 @@ interface CardUserProps {
 }
 
 export function CardUser({ user, menuHeight, setProfileUserVisible, children }: CardUserProps) {
-
   const { intraData } = useContext(GlobalContext);
   const [activeMenu, setActiveMenu] = useState(false);
   const arrayChildren = Children.toArray(children);
@@ -29,7 +29,7 @@ export function CardUser({ user, menuHeight, setProfileUserVisible, children }: 
         <div id='cardUser' className='card__user__image'
           style={{ backgroundImage: `url(${getUrlImage(user.image_url)})` }}>
           <div id='cardUser' className='card__user__status'
-            data-tooltip-content={user.status}
+            data-tip={user.status}
             style={{
               backgroundColor:
                 (() => {
@@ -67,6 +67,7 @@ export function CardUser({ user, menuHeight, setProfileUserVisible, children }: 
             <div style={{ width: '60px' }}></div>
         }
       </div>
+      <ReactTooltip delayShow={50} />
     </div>
   );
 }

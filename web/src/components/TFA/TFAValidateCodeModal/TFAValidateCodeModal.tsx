@@ -16,7 +16,6 @@ export function TFAValidateCodeModal({
   setTfaModal,
   setTfaEnable,
 }: TFAValidateCodeModalProps) {
-
   const { api, config } = useContext(GlobalContext);
   const [code, setCode] = useState('');
   const [placeHolder, setPlaceHolder] = useState('');
@@ -40,7 +39,7 @@ export function TFAValidateCodeModal({
       const validateCode = await api.patch('/user/validate-code', body, config);
       if (validateCode.status === 200) {
         body.tfaValidated = true;
-        body.isTFAEnable= true;
+        body.isTFAEnable = true;
         turnOnTFA(body, config);
       }
     } catch (err) {

@@ -14,7 +14,6 @@ interface ChallengeProps {
 }
 
 export function Challenge({ nick, path }: ChallengeProps) {
-
   const [powerUp, setPowerUp] = useState<boolean>(false);
   const [modalErrorChallenge, setModalErrorChallenge] = useState<boolean>(false);
   const { intraData, api, config } = useContext(GlobalContext);
@@ -65,7 +64,6 @@ export function Challenge({ nick, path }: ChallengeProps) {
         <Modal onClose={() => setModalErrorChallenge(true)} id='challenge__modal'>
           Error to challenge a player!
         </Modal>
-
       }
     </div>
   );

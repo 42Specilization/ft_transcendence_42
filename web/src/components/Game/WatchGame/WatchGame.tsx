@@ -5,7 +5,6 @@ import { actionsGame, Game, stateGame } from '../../../adapters/game/gameState';
 import { getNameLimited } from '../../../others/utils/utils';
 
 export function WatchGame() {
-
   const currentState = useSnapshot(stateGame);
   const [gameList, setGameList] = useState<Game[]>([]);
 

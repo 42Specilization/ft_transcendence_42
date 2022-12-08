@@ -3,18 +3,15 @@ import { TelegramLogo } from 'phosphor-react';
 import { useContext } from 'react';
 import { ChatContext } from '../../contexts/ChatContext';
 import { Link } from 'react-router-dom';
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import ReactTooltip from 'react-tooltip';
 
 interface ButtonSendMessageProps {
   id: string;
   type: string;
   onClick: any;
-
 }
 
 export function ButtonSendMessage({ id, type, onClick }: ButtonSendMessageProps) {
-
   const { setSelectedChat } = useContext(ChatContext);
 
   function handleSendMessage() {
@@ -28,10 +25,10 @@ export function ButtonSendMessage({ id, type, onClick }: ButtonSendMessageProps)
         id='sendMessage_button'
         className='button__icon'
         onClick={handleSendMessage}
-        data-tooltip-content={'Send Message'}
+        data-tip={'Send Message'}
       >
         <TelegramLogo size={32} />
-        <Tooltip anchorId='sendMessage_button' delayShow={50} />
+        <ReactTooltip delayShow={50} />
       </button>
     </Link>
   );

@@ -6,7 +6,6 @@ import { Dropzone } from '../../Dropzone/Dropzone';
 import { getUrlImage } from '../../../others/utils/utils';
 
 export function UserImage() {
-
   const { api, config, intraData } = useContext(GlobalContext);
   const [selectedFile, setSelectedFile] = useState<File>();
 

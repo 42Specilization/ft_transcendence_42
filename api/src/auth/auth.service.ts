@@ -9,6 +9,7 @@ import { UserPayload } from './dto/UserPayload.dto';
 import { UpdateUserDto } from 'src/user/dto/update-user.dto';
 import { UserDto } from 'src/user/dto/user.dto';
 import { HttpService } from '@nestjs/axios';
+
 @Injectable()
 export class AuthService {
 
@@ -49,10 +50,10 @@ export class AuthService {
     const userDto = await this.userService.getUserDTO(data.email);
     return (userDto);
   }
- 
+
   async validateToken(userFromJwt: UserFromJwt) {
     const user = await this.userService.findUserByEmail(userFromJwt.email);
-    return (user? true: false);
+    return (user ? true : false);
   }
 
   /**

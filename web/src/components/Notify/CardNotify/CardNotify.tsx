@@ -9,9 +9,7 @@ interface CardNotifyProps {
 }
 
 export function CardNotify({ notify, message, children }: CardNotifyProps) {
-
   const [side, setSide] = useState(true);
-
   function changeSide(event: any) {
     if (event.target.id === 'front_side' || event.target.id === 'back_side') {
       setSide(prevSide => !prevSide);

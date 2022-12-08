@@ -45,6 +45,7 @@ export class SocketIOAdapter extends IoAdapter {
 
     const server: Server = super.createIOServer(port, optionsWithCORS);
     //set middleware configuration of nestjs to socket with namespace game
+    server.of('status').use(createTokenMiddleware(jwtService, this.logger));
     server.of('chat').use(createTokenMiddleware(jwtService, this.logger));
     server.of('game').use(createTokenMiddleware(jwtService, this.logger));
     return (server);

@@ -504,9 +504,6 @@ export class UserService {
     if (this.isBlocked(user, friend) || this.isBlocked(friend, user))
       return;
 
-    // Already in game
-
-    // Offline user
     friend.notify?.push(newNotify);
     try {
       friend.save();

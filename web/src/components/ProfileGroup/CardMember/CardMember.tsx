@@ -19,7 +19,6 @@ interface CardMemberProps {
 }
 
 export function CardMember({ data, bannedVisible, havePermission, setProfileUserVisible }: CardMemberProps) {
-
   function heightMenu() {
     if (havePermission('maxLevel'))
       return 190;

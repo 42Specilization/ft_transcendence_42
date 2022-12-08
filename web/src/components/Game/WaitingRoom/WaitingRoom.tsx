@@ -6,7 +6,6 @@ import { Loader } from '../Loader/Loader';
 import './WaitingRoom.scss';
 
 export function WaitingRoom() {
-
   const [modalReject, setModalReject] = useState<boolean>(false);
 
   useEffect(() => {
@@ -14,7 +13,6 @@ export function WaitingRoom() {
     stateGame.socket?.on('reject-challenge', () => {
       setModalReject(true);
     });
-    // return (document.removeEventListener('keydown', handleKeydown));
   }, []);
 
   async function handleKeydown(event: KeyboardEvent) {

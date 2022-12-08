@@ -5,15 +5,14 @@ import { GlobalContext } from '../../contexts/GlobalContext';
 import { actionsStatus } from '../../adapters/status/statusState';
 import { useContext, useState } from 'react';
 import { Modal } from '../Modal/Modal';
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import ReactTooltip from 'react-tooltip';
+
 
 interface ButtonInviteMemberProps {
   id: string;
 }
 
 export function ButtonInviteMember({ id }: ButtonInviteMemberProps) {
-
   const { api, config } = useContext(GlobalContext);
   const [modalInviteMember, setModalInviteMember] = useState(false);
   const [inviteName, setInviteName] = useState('');
@@ -44,10 +43,10 @@ export function ButtonInviteMember({ id }: ButtonInviteMemberProps) {
         id='inviteMember_button'
         className='button__icon'
         onClick={() => setModalInviteMember(true)}
-        data-tooltip-content={'Invite User'}
+        data-tip={'Invite User'}
       >
         <UserPlus size={32} />
-        <Tooltip anchorId='inviteMember_button' delayShow={50} />
+        <ReactTooltip delayShow={50} />
       </button>
       {modalInviteMember &&
         <Modal id='button__invite__member'

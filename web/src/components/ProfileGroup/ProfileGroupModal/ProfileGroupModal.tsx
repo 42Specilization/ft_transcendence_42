@@ -1,8 +1,7 @@
 import './ProfileGroupModal.scss';
 import { XCircle } from 'phosphor-react';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { ProfileGroup } from '../ProfileGroup';
-
 
 interface ProfileGroupModalProps {
   id: string | undefined;
@@ -10,6 +9,11 @@ interface ProfileGroupModalProps {
 }
 
 export function ProfileGroupModal({ id, setProfileGroupVisible }: ProfileGroupModalProps) {
+  useEffect(() => {
+    const close = (event: any) => { if (event.keyCode === 27) setProfileGroupVisible(''); };
+    window.addEventListener('keydown', close, true);
+    return (() => window.removeEventListener('keydown', close, true));
+  }, []);
 
   const handleOutsideClick = (e: any) => {
     if (e.target.id === 'profileGroup__modal')

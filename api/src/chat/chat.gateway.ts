@@ -32,14 +32,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
   handleConnection(client: Socket) {
     const sockets = this.server.sockets;
-
     this.logger.log(`WS client with id: ${client.id} connected of chatSocket!`);
     this.logger.debug(`Number of connected chatSockets: ${sockets.size}`);
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
     const sockets = this.server.sockets;
-
     this.logger.log(`Disconnected of chatSocket the socket id: ${client.id}`);
     this.logger.debug(`Number of connected chatSockets: ${sockets.size}`);
   }

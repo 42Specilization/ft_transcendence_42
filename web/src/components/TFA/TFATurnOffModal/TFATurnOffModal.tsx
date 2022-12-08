@@ -11,7 +11,6 @@ export function TFATurnOffModal({
   setTfaModal,
   setTfaEnable,
 }: TFATurnOffModalProps) {
-
   const { api, config } = useContext(GlobalContext);
 
   async function handleTurnOff() {

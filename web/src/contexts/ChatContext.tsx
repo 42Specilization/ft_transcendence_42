@@ -37,7 +37,6 @@ interface ChatProviderProps {
 }
 
 export const ChatProvider = ({ children }: ChatProviderProps) => {
-
   const [selectedChat, setSelectedChat] = useState<SelectedChat | null>(null);
   const [activeChat, setActiveChat] = useState<ActiveChatData | null>(null);
   const [tabSelected, setTabSelected] = useState('Direct');

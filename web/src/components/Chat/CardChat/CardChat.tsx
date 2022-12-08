@@ -9,7 +9,6 @@ interface CardChatProps {
 }
 
 export function CardChat({ chat }: CardChatProps) {
-
   const { setSelectedChat, activeChat } = useContext(ChatContext);
 
   function newMessagesVisible() {

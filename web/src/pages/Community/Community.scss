@@ -1,6 +1,5 @@
 @import '../../others/styles/global.scss';
 
-
 $CommunityHeaderHeight: 35px;
 
 .community__header {
@@ -27,11 +26,12 @@ $CommunityHeaderHeight: 35px;
     @include truncText();
     font-size: 1.5em;
     color: white;
+
     &:hover {
       cursor: pointer;
       color: rgb(74, 71, 71);
-   }
- }
+    }
+  }
 }
 
 .community__header__list__item__selected {
@@ -41,8 +41,8 @@ $CommunityHeaderHeight: 35px;
     &:hover {
       cursor: default;
       color: white;
-   }
- }
+    }
+  }
 }
 
 .community__body {

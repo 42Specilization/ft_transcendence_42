@@ -55,9 +55,8 @@ export class GameGateway
    */
   handleConnection(user: Socket) {
     const sockets = this.io.sockets;
-
     this.logger.log(`WS user with id: ${user.id} connected!`);
-    this.logger.debug(`Number of connected sockets: ${sockets.size}`);
+    this.logger.debug(`Number of connected GameSockets: ${sockets.size}`);
   }
 
   /**
@@ -69,7 +68,7 @@ export class GameGateway
     const sockets = this.io.sockets;
     this.finishGame(user);
     this.logger.log(`Disconnected socket id: ${user.id}`);
-    this.logger.debug(`Number of connected sockets: ${sockets.size}`);
+    this.logger.debug(`Number of connected GameSockets: ${sockets.size}`);
   }
 
   @SubscribeMessage('game-not-found')
@@ -83,17 +82,14 @@ export class GameGateway
       user.emit('game-not-found');
       return;
     }
-
     if (await this.gameService.isBlocked(challenge.userSource, challenge.userTarget)) {
       user.emit('game-not-found', 'This user is blocked!');
       return;
     }
-
     if (!(await this.gameService.isUserOnline(challenge.userTarget))) {
       user.emit('game-not-found', 'This user is not available!');
       return;
     }
-
     this.queue.push(
       new Game(
         this.checkGameRoom(randomInt(100)),
@@ -122,11 +118,11 @@ export class GameGateway
       user.emit('game-not-found');
       return;
     }
-
-    if (await this.gameService.isBlocked(game.player1.name, game.player2.name))
+    if (await this.gameService.isBlocked(game.player1.name, game.player2.name)) {
+      user.emit('game-not-found');
+      this.io.to(game.room.toString()).emit('game-not-found', 'Some error ocurred when challenge');
       return;
-
-
+    }
     if (game.player2.name === challenge.userSource && game.player1.name === challenge.userTarget) {
       game.player2.socketId = user.id;
       game.player2.name = challenge.userSource;
@@ -135,8 +131,6 @@ export class GameGateway
       this.logger.debug(
         `${challenge.userSource} socket id:${user.id}. challenge ${challenge.userTarget} Game room:${game.room} custom ${challenge.isWithPowerUps}`
       );
-
-
       game.hasStarted = true;
       game.waiting = false;
       this.sendUpdatesEmits(game);
@@ -205,7 +199,6 @@ export class GameGateway
   @SubscribeMessage('move')
   async move(@MessageBody() move: IMove, @ConnectedSocket() user: Socket) {
     const direction = move.direction;
-
     const game = this.getGameByRoom(move.room);
     if (!game) {
       return;
@@ -217,11 +210,9 @@ export class GameGateway
     if (user.id === game.player2.socketId) {
       player = game.player2;
     }
-
     if (game.isPaddleCollision(player.paddle, direction)) {
       return;
     }
-
     switch (direction) {
       case 'up':
         player.paddle.y -= 20;
@@ -280,7 +271,6 @@ export class GameGateway
   @SubscribeMessage('get-game-list')
   async getGameList(@ConnectedSocket() user: Socket) {
     this.logger.debug(`User with id: ${user.id} get game list!`);
-
     this.sendGameList();
   }
 

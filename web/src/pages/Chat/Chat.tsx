@@ -6,7 +6,6 @@ import { ChatContext } from '../../contexts/ChatContext';
 import { ChatTab } from '../../components/Chat/ChatTab/ChatTab';
 
 export default function Chat() {
-
   const { activeChat, tabSelected, setTabSelected } = useContext(ChatContext);
   const { globalData } = useContext(GlobalContext);
 

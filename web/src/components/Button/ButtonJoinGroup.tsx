@@ -5,8 +5,7 @@ import { useContext, useState } from 'react';
 import { actionsChat } from '../../adapters/chat/chatState';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import { Modal } from '../Modal/Modal';
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import ReactTooltip from 'react-tooltip';
 
 interface ButtonJoinGroupProps {
   id: string;
@@ -14,7 +13,6 @@ interface ButtonJoinGroupProps {
 }
 
 export function ButtonJoinGroup({ id, type }: ButtonJoinGroupProps) {
-
   const { api, config, intraData } = useContext(GlobalContext);
   const [securityJoinVisible, setSecurityJoinVisible] = useState(false);
   const [placeHolder, setPlaceHolder] = useState('');
@@ -51,10 +49,10 @@ export function ButtonJoinGroup({ id, type }: ButtonJoinGroupProps) {
         id='joinGroup_button'
         className='button__icon'
         onClick={selectJoinGroup}
-        data-tooltip-content={'Join Group'}
+        data-tip={'Join Group'}
       >
         <SignIn size={32} />
-        <Tooltip anchorId='joinGroup_button' delayShow={50} />
+        <ReactTooltip delayShow={50} />
       </button>
       {securityJoinVisible &&
         <Modal id='button__join__group'

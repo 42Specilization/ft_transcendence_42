@@ -2,7 +2,6 @@ import { CanvasHTMLAttributes, DetailedHTMLProps, MutableRefObject } from 'react
 import './Canvas.scss';
 import imgPowerUp from '../../../assets/powerUp-box.png';
 
-
 interface CanvasProps extends
   DetailedHTMLProps<
     CanvasHTMLAttributes<HTMLCanvasElement>,

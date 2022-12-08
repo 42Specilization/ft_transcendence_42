@@ -10,16 +10,20 @@ import { actionsStatus } from '../../../adapters/status/statusState';
 import { ProfileGroupModal } from '../../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
 import { getUrlImage } from '../../../others/utils/utils';
 import { ChatTalkBody } from '../ChatTalkBody/ChatTalkBody';
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import ReactTooltip from 'react-tooltip';
 
 export function ChatTalk() {
-
   const {
-    selectedChat, setSelectedChat, activeChat, setActiveChat, setTabSelected
+    selectedChat, setSelectedChat,
+    activeChat, setActiveChat,
+    setTabSelected
   } = useContext(ChatContext);
   const {
-    api, config, intraData, setGlobalData, updateUserProfile
+    api,
+    config,
+    intraData,
+    setGlobalData,
+    updateUserProfile
   } = useContext(GlobalContext);
 
   const [profileGroupVisible, setProfileGroupVisible] = useState('');
@@ -102,7 +106,6 @@ export function ChatTalk() {
     setActiveChat(null);
   }
 
-
   function handleKeyEnter(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     submitMessage(event);
@@ -139,7 +142,7 @@ export function ChatTalk() {
               id='activeChat_profile_header'
               className='chat__talk__header__profile'
               onClick={() => selectGroupOrFriendVisible()}
-              data-tooltip-content={`${activeChat.chat?.name} profile`}
+              data-tip={`${activeChat.chat?.name} profile`}
             >
               <div
                 className='chat__talk__header__profile__icon'
@@ -149,7 +152,7 @@ export function ChatTalk() {
                 {activeChat.chat?.name}
               </div>
             </div>
-            <Tooltip anchorId='activeChat_profile_header' delayShow={50} />
+            <ReactTooltip delayShow={50} />
             <X size={32} weight="bold" onClick={exitActiveChat} className='chat__talk__header__exit' />
           </div>
           <ChatTalkBody />

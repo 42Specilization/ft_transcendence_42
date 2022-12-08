@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { DoubleBubble } from '../../components/DoubleBubble/DoubleBubble';
 import { ErrResponse, IntraData } from '../../others/Interfaces/interfaces';
-import './OAuth.scss';
 
 export async function getInfos() {
   const token = window.localStorage.getItem('token');
@@ -19,7 +18,7 @@ export async function getInfos() {
     return (data);
   }).catch(err => {
     const data = err.response.data as ErrResponse;
-    console.log('error on getInfos', err);
+    console.log(err);
     if (data.statusCode == 401 && process.env.NODE_ENV == 'production')
       window.location.pathname = '/signin';
   }

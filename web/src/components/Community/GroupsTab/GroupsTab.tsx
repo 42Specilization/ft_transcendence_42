@@ -1,7 +1,6 @@
 import './GroupsTab.scss';
 import { Plus } from 'phosphor-react';
 import { useState, useContext } from 'react';
-//import { Tooltip } from 'react-tooltip';
 import { GlobalContext } from '../../../contexts/GlobalContext';
 import { CardGroup } from './CardGroup/CardGroup';
 import { Modal } from '../../Modal/Modal';
@@ -10,7 +9,6 @@ import { ButtonSearch } from '../../Button/ButtonSearch';
 import { ProfileGroupModal } from '../../ProfileGroup/ProfileGroupModal/ProfileGroupModal';
 
 export function GroupsTab() {
-
   const [searchActive, setSearchActive] = useState(false);
   const [createGroupModal, setCreateGroupModal] = useState(false);
   const [searchInput, setSearchInput] = useState('');

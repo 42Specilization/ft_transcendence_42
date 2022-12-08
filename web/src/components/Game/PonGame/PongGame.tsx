@@ -8,7 +8,6 @@ import './PongGame.scss';
 import { actionsStatus } from '../../../adapters/status/statusState';
 
 export function PongGame() {
-
   const currentState = useSnapshot(stateGame);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const context: CanvasRenderingContext2D | undefined | null = canvasRef.current?.getContext('2d');

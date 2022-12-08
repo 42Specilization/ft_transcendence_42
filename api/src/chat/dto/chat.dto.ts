@@ -95,7 +95,7 @@ export class CreateGroupDto {
   @IsNotEmpty({ message: 'Insert an valid type' })
   type: string;
   @IsNotEmpty({ message: 'Insert an valid name' })
-  @MaxLength(15, { message: 'Group Name need have only 15 characters' })
+  @MaxLength(20, { message: 'Group Name need have only 20 characters' })
   name: string;
   @IsOptional()
   password?: string;

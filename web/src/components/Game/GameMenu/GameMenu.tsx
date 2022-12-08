@@ -7,7 +7,6 @@ import { Instructions } from '../Instructions/Instructions';
 import './GameMenu.scss';
 
 export function GameMenu() {
-
   const [commands, setCommands] = useState<boolean>(true);
   const [watch, setWatch] = useState<boolean>(false);
   const [powerUp, setPowerUp] = useState<boolean>(false);
@@ -78,7 +77,6 @@ export function GameMenu() {
         </div>
       </div>
       <div className='gameMenu__options'>
-
         {(() => {
           if (commands === true) {
             return (<Commands />);

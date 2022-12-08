@@ -1,6 +1,5 @@
 @import '../../../others/styles/global.scss';
 
-
 #group__changeSecurity {
   .modal__container {
     max-width: none;
@@ -22,6 +21,7 @@
   @include displayFlex(space-between, column);
   width: 80%;
   height: 80px;
+
   h3 {
     font-size: 25px;
   }

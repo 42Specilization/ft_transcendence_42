@@ -8,7 +8,8 @@
   top: 97px;
   left: 0;
   z-index: 2;
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(0, 0, 0, 0.8);
+
   .button__icon {
     margin-top: 10px !important;
     width: 100% !important;
@@ -31,7 +32,7 @@
 
 .profileUser__modal__container__content {
   @include displayFlex(center, column);
-  width:100%;
+  width: 100%;
   height: 100%;
   margin: 40px 0px 40px 40px;
 }
@@ -50,10 +51,10 @@
   color: black;
   border-radius: 50%;
   background-color: rgb(255, 0, 0);
+
   &:hover {
-    cursor:pointer;
+    cursor: pointer;
     color: rgb(70, 70, 70);
     background-color: rgb(230, 100, 100);
   }
 }
-

@@ -3,8 +3,7 @@ import { LockKey, Shield } from 'phosphor-react';
 import { Dispatch, SetStateAction } from 'react';
 import { GroupCardData } from '../../../../others/Interfaces/interfaces';
 import { getUrlImage } from '../../../../others/utils/utils';
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import ReactTooltip from 'react-tooltip';
 
 interface CardGroupProps {
   group: GroupCardData;
@@ -36,9 +35,9 @@ export function CardGroup({ group, setProfileGroupVisible }: CardGroupProps) {
                 <>
                   <LockKey size={32}
                     id={`private_${group.id}`}
-                    data-tooltip-content={'Private Group'}
+                    data-tip={'Private Group'}
                   />
-                  <Tooltip anchorId='leave_button' delayShow={50} />
+                  <ReactTooltip delayShow={50} />
                 </>
               );
             }
@@ -47,14 +46,14 @@ export function CardGroup({ group, setProfileGroupVisible }: CardGroupProps) {
                 <>
                   <Shield size={32}
                     id={`protected_${group.id}`}
-                    data-tooltip-content={'Protected Group'}
+                    data-tip={'Protected Group'}
                   />
                 </>
               );
           })()}
-          <Tooltip anchorId={`${group.type}_${group.id}`} delayShow={50} />
-        </div>
-      </div >
+          <ReactTooltip delayShow={50} />
+        </div >
+      </div>
     </>
   );
 }

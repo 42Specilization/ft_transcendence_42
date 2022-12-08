@@ -79,13 +79,4 @@ export class MapUserData {
       this.valueMap.set(newValue, result);
     }
   }
-
-  debug(): void {
-    console.log('+-----------------------------------------------------');
-    console.log('| chaves in keyMap:', Array.from(this.keyMap.keys()));
-    console.log('| valores in keyMap:', Array.from(this.keyMap.values()));
-    console.log('\n| chaves in valueMap:', Array.from(this.valueMap.keys()));
-    console.log('| valores in valueMap:', Array.from(this.valueMap.values()));
-    console.log('+-----------------------------------------------------');
-  }
 }

@@ -17,7 +17,6 @@ interface ProfileUserGeneralProps {
 }
 
 export function ProfileUserGeneral({ profileUserData, setProfileUserVisible }: ProfileUserGeneralProps) {
-
   const { matches, wins, lose } = profileUserData;
 
   return (
