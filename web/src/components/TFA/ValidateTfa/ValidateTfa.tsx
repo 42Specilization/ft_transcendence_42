@@ -31,7 +31,6 @@ export function ValidateTfa() {
   };
 
   async function sendEmail() {
-    console.log(config);
     const user = await api.get('/user/me', config);
     const body = {
       tfaEmail: user.data.tfaEmail,

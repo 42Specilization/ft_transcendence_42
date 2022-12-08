@@ -35,9 +35,9 @@ export class AuthController {
     return (await this.authService.validateToken(userFromJwt));
   }
 
-  @Get('email/:email')
-  async generateJwtToken(@Param('email') email: string): Promise<JwtTokenAccess> {
-    return (await this.authService.generateJwtToken(email));
-  }
+  // @Get('email/:email')
+  // async generateJwtToken(@Param('email') email: string): Promise<JwtTokenAccess> {
+  //   return (await this.authService.generateJwtToken(email));
+  // }
 
 }

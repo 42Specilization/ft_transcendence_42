@@ -161,6 +161,7 @@ export class AuthService {
     });
   }
 
+  // Remove 
   async generateJwtToken(email: string): Promise<JwtTokenAccess> {
     const user = await this.userService.findUserByEmail(email);
 

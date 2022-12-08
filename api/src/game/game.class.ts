@@ -9,6 +9,7 @@ const DEFAULT_PADDLE_HEIGHT = 100;
 const BIG_PADDLE = 0;
 const LITTLE_PADDLE = 1;
 const BIG_BALL = 2;
+const PADDLE_Y = (CANVAS_HEIGHT / 2) - (DEFAULT_PADDLE_HEIGHT / 2);
 
 export class Game {
 
@@ -42,7 +43,7 @@ export class Game {
   player1: IPlayer = {
     paddle: {
       x: 10,
-      y: (CANVAS_HEIGHT / 2) - (DEFAULT_PADDLE_HEIGHT / 2),
+      y: PADDLE_Y,
       w: 10,
       h: DEFAULT_PADDLE_HEIGHT,
       color: '#7C1CED'
@@ -55,7 +56,7 @@ export class Game {
   player2: IPlayer = {
     paddle: {
       x: CANVAS_WIDTH - 20,
-      y: (CANVAS_HEIGHT / 2) - (DEFAULT_PADDLE_HEIGHT / 2),
+      y: PADDLE_Y,
       w: 10,
       h: DEFAULT_PADDLE_HEIGHT,
       color: '#7C1CED'
@@ -150,13 +151,15 @@ export class Game {
     }
   }
 
-  resetBall() {
+  resetGame() {
     this.ball.x = CANVAS_WIDTH / 2;
     this.ball.y = CANVAS_HEIGHT / 2;
     this.ball.radius = 10;
     this.ball.speed = this.ballSpeed;
     this.ball.velocityX = this.getRandomDirection();
     this.ball.velocityY = this.getRandomDirection();
+    this.player1.paddle.y = PADDLE_Y;
+    this.player2.paddle.y = PADDLE_Y;
     if (this.isWithPowerUps) {
       this.resetPowerUp();
     }
@@ -261,11 +264,11 @@ export class Game {
     // update the score
     if (this.ball.x - this.ball.radius < 0) {
       this.score.player2++;
-      this.resetBall();
+      this.resetGame();
       return (true);
     } else if (this.ball.x + this.ball.radius > CANVAS_WIDTH) {
       this.score.player1++;
-      this.resetBall();
+      this.resetGame();
       return (true);
     }
     return (false);

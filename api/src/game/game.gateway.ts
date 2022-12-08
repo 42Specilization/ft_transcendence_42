@@ -78,6 +78,15 @@ export class GameGateway
 
   @SubscribeMessage('challenge')
   async challenge(@ConnectedSocket() user: Socket, @MessageBody() challenge: IChallenge) {
+    if (this.isPlayerOnQueue(challenge.userSource)) {
+      user.emit('game-not-found', 'You are already in a game!');
+      return ;
+    }
+    if (this.isPlayerOnQueue(challenge.userTarget)) {
+      user.emit('game-not-found', 'User are already in a game or on queue!');
+      return ;
+    }
+
     if (challenge.userSource === challenge.userTarget) {
       user.emit('game-not-found');
       return;
@@ -246,6 +255,7 @@ export class GameGateway
     const updateResult = game.update();
     if (updateResult) {
       this.io.to(strRoom).emit('update-score', game.score);
+      this.io.to(game.room.toString()).emit('update-player', game.player1, game.player2);
       if (game.isWithPowerUps) {
         this.io.to(strRoom).emit('update-powerUp', game.powerUpBox);
       }
@@ -401,6 +411,20 @@ export class GameGateway
       }
     }
     return undefined;
+  }
+
+  /**
+   * This function get the game instance with the same room.
+   * @param room Room of the selected game.
+   * @returns The instance of the game or undefined if not exist.
+   */
+  isPlayerOnQueue(login: string): boolean {
+    for (let i = 0; this.queue[i]; i++) {
+      if (this.queue[i].player1.name === login || this.queue[i].player1.name === login) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**

@@ -736,25 +736,23 @@ export class UserService {
 
   async getCommunity(user_email: string) {
     const users = await this.usersRepository.find();
-    const usersToReturn: CommunityDto[] = users.filter((user) => {
-      if (user.email === user_email)
-        return;
-      return user;
-    }).map((user) => {
-      return {
-        status: user.status,
-        login: user.nick,
-        image_url: user.imgUrl,
-        ratio: ((
-          Number(user.wins) /
+    user_email;
+    const usersToReturn: CommunityDto[] = users
+      .map((user) => {
+        return {
+          status: user.status,
+          login: user.nick,
+          image_url: user.imgUrl,
+          ratio: ((
+            Number(user.wins) /
           (Number(user.lose) > 0 ? Number(user.lose) : 1)
-        ).toFixed(2)).toString()
-      };
-    }).sort((a, b) => {
-      if (a.ratio > b.ratio)
-        return -1;
-      return 1;
-    });
+          ).toFixed(2)).toString()
+        };
+      }).sort((a, b) => {
+        if (a.ratio > b.ratio)
+          return -1;
+        return 1;
+      });
     return usersToReturn;
   }
 
@@ -790,12 +788,12 @@ export class UserService {
   async updateStatus(login: string, status: string) {
     const user = await this.findUserByNick(login);
     if (!user)
-      throw new InternalServerErrorException('User not found in updateStatus');
+      throw new NotFoundException('User not found in updateStatus', login);
     user.status = status;
     try {
       await user.save();
     } catch (err) {
-      throw new InternalServerErrorException('Error saving status');
+      throw new NotFoundException('Error saving status');
     }
   }
 

@@ -16,7 +16,7 @@ export interface CreateSocketOptions {
 const FPS = 40;
 
 export function createSocket({ accessToken, socketIOUrl, actionsGame, stateGame }: CreateSocketOptions): Socket {
-
+  let updateBallOrNot;
   let syncBall: NodeJS.Timer;
 
   const socket = io(socketIOUrl, {
@@ -30,8 +30,9 @@ export function createSocket({ accessToken, socketIOUrl, actionsGame, stateGame 
     actionsStatus.iAmInGame();
     actionsGame.updateGame(game);
     actionsGame.setIsPlayer();
+    updateBallOrNot = true;
     updateBallEmit();
-    setTimeout(() => { syncBall = setInterval(updateBallEmit, 1000 / FPS); }, 1000);
+    setTimeout(() => { updateBallOrNot = true; syncBall = setInterval(updateBallEmit, 1000 / FPS); }, 1000);
   });
 
   socket.on('update-game', (game: Game) => {
@@ -45,10 +46,14 @@ export function createSocket({ accessToken, socketIOUrl, actionsGame, stateGame 
 
   socket.on('update-ball', (ball: Ball, updateResult: boolean) => {
     if (updateResult) {
+      actionsGame.updateBall(ball);
+      updateBallOrNot = false; 
       clearInterval(syncBall);
-      setTimeout(() => { syncBall = setInterval(updateBallEmit, 1000 / FPS); }, 1000);
+      setTimeout(() => { updateBallOrNot = true;  syncBall = setInterval(updateBallEmit, 1000 / FPS); }, 1000);
+    } 
+    if (updateBallOrNot) {
+      actionsGame.updateBall(ball);
     }
-    actionsGame.updateBall(ball);
   });
 
   socket.on('update-score', (score: Score) => {
@@ -85,7 +90,7 @@ export function createSocket({ accessToken, socketIOUrl, actionsGame, stateGame 
   });
 
   function updateBallEmit() {
-    if (stateGame.game?.hasStarted && !stateGame.game.hasEnded && stateGame.isPlayer && stateGame.player1?.socketId === stateGame.socket?.id) {
+    if (updateBallOrNot && stateGame.game?.hasStarted && !stateGame.game.hasEnded && stateGame.isPlayer && stateGame.player1?.socketId === stateGame.socket?.id) {
       stateGame.socket?.emit('update-ball', stateGame.game?.room);
     }
   }
