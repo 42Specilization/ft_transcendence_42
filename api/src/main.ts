@@ -12,15 +12,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = configService.get('PORT');
   const node = configService.get('NODE');
-  const host = configService.get('HOST');
-  const clientPort = configService.get('CLIENT_PORT');
-  app.enableCors({
-    origin: [
-      `http://${host}:${clientPort}`,
-      new RegExp(`/^http://192.168.1.([1-9]|[1-9]d):${clientPort}$/`)
-    ]
-  });
-
+  app.enableCors();
 
   app.useGlobalPipes(
     new ValidationPipe({
