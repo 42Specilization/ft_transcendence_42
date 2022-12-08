@@ -16,7 +16,7 @@ export interface CreateSocketOptions {
 const FPS = 40;
 
 export function createSocket({ accessToken, socketIOUrl, actionsGame, stateGame }: CreateSocketOptions): Socket {
-  let updateBallOrNot;
+  let updateBallOrNot: boolean;
   let syncBall: NodeJS.Timer;
 
   const socket = io(socketIOUrl, {
