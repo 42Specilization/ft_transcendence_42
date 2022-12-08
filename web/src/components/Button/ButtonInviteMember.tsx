@@ -13,7 +13,6 @@ interface ButtonInviteMemberProps {
 }
 
 export function ButtonInviteMember({ id }: ButtonInviteMemberProps) {
-
   const { api, config } = useContext(GlobalContext);
   const [modalInviteMember, setModalInviteMember] = useState(false);
   const [inviteName, setInviteName] = useState('');

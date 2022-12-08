@@ -11,22 +11,16 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const port = configService.get('PORT');
-  // const host = configService.get('HOST');
-  // const clientPort = configService.get('CLIENT_PORT');
-  app.enableCors();
-  // app.enableCors({
-  //   origin: [
-  //     `http://${host}:${clientPort}`,
-  //     // eslint-disable-next-line no-useless-escape
-  //     new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${clientPort}$/`)
-  //   ]
-  // });
+  const node = configService.get('NODE');
+  const host = configService.get('HOST');
+  const clientPort = configService.get('CLIENT_PORT');
+  app.enableCors({
+    origin: [
+      `http://${host}:${clientPort}`,
+      new RegExp(`/^http://192.168.1.([1-9]|[1-9]d):${clientPort}$/`)
+    ]
+  });
 
-  const config = new DocumentBuilder()
-    .setTitle('Transcendence Api')
-    .setDescription('num sei')
-    .setVersion('1.0')
-    .build();
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -36,9 +30,15 @@ async function bootstrap() {
     }),
   );
 
-
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  if (node !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('Transcendence Api')
+      .setDescription('Swagger of pong game 42 transcendence!')
+      .setVersion('1.0')
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, document);
+  }
 
   app.useWebSocketAdapter(new SocketIOAdapter(app, configService));
 

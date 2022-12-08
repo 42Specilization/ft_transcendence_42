@@ -19,9 +19,7 @@ import { getAssetsPath } from 'src/utils/utils';
 @Controller('chat')
 @ApiTags('chat')
 export class ChatController {
-  constructor(private readonly chatService: ChatService) {
-
-  }
+  constructor(private readonly chatService: ChatService) { }
 
   @Get('/getAllDirects')
   @UseGuards(JwtAuthGuard)

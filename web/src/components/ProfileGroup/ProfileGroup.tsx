@@ -17,14 +17,12 @@ import { UserData } from '../../others/Interfaces/interfaces';
 import { ProfileUserModal } from '../ProfileUser/ProfileUserModal/ProfileUserModal';
 import ReactTooltip from 'react-tooltip';
 
-
 interface ProfileGroupProps {
   id: string | undefined;
   setProfileGroupVisible: Dispatch<SetStateAction<string>>;
 }
 
 export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) {
-
   const { api, config, updateUserProfile, updateGroupProfile, closeGroupProfile, setCloseGroupProfile } = useContext(GlobalContext);
   const [updateQuery, setUpdateQuery] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File>();

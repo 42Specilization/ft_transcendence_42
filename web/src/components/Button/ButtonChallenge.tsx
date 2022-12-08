@@ -7,7 +7,6 @@ import { useContext, useState } from 'react';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import ReactTooltip from 'react-tooltip';
 
-
 interface ButtonChallengeProps {
   login: string;
 }
@@ -27,7 +26,6 @@ export function ButtonChallenge({ login }: ButtonChallengeProps) {
 
   return (
     <>
-
       {intraData.login !== login &&
         <button
           id='challenge_button'

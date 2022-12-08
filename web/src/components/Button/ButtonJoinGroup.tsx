@@ -7,14 +7,12 @@ import { GlobalContext } from '../../contexts/GlobalContext';
 import { Modal } from '../Modal/Modal';
 import ReactTooltip from 'react-tooltip';
 
-
 interface ButtonJoinGroupProps {
   id: string;
   type: string;
 }
 
 export function ButtonJoinGroup({ id, type }: ButtonJoinGroupProps) {
-
   const { api, config, intraData } = useContext(GlobalContext);
   const [securityJoinVisible, setSecurityJoinVisible] = useState(false);
   const [placeHolder, setPlaceHolder] = useState('');

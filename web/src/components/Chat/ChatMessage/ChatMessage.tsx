@@ -7,14 +7,12 @@ import {
 } from '../../../others/utils/utils';
 import ReactTooltip from 'react-tooltip';
 
-
 interface ChatMessageProps {
   user: string;
   message: MsgToClient;
 }
 
 export function ChatMessage({ user, message }: ChatMessageProps) {
-
   function self(): boolean {
     return user === message.user.login;
   }

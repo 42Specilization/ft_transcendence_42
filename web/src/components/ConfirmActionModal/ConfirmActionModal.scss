@@ -13,15 +13,17 @@
   color: white;
   border-radius: 10px;
   background-color: $buttonColor;
+
   &:hover {
     cursor: pointer;
     filter: grayscale(0.7);
   }
 }
-.confirm{
+
+.confirm {
   background-color: green;
 }
-.cancel{
-  background-color: red;
 
+.cancel {
+  background-color: red;
 }

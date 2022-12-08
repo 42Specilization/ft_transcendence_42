@@ -86,7 +86,6 @@ interface IntraDataProviderProps {
 }
 
 export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
-
   const { setActiveChat } = useContext(ChatContext);
   const [intraData, setIntraData] = useState(defaultIntra);
   const [globalData, setGlobalData] = useState(defaultGlobal);
@@ -111,7 +110,6 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
   const api = useMemo(() => axios.create({
     baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
   }), []);
-
 
   useEffect(() => {
     getIntraData(setIntraData);

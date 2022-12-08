@@ -6,7 +6,6 @@ import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import { actionsStatus } from '../../adapters/status/statusState';
 import ReactTooltip from 'react-tooltip';
 
-
 interface ButtonBlockUserProps {
   login: string;
   handle: ((...args: any[]) => void) | null
@@ -14,7 +13,6 @@ interface ButtonBlockUserProps {
 }
 
 export function ButtonBlockUser({ login, handle, params }: ButtonBlockUserProps) {
-
   const { api, config } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 

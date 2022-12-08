@@ -4,7 +4,7 @@ import { proxy, ref } from 'valtio';
 import { ActiveChatData } from '../../contexts/ChatContext';
 import { UpdateGroupProfile, UpdateUserProfile } from '../../contexts/GlobalContext';
 import { GlobalData, IntraData, MsgToClient, UserData } from '../../others/Interfaces/interfaces';
-import { getGlobalDirects, getGlobalGroups, getGlobalInDb, getGlobalData, getGlobalAllGroups, getGlobalAllUsers } from '../../others/utils/utils';
+import { getGlobalDirects, getGlobalGroups, getGlobalInDb, getGlobalData, getGlobalAllGroups, getGlobalAllUsers, getAccessToken } from '../../others/utils/utils';
 import { actionsChat } from '../chat/chatState';
 
 import {
@@ -40,6 +40,7 @@ const actionsStatus = {
         socketStatusIOUrl: socketStatusIOUrl,
         actionsStatus: actionsStatus,
         stateStatus: stateStatus,
+        accessToken: getAccessToken(),
       };
       stateStatus.socket = ref(createSocketStatus(createSocketOptions));
       stateStatus.setIntraData = ref(setIntraData);

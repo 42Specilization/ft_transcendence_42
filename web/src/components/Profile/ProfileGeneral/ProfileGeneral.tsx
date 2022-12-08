@@ -4,7 +4,6 @@ import { useContext } from 'react';
 import { GlobalContext } from '../../../contexts/GlobalContext';
 
 export function ProfileGeneral() {
-
   const { intraData } = useContext(GlobalContext);
 
   return (

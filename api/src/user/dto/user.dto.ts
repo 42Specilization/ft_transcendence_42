@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
@@ -24,5 +25,5 @@ export class CommunityDto {
 export class UserHistoricDto {
   @ApiProperty()
   @IsNotEmpty({ message: 'Inform a valid nick!' })
-    login: string;
+  login: string;
 }

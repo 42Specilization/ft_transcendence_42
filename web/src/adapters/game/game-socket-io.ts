@@ -34,7 +34,6 @@ export function createSocket({ accessToken, socketIOUrl, actionsGame, stateGame 
     setTimeout(() => { syncBall = setInterval(updateBallEmit, 1000 / FPS); }, 1000);
   });
 
-
   socket.on('update-game', (game: Game) => {
     actionsGame.updateGame(game);
     actionsGame.setIsPlayer();
@@ -91,9 +90,5 @@ export function createSocket({ accessToken, socketIOUrl, actionsGame, stateGame 
     }
   }
 
-
-
-
   return (socket);
-
 }

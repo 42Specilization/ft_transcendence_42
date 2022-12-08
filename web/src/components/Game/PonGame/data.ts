@@ -95,7 +95,6 @@ export function getEndGameData(context: CanvasRenderingContext2D, msgEndGame: st
     msg: 'Press Q to leave',
     fontSize: '25'
   };
-
   return ({
     endMessage,
     quitHelp

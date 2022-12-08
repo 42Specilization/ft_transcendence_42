@@ -2,7 +2,8 @@
 
 .game {
   @include displayFlex(center);
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
   background-image: url('/canvas-background.png');
   background-size: cover;
   background-repeat: no-repeat;
@@ -24,6 +25,6 @@
 
 @media (min-height: 610px) {
   .game {
-  height: 100vh;
+    height: 100vh;
   }
 }

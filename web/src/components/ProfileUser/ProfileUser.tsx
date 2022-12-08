@@ -11,7 +11,6 @@ interface ProfileUserProps {
 }
 
 export function ProfileUser({ login, setProfileUserVisible }: ProfileUserProps) {
-
   const { api, config, updateUserProfile } = useContext(GlobalContext);
   const [updateQuery, setUpdateQuery] = useState(0);
   const [tabSelected, setTabSelected] = useState('General');

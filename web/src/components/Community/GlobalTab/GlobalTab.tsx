@@ -7,7 +7,6 @@ import { UserData } from '../../../others/Interfaces/interfaces';
 import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
 
 export function GlobalTab() {
-
   const { globalData, updateUserProfile } = useContext(GlobalContext);
   const [searchActive, setSearchActive] = useState(false);
   const [searchInput, setSearchInput] = useState('');

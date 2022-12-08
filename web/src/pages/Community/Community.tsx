@@ -5,10 +5,7 @@ import { FriendTab } from '../../components/Community/FriendTab/FriendTab';
 import { BlockedTab } from '../../components/Community/BlockedTab/BlockedTab';
 import { GroupsTab } from '../../components/Community/GroupsTab/GroupsTab';
 
-
-
 export default function Community() {
-
   const [tableSelected, setTableSelected] = useState('Global');
 
   return (

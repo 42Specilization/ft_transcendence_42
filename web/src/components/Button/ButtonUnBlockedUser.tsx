@@ -6,13 +6,11 @@ import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import { actionsStatus } from '../../adapters/status/statusState';
 import ReactTooltip from 'react-tooltip';
 
-
 interface ButtonUnBlockedUserProps {
   login: string;
 }
 
 export function ButtonUnBlockedUser({ login }: ButtonUnBlockedUserProps) {
-
   const { api, config } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 

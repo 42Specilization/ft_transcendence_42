@@ -10,17 +10,14 @@ import { ErrorGameModal } from '../../components/Game/ErrorGameModal/ErrorGameMo
 import { Modal } from '../../components/Modal/Modal';
 
 export default function Game() {
-
   const { intraData } = useContext(GlobalContext);
   const currentState = useSnapshot(stateGame);
-
   const [gameNotFound, setGameNotFound] = useState<boolean>(false);
   const [gameModalMessage, setGameModalMessage] = useState<string>('Game Not Found!');
 
   useEffect(() => {
-    if (currentState.name !== intraData.login) {
+    if (currentState.name !== intraData.login)
       actionsGame.updateName(intraData.login);
-    }
   }, [intraData]);
 
   useEffect(() => {

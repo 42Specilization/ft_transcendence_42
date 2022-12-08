@@ -6,14 +6,12 @@ import { GlobalContext } from '../../contexts/GlobalContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import ReactTooltip from 'react-tooltip';
 
-
 interface ButtonUnMuteMemberProps {
   id: string;
   name: string;
 }
 
 export function ButtonUnMuteMember({ id, name }: ButtonUnMuteMemberProps) {
-
   const { intraData } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 

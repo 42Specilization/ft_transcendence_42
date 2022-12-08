@@ -6,14 +6,12 @@ import { GlobalContext } from '../../contexts/GlobalContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import ReactTooltip from 'react-tooltip';
 
-
 interface ButtonUnBanMemberProps {
   id: string;
   name: string;
 }
 
 export function ButtonUnBanMember({ id, name }: ButtonUnBanMemberProps) {
-
   const { intraData } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 

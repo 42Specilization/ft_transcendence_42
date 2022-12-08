@@ -5,7 +5,6 @@ import { GroupCardData } from '../../../../others/Interfaces/interfaces';
 import { getUrlImage } from '../../../../others/utils/utils';
 import ReactTooltip from 'react-tooltip';
 
-
 interface CardGroupProps {
   group: GroupCardData;
   setProfileGroupVisible: Dispatch<SetStateAction<string>>;

@@ -6,14 +6,12 @@ import { GlobalContext } from '../../contexts/GlobalContext';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import ReactTooltip from 'react-tooltip';
 
-
 interface ButtonKickMemberProps {
   id: string;
   name: string;
 }
 
 export function ButtonKickMember({ id, name }: ButtonKickMemberProps) {
-
   const { intraData } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 

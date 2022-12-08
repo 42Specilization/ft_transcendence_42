@@ -15,7 +15,6 @@ export function TFATurnOnModal({
   tfaEmail,
   setTfaEmail,
   setTfaModal }: TFATurnOnModalProps) {
-
   const { api, config } = useContext(GlobalContext);
   const [placeHolder, setPlaceHolder] = useState('');
   const [isLoading, setIsLoading] = useState(false);

@@ -5,13 +5,11 @@ import { PaperPlaneRight } from 'phosphor-react';
 import { actionsStatus } from '../../../adapters/status/statusState';
 import { GlobalContext } from '../../../contexts/GlobalContext';
 
-
 interface ChangeNickProps {
   setIsModalChangeNickVisible: (arg0: boolean) => void;
 }
 
 export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
-
   const { api, config } = useContext(GlobalContext);
   const [nick, setNick] = useState<string>('');
   const [placeHolder, setPlaceHolder] = useState('');
@@ -24,7 +22,6 @@ export function ChangeNick({ setIsModalChangeNickVisible }: ChangeNickProps) {
   async function handleChangeNick() {
     try {
       const result = await api.patch('/user/updateNick', { nick: nick }, config);
-
       if (result.status === 200) {
         setIsModalChangeNickVisible(false);
         actionsStatus.changeLogin(nick);

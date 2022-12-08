@@ -9,7 +9,7 @@ export function ValidateTfa() {
   const [code, setCode] = useState('');
   const [placeHolder, setPlaceHolder] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const {api, config} = useContext(GlobalContext);
+  const { api, config } = useContext(GlobalContext);
 
   useEffect(() => {
     setTimeout(() => {

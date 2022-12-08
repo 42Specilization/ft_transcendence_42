@@ -6,9 +6,6 @@ $backgroundColorHover: rgba(84, 22, 241, 0.3);
 $buttonColor: rgb(90, 20, 145);
 $buttonColorHover: rgb(65, 15, 100);
 
-
-$heightWithoutNavBar: calc(100vh - 100px);
-
 @mixin displayFlex($justify_content: center, $flex_direction: row, $align-items: center) {
   display: flex;
   justify-content: $justify_content;

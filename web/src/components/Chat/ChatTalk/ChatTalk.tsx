@@ -12,14 +12,18 @@ import { getUrlImage } from '../../../others/utils/utils';
 import { ChatTalkBody } from '../ChatTalkBody/ChatTalkBody';
 import ReactTooltip from 'react-tooltip';
 
-
 export function ChatTalk() {
-
   const {
-    selectedChat, setSelectedChat, activeChat, setActiveChat, setTabSelected
+    selectedChat, setSelectedChat,
+    activeChat, setActiveChat,
+    setTabSelected
   } = useContext(ChatContext);
   const {
-    api, config, intraData, setGlobalData, updateUserProfile
+    api,
+    config,
+    intraData,
+    setGlobalData,
+    updateUserProfile
   } = useContext(GlobalContext);
 
   const [profileGroupVisible, setProfileGroupVisible] = useState('');
@@ -101,7 +105,6 @@ export function ChatTalk() {
     setSelectedChat(null);
     setActiveChat(null);
   }
-
 
   function handleKeyEnter(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

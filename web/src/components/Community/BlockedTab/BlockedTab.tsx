@@ -1,14 +1,12 @@
 import './BlockedTab.scss';
 import { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '../../../contexts/GlobalContext';
-//import ReactTooltip from 'react-tooltip';
 import { CardUser } from '../../CardUser/CardUser';
 import { ButtonSearch } from '../../Button/ButtonSearch';
 import { UserData } from '../../../others/Interfaces/interfaces';
 import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
 
 export function BlockedTab() {
-
   const { globalData, updateUserProfile } = useContext(GlobalContext);
   const [searchActive, setSearchActive] = useState(false);
   const [searchInput, setSearchInput] = useState('');

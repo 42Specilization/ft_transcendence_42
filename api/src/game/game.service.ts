@@ -54,7 +54,4 @@ export class GameService {
 
   }
 
-  async getGames() {
-    return (await this.gameRepository.find({ relations: { loser: true, winner: true } }));
-  }
 }

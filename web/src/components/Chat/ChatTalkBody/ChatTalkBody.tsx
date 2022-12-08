@@ -6,7 +6,6 @@ import { ChatMessage } from '../ChatMessage/ChatMessage';
 import './ChatTalkBody.scss';
 
 export function ChatTalkBody() {
-
   const { activeChat, setActiveChat } = useContext(ChatContext);
   const { intraData } = useContext(GlobalContext);
 
@@ -23,14 +22,12 @@ export function ChatTalkBody() {
         currentMessage: current,
       };
     });
-    // setTimeout(() => {
-    // }, 1);
+
     const body = refBody.current;
     if (body && body.scrollHeight > body.offsetHeight) {
       body.scrollTop = body.scrollHeight / 2;
     }
   }
-
 
   async function handleScroll(e: any) {
     if (!activeChat || activeChat.historicMsg.length <= 30)

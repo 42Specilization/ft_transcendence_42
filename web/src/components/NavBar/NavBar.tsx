@@ -15,14 +15,11 @@ interface NavBarProps {
 }
 
 export function NavBar({ Children }: NavBarProps) {
-
   const { logout } = useAuth();
-
   const { activeChat } = useContext(ChatContext);
   const { intraData, globalData } = useContext(GlobalContext);
   const [menuVisible, setMenuVisible] = useState(false);
   const [notifyVisible, setNotifyVisible] = useState(false);
-
   const menuRef: React.RefObject<HTMLDivElement> = useRef(null);
   const notifyRef: React.RefObject<HTMLDivElement> = useRef(null);
 
@@ -45,12 +42,12 @@ export function NavBar({ Children }: NavBarProps) {
   };
 
   const handleClickInside = (event: any) => {
-    if (event.target.id === 'navBar__menu__icon') {
+    if (event.target.id === 'navBar__menu__icon')
       setMenuVisible((prevMenuVisible) => !prevMenuVisible);
-    }
-    if (event.target.id === 'navBar__notify__icon') {
+    if (event.target.id === 'navBar__chat__icon')
+      setMenuVisible((prevMenuVisible) => !prevMenuVisible);
+    if (event.target.id === 'navBar__notify__icon')
       setNotifyVisible((prevNotifyVisible) => !prevNotifyVisible);
-    }
   };
 
   async function handleLogOut() {
@@ -64,13 +61,11 @@ export function NavBar({ Children }: NavBarProps) {
         return acc;
       return acc + chat.newMessages;
     }, 0);
-
     const newMessagesGroups = globalData.groups.reduce((acc, chat) => {
       if (activeChat && chat.id === activeChat.chat.id)
         return acc;
       return acc + chat.newMessages;
     }, 0);
-
     return newMessagesDirects + newMessagesGroups;
   }
 
@@ -78,15 +73,12 @@ export function NavBar({ Children }: NavBarProps) {
     <>
       <div className='navBar'>
         <ul className='navBar__list'>
-
           <li className='navBar__logo'>
             <Link to='/'>
               <img src={logoSmall} alt='logo small' />
             </Link>
           </li>
-
           <li className='navBar__divider' />
-
           <li className='navBar__pages' onClick={(e) => handleClickInside(e)}>
             <div id='navBar__menu__icon' className='navBar__menu__icon'>
               <List id='navBar__menu__icon' size={40} className='navBar__icons' />
@@ -115,17 +107,15 @@ export function NavBar({ Children }: NavBarProps) {
                 </div>
                 Chats
               </Link>
-              <Link to='/community' className='navBar__icons'>
+              <Link to='/community' id='navBar__menu__icon' className='navBar__icons'>
                 <div>
-                  <UsersThree size={32} />
+                  <UsersThree id='navBar__menu__icon' size={32} />
                 </div>
                 Community
               </Link>
             </nav>
           </li>
-
           <li className='navBar__divider' />
-
           <li className='navBar__notify' onClick={(e) => handleClickInside(e)}>
             <div id='navBar__notify__icon' className='navBar__notify__icon'>
               {!globalData.notify || globalData.notify.length == 0 ?
@@ -147,8 +137,6 @@ export function NavBar({ Children }: NavBarProps) {
               <Notify />
             </div>
           </li>
-
-
           <li>
             <Link to='/profile'>
               <div
@@ -157,17 +145,13 @@ export function NavBar({ Children }: NavBarProps) {
               />
             </Link>
           </li>
-
-
           <li className='navBar__logout navBar__icons' onClick={handleLogOut}>
             <SignOut size={32} />
             Log-out
           </li>
-
         </ul >
       </div >
       <Children />
     </>
-
   );
 }

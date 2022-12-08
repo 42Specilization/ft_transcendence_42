@@ -1,11 +1,9 @@
 @import '../../../others/styles/global.scss';
 
-
 .chat__talk__body {
   width: 100%;
   height: calc(100% - 130px);
   padding: 0px 10px 0px 10px;
-  // scroll-behavior: smooth;
   @include scrollBar();
 }
 

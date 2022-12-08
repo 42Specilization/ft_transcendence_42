@@ -774,36 +774,27 @@ export class ChatService {
     const user = await this.userService.findUserGroupByEmail(user_email);
     const removed = await this.userService.findUserGroupByNick(removed_login);
     const group = await this.findGroupById(chat);
-
     if (!group || !user || !removed)
       throw new InternalServerErrorException('Infos not found kickMember');
-
     if (user.nick !== group.owner.nick && !this.getRelation(group, user.nick, 'admin'))
       return null;
-
     if (this.getRole(group, removed.nick) === 'outside'
       || this.getRole(group, removed.nick) === 'owner')
       return null;
-
     if (this.getRelation(group, removed.nick, 'admin') && user.nick !== group.owner.nick)
       return null;
-
     if (this.getRelation(group, removed.nick, 'admin')) {
       this.removeRelation(group, removed.nick, 'admin');
     }
-
     const kick = new Message();
     kick.sender = removed;
     kick.date = new Date(Date.now());
     kick.msg = 'has been kicked the group';
     kick.type = 'action';
-
     group.users = group.users.filter((key) => key.nick !== removed.nick);
     group.messages = group.messages.filter(key =>
       !(key.type === 'breakpoint' && key.sender.nick === removed.nick));
-
     group.messages.push(kick);
-
     try {
       await group.save();
       const msgClient: MsgToClient = {
@@ -824,22 +815,17 @@ export class ChatService {
     const user = await this.userService.findUserByEmail(user_email);
     const friend = await this.userService.findUserByNick(groupInviteDto.name);
     const group = await this.findGroupById(groupInviteDto.groupId);
-
     if (!friend || !user || !group)
       throw new InternalServerErrorException('User not found');
-
     if (user.nick !== group.owner.nick)
       throw new UnauthorizedException('Permission denied');
-
     if (this.getRole(group, friend.nick) !== 'member')
       throw new BadRequestException('Position unavailable');
-
     const relation = new GroupRelations();
     relation.date = new Date(Date.now());
     relation.user_target = friend;
     relation.type = 'admin';
     group.relations.push(relation);
-
     try {
       await group.save();
     } catch (err) {
@@ -851,18 +837,13 @@ export class ChatService {
     const user = await this.userService.findUserByEmail(user_email);
     const friend = await this.userService.findUserByNick(groupInviteDto.name);
     const group = await this.findGroupById(groupInviteDto.groupId);
-
     if (!friend || !user || !group)
       throw new InternalServerErrorException('User not found');
-
     if (user.nick !== group.owner.nick)
       throw new UnauthorizedException('Permission denied');
-
     if (this.getRole(group, friend.nick) !== 'admin')
       throw new BadRequestException('Position unavailable');
-
     this.removeRelation(group, friend.nick, 'admin');
-
     try {
       await group.save();
     } catch (err) {
@@ -874,24 +855,17 @@ export class ChatService {
     const user = await this.userService.findUserByEmail(user_email);
     const member = await this.userService.findUserByNick(groupInviteDto.name);
     const group = await this.findGroupById(groupInviteDto.groupId);
-
     if (!group || !user || !member)
       throw new InternalServerErrorException('Infos not found addBan');
-
     if (user.nick !== group.owner.nick && !this.getRelation(group, user.nick, 'admin'))
       return null;
-
     if (this.getRole(group, member.nick) === 'outside'
       || this.getRole(group, member.nick) === 'owner')
       return null;
-
     if (this.getRelation(group, member.nick, 'admin') && user.nick !== group.owner.nick)
       return null;
-
-    if (this.getRelation(group, member.nick, 'admin')) {
+    if (this.getRelation(group, member.nick, 'admin'))
       this.removeRelation(group, member.nick, 'admin');
-    }
-
     const relation = new GroupRelations();
     relation.date = new Date(Date.now());
     relation.user_target = member;
@@ -934,7 +908,6 @@ export class ChatService {
     if (!group || !user || !member)
       throw new InternalServerErrorException('Infos not found addBan');
 
-    // && !this.getRelation(group, user.nick, 'admin'))
     if (user.nick !== group.owner.nick)
       return null;
 

@@ -5,16 +5,13 @@ import { ChatContext } from '../../contexts/ChatContext';
 import { Link } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
 
-
 interface ButtonSendMessageProps {
   id: string;
   type: string;
   onClick: any;
-
 }
 
 export function ButtonSendMessage({ id, type, onClick }: ButtonSendMessageProps) {
-
   const { setSelectedChat } = useContext(ChatContext);
 
   function handleSendMessage() {

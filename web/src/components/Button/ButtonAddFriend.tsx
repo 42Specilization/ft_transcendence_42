@@ -6,13 +6,11 @@ import { useContext, useState } from 'react';
 import { Modal } from '../Modal/Modal';
 import ReactTooltip from 'react-tooltip';
 
-
 interface ButtonAddFriendProps {
   login: string;
 }
 
 export function ButtonAddFriend({ login }: ButtonAddFriendProps) {
-
   const { api, config } = useContext(GlobalContext);
   const [modalErrorVisible, setModalErrorVisible] = useState(false);
   const [error, setError] = useState('');

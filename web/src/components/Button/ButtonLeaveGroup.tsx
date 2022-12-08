@@ -12,7 +12,6 @@ interface ButtonLeaveGroupProps {
 }
 
 export function ButtonLeaveGroup({ id, onLeave }: ButtonLeaveGroupProps) {
-
   const { intraData } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 

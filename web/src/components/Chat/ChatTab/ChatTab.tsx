@@ -1,6 +1,5 @@
 import './ChatTab.scss';
 import { useContext, useState } from 'react';
-//import ReactTooltip from 'react-tooltip';
 import { GlobalContext } from '../../../contexts/GlobalContext';
 import { ChatData } from '../../../others/Interfaces/interfaces';
 import { CardChat } from '../CardChat/CardChat';
@@ -11,7 +10,6 @@ interface ChatTabProps {
 }
 
 export function ChatTab({ tabSelected }: ChatTabProps) {
-
   const { globalData } = useContext(GlobalContext);
   const [searchActive, setSearchActive] = useState(false);
   const [searchInput, setSearchInput] = useState('');

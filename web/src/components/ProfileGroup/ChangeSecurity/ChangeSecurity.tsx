@@ -11,7 +11,6 @@ interface ChangeSecurityProps {
 }
 
 export function ChangeSecurity({ id, setModalChangeSecurity }: ChangeSecurityProps) {
-
   const { api, config } = useContext(GlobalContext);
   const [password, setPassword] = useState('');
   const [placeHolder, setPlaceHolder] = useState('');

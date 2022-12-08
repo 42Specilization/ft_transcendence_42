@@ -6,14 +6,12 @@ import { ProfileUserModal } from '../ProfileUser/ProfileUserModal/ProfileUserMod
 import { GlobalContext } from '../../contexts/GlobalContext';
 import ReactTooltip from 'react-tooltip';
 
-
 interface ButtonNotifyProfileProps {
   id: string;
   type: string;
 }
 
 export function ButtonNotifyProfile({ id, type }: ButtonNotifyProfileProps) {
-
   const { updateUserProfile } = useContext(GlobalContext);
   const [profileGroupVisible, setProfileGroupVisible] = useState('');
   const [profileUserVisible, setProfileUserVisible] = useState('');

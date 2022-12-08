@@ -10,7 +10,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-
 import { Socket, Namespace } from 'socket.io';
 import { WsCatchAllFilter } from 'src/socket/exceptions/ws-catch-all-filter';
 import { UserService } from 'src/user/user.service';
@@ -24,7 +23,6 @@ export class StatusGateway
   @WebSocketServer() server: Namespace;
   constructor(private readonly userService: UserService) { }
   private logger: Logger = new Logger(StatusGateway.name);
-
   mapUserData: MapUserData = new MapUserData();
 
   afterInit() {
@@ -33,14 +31,12 @@ export class StatusGateway
 
   handleConnection(@ConnectedSocket() client: Socket) {
     const sockets = this.server.sockets;
-
     this.logger.log(`WS client with id: ${client.id} connected of StatusSocket!`);
     this.logger.debug(`Number of connected StatusSockets: ${sockets.size}`);
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
     const sockets = this.server.sockets;
-
     this.newUserOffline(client);
     this.logger.log(`Disconnected of StatusSocket the socket id: ${client.id}`);
     this.logger.debug(`Number of connected StatusSockets: ${sockets.size}`);
@@ -48,7 +44,6 @@ export class StatusGateway
 
   @SubscribeMessage('iAmOnline')
   async newUserOnline(@ConnectedSocket() client: Socket, @MessageBody() login: string) {
-
     this.mapUserData.set(client.id, login);
     if (this.mapUserData.keyOf(login).length == 1) {
       await this.userService.updateStatus(login, 'online');
@@ -60,27 +55,21 @@ export class StatusGateway
 
   @SubscribeMessage('iAmInGame')
   async newUserInGame(@ConnectedSocket() client: Socket, @MessageBody() login: string) {
-
     await this.userService.updateStatus(login, 'in a game');
     client.broadcast.emit('updateUserStatus', login, 'in a game');
     this.server.emit('updateUserProfile', login);
-
     this.logger.debug(`iAmInGame => Client: ${client.id}, login: |${login}|`);
   }
 
   @SubscribeMessage('iAmLeaveGame')
   async newUserLeaveGame(@ConnectedSocket() client: Socket, @MessageBody() login: string) {
-
     await this.userService.updateStatus(login, 'online');
-
     client.broadcast.emit('updateUserStatus', login, 'online');
     this.server.emit('updateUserProfile', login);
-
     this.logger.debug(`iAmLeaveGame => Client: ${client.id}, login: |${login}|`);
   }
 
   async newUserOffline(@ConnectedSocket() client: Socket) {
-
     const login: string = this.mapUserData.valueOf(client.id);
     if (this.mapUserData.keyOf(login).length == 1) {
       await this.userService.updateStatus(login, 'offline');
@@ -88,17 +77,14 @@ export class StatusGateway
       this.server.emit('updateUserProfile', login);
     }
     this.mapUserData.delete(client.id);
-
     this.logger.debug(`iAmOffline => Client: ${client.id}, email: |${login}|`);
   }
 
   @SubscribeMessage('changeLogin')
   handleChangeLogin(@ConnectedSocket() client: Socket,
     @MessageBody() newLogin: string) {
-
     const oldLogin = this.mapUserData.valueOf(client.id);
     this.mapUserData.updateValue(oldLogin, newLogin);
-
     this.mapUserData.keyOf(newLogin).forEach(socketId =>
       this.server.to(socketId).emit('updateYourselfLogin', newLogin)
     );
@@ -111,7 +97,6 @@ export class StatusGateway
   @SubscribeMessage('changeImage')
   handleChangeImage(@ConnectedSocket() client: Socket,
     @MessageBody() image_url: string) {
-
     const login = this.mapUserData.valueOf(client.id);
     this.mapUserData.keyOf(login).forEach(socketId =>
       this.server.to(socketId).emit('updateYourselfImage', image_url)
@@ -132,7 +117,6 @@ export class StatusGateway
   @SubscribeMessage('removeNotify')
   async handleRemoveNotify(@ConnectedSocket() client: Socket, @MessageBody() emailTarget: string) {
     let login;
-
     if (emailTarget) {
       const user = await this.userService.findUserByEmail(emailTarget);
       if (!user)
@@ -148,13 +132,11 @@ export class StatusGateway
 
   @SubscribeMessage('newFriend')
   handleNewFriend(@ConnectedSocket() client: Socket, @MessageBody() login_target: string) {
-
     const login: string = this.mapUserData.valueOf(client.id);
     this.mapUserData.keyOf(login).forEach(socketId => {
       this.server.to(socketId).emit('updateFriend');
       this.server.to(socketId).emit('updateNotify');
     });
-
     if (this.mapUserData.hasValue(login_target)) {
       this.mapUserData.keyOf(login_target).forEach(socketId => {
         this.server.to(socketId).emit('updateFriend');
@@ -165,12 +147,10 @@ export class StatusGateway
   @SubscribeMessage('removeFriend')
   handleDeleteFriend(@ConnectedSocket() client: Socket,
     @MessageBody() login_target: string) {
-
     const login: string = this.mapUserData.valueOf(client.id);
     this.mapUserData.keyOf(login).forEach(socketId => {
       this.server.to(socketId).emit('updateFriend');
     });
-
     if (this.mapUserData.hasValue(login_target)) {
       this.mapUserData.keyOf(login_target).forEach(socketId => {
         this.server.to(socketId).emit('updateFriend');
@@ -181,12 +161,10 @@ export class StatusGateway
   @SubscribeMessage('newBlocked')
   handleNewBlocked(@ConnectedSocket() client: Socket,
     @MessageBody() login_target: string) {
-
     const login: string = this.mapUserData.valueOf(client.id);
     this.mapUserData.keyOf(login).forEach(socketId => {
       this.server.to(socketId).emit('updateBlocked');
     });
-
     if (this.mapUserData.hasValue(login_target)) {
       this.mapUserData.keyOf(login_target).forEach(socketId => {
         this.server.to(socketId).emit('updateBlocked', login);
@@ -197,12 +175,10 @@ export class StatusGateway
   @SubscribeMessage('removeBlocked')
   handleREmoveBlocked(@ConnectedSocket() client: Socket,
     @MessageBody() login_target: string) {
-
     const login: string = this.mapUserData.valueOf(client.id);
     this.mapUserData.keyOf(login).forEach(socketId => {
       this.server.to(socketId).emit('updateBlocked');
     });
-
     if (this.mapUserData.hasValue(login_target)) {
       this.mapUserData.keyOf(login_target).forEach(socketId => {
         this.server.to(socketId).emit('updateBlocked');
@@ -225,12 +201,10 @@ export class StatusGateway
   @SubscribeMessage('updateSelectedUserProfile')
   handleUpdateSelectedUserProfile(@ConnectedSocket() client: Socket,
     @MessageBody() login_target: string) {
-
     const login: string = this.mapUserData.valueOf(client.id);
     this.mapUserData.keyOf(login).forEach(socketId => {
       this.server.to(socketId).emit('updateUserProfile', login_target);
     });
-
     if (this.mapUserData.hasValue(login_target)) {
       this.mapUserData.keyOf(login_target).forEach(socketId => {
         this.server.to(socketId).emit('updateUserProfile', login);
@@ -265,5 +239,4 @@ export class StatusGateway
   handleChangeGroupAdmins(@MessageBody() id: string) {
     this.server.emit('updateGroupProfile', id);
   }
-
 }

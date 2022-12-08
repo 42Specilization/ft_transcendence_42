@@ -100,10 +100,9 @@ export class UserController {
 
     function generateCode() {
       let code = '';
-      const avaliableChar = '1234567890abcdefghijklmnopqrstuvwxyz';
-      for (let i = 0; i < 6; i++) {
-        code += avaliableChar.charAt(Math.floor(Math.random() * avaliableChar.length));
-      }
+      const availableChar = '1234567890abcdefghijklmnopqrstuvwxyz';
+      for (let i = 0; i < 6; i++)
+        code += availableChar.charAt(Math.floor(Math.random() * availableChar.length));
       return code;
     }
 
@@ -129,7 +128,7 @@ export class UserController {
         subject: 'Verify Code from Transcendence',
         text: `Your validation code is '${sendedCode}'`,
         html: `
-    <div style="width: 100%; heigth: 100%; font-family: 'Arial'">
+    <div style="width: 100%; height: 100%; font-family: 'Arial'">
       <h3 style="font-size: 30px; margin: 30px; color: black;">
         Hello, ${user.nick}
       </h3>
@@ -190,7 +189,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
-      // Destination storage path details
       destination: (req, file, cb) => {
         const uploadPath = getAssetsPath();
         req;

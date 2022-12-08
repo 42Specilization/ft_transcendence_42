@@ -2,7 +2,6 @@ import './Button.scss';
 import { Check, X } from 'phosphor-react';
 import ReactTooltip from 'react-tooltip';
 
-
 interface ButtonNotifyActionProps {
   type: string;
   handle: ((...args: any[]) => void);
@@ -10,7 +9,6 @@ interface ButtonNotifyActionProps {
 }
 
 export function ButtonNotifyAction({ type, handle, params }: ButtonNotifyActionProps) {
-
   function handleAction() {
     handle(...params);
   }

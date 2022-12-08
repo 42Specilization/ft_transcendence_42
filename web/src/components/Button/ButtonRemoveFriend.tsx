@@ -6,13 +6,11 @@ import { useContext, useState } from 'react';
 import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import ReactTooltip from 'react-tooltip';
 
-
 interface ButtonRemoveFriendProps {
   login: string;
 }
 
 export function ButtonRemoveFriend({ login }: ButtonRemoveFriendProps) {
-
   const { api, config } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 

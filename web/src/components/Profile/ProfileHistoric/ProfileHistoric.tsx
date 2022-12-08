@@ -6,7 +6,6 @@ import { useQuery } from 'react-query';
 import { ProfileUserModal } from '../../ProfileUser/ProfileUserModal/ProfileUserModal';
 
 export function ProfileHistoric() {
-
   const { updateUserProfile } = useContext(GlobalContext);
   const { intraData, api, config } = useContext(GlobalContext);
   const [profileUserVisible, setProfileUserVisible] = useState('');

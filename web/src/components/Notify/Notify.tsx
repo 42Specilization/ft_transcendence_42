@@ -1,5 +1,4 @@
 import './Notify.scss';
-//import ReactTooltip from 'react-tooltip';
 import { useContext } from 'react';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import { NotifyData } from '../../others/Interfaces/interfaces';
@@ -13,7 +12,6 @@ import { Link } from 'react-router-dom';
 import { actionsGame } from '../../adapters/game/gameState';
 
 export function Notify() {
-
   const {
     api,
     config,
@@ -21,7 +19,6 @@ export function Notify() {
     globalData,
     setGlobalData
   } = useContext(GlobalContext);
-
 
   async function removeNotify(id: string) {
     setGlobalData((prev) => {
@@ -76,8 +73,6 @@ export function Notify() {
     actionsGame.disconnectSocket();
     removeNotify(notify.id);
   }
-
-
 
   return (
     <div className='notify__body'>

@@ -3,7 +3,6 @@ import { MagnifyingGlass, X } from 'phosphor-react';
 import { Dispatch, SetStateAction } from 'react';
 import ReactTooltip from 'react-tooltip';
 
-
 interface ButtonSearchProps {
   width: string;
   tooltip: string;
@@ -20,7 +19,6 @@ export function ButtonSearch({
   setSearchActive,
   searchInput,
   setSearchInput }: ButtonSearchProps) {
-
   return (
     <div className='button__search'
       style={{

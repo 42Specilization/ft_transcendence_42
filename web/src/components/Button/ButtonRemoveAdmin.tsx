@@ -6,14 +6,12 @@ import { ConfirmActionModal } from '../ConfirmActionModal/ConfirmActionModal';
 import { actionsStatus } from '../../adapters/status/statusState';
 import ReactTooltip from 'react-tooltip';
 
-
 interface ButtonRemoveAdminProps {
   id: string;
   name: string;
 }
 
 export function ButtonRemoveAdmin({ id, name }: ButtonRemoveAdminProps) {
-
   const { api, config } = useContext(GlobalContext);
   const [confirmActionVisible, setConfirmActionVisible] = useState(false);
 
