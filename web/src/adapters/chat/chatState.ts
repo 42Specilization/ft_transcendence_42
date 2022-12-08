@@ -57,7 +57,7 @@ const actionsChat = {
   },
 
   JoinNewGroup(id: string, email: string) {
-    stateChat.socket?.emit('JoinNewGroup', { id: id, email: email });
+    stateChat.socket?.emit('joinNewGroup', { id: id, email: email });
   },
 
   joinGroup(id: string, email: string) {

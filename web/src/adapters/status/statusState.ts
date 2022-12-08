@@ -348,7 +348,6 @@ const actionsStatus = {
   },
 
   updateGroupName(id: string, name: string) {
-    console.log('changeName', id, name);
     if (stateStatus.setGlobalData) {
       stateStatus.setGlobalData(prev => {
         return {

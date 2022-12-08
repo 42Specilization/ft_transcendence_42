@@ -9,6 +9,12 @@
   left: 0;
   z-index: 2;
   background-color: rgba(0,0,0,0.8);
+  .button__icon {
+    margin-top: 10px !important;
+    width: 100% !important;
+    height: 35px !important;
+    border-radius: 10px !important;
+  }
 }
 
 .profileGroup__modal__container {

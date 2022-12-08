@@ -46,10 +46,6 @@ export function createSocketChat({
     actionsStatus.updateGroupProfile(id);
   });
 
-  socket.on('closeGroupProfile', (id: string) => {
-    console.log('closeGroupProfile', id);
-  });
-
   socket.on('removeGroup', (id: string, login: string) => {
     actionsChat.removeGroup(id, login);
   });

@@ -73,7 +73,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     const permission = await this.chatService.joinNewGroup(email, id);
     if (!permission)
       return;
-
     client.join(id);
     client.emit('updateGroupChat');
     this.server.emit('updateGroupCommunity');
@@ -101,16 +100,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     if (typeof msgToClient === 'undefined')
       return;
     if (msgToClient) {
-      client.emit('updateGroupChat');
-      this.server.emit('updateGroupProfile', id);
       this.server.to(id).emit('msgToClient', msgToClient);
     }
     else {
       this.server.emit('updateGroupCommunity');
       this.server.emit('closeGroupProfile', id);
-      client.emit('updateGroupChat');
     }
     client.leave(id);
+    client.emit('updateGroupChat');
+    this.server.emit('updateGroupProfile', id);
     this.logger.debug(`Client ${client.id} leave a group: |${id}|`);
   }
 

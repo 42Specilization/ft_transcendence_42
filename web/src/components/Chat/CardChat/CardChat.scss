@@ -16,10 +16,10 @@
 
 .card__chat__icon {
   @include displayFlex(flex-end, row, flex-end);
-  width: 45px;
-  height: 45px;
-  min-width: 45px;
-  min-height: 45px;
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
   border: solid 2px;
   border-radius: 50%;
   background-repeat: none;

@@ -17,7 +17,6 @@ export function ProfileUser({ login, setProfileUserVisible }: ProfileUserProps) 
   const [tabSelected, setTabSelected] = useState('General');
 
   useEffect(() => {
-    console.log(updateUserProfile);
     if (updateUserProfile.login === login) {
       setUpdateQuery(updateUserProfile.change);
     }
@@ -26,7 +25,6 @@ export function ProfileUser({ login, setProfileUserVisible }: ProfileUserProps) 
   const { data, status } = useQuery(
     ['profileUser', updateQuery, login],
     async () => {
-      console.log('useQuery: ', login);
       const response = await api.patch('/user/profile', { nick: login }, config);
       return response.data;
     },

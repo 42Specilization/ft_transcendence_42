@@ -25,7 +25,6 @@ export function ChangeName({ id, setModalChangeName }: ChangeNameProps) {
   async function handleChangeName() {
     try {
       const result = await api.patch('/chat/updateGroup', { id: id, name: name }, config);
-      console.log(result);
       if (result.status === 200) {
         actionsStatus.changeGroupName(id as string, name);
         setModalChangeName(false);

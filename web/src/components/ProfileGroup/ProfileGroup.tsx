@@ -34,10 +34,16 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
   const [profileUserVisible, setProfileUserVisible] = useState('');
 
   useEffect(() => {
-    if (updateUserProfile.newLogin && updateUserProfile.login === profileUserVisible) {
+    if (updateUserProfile.newLogin && updateUserProfile.login === profileUserVisible)
       setProfileUserVisible(updateUserProfile.newLogin);
-    }
+    if (data && data.members && data.members.map((e: UserData) => e.login).indexOf(updateUserProfile.login) >= 0)
+      setUpdateQuery(updateUserProfile.change);
   }, [updateUserProfile]);
+
+  useEffect(() => {
+    if (updateGroupProfile.id === id)
+      setUpdateQuery(updateGroupProfile.change);
+  }, [updateGroupProfile]);
 
   useEffect(() => {
     if (closeGroupProfile.id === id) {
@@ -45,7 +51,6 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
       setCloseGroupProfile({ change: 0, id: '' });
     }
   }, [closeGroupProfile]);
-
 
   const { data, status } = useQuery(
     ['getGroupInfos', updateQuery],
@@ -58,16 +63,6 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
       refetchOnWindowFocus: false,
     }
   );
-
-  useEffect(() => {
-    if (data && data.members && data.members.map((e: UserData) => e.login).indexOf(updateUserProfile.login) >= 0)
-      setUpdateQuery(updateUserProfile.change);
-  }, [updateUserProfile]);
-
-  useEffect(() => {
-    if (updateGroupProfile.id === id)
-      setUpdateQuery(updateGroupProfile.change);
-  }, [updateGroupProfile]);
 
   useEffect(() => {
     if (selectedFile)
@@ -101,13 +96,15 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
     return <div className='profileGroup' />;
 
   if (!data) {
-    setProfileGroupVisible('');
-    return <div className='profileGroup' />;
+    return (
+      <div className='profileGroup__notFound'>
+        <h1>Profile Group Not Found</h1>
+      </div>
+    );
   }
 
   return (
     <>
-
       <div className='profileGroup'>
         <div className='profileGroup__infos'>
           <div className='profileGroup__infos__image'>
@@ -189,4 +186,4 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
       }
     </>
   );
-} 
+}

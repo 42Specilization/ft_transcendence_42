@@ -110,7 +110,6 @@ export class UserController {
     const sendedCode = generateCode();
     updateUserDto.tfaCode = sendedCode;
     const user = await this.userService.updateUser(updateUserDto, userFromJwt.email);
-    console.log('print do codigo enviado do tfa', sendedCode);
     const transporter = nodemailer.createTransport({
       host: smtpConfig.host,
       port: smtpConfig.port,

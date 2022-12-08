@@ -38,7 +38,6 @@ export function createSocketStatus({
   });
 
   socket.on('updateUserLogin', (oldLogin: string, newLogin: string) => {
-    console.log('update user login', oldLogin, newLogin);
     actionsStatus.updateUserLogin(oldLogin, newLogin);
   });
 

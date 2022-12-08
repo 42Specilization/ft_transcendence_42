@@ -8,6 +8,15 @@
   @include scrollBar(20px, 20px);
 }
 
+.profileGroup__notFound {
+  @include displayFlex();
+  width: 100%;
+  height: 100%;
+  h1 {
+    font-size: 60px;
+  }
+}
+
 .profileGroup__infos {
   @include displayFlex(space-around, column);
   width: 100%;
