@@ -19,7 +19,7 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
   const [password, setPassword] = useState('Password (Optional)');
   const [selectedFileUrl, setSelectedFileUrl] = useState('');
 
-  async function handleSubmit(event: any,groupData: CreateGroupData) {
+  async function handleSubmit(event:any, groupData: CreateGroupData) {
     const data = new FormData();
     data.append('name', 'chatImage');
     if (selectedFile) {
@@ -40,6 +40,7 @@ export function CreateGroup({ setCreateGroupModal }: CreateGroupProps) {
         event.target[1].value = '';
         event.target[2].value = '';
         setPlaceHolder(err.response.data.message);
+        setPassword('Error');
       });
   }
 
