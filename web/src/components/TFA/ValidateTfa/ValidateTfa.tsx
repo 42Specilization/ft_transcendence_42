@@ -9,7 +9,7 @@ export function ValidateTfa() {
   const [code, setCode] = useState('');
   const [placeHolder, setPlaceHolder] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { api, config } = useContext(GlobalContext);
+  const { api } = useContext(GlobalContext);
 
   useEffect(() => {
     setTimeout(() => {
@@ -24,10 +24,16 @@ export function ValidateTfa() {
     }
   }
 
+  const config = {
+    headers: {
+      Authorization: `Bearer ${window.localStorage.getItem('token')}`,
+    },
+  };
+
   async function sendEmail() {
+    console.log(config);
     const user = await api.get('/user/me', config);
     const body = {
-      isTFAEnable: true,
       tfaEmail: user.data.tfaEmail,
       tfaValidated: false,
     };
