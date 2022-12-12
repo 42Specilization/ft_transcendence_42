@@ -1,14 +1,27 @@
 import pongGame from '../../assets/pong-game.png';
+import { ButtonCustom } from '../../components/ButtonCustom/ButtonCustom';
 import './SignIn.scss';
 
 export default function SignIn() {
   return (
     <div className='signin'>
-      <img src={pongGame} alt='title' className='signin__img' />
+      <div className='signin__logo'>
+
+      </div>
+      {/* <img src={pongGame} alt='title' className='signin__img' /> */}
       <a href={import.meta.env.VITE_REDIRECT_LOGIN_URL}>
-        <button className='signin__button'>
+        <ButtonCustom.Root >
+          <ButtonCustom.Button msg='SignIn' className='signin__button' />
+
+
+          <ButtonCustom.Icon>
+
+          </ButtonCustom.Icon>
+        </ButtonCustom.Root>
+
+        {/* <button className='signin__button'>
           Sign in
-        </button>
+        </button> */}
       </a>
     </div>
   );
