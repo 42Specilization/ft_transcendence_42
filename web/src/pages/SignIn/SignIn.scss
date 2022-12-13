@@ -1,16 +1,46 @@
  @import '../../others/styles/global.scss';
 
  .signin {
-   // max-width: 1344px;
    margin-left: auto;
    margin-right: auto;
    height: 100vh;
    width: 100%;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   justify-content: center;
+   @include displayFlex(center, column);
    gap: 27px;
+ }
+
+ .signin__options {
+   gap: 27px;
+   @include displayFlex(center, column);
+ }
+
+ .signin__form {
+   gap: 17px;
+   @include displayFlex(center, column);
+ }
+
+ .signin__form__image {
+   @include displayFlex(center);
+
+   .signin__form__image__icon {
+     padding: 10px;
+     border-radius: 50%;
+     background-color: $primaryColor;
+   }
+
+   .signin__form__button_text {
+     display: none;
+   }
+
+   &:hover {
+     filter: grayscale(0.8);
+     cursor: pointer;
+
+     .signin__form__button_text {
+       @include displayFlex(center);
+       position: absolute;
+     }
+   }
  }
 
  .signin__logo {
@@ -21,28 +51,67 @@
    width: 192px;
  }
 
- //  .signin__img {
- //    margin-bottom: 7rem;
- //  }
 
  .signin__button {
-   //  font-size: 3rem;
-   font-size: 1.5rem;
-   line-height: 1;
-   color: white;
-   background-color: $primaryColor;
-   padding: 0.75rem 1rem 0.75rem 1rem;
-   height: auto;
-   width: 180px;
-   border-radius: 20px;
-   //  font-weight: 700;
-   font-weight: 400;
-   border-width: 2px;
-   border-color: white;
+   font-size: 18px;
+ }
 
+ .signin__button__root {
+   color: white;
+   padding: 0.75rem 1rem 0.75rem 1rem;
+   width: 180px;
+   border-radius: 15px;
+   font-weight: 400;
 
    &:hover {
-     background-color: $primaryColorHover;
+     background-color: $primaryColor;
      cursor: pointer;
+   }
+ }
+
+ @media (min-width: 700px) {
+   .signin__button__root {
+     font-size: 3rem;
+     width: 300px;
+     font-weight: 700;
+   }
+
+   .signin__button {
+     font-size: 24px;
+   }
+ }
+
+ @media (min-width: 800px) {
+   .signin__button__root {
+     width: 600px;
+     height: 80px;
+   }
+
+   .signin__button__icon {
+     width: 3rem;
+     height: 3rem;
+   }
+
+   .signin__button {
+     font-size: 3rem;
+   }
+
+   .signin__logo {
+     background-image: url('/pong-game.png');
+     height: 160px;
+     width: 690px;
+   }
+
+   .signin__form__image__icon {
+     height: 222px;
+     width: 222px;
+   }
+
+   .siginin__form__input {
+     width: 250px;
+   }
+
+   .signin__form__button {
+     font-size: 2rem;
    }
  }

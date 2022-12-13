@@ -31,13 +31,15 @@ function TextInputIcon({ children }: TextInputIconProps) {
 TextInputIcon.displayName = 'TextInputIcon';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface TextInputInputProps extends InputHTMLAttributes<HTMLInputElement> {}
+export interface TextInputInputProps extends InputHTMLAttributes<HTMLInputElement> {
+  myClassName?: string;
+}
 
 function TextInputInput(props: TextInputInputProps) {
   return (
     <input
       {...props}
-      className='textInput__input'
+      className={`textInput__input ${props.myClassName}`}
     />
   );
 }
