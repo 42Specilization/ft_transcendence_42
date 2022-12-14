@@ -16,8 +16,8 @@
   align-items: center;
   width: 100vw;
   height: 100vh;
-  min-width: 400px;
-  min-height: 400px;
+  /* min-width: 400px;
+  min-height: 400px; */
   background-size: cover;
   background-repeat: no-repeat;
   background-color: rgb(18 18 20 / 1);

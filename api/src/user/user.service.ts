@@ -39,8 +39,15 @@ export class UserService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const { email, imgUrl, first_name, usual_full_name, nick, token } =
+    const { email, imgUrl, first_name, usual_full_name, nick, token, isIntra, password } =
       createUserDto;
+
+    if (await this.checkDuplicateEmail(email)) {
+      throw new ForbiddenException('Email already registered!');
+    }
+    if (await this.checkDuplicateNick(nick)) {
+      throw new ForbiddenException('Nick already registered!');
+    }
     const user = new User();
     user.email = email;
     user.imgUrl = !imgUrl ? 'userDefault.12345678.png' : imgUrl;
@@ -51,6 +58,9 @@ export class UserService {
     user.matches = '0';
     user.wins = '0';
     user.lose = '0';
+    user.isIntra = isIntra;
+    user.password = await bcrypt.hash(password, 10);
+
     try {
       await this.usersRepository.save(user);
       user.token = '';
@@ -281,6 +291,16 @@ export class UserService {
     const user = await this.usersRepository.findOne({
       where: {
         nick,
+      },
+    });
+    if (user) return true;
+    return false;
+  }
+
+  async checkDuplicateEmail(email: string): Promise<boolean> {
+    const user = await this.usersRepository.findOne({
+      where: {
+        email,
       },
     });
     if (user) return true;

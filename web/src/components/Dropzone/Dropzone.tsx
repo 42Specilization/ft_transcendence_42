@@ -24,6 +24,8 @@ export function Dropzone({ setSelectedFileUrl, onFileUploaded }: DropzoneProps) 
       }
       const id = generateCode(24);
       const hash = generateCode(8);
+      if (typeof acceptedFiles[0]  === 'undefined')
+        return ;
       const file = new File([acceptedFiles[0]], `${id}.${hash}.jpg`);
       const fileUrl = URL.createObjectURL(file);
       if (setSelectedFileUrl)

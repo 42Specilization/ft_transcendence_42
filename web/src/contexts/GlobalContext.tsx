@@ -56,6 +56,7 @@ interface IGlobalContext {
   setUpdateGroupProfile: Dispatch<SetStateAction<UpdateGroupProfile>>;
   closeGroupProfile: UpdateGroupProfile;
   setCloseGroupProfile: Dispatch<SetStateAction<UpdateGroupProfile>>;
+  exitActiveChat: () => void;
 }
 
 
@@ -78,15 +79,16 @@ export const GlobalContext = createContext<IGlobalContext>({
   setUpdateGroupProfile: () => { },
   closeGroupProfile: { change: Date.now(), id: '' },
   setCloseGroupProfile: () => { },
+  exitActiveChat: () => { },
 });
 
 
-interface IntraDataProviderProps {
+interface GlobalProviderProps {
   children: ReactNode;
 }
 
-export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
-  const { setActiveChat } = useContext(ChatContext);
+export const GlobalProvider = ({ children }: GlobalProviderProps) => {
+  const { activeChat, setActiveChat, setSelectedChat } = useContext(ChatContext);
   const [intraData, setIntraData] = useState(defaultIntra);
   const [globalData, setGlobalData] = useState(defaultGlobal);
   const [
@@ -111,6 +113,28 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
     baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
   }), []);
 
+  function exitActiveChat() {
+    if (activeChat) {
+      api.patch('/chat/setBreakpoint', { chatId: activeChat.chat.id, type: activeChat.chat.type }, config);
+      if (activeChat.chat.type === 'direct')
+        setGlobalData(prev => {
+          return {
+            ...prev,
+            directs: prev.directs.map(key => key.id === activeChat.chat.id ? { ...key, newMessages: 0 } : key)
+          };
+        });
+      else
+        setGlobalData(prev => {
+          return {
+            ...prev,
+            groups: prev.groups.map(key => key.id === activeChat.chat.id ? { ...key, newMessages: 0 } : key)
+          };
+        });
+    }
+    setSelectedChat(null);
+    setActiveChat(null);
+  }
+
   useEffect(() => {
     getIntraData(setIntraData);
     getGlobalData(setGlobalData);
@@ -131,7 +155,8 @@ export const IntraDataProvider = ({ children }: IntraDataProviderProps) => {
       globalData, setGlobalData,
       updateUserProfile, setUpdateUserProfile,
       updateGroupProfile, setUpdateGroupProfile,
-      closeGroupProfile, setCloseGroupProfile
+      closeGroupProfile, setCloseGroupProfile,
+      exitActiveChat,
     }}>
       {children}
     </GlobalContext.Provider>

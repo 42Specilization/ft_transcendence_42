@@ -276,3 +276,11 @@ export function getNameLimited(name: string) {
     return (name);
   }
 }
+
+export function isValidInput(str: string, minLength = 3, maxLength = 50) {
+  if (!str)
+    return (false);
+  if (str.length < minLength || str.length > maxLength)
+    return false;
+  return (true);
+}

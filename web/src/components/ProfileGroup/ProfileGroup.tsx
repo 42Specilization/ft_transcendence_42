@@ -141,7 +141,7 @@ export function ProfileGroup({ id, setProfileGroupVisible }: ProfileGroupProps) 
         <div className='profileGroup__members'>
           <div className='profileGroup__buttons__top'>
             {havePermission('lowLevel') &&
-              <ButtonSendMessage id={data.id} type={'group'} onClick={() => setProfileGroupVisible('')} />
+              <ButtonSendMessage id={data.id} type={'group'} />
             }
             {havePermission(data.type === 'public' ? 'lowLevel' : 'middleLevel') &&
               <ButtonInviteMember id={data.id} />

@@ -32,15 +32,16 @@ $ChatCommunityHeaderHeight: 35px;
   }
 
 .chat__cards__header__list__item {
-  @include displayFlex();
   width: 50%;
   height: $ChatCommunityHeaderHeight;
   border-radius: 15px 15px 0px 0px;
-  padding: 10px;
+  padding: 5px 10px;
   background-color: transparent;
-
+  overflow: hidden;
   div {
     @include displayFlex();
+    min-width: 25px;
+    min-height: 25px;
   }
 
   p {

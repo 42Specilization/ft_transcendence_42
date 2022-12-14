@@ -7,7 +7,6 @@ import { ButtonAddFriend } from '../../Button/ButtonAddFriend';
 import { ButtonRemoveFriend } from '../../Button/ButtonRemoveFriend';
 import { ButtonUnBlockedUser } from '../../Button/ButtonUnBlockedUser';
 import { Sword } from 'phosphor-react';
-import { Dispatch, SetStateAction } from 'react';
 import ReactTooltip from 'react-tooltip';
 
 interface ProfileUserCardProps {
@@ -21,10 +20,9 @@ interface ProfileUserCardProps {
     lose: string,
     relation: string,
   };
-  setProfileUserVisible: Dispatch<SetStateAction<string>>;
 }
 
-export function ProfileUserCard({ profileUserData, setProfileUserVisible }: ProfileUserCardProps) {
+export function ProfileUserCard({ profileUserData }: ProfileUserCardProps) {
 
   const { status, name, login, image_url, relation } = profileUserData;
 
@@ -42,7 +40,7 @@ export function ProfileUserCard({ profileUserData, setProfileUserVisible }: Prof
           <>
             {relation !== 'blocker' ?
               <>
-                <ButtonSendMessage id={login} type={'person'} onClick={() => setProfileUserVisible('')} />
+                <ButtonSendMessage id={login} type={'person'} />
                 {status === 'online' ?
                   <ButtonChallenge login={login} /> :
                   <div

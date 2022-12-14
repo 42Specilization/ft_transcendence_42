@@ -1,6 +1,6 @@
 @import '../../others/styles/global.scss';
 
-.textInput__root {
+.buttonCustom__root {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -11,26 +11,22 @@
   width: 100%;
 }
 
-.textInput__icon {
+.buttonCustom__icon {
   width: 1.5rem;
   height: 1.5rem;
   color: white;
 }
 
-.textInput__input {
+.buttonCustom__button {
   background-color: transparent;
   flex: 1 1 0%;
   color: white;
   outline: none;
+  cursor: pointer;
 
   &::placeholder {
     color: rgba(255, 255, 255, 0.739);
   }
 
   font-size: 14px;
-}
-
-.textInput__root__error {
-  color: #ff4343;
-  text-decoration: underline;
 }

@@ -1,6 +1,5 @@
 import './ProfileUserGeneral.scss';
 import { ProfileUserCard } from '../ProfileUserCard/ProfileUserCard';
-import { Dispatch, SetStateAction } from 'react';
 
 interface ProfileUserGeneralProps {
   profileUserData: {
@@ -13,16 +12,15 @@ interface ProfileUserGeneralProps {
     lose: string,
     relation: string,
   };
-  setProfileUserVisible: Dispatch<SetStateAction<string>>;
 }
 
-export function ProfileUserGeneral({ profileUserData, setProfileUserVisible }: ProfileUserGeneralProps) {
+export function ProfileUserGeneral({ profileUserData }: ProfileUserGeneralProps) {
   const { matches, wins, lose } = profileUserData;
 
   return (
     <div className='profileUser__general'>
       <div className='profileUser__general__grid'>
-        <ProfileUserCard setProfileUserVisible={setProfileUserVisible} profileUserData={profileUserData} />
+        <ProfileUserCard profileUserData={profileUserData} />
         <div className='profileUser__general__stats'>
           <div className='profileUser__general__stats__title'>
             <p>Stats</p>
