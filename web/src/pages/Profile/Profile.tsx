@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import './Profile.scss';
 import { useContext, useEffect, useState } from 'react';
 import { ProfileGeneral } from '../../components/Profile/ProfileGeneral/ProfileGeneral';
