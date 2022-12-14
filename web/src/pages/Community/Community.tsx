@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import './Community.scss';
 import { useContext, useEffect, useState } from 'react';
 import { GlobalTab } from '../../components/Community/GlobalTab/GlobalTab';
