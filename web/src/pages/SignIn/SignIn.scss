@@ -14,34 +14,6 @@
    @include displayFlex(center, column);
  }
 
- .signin__form {
-   gap: 17px;
-   @include displayFlex(center, column);
- }
-
- .signin__form__image {
-   @include displayFlex(center);
-
-   .signin__form__image__icon {
-     padding: 10px;
-     border-radius: 50%;
-     background-color: $primaryColor;
-   }
-
-   .signin__form__button_text {
-     display: none;
-   }
-
-   &:hover {
-     filter: grayscale(0.8);
-     cursor: pointer;
-
-     .signin__form__button_text {
-       @include displayFlex(center);
-       position: absolute;
-     }
-   }
- }
 
  .signin__logo {
    background-image: url('/pong-game-minimal.png');
@@ -100,18 +72,5 @@
      background-image: url('/pong-game.png');
      height: 160px;
      width: 690px;
-   }
-
-   .signin__form__image__icon {
-     height: 222px;
-     width: 222px;
-   }
-
-   .siginin__form__input {
-     width: 250px;
-   }
-
-   .signin__form__button {
-     font-size: 2rem;
    }
  }

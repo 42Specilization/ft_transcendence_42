@@ -9,6 +9,8 @@ import { UserPayload } from './dto/UserPayload.dto';
 import { UpdateUserDto } from 'src/user/dto/update-user.dto';
 import { UserDto } from 'src/user/dto/user.dto';
 import { HttpService } from '@nestjs/axios';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { SignInUserDto } from './dto/SignInUser.dto';
 
 @Injectable()
 export class AuthService {
@@ -126,6 +128,8 @@ export class AuthService {
         matches: '0',
         wins: '0',
         lose: '0',
+        isIntra: true,
+        password: ''
       });
       this.logger.log('user Created!');
     } else {
@@ -154,6 +158,54 @@ export class AuthService {
       email: finalUser.email,
       token: finalUser.token,
       tfaEmail: finalUser.tfaEmail as string,
+      isIntra: true
+    };
+
+    return ({
+      access_token: this.jwtService.sign(payload)
+    });
+  }
+
+  
+  async signInWithoutIntra(signInUserDto: SignInUserDto) {
+    const user = await this.userService.findUserByEmail(signInUserDto.email);
+    if (!user) {
+      throw new UnauthorizedException('Incorrect e-mail or password!');
+    }
+    const isValidPassword = await user.checkPassword(signInUserDto.password);
+    if (!isValidPassword) {
+      throw new UnauthorizedException('Incorrect e-mail or password!');
+    }
+    if (user.isTFAEnable) {
+      user.tfaValidated = false;
+      try {
+        user.save();
+      } catch (error) {
+        throw new InternalServerErrorException('Error to save tfa validate!');
+      }
+    }
+    console.log('password is valid');
+    const payload: UserPayload = {
+      email: user.email,
+      token: user.token,
+      tfaEmail: user.tfaEmail as string,
+      isIntra: false,
+      password: user.password
+    };
+
+    return ({
+      access_token: this.jwtService.sign(payload)
+    });
+  }
+
+  async signUpWithoutIntra(createUserDto: CreateUserDto) {
+    const user =  await this.userService.createUser(createUserDto);
+    const payload: UserPayload = {
+      email: user.email,
+      token: user.token,
+      tfaEmail: user.tfaEmail as string,
+      isIntra: false,
+      password: user.password
     };
 
     return ({
@@ -171,7 +223,8 @@ export class AuthService {
     const payload: UserPayload = {
       email: user.email,
       tfaEmail: '',
-      token: ''
+      token: '',
+      isIntra: true
     };
 
     return ({

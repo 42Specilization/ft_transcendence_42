@@ -6,7 +6,7 @@
   gap: 0.75rem;
   height: 3rem;
   padding: 1rem 0.75rem 1rem 0.75rem;
-  border-radius: 0.25rem;
+  border-radius: 1.25rem;
   background-color: $primaryColorHover;
   width: 100%;
 }
@@ -22,6 +22,7 @@
   flex: 1 1 0%;
   color: white;
   outline: none;
+  cursor: pointer;
 
   &::placeholder {
     color: rgba(255, 255, 255, 0.739);

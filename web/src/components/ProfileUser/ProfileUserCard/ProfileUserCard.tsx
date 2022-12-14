@@ -7,7 +7,6 @@ import { ButtonAddFriend } from '../../Button/ButtonAddFriend';
 import { ButtonRemoveFriend } from '../../Button/ButtonRemoveFriend';
 import { ButtonUnBlockedUser } from '../../Button/ButtonUnBlockedUser';
 import { Sword } from 'phosphor-react';
-import { Dispatch, SetStateAction } from 'react';
 import ReactTooltip from 'react-tooltip';
 
 interface ProfileUserCardProps {

@@ -18,14 +18,24 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: UserPayload): Promise<UserFromJwt> {
     const user = await this.userService.findUserByEmail(payload.email);
+    
 
     if (!user) {
       throw new UnauthorizedException('User not found!');
     }
+
+    if (payload.isIntra && user.isIntra) {
+      if (payload.password && !(await user.checkPassword(payload.password))) {
+        throw new UnauthorizedException('Password incorrect');
+      }
+    }
+
     return ({
       email: payload.email,
       token: payload.token,
       tfaEmail: payload.tfaEmail,
+      isIntra: payload.isIntra,
+      password: payload.password
     });
   }
 }

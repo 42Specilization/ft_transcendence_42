@@ -48,4 +48,13 @@ export class CreateUserDto {
   @ApiProperty()
   lose: string;
 
+  @IsNotEmpty()
+  @ApiProperty()
+  isIntra: boolean;
+
+  @IsNotEmpty({message: 'Inform a password!'})
+  @MinLength(6, {message: 'The password must have at least 6 characters'})
+  @ApiProperty()
+  password: string;
+
 }

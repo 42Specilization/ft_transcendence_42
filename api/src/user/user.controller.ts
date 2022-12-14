@@ -211,6 +211,31 @@ export class UserController {
     return { message: 'success', path: file.path };
   }
 
+  /* This method is used to update the user's image. */
+  @Post('uploadImage')
+  @ApiConsumes('multipart/form-data')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: (req, file, cb) => {
+        const uploadPath = getAssetsPath();
+        req;
+        file;
+        cb(null, uploadPath);
+      },
+      filename: (req, file, cb) => {
+        req;
+        file;
+        cb(null, file.originalname);
+      },
+    }),
+  }))
+  async getUserImage(
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return { message: 'success', path: file.path };
+  }
+
   @Patch('sendFriendRequest')
   @UseGuards(JwtAuthGuard)
   async sendFriendRequest(

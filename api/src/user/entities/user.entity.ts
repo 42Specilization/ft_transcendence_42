@@ -95,6 +95,14 @@ export class User extends BaseEntity {
   isTFAEnable: boolean;
 
   @ApiProperty()
+  @Column({ default: false })
+  isIntra: boolean;
+
+  @ApiProperty()
+  @Column({ default: '', type: 'varchar' })
+  password: string;
+
+  @ApiProperty()
   @ManyToMany(() => GameEntity, { cascade: true })
   @JoinTable()
   games: GameEntity[];
@@ -120,6 +128,14 @@ export class User extends BaseEntity {
       return (await bcrypt.compare(token, this.token));
     } catch {
       throw new InternalServerErrorException('CheckToken: Error to check the token!');
+    }
+  }
+
+  async checkPassword(password: string) {
+    try {
+      return (await bcrypt.compare(password, this.password));
+    } catch {
+      throw new InternalServerErrorException('CheckPasswoord: Error to check the Password!');
     }
   }
 }

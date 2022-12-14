@@ -1,17 +1,17 @@
-import { Alien, CaretRight, Envelope, IdentificationCard, Image, Password, User } from 'phosphor-react';
-import pongGame from '../../assets/pong-game.png';
+import { IdentificationCard } from 'phosphor-react';
 import logo42 from './42_logo.svg';
 import { ButtonCustom } from '../../components/ButtonCustom/ButtonCustom';
 import './SignIn.scss';
 import { useState } from 'react';
-import { TextInput } from '../../components/TextInput/TextInput';
-import { Dropzone } from '../../components/Dropzone/Dropzone';
+import { SignUpForm } from '../../components/Login/SignUpForm/SignUpForm';
+import { SignInForm } from '../../components/Login/SignInForm/SignInForm';
+import { DoubleBubble } from '../../components/DoubleBubble/DoubleBubble';
 
 export default function SignIn() {
 
-  const [selectedFile, setSelectedFile] = useState<File>();
-  const [selectedFileUrl, setSelectedFileUrl] = useState('');
-  const [signInWithoutIntra, setSignInWithoutIntra] = useState<boolean>(false);
+  const [signInWithoutIntra, setSignInWithoutIntra] = useState(false);
+  const [createAccount, setCreateAccount] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   return (
     <div >
@@ -19,70 +19,37 @@ export default function SignIn() {
         <div className='signin__logo'>
         </div>
         {(() => {
-          if (!signInWithoutIntra) {
+          if (!signInWithoutIntra && !createAccount) {
             return (
               <div className='signin__options'>
+                <ButtonCustom.Root myclassname='signin__button__root'>
+                  <ButtonCustom.Button onClick={() => setSignInWithoutIntra(true)} msg='Login' myclassname='signin__button' />
+                  <ButtonCustom.Icon myclassname='signin__button__icon'>
+                    <IdentificationCard size={32} />
+                  </ButtonCustom.Icon>
+                </ButtonCustom.Root>
                 <a href={import.meta.env.VITE_REDIRECT_LOGIN_URL}>
-                  <ButtonCustom.Root myClassName='signin__button__root'>
-                    <ButtonCustom.Button msg='SignIn' myClassName='signin__button' />
-                    <ButtonCustom.Icon myClassName='signin__button__icon'>
+                  <ButtonCustom.Root myclassname='signin__button__root'>
+                    <ButtonCustom.Button msg='Login Intra' myclassname='signin__button' />
+                    <ButtonCustom.Icon myclassname='signin__button__icon'>
                       <img src={logo42} alt='42 logo' />
                     </ButtonCustom.Icon>
                   </ButtonCustom.Root>
                 </a>
-                <ButtonCustom.Root myClassName='signin__button__root'>
-                  <ButtonCustom.Button onClick={() => setSignInWithoutIntra(true)} msg='SignIn without intra' myClassName='signin__button' />
-                  <ButtonCustom.Icon myClassName='signin__button__icon'>
-                    <IdentificationCard size={32} />
-                  </ButtonCustom.Icon>
-                </ButtonCustom.Root>
               </div>
+            );
+          } else if (loading) {
+            return (
+              <DoubleBubble customText='loading...' speed={5} />
+            );
+          }
+          else if (!createAccount) {
+            return (
+              <SignInForm setLoading={setLoading} setCreateAccount={setCreateAccount} setSignInWithoutIntra={setSignInWithoutIntra} />
             );
           } else {
             return (
-              <form className='signin__form'>
-                <div className='signin__form__image'>
-                  {
-                    selectedFileUrl ?
-                      <img src={selectedFileUrl} className='signin__form__image__icon' alt='Image Preview' /> :
-                      <Image className='signin__form__image__icon' size={150} />
-                  }
-                  <div className='signin__form__button_text'>
-                    <Dropzone setSelectedFileUrl={setSelectedFileUrl} onFileUploaded={setSelectedFile} />
-                  </div>
-                </div>
-                <TextInput.Root>
-                  <TextInput.Input myClassName='siginin__form__input' placeholder='Full fame' />
-                  <TextInput.Icon >
-                    <User />
-                  </TextInput.Icon>
-                </TextInput.Root>
-
-                <TextInput.Root>
-                  <TextInput.Input myClassName='siginin__form__input' placeholder='Nick' />
-                  <TextInput.Icon >
-                    <Alien />
-                  </TextInput.Icon>
-                </TextInput.Root>
-
-                <TextInput.Root>
-                  <TextInput.Input myClassName='siginin__form__input' placeholder='E-mail' type='email' />
-                  <TextInput.Icon >
-                    <Envelope />
-                  </TextInput.Icon>
-                </TextInput.Root>
-
-                <TextInput.Root>
-                  <TextInput.Input myClassName='siginin__form__input' placeholder='Password' type='password' />
-                  <TextInput.Icon >
-                    <Password />
-                  </TextInput.Icon>
-                </TextInput.Root>
-
-                <ButtonCustom.Root>
-                  <ButtonCustom.Button onClick={() => setSignInWithoutIntra(false)} msg='Create' myClassName='signin__form__button' />
-                </ButtonCustom.Root>
-              </form>
+              <SignUpForm setLoading={setLoading} setSignInWithoutIntra={setSignInWithoutIntra} setCreateAccount={setCreateAccount} />
             );
           }
         })()
