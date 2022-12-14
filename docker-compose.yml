@@ -45,9 +45,8 @@ services:
     networks:
       - transcendence-network
     restart: always
-    environment:
-      POSTGRES_USER: pguser
-      POSTGRES_PASSWORD: pgpassword
+    env_file:
+      - ./.production.env
 
   adminer:
     image: adminer

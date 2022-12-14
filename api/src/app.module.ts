@@ -24,8 +24,8 @@ import { GroupRelations } from './chat/entities/groupRelations.entity';
       type: 'postgres',
       host: process.env['DATABASE_HOST'],
       port: 5432,
-      username: process.env['DATABASE_USERNAME'],
-      password: process.env['DATABASE_PASSWORD'],
+      username: process.env['POSTGRES_USER'],
+      password: process.env['POSTGRES_PASSWORD'],
       database: process.env['DATABASE'],
       entities: [
         User,
