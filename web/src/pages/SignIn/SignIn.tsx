@@ -6,11 +6,13 @@ import { useState } from 'react';
 import { SignUpForm } from '../../components/Login/SignUpForm/SignUpForm';
 import { SignInForm } from '../../components/Login/SignInForm/SignInForm';
 import { DoubleBubble } from '../../components/DoubleBubble/DoubleBubble';
+import { ForgotPasswordForm } from '../../components/Login/ForgotPasswordForm/ForgotPasswordForm';
 
 export default function SignIn() {
 
   const [signInWithoutIntra, setSignInWithoutIntra] = useState(false);
   const [createAccount, setCreateAccount] = useState(false);
+  const [forgotPassword, setForgotPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   return (
@@ -19,7 +21,7 @@ export default function SignIn() {
         <div className='signin__logo'>
         </div>
         {(() => {
-          if (!signInWithoutIntra && !createAccount) {
+          if (!signInWithoutIntra && !createAccount && !forgotPassword) {
             return (
               <div className='signin__options'>
                 <ButtonCustom.Root myclassname='signin__button__root'>
@@ -42,10 +44,14 @@ export default function SignIn() {
             return (
               <DoubleBubble customText='loading...' speed={5} />
             );
-          }
-          else if (!createAccount) {
+          } else if (forgotPassword) {
             return (
-              <SignInForm setLoading={setLoading} setCreateAccount={setCreateAccount} setSignInWithoutIntra={setSignInWithoutIntra} />
+              <ForgotPasswordForm setForgotPassword={setForgotPassword} setSignInWithoutIntra={setSignInWithoutIntra} />
+            );
+          }
+          else if (signInWithoutIntra) {
+            return (
+              <SignInForm setForgotPassword={setForgotPassword} setLoading={setLoading} setCreateAccount={setCreateAccount} setSignInWithoutIntra={setSignInWithoutIntra} />
             );
           } else {
             return (

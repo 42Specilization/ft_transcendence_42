@@ -5,30 +5,6 @@
     @include displayFlex(center, column);
 }
 
-.signin__form__image {
-    @include displayFlex(center);
-
-    .signin__form__image__icon {
-        padding: 10px;
-        border-radius: 50%;
-        background-color: $primaryColor;
-    }
-
-    .signin__form__button_text {
-        display: none;
-    }
-
-    &:hover {
-        filter: grayscale(0.8);
-        cursor: pointer;
-
-        .signin__form__button_text {
-            @include displayFlex(center);
-            position: absolute;
-        }
-    }
-}
-
 .signin__createAccount {
     color: rgb(214, 211, 211);
     text-decoration: underline;
@@ -44,12 +20,12 @@
     text-decoration: underline;
 }
 
-@media (min-width: 800px) {
-    .signin__form__image__icon {
-        height: 222px;
-        width: 222px;
-    }
+.signin__footer {
+    @include displayFlex(center, column);
+    gap: 10px;
+}
 
+@media (min-width: 800px) {
     .siginin__form__input {
         width: 250px;
     }

@@ -60,9 +60,9 @@ The project its about recreate the famous pong game, using new tools, such as Re
     CLIENT_PORT="8080"
     HOST="localhost"
 
-    TFA_EMAIL_USER='transcendence.42sp@gmail.com'
-    TFA_EMAIL_FROM='Transcendence API <ft.transcendence.42sp@gmail.com>'
-    TFA_EMAIL_PASS='wqldchsobkqtgjau'
+    API_EMAIL_USER='transcendence.42sp@gmail.com'
+    API_EMAIL_FROM='Transcendence API <ft.transcendence.42sp@gmail.com>'
+    API_EMAIL_PASS='wqldchsobkqtgjau'
 
     JWT_SECRET='jwtsecret'
 
@@ -144,9 +144,9 @@ O projeto se trata de recriar o famoso jogo pong, utilizando de ferramentas mais
     CLIENT_PORT="8080"
     HOST="localhost"
 
-    TFA_EMAIL_USER='transcendence.42sp@gmail.com'
-    TFA_EMAIL_FROM='Transcendence API <ft.transcendence.42sp@gmail.com>'
-    TFA_EMAIL_PASS='wqldchsobkqtgjau'
+    API_EMAIL_USER='transcendence.42sp@gmail.com'
+    API_EMAIL_FROM='Transcendence API <ft.transcendence.42sp@gmail.com>'
+    API_EMAIL_PASS='wqldchsobkqtgjau'
 
     JWT_SECRET='pingoaquipingoai?'
 

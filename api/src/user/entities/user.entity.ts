@@ -101,6 +101,10 @@ export class User extends BaseEntity {
   @ApiProperty()
   @Column({ default: '', type: 'varchar' })
   password: string;
+ 
+  @ApiProperty()
+  @Column({ default: '', type: 'varchar' })
+  recoveryPasswordCode: string;
 
   @ApiProperty()
   @ManyToMany(() => GameEntity, { cascade: true })
@@ -135,7 +139,15 @@ export class User extends BaseEntity {
     try {
       return (await bcrypt.compare(password, this.password));
     } catch {
-      throw new InternalServerErrorException('CheckPasswoord: Error to check the Password!');
+      throw new InternalServerErrorException('CheckPassword: Error to check the Password!');
+    }
+  }
+
+  async checkRecoveryPasswordCode(code: string) {
+    try {
+      return (await bcrypt.compare(code, this.recoveryPasswordCode));
+    } catch {
+      throw new InternalServerErrorException('checkRecoveryPasswordCode: Error to check the Recovery Password Code!');
     }
   }
 }

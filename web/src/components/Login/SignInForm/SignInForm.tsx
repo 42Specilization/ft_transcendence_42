@@ -11,10 +11,11 @@ import './SignInForm.scss';
 interface SignInFormProps {
   setCreateAccount: (arg0: boolean) => void;
   setSignInWithoutIntra: (arg0: boolean) => void;
+  setForgotPassword: (arg0: boolean) => void;
   setLoading: (arg0: boolean) => void;
 }
 
-export function SignInForm({ setCreateAccount, setSignInWithoutIntra, setLoading }: SignInFormProps) {
+export function SignInForm({ setForgotPassword, setCreateAccount, setSignInWithoutIntra, setLoading }: SignInFormProps) {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -85,8 +86,9 @@ export function SignInForm({ setCreateAccount, setSignInWithoutIntra, setLoading
           <ButtonCustom.Button msg='SignIn' myclassname='signin__form__button' />
         </ButtonCustom.Root>
       </form>
-      <footer>
+      <footer className='signin__footer'>
         <span onClick={() => { setCreateAccount(true); setSignInWithoutIntra(false); }} className='signin__createAccount'>Dont have an account? Create one now!</span>
+        <span onClick={() => { setForgotPassword(true); setSignInWithoutIntra(false); }} className='signin__createAccount'>Forgot Password?</span>
       </footer>
     </>
   );

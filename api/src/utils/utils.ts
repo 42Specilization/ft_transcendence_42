@@ -26,3 +26,11 @@ export function getAssetsPath(): string {
     return ('../web/public/');
   }
 }
+
+export function generateCode() {
+  let code = '';
+  const availableChar = '1234567890abcdefghijklmnopqrstuvwxyz';
+  for (let i = 0; i < 6; i++)
+    code += availableChar.charAt(Math.floor(Math.random() * availableChar.length));
+  return code;
+}

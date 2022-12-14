@@ -29,7 +29,7 @@ import * as bcrypt from 'bcrypt';
 import { FriendRequestDto } from './dto/friend-request.dto';
 import { GetFriendDto } from './dto/get-friend.dto';
 import { NotifyHandlerDto } from 'src/notification/dto/notify-dto';
-import { getAssetsPath } from 'src/utils/utils';
+import { generateCode, getAssetsPath } from 'src/utils/utils';
 import { ChallengeRequestDto } from './dto/challenge-request.dto';
 
 @Controller('user')
@@ -98,14 +98,6 @@ export class UserController {
     @GetUserFromJwt() userFromJwt: UserFromJwt,
   ) {
 
-    function generateCode() {
-      let code = '';
-      const availableChar = '1234567890abcdefghijklmnopqrstuvwxyz';
-      for (let i = 0; i < 6; i++)
-        code += availableChar.charAt(Math.floor(Math.random() * availableChar.length));
-      return code;
-    }
-
     const sendedCode = generateCode();
     updateUserDto.tfaCode = sendedCode;
     const user = await this.userService.updateUser(updateUserDto, userFromJwt.email);
@@ -114,8 +106,8 @@ export class UserController {
       port: smtpConfig.port,
       secure: false,
       auth: {
-        user: process.env['TFA_EMAIL_USER'],
-        pass: process.env['TFA_EMAIL_PASS'],
+        user: process.env['API_EMAIL_USER'],
+        pass: process.env['API_EMAIL_PASS'],
       },
       tls: {
         rejectUnauthorized: false,
@@ -123,7 +115,7 @@ export class UserController {
     });
     if (user.tfaEmail) {
       await transporter.sendMail({
-        from: process.env['TFA_EMAIL_FROM'],
+        from: process.env['API_EMAIL_FROM'],
         to: [user.tfaEmail as string],
         subject: 'Verify Code from Transcendence',
         text: `Your validation code is '${sendedCode}'`,

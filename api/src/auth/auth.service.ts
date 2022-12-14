@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
@@ -11,6 +11,13 @@ import { UserDto } from 'src/user/dto/user.dto';
 import { HttpService } from '@nestjs/axios';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { SignInUserDto } from './dto/SignInUser.dto';
+import { smtpConfig } from 'src/config/smtp';
+import * as nodemailer from 'nodemailer';
+import { generateCode } from 'src/utils/utils';
+import * as bcrypt from 'bcrypt';
+import { ChangePasswordDto } from './dto/ChangePassword.dto';
+import { RecoveryPasswordDto } from './dto/RecoveryPassword.dto';
+
 
 @Injectable()
 export class AuthService {
@@ -184,7 +191,6 @@ export class AuthService {
         throw new InternalServerErrorException('Error to save tfa validate!');
       }
     }
-    console.log('password is valid');
     const payload: UserPayload = {
       email: user.email,
       token: user.token,
@@ -211,6 +217,96 @@ export class AuthService {
     return ({
       access_token: this.jwtService.sign(payload)
     });
+  }
+
+  async passwordRecoverySendEmail(email: string) {
+    const user = await this.userService.findUserByEmail(email);
+    if (!user) {
+      throw new BadRequestException('Email not registered!');
+    }
+    if (user.isIntra) {
+      throw new BadRequestException('This account is with 42 intra');
+    }
+    const sendedCode = generateCode();
+    user.recoveryPasswordCode = await bcrypt.hash(sendedCode, 10);
+    try {
+      user.save();
+    } catch (error) {
+      throw new InternalServerErrorException('Fail to save recovery password code!');
+    }
+
+    const transporter = nodemailer.createTransport({
+      host: smtpConfig.host,
+      port: smtpConfig.port,
+      secure: false,
+      auth: {
+        user: process.env['API_EMAIL_USER'],
+        pass: process.env['API_EMAIL_PASS'],
+      },
+      tls: {
+        rejectUnauthorized: false,
+      }
+    });
+
+    await transporter.sendMail({
+      from: process.env['API_EMAIL_FROM'],
+      to: [user.email as string],
+      subject: 'Recovery password Code from Transcendence',
+      text: `Your recovery password code is '${sendedCode}'`,
+      html: `
+  <div style="width: 100%; height: 100%; font-family: 'Arial'">
+    <h3 style="font-size: 30px; margin: 30px; color: black;">
+      Hello, ${user.nick}
+    </h3>
+    <p style="font-size: 25px; margin: 40px auto; color: black; width:627px">
+      You have requested to change the password.
+    </p>
+    <p style="font-size: 25px; margin: 20px auto; color: black; width:257px">
+      Your change password code is:
+    </p>
+    <div style="color: white; font-size: 50px; font-weight: bold;
+                margin-top: 40px; padding: 10px 42% 10px;
+                border-radius: 20px; background-color: #7C1CED">
+      ${sendedCode}
+    </div>
+  </div>
+      `,
+    });
+    return ;
+  }
+
+  async validateRecoveryPasswordCode(code: RecoveryPasswordDto) {
+    const user = await this.userService.findUserByEmail(code.email);
+    if (!user) {
+      throw new BadRequestException('Email not registered!');
+    }
+    const isValidCode = await user.checkRecoveryPasswordCode(code.code);
+    if (!isValidCode) {
+      throw new BadRequestException('Invalid code!');
+    }
+    
+    return;
+  }
+
+  async changePassword(changePasswordDto: ChangePasswordDto) {
+    const {confirmPassword, email, password} = changePasswordDto;
+
+    const user = await this.userService.findUserByEmail(email);
+    if (!user) {
+      throw new BadRequestException('Email not registered!');
+    }
+    
+    if (password !== confirmPassword) {
+      throw new BadRequestException('Both password must be equals!');
+    }
+
+    user.password = await bcrypt.hash(password, 10);
+    try {
+      user.save();
+    } catch (error) {
+      throw new InternalServerErrorException('Fail to save new password!');
+    }
+    return ;
   }
 
   // Remove 

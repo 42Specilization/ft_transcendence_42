@@ -26,14 +26,14 @@ export class AuthController {
   @IsPublic()
   @ApiBody({type: CreateUserDto})
   @Post('createUser')
-  async signUpWithouIntra(@Body() createUserDto: CreateUserDto) {
+  async signUpWithoutIntra(@Body() createUserDto: CreateUserDto) {
     return (await this.authService.signUpWithoutIntra(createUserDto));
   }
 
   @IsPublic()
   @ApiBody({type: SignInUserDto})
   @Post('signInWithoutIntra')
-  async signInWithouIntra(@Body() signInUserDto: SignInUserDto) {
+  async signInWithoutIntra(@Body() signInUserDto: SignInUserDto) {
     return (await this.authService.signInWithoutIntra(signInUserDto));
   }
 
@@ -50,6 +50,23 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async validateToken(@GetUserFromJwt() userFromJwt: UserFromJwt) {
     return (await this.authService.validateToken(userFromJwt));
+  }
+
+  @Post('passwordRecoverySendEmail')
+  // @ApiBody({type: string})
+  async passwordRecoverySendEmail(@Body() email: {email: string}) {
+    return ( await this.authService.passwordRecoverySendEmail(email.email));
+  }
+
+
+  @Post('validateRecoveryPasswordCode')
+  async validateRecoveryPasswordCode(@Body() code: {code: string, email: string}) {
+    return (await this.authService.validateRecoveryPasswordCode(code));
+  }
+
+  @Post('changePassword')
+  async changePassword(@Body() changePasswordDto: {password: string, confirmPassword: string, email: string}) {
+    return (await this.authService.changePassword(changePasswordDto));
   }
 
   // @Get('email/:email')
