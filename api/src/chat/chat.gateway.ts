@@ -98,6 +98,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     if (typeof msgToClient === 'undefined')
       return;
     if (msgToClient) {
+      client.emit('updateGroupCommunity');
       this.server.to(id).emit('msgToClient', msgToClient);
     }
     else {
