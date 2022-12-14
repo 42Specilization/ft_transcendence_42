@@ -35,7 +35,6 @@ export function ButtonSearch({
           setSearchInput('');
         }}
       />
-      <ReactTooltip delayShow={50} />
 
       <input
         className='button__search__input'
@@ -48,11 +47,14 @@ export function ButtonSearch({
       />
       <X
         className='button__search__icon'
+        id='search_X_button'
         size={40}
+        data-tip={'Clean Filter'}
         onClick={() => {
           setSearchInput('');
         }}
       />
+      <ReactTooltip delayShow={50} />
     </div>
   );
 }

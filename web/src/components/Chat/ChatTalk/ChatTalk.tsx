@@ -14,26 +14,14 @@ import ReactTooltip from 'react-tooltip';
 
 export function ChatTalk() {
   const {
-    selectedChat, setSelectedChat,
-    activeChat, setActiveChat,
-    setTabSelected
+    selectedChat, activeChat, setActiveChat, setTabSelected
   } = useContext(ChatContext);
   const {
-    api,
-    config,
-    intraData,
-    setGlobalData,
-    updateUserProfile
+    api, config, intraData, updateUserProfile, exitActiveChat
   } = useContext(GlobalContext);
 
   const [profileGroupVisible, setProfileGroupVisible] = useState('');
   const [profileUserVisible, setProfileUserVisible] = useState('');
-
-  useEffect(() => {
-    return () => {
-      exitActiveChat();
-    };
-  }, []);
 
   useEffect(() => {
     if (updateUserProfile.newLogin && updateUserProfile.login === profileUserVisible) {
@@ -82,28 +70,6 @@ export function ChatTalk() {
       historicMsg: messages.filter((msg: any) => msg.type !== 'breakpoint'),
       currentMessage: messages.length - 1
     });
-  }
-
-  async function exitActiveChat() {
-    if (activeChat) {
-      api.patch('/chat/setBreakpoint', { chatId: activeChat.chat.id, type: activeChat.chat.type }, config);
-      if (activeChat.chat.type === 'direct')
-        setGlobalData(prev => {
-          return {
-            ...prev,
-            directs: prev.directs.map(key => key.id === activeChat.chat.id ? { ...key, newMessages: 0 } : key)
-          };
-        });
-      else
-        setGlobalData(prev => {
-          return {
-            ...prev,
-            groups: prev.groups.map(key => key.id === activeChat.chat.id ? { ...key, newMessages: 0 } : key)
-          };
-        });
-    }
-    setSelectedChat(null);
-    setActiveChat(null);
   }
 
   function handleKeyEnter(event: React.FormEvent<HTMLFormElement>) {

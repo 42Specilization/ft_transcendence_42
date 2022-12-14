@@ -10,7 +10,7 @@ import Chat from './pages/Chat/Chat';
 import Community from './pages/Community/Community';
 import { NavBar } from './components/NavBar/NavBar';
 import { RequireAuth, ValidateSignin } from './others/utils/utils';
-import { IntraDataProvider } from './contexts/GlobalContext';
+import { GlobalProvider } from './contexts/GlobalContext';
 import { ChatProvider } from './contexts/ChatContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { useEffect } from 'react';
@@ -37,9 +37,9 @@ export default function AppRouter() {
               element={
                 <RequireAuth>
                   <ChatProvider>
-                    <IntraDataProvider>
+                    <GlobalProvider>
                       <NavBar Children={Home} />
-                    </IntraDataProvider>
+                    </GlobalProvider>
                   </ChatProvider>
                 </RequireAuth>
               }
@@ -49,9 +49,9 @@ export default function AppRouter() {
               element={
                 <RequireAuth>
                   <ChatProvider>
-                    <IntraDataProvider>
+                    <GlobalProvider>
                       <NavBar Children={Profile} />
-                    </IntraDataProvider>
+                    </GlobalProvider>
                   </ChatProvider>
                 </RequireAuth>
               }
@@ -61,9 +61,9 @@ export default function AppRouter() {
               element={
                 <RequireAuth>
                   <ChatProvider>
-                    <IntraDataProvider>
+                    <GlobalProvider>
                       <Game />
-                    </IntraDataProvider>
+                    </GlobalProvider>
                   </ChatProvider>
                 </RequireAuth>
               }
@@ -73,9 +73,9 @@ export default function AppRouter() {
               element={
                 <RequireAuth>
                   <ChatProvider>
-                    <IntraDataProvider>
+                    <GlobalProvider>
                       <NavBar Children={Chat} />
-                    </IntraDataProvider>
+                    </GlobalProvider>
                   </ChatProvider>
                 </RequireAuth>
               }
@@ -85,9 +85,9 @@ export default function AppRouter() {
               element={
                 <RequireAuth>
                   <ChatProvider>
-                    <IntraDataProvider>
+                    <GlobalProvider>
                       <NavBar Children={Community} />
-                    </IntraDataProvider>
+                    </GlobalProvider>
                   </ChatProvider>
                 </RequireAuth>
               }

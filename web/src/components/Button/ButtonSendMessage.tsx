@@ -1,6 +1,6 @@
 import './Button.scss';
 import { TelegramLogo } from 'phosphor-react';
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import { ChatContext } from '../../contexts/ChatContext';
 import { Link } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
@@ -8,21 +8,29 @@ import ReactTooltip from 'react-tooltip';
 interface ButtonSendMessageProps {
   id: string;
   type: string;
-  onClick: any;
+
 }
 
-export function ButtonSendMessage({ id, type, onClick }: ButtonSendMessageProps) {
+export function ButtonSendMessage({ id, type }: ButtonSendMessageProps) {
   const { setSelectedChat } = useContext(ChatContext);
-
+  const refMessage: React.RefObject<HTMLButtonElement> = useRef(null);
   function handleSendMessage() {
     setSelectedChat({ chat: id, type: type });
-    onClick();
+    refMessage.current?.dispatchEvent(new KeyboardEvent('keydown', {
+      key: 'Escape',
+      code: 'Escape',
+      cancelable: true,
+      composed: true,
+      keyCode: 27,
+      which: 27,
+    }));
   }
 
   return (
     <Link to='/chat' className='button__link'>
       <button
         id='sendMessage_button'
+        ref={refMessage}
         className='button__icon'
         onClick={handleSendMessage}
         data-tip={'Send Message'}

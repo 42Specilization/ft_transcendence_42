@@ -8,9 +8,11 @@ import { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import { ErrorGameModal } from '../../components/Game/ErrorGameModal/ErrorGameModal';
 import { Modal } from '../../components/Modal/Modal';
+import { ChatContext } from '../../contexts/ChatContext';
 
 export default function Game() {
-  const { intraData } = useContext(GlobalContext);
+  const { intraData, exitActiveChat } = useContext(GlobalContext);
+  const { activeChat } = useContext(ChatContext);
   const currentState = useSnapshot(stateGame);
   const [gameNotFound, setGameNotFound] = useState<boolean>(false);
   const [gameModalMessage, setGameModalMessage] = useState<string>('Game Not Found!');
@@ -21,6 +23,9 @@ export default function Game() {
   }, [intraData]);
 
   useEffect(() => {
+    if (activeChat)
+      exitActiveChat();
+
     currentState.socket?.on('game-not-found', async (msg) => {
       setGameNotFound(true);
       if (msg) {

@@ -36,8 +36,12 @@ export function ProfileUser({ login, setProfileUserVisible }: ProfileUserProps) 
   if (status == 'loading')
     return <></>;
 
-  if (!data)
-    return <></>;
+  if (!data) {
+    setProfileUserVisible('');
+    return (
+      <></>
+    );
+  }
 
   return (
     <>
@@ -60,7 +64,7 @@ export function ProfileUser({ login, setProfileUserVisible }: ProfileUserProps) 
       <div className='profileUser__body'>
         {(() => {
           if (tabSelected === 'General')
-            return <ProfileUserGeneral setProfileUserVisible={setProfileUserVisible} profileUserData={data} />;
+            return <ProfileUserGeneral profileUserData={data} />;
           if (tabSelected === 'Historic')
             return <ProfileUserHistoric login={data.login} />;
         })()}
