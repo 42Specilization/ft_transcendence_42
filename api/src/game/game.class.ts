@@ -10,6 +10,7 @@ const BIG_PADDLE = 0;
 const LITTLE_PADDLE = 1;
 const BIG_BALL = 2;
 const PADDLE_Y = (CANVAS_HEIGHT / 2) - (DEFAULT_PADDLE_HEIGHT / 2);
+const SCORE_LIMIT = 5;
 
 export class Game {
 
@@ -166,7 +167,7 @@ export class Game {
   }
 
   checkWinner(): boolean {
-    if (this.score.player1 >= 10 || this.player2.quit) {
+    if (this.score.player1 >= SCORE_LIMIT || this.player2.quit) {
       this.hasEnded = true;
       this.winner = this.player1;
       if (this.player2.quit) {
@@ -175,7 +176,7 @@ export class Game {
         this.msgEndGame = `${this.player1.name} is the winner!`;
       }
       return (true);
-    } else if (this.score.player2 >= 10 || this.player1.quit) {
+    } else if (this.score.player2 >= SCORE_LIMIT || this.player1.quit) {
       this.hasEnded = true;
       this.winner = this.player2;
       if (this.player1.quit) {
