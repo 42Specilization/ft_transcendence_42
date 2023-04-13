@@ -25,7 +25,7 @@ export function useAuth() {
 
   return {
     async login() {
-      const token = await axios(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/auth/code/${searchParams.get('code')}`).then(
+      const token = await axios(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/api/auth/code/${searchParams.get('code')}`).then(
         response => {
           return (response.data as AccessTokenResponse);
         }

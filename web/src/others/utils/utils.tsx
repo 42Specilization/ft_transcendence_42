@@ -18,7 +18,7 @@ export function RequireAuth({ children }: any) {
     },
   };
   const api = axios.create({
-    baseURL: `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}`,
+    baseURL: `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/api`,
   });
 
   function logout() {
@@ -93,7 +93,7 @@ export async function getGlobalInDb() {
     }
   };
   try {
-    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/auth/me`, config);
+    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/api/auth/me`, config);
     return response.data;
   } catch (err) {
     console.log(err);
@@ -109,7 +109,7 @@ export async function getGlobalDirects() {
     }
   };
   try {
-    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/chat/getAllDirects`, config);
+    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/api/chat/getAllDirects`, config);
     return response.data;
   } catch (err) {
     console.log(err);
@@ -125,7 +125,7 @@ export async function getGlobalGroups() {
     }
   };
   try {
-    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/chat/getAllGroups`, config);
+    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/api/chat/getAllGroups`, config);
     return response.data;
   } catch (err) {
     console.log(err);
@@ -141,7 +141,7 @@ export async function getGlobalAllUsers() {
     }
   };
   try {
-    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/user/getCommunity`, config);
+    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/api/user/getCommunity`, config);
     return response.data;
   } catch (err) {
     console.log(err);
@@ -157,7 +157,7 @@ export async function getGlobalAllGroups() {
     }
   };
   try {
-    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/chat/getAllCardGroup`, config);
+    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/api/chat/getAllCardGroup`, config);
     return response.data;
   } catch (err) {
     console.log(err);
@@ -174,11 +174,11 @@ export async function getGlobalData(setGlobalData: Dispatch<SetStateAction<Globa
     }
   };
   try {
-    const responseGlobal = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/user/getGlobalInfos`, config);
-    const responseDirects = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/chat/getAllDirects`, config);
-    const responseGroups = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/chat/getAllGroups`, config);
-    const responseGlobalUsers = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/user/getCommunity`, config);
-    const responseGlobalGroups = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/chat/getAllCardGroup`, config);
+    const responseGlobal = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/api/user/getGlobalInfos`, config);
+    const responseDirects = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/api/chat/getAllDirects`, config);
+    const responseGroups = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/api/chat/getAllGroups`, config);
+    const responseGlobalUsers = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/api/user/getCommunity`, config);
+    const responseGlobalGroups = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/api/chat/getAllCardGroup`, config);
     globalData.notify = responseGlobal.data.notify;
     globalData.friends = responseGlobal.data.friends;
     globalData.blocked = responseGlobal.data.blocked;
@@ -201,7 +201,7 @@ export async function getUserInDb(): Promise<IntraData> {
     }
   };
   try {
-    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/auth/me`, config);
+    const response = await axios.get(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/api/auth/me`, config);
     const user: IntraData = response.data as IntraData;
     return (user);
   } catch (err) {

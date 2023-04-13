@@ -3,8 +3,7 @@ import { stateGame } from '../game/gameState';
 import { AppActionsStatus, AppStateStatus } from './statusState';
 
 export const socketStatusIOUrl =
-  `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT
-  }/${import.meta.env.VITE_STATUS_NAMESPACE}`;
+  `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/${import.meta.env.VITE_STATUS_NAMESPACE}`;
 
 export interface CreateSocketStatusOptions {
   accessToken?: string | undefined | null;

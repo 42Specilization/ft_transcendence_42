@@ -10,7 +10,7 @@ import { SignInUserDto } from './dto/SignInUser.dto';
 import { UserFromJwt } from './dto/UserFromJwt.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
-@Controller('auth')
+@Controller('api/auth')
 @ApiTags('Auth')
 export class AuthController {
 

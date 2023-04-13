@@ -34,9 +34,6 @@ export function SignInForm({ setForgotPassword, setCreateAccount, setSignInWitho
   }
 
   async function handleSubmit() {
-    const response = await api.get('/test');
-    console.log(response, 'opa');
-
     const credentials = {
       email: email,
       password: password,
