@@ -25,5 +25,5 @@ ENV NODE_ENV production
 RUN mkdir /app
 COPY --from=builder /app/dist/ /app
 COPY nginx.conf /etc/nginx/nginx.conf
-EXPOSE 8080
+EXPOSE 4220
 CMD ["nginx", "-g", "daemon off;"]

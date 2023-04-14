@@ -11,7 +11,7 @@ services:
       - transcendence-network
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "4220:4220"
     environment:
       - VITE_API_HOST=api
     env_file:
