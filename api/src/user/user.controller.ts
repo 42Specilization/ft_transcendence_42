@@ -32,7 +32,7 @@ import { NotifyHandlerDto } from 'src/notification/dto/notify-dto';
 import { generateCode, getAssetsPath } from 'src/utils/utils';
 import { ChallengeRequestDto } from './dto/challenge-request.dto';
 
-@Controller('user')
+@Controller('api/user')
 @ApiTags('user')
 export class UserController {
   constructor(

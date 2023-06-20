@@ -109,7 +109,7 @@ const actionsGame = {
         Authorization: `Bearer ${token}`
       }
     };
-    await axios.patch(`http://${import.meta.env.VITE_API_HOST}:3000/user/removeNotify`, { id: 0, notify: stateGame.challengeNotify }, config);
+    await axios.patch(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/user/removeNotify`, { id: 0, notify: stateGame.challengeNotify }, config);
     actionsStatus.removeNotify(stateGame.challengeNotify?.user_target_email);
   },
   challengeFriend(nick: string, isWithPowerUps: boolean) {

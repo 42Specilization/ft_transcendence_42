@@ -25,11 +25,11 @@ export function useAuth() {
 
   return {
     async login() {
-      const token = await axios(`http://${import.meta.env.VITE_API_HOST}:3000/auth/code/${searchParams.get('code')}`).then(
+      const token = await axios(`http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/api/auth/code/${searchParams.get('code')}`).then(
         response => {
           return (response.data as AccessTokenResponse);
         }
-      ).catch(() => {/*TODO: Nothing*/});
+      ).catch(() => {/*TODO: Nothing*/ });
       if (!token) {
         if (process.env.NODE_ENV == 'production')
           return (navigate('/signin'));

@@ -20,18 +20,10 @@ RUN npm run build \
 ########################
 #      PRODUCTION      #
 ########################
-
-FROM node:lts-alpine as production
-
-EXPOSE 80
-
+FROM nginx:stable-alpine as production-stage
 ENV NODE_ENV production
-
-WORKDIR /app/
-
-COPY --from=builder /app/package*.json /app/
-COPY --from=builder /app/node_modules/ /app/node_modules/
-COPY --from=builder /app/dist/ /app/dist/
-COPY --from=builder /app/server.cjs /app/
-
-CMD [ "node", "server.cjs" ]
+RUN mkdir /app
+COPY --from=builder /app/dist/ /app
+COPY nginx.conf /etc/nginx/nginx.conf
+EXPOSE 4220
+CMD ["nginx", "-g", "daemon off;"]

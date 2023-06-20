@@ -34,7 +34,6 @@ export function SignInForm({ setForgotPassword, setCreateAccount, setSignInWitho
   }
 
   async function handleSubmit() {
-
     const credentials = {
       email: email,
       password: password,

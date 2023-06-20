@@ -16,7 +16,7 @@ import { ChatDto, GetDirectDto, DeleteDirectDto, CreateGroupDto, GetGroupDto, Up
 import { BadRequestException } from '@nestjs/common';
 import { getAssetsPath } from 'src/utils/utils';
 
-@Controller('chat')
+@Controller('api/chat')
 @ApiTags('chat')
 export class ChatController {
   constructor(private readonly chatService: ChatService) { }

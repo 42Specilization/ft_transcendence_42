@@ -67,7 +67,7 @@ export const GlobalContext = createContext<IGlobalContext>({
     }
   },
   api: axios.create({
-    baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
+    baseURL: `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/api`,
   }),
   intraData: defaultIntra,
   setIntraData: () => { },
@@ -110,7 +110,7 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
   }, []);
 
   const api = useMemo(() => axios.create({
-    baseURL: `http://${import.meta.env.VITE_API_HOST}:3000`,
+    baseURL: `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/api`,
   }), []);
 
   function exitActiveChat() {

@@ -22,11 +22,11 @@ import { GroupRelations } from './chat/entities/groupRelations.entity';
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env['DATABASE_HOST'],
+      host: 'pgsql',
       port: 5432,
-      username: process.env['POSTGRES_USER'],
-      password: process.env['POSTGRES_PASSWORD'],
-      database: process.env['DATABASE'],
+      username: 'pguser',
+      password: 'pgpassword',
+      database: 'postgres',
       entities: [
         User,
         Notify,
