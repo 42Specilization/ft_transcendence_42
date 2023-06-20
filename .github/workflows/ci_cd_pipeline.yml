@@ -55,17 +55,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
       - name: AWS SSM Send-Command
-        uses: peterkimzz/aws-ssm-send-command@v1.1.1
+        uses: appleboy/ssh-action@master
         with:
-          aws-region: ${{ secrets.AWS_REGION }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          instance-ids: ${{ secrets.INSTANCE_ID }}
-
-          working-directory: /home/ubuntu/app
-          command: bash production.sh
+          host: ${{ secrets.SERVER_42_SSH_URL }}
+          username: ${{ secrets.SERVER_42_SSH_USERNAME }}
+          key: ${{ secrets.SERVER_42_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_42_SSH_PORT }}
+          script: |
+            cd /root/app && bash production.sh
 
       # Catch SSM outputs
       - name: Get the outputs
