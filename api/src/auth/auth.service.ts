@@ -234,7 +234,7 @@ export class AuthService {
     } catch (error) {
       throw new InternalServerErrorException('Fail to save recovery password code!');
     }
-
+    this.logger.log(`API_EMAIL_USER =  ${process.env['API_EMAIL_USER']} API_EMAIL_PASS ${process.env['API_EMAIL_PASS']} `);
     const transporter = nodemailer.createTransport({
       host: smtpConfig.host,
       port: smtpConfig.port,
