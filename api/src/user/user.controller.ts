@@ -102,9 +102,11 @@ export class UserController {
     updateUserDto.tfaCode = sendedCode;
     const user = await this.userService.updateUser(updateUserDto, userFromJwt.email);
     const transporter = nodemailer.createTransport({
-      host: smtpConfig.host,
+      service: 'gmail',
       port: smtpConfig.port,
-      secure: false,
+      secure: true,
+      logger: false,
+      debug: false,
       auth: {
         user: process.env['API_EMAIL_USER'],
         pass: process.env['API_EMAIL_PASS'],
