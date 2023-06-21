@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { MailingService } from './mailing.service';
+import { EmailDto } from './dto/email.dto';
 
 @Controller('mailing')
 export class MailingController {
@@ -8,7 +9,12 @@ export class MailingController {
   
   @Get('send-mail')
   public sendMail() {
-    this.mailingService.sendMail('buccky.live8@gmail.com', 'none', 'none');
+    const emailDto: EmailDto = {
+      body: 'teste',
+      subject: 'teste',
+      emailTo: ['teste']
+    };
+    this.mailingService.sendMail(emailDto);
   }
   
 }

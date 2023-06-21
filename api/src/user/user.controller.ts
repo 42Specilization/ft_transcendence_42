@@ -22,8 +22,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
-import * as nodemailer from 'nodemailer';
-import { smtpConfig } from '../config/smtp';
 import { UserDto, UserHistoricDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { FriendRequestDto } from './dto/friend-request.dto';
@@ -31,12 +29,15 @@ import { GetFriendDto } from './dto/get-friend.dto';
 import { NotifyHandlerDto } from 'src/notification/dto/notify-dto';
 import { generateCode, getAssetsPath } from 'src/utils/utils';
 import { ChallengeRequestDto } from './dto/challenge-request.dto';
+import { EmailDto } from 'src/mailing/dto/email.dto';
+import { MailingService } from 'src/mailing/mailing.service';
 
 @Controller('api/user')
 @ApiTags('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
+    readonly mailingService: MailingService
   ) { }
 
   @Post()
@@ -101,45 +102,32 @@ export class UserController {
     const sendedCode = generateCode();
     updateUserDto.tfaCode = sendedCode;
     const user = await this.userService.updateUser(updateUserDto, userFromJwt.email);
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      port: smtpConfig.port,
-      secure: true,
-      logger: false,
-      debug: false,
-      auth: {
-        user: process.env['API_EMAIL_USER'],
-        pass: process.env['API_EMAIL_PASS'],
-      },
-      tls: {
-        rejectUnauthorized: false,
-      }
-    });
+
     if (user.tfaEmail) {
-      await transporter.sendMail({
-        from: process.env['API_EMAIL_FROM'],
-        to: [user.tfaEmail as string],
+      const body =  `
+        <div style="width: 100%; height: 100%; font-family: 'Arial'">
+          <h3 style="font-size: 30px; margin: 30px; color: black;">
+            Hello, ${user.nick}
+          </h3>
+          <p style="font-size: 25px; margin: 40px auto; color: black; width:627px">
+            You have requested to enable Two-Factor Authentication
+          </p>
+          <p style="font-size: 25px; margin: 20px auto; color: black; width:257px">
+            Your activation code is:
+          </p>
+          <div style="color: white; font-size: 50px; font-weight: bold;
+                      margin-top: 40px; padding: 10px 42% 10px;
+                      border-radius: 20px; background-color: #7C1CED">
+            ${sendedCode}
+          </div>
+        </div>
+            `;
+      const emailDto: EmailDto = {
+        body: body,
         subject: 'Verify Code from Transcendence',
-        text: `Your validation code is '${sendedCode}'`,
-        html: `
-    <div style="width: 100%; height: 100%; font-family: 'Arial'">
-      <h3 style="font-size: 30px; margin: 30px; color: black;">
-        Hello, ${user.nick}
-      </h3>
-      <p style="font-size: 25px; margin: 40px auto; color: black; width:627px">
-        You have requested to enable Two-Factor Authentication
-      </p>
-      <p style="font-size: 25px; margin: 20px auto; color: black; width:257px">
-        Your activation code is:
-      </p>
-      <div style="color: white; font-size: 50px; font-weight: bold;
-                  margin-top: 40px; padding: 10px 42% 10px;
-                  border-radius: 20px; background-color: #7C1CED">
-        ${sendedCode}
-      </div>
-    </div>
-        `,
-      });
+        emailTo: [user.email as string]
+      };
+      await this.mailingService.sendMail(emailDto);
     } else {
       throw new InternalServerErrorException('Error: Mail can\'t be empty');
     }

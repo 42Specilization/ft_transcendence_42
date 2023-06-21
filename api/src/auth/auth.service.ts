@@ -11,13 +11,12 @@ import { UserDto } from 'src/user/dto/user.dto';
 import { HttpService } from '@nestjs/axios';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { SignInUserDto } from './dto/SignInUser.dto';
-// import { smtpConfig } from 'src/config/smtp';
-// import * as nodemailer from 'nodemailer';
 import { generateCode } from 'src/utils/utils';
 import * as bcrypt from 'bcrypt';
 import { ChangePasswordDto } from './dto/ChangePassword.dto';
 import { RecoveryPasswordDto } from './dto/RecoveryPassword.dto';
 import { MailingService } from 'src/mailing/mailing.service';
+import { EmailDto } from 'src/mailing/dto/email.dto';
 
 
 @Injectable()
@@ -254,46 +253,13 @@ export class AuthService {
       </div>
     </div>
         `;
-    await this.mailingService.sendMail(user.email as string, 'Recovery password Code from Transcendence', body);
-    //   const transporter = nodemailer.createTransport({
-    //     service: 'gmail',
-    //     port: smtpConfig.port,
-    //     secure: true,
-    //     logger: false,
-    //     debug: false,
-    //     auth: {
-    //       user: process.env['API_EMAIL_USER'],
-    //       pass: process.env['API_EMAIL_PASS'],
-    //     },
-    //     tls: {
-    //       rejectUnauthorized: false,
-    //     }
-    //   });
 
-    //   await transporter.sendMail({
-    //     from: process.env['API_EMAIL_FROM'],
-    //     to: [user.email as string],
-    //     subject: 'Recovery password Code from Transcendence',
-    //     text: `Your recovery password code is '${sendedCode}'`,
-    //     html: `
-    // <div style="width: 100%; height: 100%; font-family: 'Arial'">
-    //   <h3 style="font-size: 30px; margin: 30px; color: black;">
-    //     Hello, ${user.nick}
-    //   </h3>
-    //   <p style="font-size: 25px; margin: 40px auto; color: black; width:627px">
-    //     You have requested to change the password.
-    //   </p>
-    //   <p style="font-size: 25px; margin: 20px auto; color: black; width:257px">
-    //     Your change password code is:
-    //   </p>
-    //   <div style="color: white; font-size: 50px; font-weight: bold;
-    //               margin-top: 40px; padding: 10px 42% 10px;
-    //               border-radius: 20px; background-color: #7C1CED">
-    //     ${sendedCode}
-    //   </div>
-    // </div>
-    //     `,
-    //   });
+    const emailDto: EmailDto = {
+      body: body,
+      subject: 'Recovery password Code from Transcendence',
+      emailTo: [user.email as string]
+    };
+    await this.mailingService.sendMail(emailDto);
     return ;
   }
 

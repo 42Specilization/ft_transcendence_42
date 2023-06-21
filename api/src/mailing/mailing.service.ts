@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { google } from 'googleapis';
 import { Options } from 'nodemailer/lib/smtp-transport';
+import { EmailDto } from './dto/email.dto';
 
 @Injectable()
 export class MailingService {
@@ -46,15 +47,15 @@ export class MailingService {
     this.mailerService.addTransporter('gmail', config);
   }
 
-  public async sendMail(emailTo: string, subject: string, body: string) {
+  public async sendMail(emailDto: EmailDto) {
     await this.setTransport();
     this.mailerService
       .sendMail({
         transporterName: 'gmail',
-        to: emailTo, // list of receivers
-        from: 'ft.transcendence.42sp@gmail.com', // sender address
-        subject: subject, // Subject line
-        html: body,
+        to: emailDto.emailTo,
+        from: 'ft.transcendence.42sp@gmail.com',
+        subject: emailDto.subject,
+        html: emailDto.body,
       })
       .then((success) => {
         console.log(success);
