@@ -16,6 +16,8 @@ import { ChatModule } from './chat/chat.module';
 import { Message } from './chat/entities/message.entity';
 import { Group } from './chat/entities/group.entity';
 import { GroupRelations } from './chat/entities/groupRelations.entity';
+import { MailingModule } from './mailing/mailing.module';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
@@ -45,6 +47,10 @@ import { GroupRelations } from './chat/entities/groupRelations.entity';
     GameModule,
     ChatModule,
     StatusModule,
+    MailingModule,
+    MailerModule.forRoot({
+      transport: 'smtps://user@domain.com:pass@smtp.domain.com',
+    }),
   ],
   controllers: [AppController],
   providers: [
