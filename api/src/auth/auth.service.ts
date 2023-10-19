@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../user/entities/user.entity';
@@ -17,6 +18,7 @@ import { ChangePasswordDto } from './dto/ChangePassword.dto';
 import { RecoveryPasswordDto } from './dto/RecoveryPassword.dto';
 import { MailingService } from 'src/mailing/mailing.service';
 import { EmailDto } from 'src/mailing/dto/email.dto';
+import { Exception } from 'handlebars';
 
 
 @Injectable()
@@ -39,12 +41,13 @@ export class AuthService {
    * @returns Access token to get infos from intra.
    */
   async getToken(code: string): Promise<AccessTokenResponse> {
-    const url = `${process.env['ACCESS_TOKEN_URI']}?grant_type=authorization_code&client_id=${process.env['CLIENT_ID']}&client_secret=${process.env['CLIENT_SECRET']}&redirect_uri=${process.env['REDIRECT_URI']}&code=${code}`;
+    const url = `${process.env['ACCESS_TOKEN_URI']}?grant_type=authorization_code&client_id=${process.env['CLIENT_ID_INTRA']}&client_secret=${process.env['CLIENT_SECRET_INTRA']}&redirect_uri=${process.env['REDIRECT_URI']}&code=${code}`;
     return (
       await this.httpService.axiosRef.post(url).then((res) => {
         return res.data as AccessTokenResponse;
-      }).catch(() => {
-        throw new InternalServerErrorException('getToken: Fail to request access token to intra!');
+      }).catch((err) => {
+        console.log(err);
+        throw new Exception('getToken: Fail to request access token to intra!', err);
       })
     );
 

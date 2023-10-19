@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -24,11 +25,11 @@ import { MailerModule } from '@nestjs-modules/mailer';
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'pgsql',
+      host: process.env['DATABASE_HOST'],
       port: 5432,
-      username: 'pguser',
-      password: 'pgpassword',
-      database: 'postgres',
+      username: process.env['POSTGRES_USER'],
+      password: process.env['POSTGRES_PASSWORD'],
+      database: process.env['DATABASE'],
       entities: [
         User,
         Notify,

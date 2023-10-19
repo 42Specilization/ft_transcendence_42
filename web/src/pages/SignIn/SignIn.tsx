@@ -30,14 +30,14 @@ export default function SignIn() {
                     <IdentificationCard size={32} />
                   </ButtonCustom.Icon>
                 </ButtonCustom.Root>
-                {/* <a href={import.meta.env.VITE_REDIRECT_LOGIN_URL}>
+                <a href={import.meta.env.VITE_REDIRECT_LOGIN_URL}>
                   <ButtonCustom.Root myclassname='signin__button__root'>
                     <ButtonCustom.Button msg='Login Intra' myclassname='signin__button' />
                     <ButtonCustom.Icon myclassname='signin__button__icon'>
                       <img src={logo42} alt='42 logo' />
                     </ButtonCustom.Icon>
                   </ButtonCustom.Root>
-                </a> */}
+                </a>
               </div>
             );
           } else if (loading) {

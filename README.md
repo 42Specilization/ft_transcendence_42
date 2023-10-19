@@ -52,8 +52,8 @@ The project its about recreate the famous pong game, using new tools, such as Re
     ./.production.env
 
     ACCESS_TOKEN_URI="https://api.intra.42.fr/oauth/token"
-    CLIENT_ID={Intra client id}
-    CLIENT_SECRET={Intra secret id}
+    CLIENT_ID_INTRA={Intra client id}
+    CLIENT_SECRET_INTRA={Intra secret id}
     REDIRECT_URI="http://localhost:8080/oauth"
     URL_ME="https://api.intra.42.fr/v2/me"
     PORT="3000"
@@ -136,8 +136,8 @@ O projeto se trata de recriar o famoso jogo pong, utilizando de ferramentas mais
     ./.production.env
 
     ACCESS_TOKEN_URI="https://api.intra.42.fr/oauth/token"
-    CLIENT_ID={Sua chave na intra}
-    CLIENT_SECRET={Seu token na intra}
+    CLIENT_ID_INTRA={Sua chave na intra}
+    CLIENT_SECRET_INTRA={Seu token na intra}
     REDIRECT_URI="http://localhost:8080/oauth"
     URL_ME="https://api.intra.42.fr/v2/me"
     PORT="3000"
@@ -147,6 +147,10 @@ O projeto se trata de recriar o famoso jogo pong, utilizando de ferramentas mais
     API_EMAIL_USER='teste@gmail.com'
     API_EMAIL_FROM='Transcendence API <teste@gmail.com>'
     API_EMAIL_PASS='teste'
+    CLIENT_ID='CLIENT_ID'
+    CLIENT_SECRET='CLIENT_ID'
+    REFRESH_TOKEN='TOKEn'
+    EMAIL='email'
 
     JWT_SECRET='jwtsecret'
 
