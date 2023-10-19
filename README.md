@@ -69,8 +69,8 @@ The project its about recreate the famous pong game, using new tools, such as Re
     DATABASE='postgres'
     DATABASE_TYPE='postgres'
     DATABASE_HOST="localhost"
-    DATABASE_USERNAME='pguser'
-    DATABASE_PASSWORD='pgpassword'
+    POSTGRES_USER='pguser'
+    POSTGRES_PASSWORD='pgpassword'
 ```
 
 ### Dependencies
@@ -157,8 +157,8 @@ O projeto se trata de recriar o famoso jogo pong, utilizando de ferramentas mais
     DATABASE='postgres'
     DATABASE_TYPE='postgres'
     DATABASE_HOST="localhost"
-    DATABASE_USERNAME='pguser'
-    DATABASE_PASSWORD='pgpassword'
+    POSTGRES_USER='pguser'
+    POSTGRES_PASSWORD='pgpassword'
 ```
 
 ### Pacotes que devem ser intalados
